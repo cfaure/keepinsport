@@ -1,0 +1,17 @@
+<form id="clubHasUsersForm" action="{{ path('ksClubAdmin_addClubUser', {"clubId" : club.id }) }}"  method="post" {{ form_enctype(clubHasUsersForm) }} novalidate="novalidate">
+    <div class="input-prepend input-append">
+        <span class="add-on before">
+            Ajouter un utilisateur
+        </span>
+        {{ form_widget(clubHasUsersForm.user) }}
+        <button id="bAddClubUser" class="btn"><i class="glyphicon glyphicon-plus"></i></button>
+    </div>
+
+    {{ form_rest(clubHasUsersForm) }}
+</form>
+<script type="text/javascript"> 
+    
+    $("bAddClubUser").click(function() {
+        $("#clubHasUsersForm").submit();
+    });
+</script>

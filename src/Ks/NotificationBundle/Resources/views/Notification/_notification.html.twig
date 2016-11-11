@@ -1,0 +1,174 @@
+{#<li class="nav-header">{{ 'activity.appendAgo'|trans({'%time%': notification.createdAt|created_ago['time'], '%unit%': ('time.' ~ notification.createdAt|created_ago['unit'])|trans }) }}</li>#}
+{% if notification.isMerged %}
+    {% set classMerged = "isMerged" %}
+    {% set mergedNotificationsId = notification.mergedNotifications|getIds %}
+    {% set mergedNotificationsIdString = mergedNotificationsId|join('|') %}
+{% else %}
+    {% set classMerged = "isNotMerged" %}
+    {% set mergedNotificationsIdString = "" %}
+{% endif %}
+
+{% if  notification.isRead == 0 and notification.needAnAnswer == 0 %}
+    {% set classState = "new" %}
+{% else %}
+    {% set classState = "old" %}
+{% endif %}
+
+<li idNotif="{{ notification.id }}" class="notif {{ classState }} {{ classMerged }}" mergedNotificationsIdString="{{ mergedNotificationsIdString }}" notif-type="{{ notification.type }}">
+        {% set href = "#" %}
+
+        {% if notification.type.name != "ask_friend_request" %}
+            {% if notification.activity is defined and notification.activity is not null %}
+                {% set href = path('ksActivity_showActivity', {"activityId" : notification.activity.id }) %}
+            {% endif %}
+        
+            {% if notification.event is defined and notification.event is not null %}
+                {#% set href = path('ksEventClub_show', {"id" : notification.event.id }) %#}
+                {% set href = path('ksAgendaClub_index', {"id" : notification.fromClub.id, 'fullscreen' : 'false' }) %}
+            {% endif %}
+
+            {% if notification.type.name == "validation_activity" %}
+                {% set href = path('ks_activity_session_list_in_stand_by') %}
+            {% endif %}
+
+            {% if notification.type.name == "invitation_event" %}
+                {% set href = path('ks_invitation_event_in_stand_by') %}
+            {% endif %}
+
+            {% if notification.type.name == "league" %}
+                {% set href = path('ksLeague_ranking', { "id" : app.user.id }) %}
+            {% endif %}
+
+            {% if notification.type.name == "friend_request" %}
+                {% set href = path('ks_user_public_profile', {'username' : notification.fromUser.username}) %}
+            {% endif %}
+
+            {% if notification.type.name == "teamComposition" %}
+                {% if notification.teamComposition is defined and notification.teamComposition is not null %}
+                    {% set href = path('ksTeamComposition_show', {"teamCompositionId" : notification.teamComposition.id }) %}
+                {% endif %}
+            {% endif %}
+
+            {% if notification.type.name == "message" %}
+                {% if notification.message is defined and notification.message is not null %}
+                    {% set href = path('ksMessage_show', {"id" : notification.message.id }) %}
+                {% endif %}
+            {% endif %}
+
+            {% if notification.type.name == "club" %}
+                {% if notification.fromClub is defined and notification.fromClub is not null %}
+                    {#{% set href = path('ksClub_public_profile', {"clubId" : notification.fromClub.id }) %}#}
+                {% endif %}
+            {% endif %}
+
+            {% if notification.type.name == "eventParticipation" %}
+                {% if notification.fromUser is defined and notification.fromUser is not null %}
+                    {% set href = path('ks_user_public_profile', {"username" : notification.fromUser.username }) %}
+                {% endif %}
+            {% endif %}
+        
+            {% if notification.type.name == "user" %}
+                {% if notification.fromUser is defined and notification.fromUser is not null %}
+                    {% set href = path('ks_user_public_profile', {"username" : notification.fromUser.username }) %}
+                {% endif %}
+            {% endif %}
+        {% endif %}
+
+        <div class="media">
+        {#% if ( notification.type.name != "ask_friend_request" and notification.type.name != "mustBeValidated" ) or not notification.needAnAnswer %}
+            <a href="{{ href }}">
+        {% else %}
+            <div style="padding: 10px 10px 11px;">
+        {% endif %#}
+            
+                <span class="pull-left">
+                    <span class="media-object">
+                        {% include 'KsNotificationBundle:Notification:_notificationUserOrClub.html.twig' with {'notification' : notification } %}      
+                    </span>
+                </span>
+                <div class="media-body">
+                    {% if notification.type == "coaching" %}
+                        <a id="linkCoaching_{{ notification.id }}"> {{ notification.text }} </a>
+                    {% else %}
+                        {% if href is defined and href != "#" %}
+                            <a href="{{ href }}">
+                                {{ notification.text }}
+                            </a>
+                        {% else %}
+                            {{ notification.text|raw|nl2br }}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            
+            {% if notification.type.name == "ask_friend_request" %}
+                <a class="btn btn-xs btn-default" href="{{ path('ks_user_public_profile', {"username" : notification.fromUser.username }) }}" >
+                    Voir le profil de {{ notification.fromUser.username }}
+                </a>
+                <a class="btn btn-xs btn-success" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': notification.fromUser.id }) }}" >
+                    Oui
+                </a>
+                <a class="btn btn-xs btn-danger" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': notification.fromUser.id }) }}" >
+                    Non
+                </a>
+            {% elseif notification.type.name == "mustBeValidated" %}
+                {#<a class="btn btn-xs btn-sportif" onclick="attachEditAndValidateActivityEvent({{ notification.activity.id }})" href="#">Editer</a>
+                <button class="btn btn-xs btn-sportif" rel="{{ path('ksActivity_showActivity', { 'activityId': notification.activity.id }) }}" >
+                    Voir l'activité en détail
+                </button>#}
+                {#<button class="editAndValidateActivity btn btn-xs btn-sportif" activityId="{{ notification.activity.id }}" notificationId="{{ notification.id }}">
+                    Editer
+                </button>#}
+                <a class="btn btn-xs btn-default" href="{{ path('ksActivity_showActivity', {"activityId" : notification.activity.id }) }}">
+                    <i class="icon-search icon-white"></i>
+                </a>
+                <a class="btn btn-xs btn-sucess" href="{{ path('ksNotification_validateActivity', { 'notificationId': notification.id, 'activityId': notification.activity.id }) }}" >
+                    Confirmer
+                </a>
+                <a class="btn btn-xs btn-danger" href="{{ path('ksNotification_unvalidateActivity', { 'notificationId': notification.id, 'activityId': notification.activity.id }) }}" >
+                    Refuser
+                </a>
+            {% elseif notification.type.name == "mustBeValidatedEvent" %}
+                {#<a class="btn btn-xs btn-sportif" onclick="attachEditAndValidateActivityEvent({{ notification.activity.id }})" href="#">Editer</a>
+                <button class="btn btn-xs btn-sportif" rel="{{ path('ksActivity_showActivity', { 'activityId': notification.activity.id }) }}" >
+                    Voir l'activité en détail
+                </button>#}
+                <button class="linkAndEditEvent btn btn-xs btn-sportif" eventId="{{ notification.event.id }}" notificationId="{{ notification.id }}">
+                    Lier à une activité existante
+                </button>
+                <button class="createActivityAndLinkEvent btn btn-xs btn-sportif" eventId="{{ notification.event.id }}" notificationId="{{ notification.id }}" >
+                    Créer une activité
+                </button>
+                <a class="btn btn-xs btn-sportif" href="{{ path('ksNotification_unvalidateActivity', { 'notificationId': notification.id, 'activityId': notification.event.id }) }}" >
+                    Refuser
+                </a>
+            {% elseif notification.type.name == "userHasSportFrequency" %}
+                <a class="btn btn-xs btn-success" href="{{ path('ksNotification_validateActivity', { 'notificationId': notification.id, 'activityId': notification.activity.id }) }}" >
+                    Oui
+                </a>
+                <a class="btn btn-xs btn-danger" href="{{ path('ksNotification_unvalidateActivity', { 'notificationId': notification.id, 'activityId': notification.activity.id }) }}" >
+                    Non
+                </a>
+            {% elseif notification.type.name == "club" and notification.fromClub is defined and notification.fromClub is not null and notification.fromUser is not null and notification.fromUser is not null%}
+                <a class="btn btn-xs btn-success" href="{{ path('ksClubAdmin_acceptAnAskForMembershipInProgress', { 'clubId' : notification.fromClub.id, 'userId' : notification.fromUser.id}) }}">Accepter</a>
+                <a class="btn btn-xs btn-danger" href="{{ path('ksClubAdmin_refuseAnAskForMembershipInProgress', { 'clubId' : notification.fromClub.id, 'userId' : notification.fromUser.id}) }}">Refuser</a>
+            {% endif %}
+            {#<span class="notificationTypeBloc">
+                <img src="{{ asset('bundles/ksnotification/images/' ~ notification.type ~ '.png') }}" title="{{ notification.type }}" alt="{{ notification.type }}"/>
+
+                <!--% if not notification.isMerged }-->
+                    {{ 'activity.appendAgo'|trans({'%time%': notification.createdAt|created_ago['time'], '%unit%': ('time.' ~ notification.createdAt|created_ago['unit'])|trans }) }}
+                <!--#% endif %}-->
+            </span>
+            <br clear="all" style="line-height: 10px"/>#}
+        {#% if ( notification.type.name != "ask_friend_request" and notification.type.name != "mustBeValidated" ) or notification.needAnAnswer %}     
+            </a>
+        {% else %}
+            </div>
+        {% endif %#}
+            <small class="pull-right">
+                {{ 'activity.appendAgo'|trans({'%time%': notification.createdAt|created_ago['time'], '%unit%': ('time.' ~ notification.createdAt|created_ago['unit'])|trans }) }}
+                 <span class="glyphicon glyphicon-calendar"></span>
+            </small>
+        </div>
+</li>
+<li class="divider" style="margin: 0 0;"></li>     

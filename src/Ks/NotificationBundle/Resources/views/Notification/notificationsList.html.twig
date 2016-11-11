@@ -1,0 +1,154 @@
+{% extends "KsNotificationBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block notification_content %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("message"); //pour activer le css correspondant
+            
+            function makeClickable() {
+                //$('#external-events div.notifs').each(function() {
+                    {% for key, notification in notifications %}
+                        {% if notification.type == "coaching" and notification.activity is defined and notification.activity is not null %}
+                            $("#showMoreBtn_{{ notification.id }}").click(function() {
+                                if( !$("#showMoreBtn_{{ notification.id }}").hasClass("disabled") ) {
+                                    $("#showMoreBtn_{{ notification.id }}").addClass("disabled");
+                                    $.ajax({
+                                        url: Routing.generate('ksNotification_read'),
+                                        type: "POST",
+                                        data : {newNotifs : {{ notification.id }}},
+                                        success : function(response) {
+                                            if ( response.nb_update == 1 ) {
+                                                window.open(Routing.generate('ksActivity_showActivity', {"activityId" : {{ notification.activity.id}} }),'_blank');
+                                                {% if notification.isRead %}
+                                                    //On recharge la page uniquement si on lit pour la 1ère fois l'activité
+                                                {% else %}
+                                                    document.location.reload();
+                                                {% endif %}
+                                            }
+                                            $("#showMoreBtn_{{ notification.id }}").removeClass("disabled");
+                                        }
+                                    });
+                                }
+                            });
+                        {% endif %}
+                    {% endfor %}
+                //});
+            }
+            
+            $('#notificationsList').dataTable({
+                "bPaginate": true,
+                "bLengthChange": false,
+                "pageLength": 10,
+                "bFilter": true,
+                "bSort": true,
+                "bInfo": false,
+                "bAutoWidth": false,
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %},
+                "fnDrawCallback" : function() {makeClickable();}, //FMO : obligatoire car sinon il n'y a que les nofits de la 1ère page qui sont cliquables !
+            });
+        });
+    </script>
+    
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <!--bloc1-->
+        <div class="bloc1 small" id="bloc1">
+            <div class="container">
+                <h2 class="title">{{ 'notifications.notificationsList'|trans }}</h2>
+                <br/>
+                <table id="notificationsList" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>{{ 'notifications.type'|trans }}</th>
+                            <th>{{ 'notifications.text'|trans }}</th>
+                            <th>{{ 'notifications.created_at'|trans }}</th>
+                            <th>{{ 'notifications.from_user'|trans }}</th>
+                            {#<th>{{ 'notifications.like'|trans }}</th>#}
+                            {#<th>{{ 'notifications.comment'|trans }}</th>#}
+                            <th>{{ 'notifications.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, notification in notifications %}
+                        {% if notification.type != "ask_friend_request" %}            
+                            <tr>
+                                <td>
+                                    <center>
+                                        {% if notification.type == 'coaching' %}
+                                            <img src="{{ asset('V2/images/sports/chrono-black.png') }}" title="{{ notification.type }}" alt="{{ notification.type }}"/>
+                                        {% else %}
+                                            <img src="{{ asset('bundles/ksnotification/images/' ~ notification.type ~ '.png') }}" title="{{ notification.type }}" alt="{{ notification.type }}"/>
+                                        {% endif %}
+                                    </center>
+                                </td>
+                                <td>{{ notification.text|raw|nl2br }}</td>
+                                <td>{{ notification.createdAt|date('d/m/Y H:i:s') }}</td>
+                                <td>{{ notification.fromUser }}</td>
+                                {#<td class="{% if notification.isRead == 0 %}orange{% else %}{% endif %}" ></td>
+                                <td></td>#}
+                                <td>
+                                    <center>
+                                        <div class="notifs">
+                                            {% set href = "#" %}
+
+                                            {% if notification.type.name == "validation_activity" %}
+                                                {% set href = path('ks_activity_session_list_in_stand_by') %}
+                                            {% endif %}
+
+                                            {% if notification.type.name == "invitation_event" %}
+                                                {% set href = path('ks_invitation_event_in_stand_by') %}
+                                            {% endif %}
+
+                                            {% if notification.type.name == "trophy" %}
+                                                {% set href = path('ks_activity_trophiesList', {'userId' : app.user.id}) %}
+                                            {% endif %}
+
+                                            {% if notification.type.name == "league" %}
+                                                {% set href = path('ks_league_communityStandings', {'userId' : app.user.id} ) %}
+                                            {% endif %}
+
+                                            {% if notification.activity is defined and notification.activity is not null %}
+                                                {% set href = path('ksActivity_showActivity', {"activityId" : notification.activity.id }) %}
+                                            {% endif %}
+                                                
+                                            {% if notification.type.name == "message" %}
+                                                {% if notification.message is defined and notification.message is not null %}
+                                                    {% set href = path('ksMessage_show', {"id" : notification.message.id }) %}
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {% if notification.type.name == "club" and notification.fromClub is defined and notification.fromClub is not null and notification.fromUser is not null and notification.fromUser is not null %}
+                                                <a class="btn btn-clubs btn-xs btn-success" href="{{ path('ksClubAdmin_acceptAnAskForMembershipInProgress', { 'clubId' : notification.fromClub.id, 'userId' : notification.fromUser.id}) }}">Accepter</a>
+                                                <a class="btn btn-clubs btn-xs btn-danger" href="{{ path('ksClubAdmin_refuseAnAskForMembershipInProgress', { 'clubId' : notification.fromClub.id, 'userId' : notification.fromUser.id}) }}">Refuser</a>
+                                            {% endif %}    
+
+                                            {% if href != "#" %} 
+                                                {% if notification.type == 'coaching' %}
+                                                    {% if notification.isRead %}
+                                                        <a id="showMoreBtn_{{ notification.id }}" class="btn btn-xs btn-primary">Revoir</a>
+                                                    {% else %}
+                                                        <a id="showMoreBtn_{{ notification.id }}" class="btn btn-xs btn-success">Voir détails</a>
+                                                    {% endif %}
+                                                {% else %}
+                                                    <a class="btn btn-xs btn-primary" href="{{ href }}">Voir plus</a>
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    </center>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% if photos is defined and photos|length > 0 %}
+    <br clear="all"/>
+    <center class="photosAlbum">
+        {#<h3 class="bleu">Photos</h3>#}
+        {% for photo in photos %}
+            <div class="photoBloc">
+            {% set deprecatedUrl = asset('img/activities/' ~ activity.id ~ '/' ~ photo.id ~ photo.ext ) %}
+            {% set originalUrl = asset('img/activities/' ~ activity.id ~ '/original/' ~ photo.id ~ photo.ext ) %}
+            {% set thumbnailUrl = asset('img/activities/' ~ activity.id ~ '/thumbnail/' ~ photo.id ~ photo.ext ) %}
+            
+            {% if originalUrl|issetImg %}
+                <a class="imageLink" rel="photo_{{ activity.id }}" href="{{ originalUrl }}" title="">
+                    <span class="paper-clip-mini"></span>
+                    {% if thumbnailUrl|issetImg %}
+                        <img class="photoForGallery" src="{{ thumbnailUrl }}" alt="" >
+                    {% else %}
+                        <img class="photoForGallery" src="{{ originalUrl }}" alt="" >
+                    {% endif %}
+                </a>
+            {% else %}
+                {% if deprecatedUrl|issetImg %}
+                    <a class="imageLink" rel="photo_{{ activity.id }}" href="{{ deprecatedUrl }}" title="">
+                        <img class="photoForGallery" src="{{ deprecatedUrl }}" alt="" >
+                    </a>
+                {% else %}
+                {% endif %}
+            {% endif %}
+            </div>
+        {% endfor %}
+
+        {#<div id="gallery" data-toggle="modal-gallery" data-target="#modal-gallery" data-selector="div.gallery-item">
+        {% for photo in photos %}
+            {% set deprecatedUrl = asset('img/activities/' ~ activity.id ~ '/' ~ photo.id ~ photo.ext ) %}
+            {% set originalUrl = asset('img/activities/' ~ activity.id ~ '/original/' ~ photo.id ~ photo.ext ) %}
+            {% set thumbnailUrl = asset('img/activities/' ~ activity.id ~ '/thumbnail/' ~ photo.id ~ photo.ext ) %}
+            <a href="{{ originalUrl }}" title="" data-gallery="gallery"><img src="{{ thumbnailUrl }}" alt="" ></a>
+            <div class="gallery-item" data-href="{{ originalUrl }}" title="Banana">Banana</div>    
+            
+        {% endfor %}
+        </div>#}
+    </center>
+    <script>
+        $('a[rel=photo_{{ activity.id }}]').swipebox({
+            hideBarsDelay : 0 // 0 to always show caption and action bar
+        });
+    </script>
+{% endif %}
+
+
+
+    

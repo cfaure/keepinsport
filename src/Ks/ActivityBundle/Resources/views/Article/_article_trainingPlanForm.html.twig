@@ -1,0 +1,177 @@
+<div class="input-prepend">
+    <span class="add-on" style="margin-right:-5px;width:200px;">
+        Nombre de semaines
+    </span>
+    <input type="number" step="1" min="1" max="30" value="1" id="ks_activitybundle_trainingPlan_numberOfWeeks" class="input-mini" style="margin-bottom:0">
+</div>
+
+<div class="input-prepend">
+    <span class="add-on" style="margin-right:-5px;width:200px;">
+        Nombre de séances par semaines
+    </span>
+    <input type="number" step="1" min="1" max="30" value="1" id="ks_activitybundle_trainingPlan_numberOfSessionsPerWeek" class="input-mini" style="margin-bottom:0">
+</div>
+
+<a id="bGenerateTrainingPlan" class="btn btn-primary">Générer un nouveau tableau</a>
+
+<div id="trainingPlanTableBloc" style="margin-top:30px;"></div>
+
+<script type="text/javascript">
+    $("#bGenerateTrainingPlan").click(function() {
+        
+        var numberOfWeeks                          = $("#ks_activitybundle_trainingPlan_numberOfWeeks").val();
+        var numberOfSessionsPerWeek                = $("#ks_activitybundle_trainingPlan_numberOfSessionsPerWeek").val();
+        //var numberMinOfRestDaysBetweenTwoSessions  = $("#ks_activitybundle_trainingPlan_numberMinOfRestDaysBetweenTwoSessions").val();
+        //var numberMaxOfRestDaysBetweenTwoSessions  = $("#ks_activitybundle_trainingPlan_numberMaxOfRestDaysBetweenTwoSessions").val();
+
+        constructionTrainingPlanTable(numberOfWeeks, numberOfSessionsPerWeek)                              
+    });
+    
+    {# Récupération plan d'entrainement existant et construction du tableau #}
+    {% if articleTrainingPlan %}
+        var articleTrainingPlan = new Array();
+        {% for numWeek, week in articleTrainingPlan %}
+            articleTrainingPlan[{{ numWeek }}] = new Array();
+            {% for numSession, session in week %}
+                articleTrainingPlan[{{ numWeek }}][{{ numSession }}] = {
+                    "description" : "{{ session.description|raw }}",
+                    "duration"    : "{{ session.duration|raw }}"
+                };
+            {% endfor %}
+        {% endfor %}
+            
+        var numberOfWeeks               = $( articleTrainingPlan ).size();
+        var numberOfSessionsPerWeek     = $( articleTrainingPlan[0] ).size();
+        constructionTrainingPlanTable(numberOfWeeks, numberOfSessionsPerWeek, articleTrainingPlan);
+    {% endif %}
+            
+    $('#fTrainingPlanForm').unbind();
+    $('#fTrainingPlanForm').submit(function() {
+        return false;
+    });
+    
+    function constructionTrainingPlanTable(numberOfWeeks, numberOfSessionsPerWeek, trainingPlan) {
+        
+        var trainingPlanTableBloc   = $("#trainingPlanTableBloc");
+        var trainingPlanTable       = $("<table>", {id: "trainingPlanTable", width:"100%"}).addClass("table table-bordered");
+        var numWeek, numSession     = 0;
+        
+        trainingPlanTableBloc.html("");
+        
+        for(numWeek = 1; numWeek <= numberOfWeeks; numWeek++) {
+            thead = $("<thead>").css("color", "white");
+            weekHead = $("<tr>").addClass("nodrop nodrag").css("background-color", "#0074CC");
+            labelHead = $("<tr>", {id: numWeek+"_0"}).addClass("nodrop nodrag").css("background-color", "#49AFCD");
+            
+            //Construction en tete
+            thNumSemaine = $("<th>", {colspan : 3}).html("Semaine " + numWeek).css("text-align" , "center");
+            weekHead.append(thNumSemaine);
+            
+            thNumSession = $("<th>").html("Numéro Séance").css("text-align" , "center");
+            thDescSession = $("<th>", {width: "50%"}).html("Description Séance").css("text-align" , "center"); 
+            thDureeSession = $("<th>").html("Durée Séance").css("text-align" , "center");
+            labelHead.append(thNumSession).append(thDescSession).append(thDureeSession);
+            
+            thead.append(weekHead).append(labelHead);
+            
+            trainingPlanTable.append(thead);
+            
+            tbody = $("<tbody>");
+            
+            //Autre lignes
+            for(numSession = 1; numSession <= numberOfSessionsPerWeek; numSession++) {
+                row = $("<tr>", {id: numWeek+"."+numSession}).css("cursor", "move");
+                
+                tdNumSession = $("<td>").html("Séance " +numSession);
+                
+                //Valeur par default
+                descSession = "";
+                if( trainingPlan && trainingPlan[numWeek - 1][numSession - 1]["description"] ) {
+                    descSession = trainingPlan[numWeek - 1][numSession - 1]["description"];
+                }
+                
+                tdDescSession = $("<td>").append(
+                    $("<textarea>", { class: "description", width: "98%" })
+                        .css("resize", "none")
+                        .val(descSession)
+                ); 
+                inputTimePicker = $("<input>", { class: "duration" });
+                inputTimePicker.timepicker({
+                    ampm: false,
+                    hourMin: 0,
+                    hourMax: 10,
+                    timeOnlyTitle: "Durée de la séance",
+                    timeText: "Durée",
+                    showButtonPanel: true
+                });
+                $("#ui-datepicker-div").find(".ui-datepicker-current").hide();
+                
+                //Valeur par default
+                durationSession = "";
+                if( trainingPlan && trainingPlan[numWeek - 1][numSession - 1]["duration"] ) {
+                    durationSession = trainingPlan[numWeek - 1][numSession - 1]["duration"];
+                }
+                tdDureeSession = $("<td>").append(
+                   inputTimePicker.val(durationSession)
+                ); 
+                row.append(tdNumSession).append(tdDescSession).append(tdDureeSession);
+                
+                tbody.append(row);
+            }
+
+            trainingPlanTable.append(tbody);
+        }
+        
+        //On ajoute la barre de formatage de texte sur tout les textarea
+        /*$.each(trainingPlanTable.find("textarea"), function (key, textarea) {
+            $( textarea ).wysihtml5();
+        });*/
+        
+        //On transforme le tableau pour qu'il soit "draggable"
+        trainingPlanTable.tableDnD({
+            onDrop: function(table, row) {
+                /*$.each(trainingPlanTable.find("textarea"), function (key, textarea) {
+                    $( textarea ).wysihtml5("destroy");
+                });*/
+                //$( row ).find("textarea")
+                
+                //getTrainingPlanInfos(trainingPlanTable);
+            }
+        });
+        
+        trainingPlanTable.find("tbody").find("tr").hover(function() {
+            $(this.cells[0]).addClass('showDragHandle');
+        }, function() {
+            $(this.cells[0]).removeClass('showDragHandle');
+        });
+        
+        trainingPlanTableBloc.append(trainingPlanTable); 
+    }
+    
+    function getTrainingPlanInfos(trainingPlanTable) {
+        var articleTrainingPlan = {};
+        
+        weeks = trainingPlanTable.find("tbody");
+        $.each(weeks, function (numWeek, week) {
+            
+            var sessionsWeek = {};
+            
+            sessions = $( week ).find("tr");
+            $.each(sessions, function (numSession, session) {
+                description = $( session ).find('.description').val();
+                //if ( description.size < 1 ) description = "";
+                
+                duration = $( session ).find('.duration').val();
+                //if ( duration.size < 1 ) description = "";
+                sessionsWeek[numSession] = {
+                    "description" : description,
+                    "duration"    : duration
+                }
+            });
+            
+            articleTrainingPlan[numWeek] = sessionsWeek;
+        });
+        
+        return articleTrainingPlan;
+    }
+</script>

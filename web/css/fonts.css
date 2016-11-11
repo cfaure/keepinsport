@@ -1,0 +1,33 @@
+@import url('//fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic|Noticia+Text');
+
+
+@-moz-font-face{
+    font-family: 'Neuropob';
+    src: url(../font/neuropob.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@-webkit-font-face{
+    font-family: 'Neuropob';
+    src: url(../font/neuropob.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@-o-font-face{
+    font-family: 'Neuropob';
+    src: url(../font/neuropob.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@-ms-font-face{
+    font-family: 'Neuropob';
+    src: url(../font/neuropob.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face{
+    font-family: 'Neuropob';
+    src: url(../font/neuropob.ttf) format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}

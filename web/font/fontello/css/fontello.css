@@ -1,0 +1,96 @@
+@font-face {
+  font-family: 'fontello';
+  src: url('../font/fontello.eot?35393111');
+  src: url('../font/fontello.eot?35393111#iefix') format('embedded-opentype'),
+       url('../font/fontello.woff?35393111') format('woff'),
+       url('../font/fontello.ttf?35393111') format('truetype'),
+       url('../font/fontello.svg?35393111#fontello') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+/* Chrome hack: SVG is rendered more smooth in Windozze. 100% magic, uncomment if you need it. */
+/* Note, that will break hinting! In other OS-es font will be not as sharp as it could be */
+/*
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: 'fontello';
+    src: url('../font/fontello.svg?35393111#fontello') format('svg');
+  }
+}
+*/
+ 
+ [class^="fontello-icon-"]:before, [class*=" fontello-icon-"]:before {
+  font-family: "fontello";
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+ 
+  display: inline-block;
+  text-decoration: inherit;
+  width: 1em;
+  margin-right: .2em;
+  text-align: center;
+  /* opacity: .8; */
+ 
+  /* For safety - reset parent styles, that can break glyph codes*/
+  font-variant: normal;
+  text-transform: none;
+     
+  /* fix buttons height, for twitter bootstrap */
+  line-height: 1em;
+ 
+  /* Animation center compensation - margins should be symmetric */
+  /* remove if not needed */
+  margin-left: .2em;
+ 
+  /* you can be more comfortable with increased icons size */
+  /* font-size: 120%; */
+ 
+  /* Uncomment for 3D effect */
+  /* text-shadow: 1px 1px 1px rgba(127, 127, 127, 0.3); */
+}
+ 
+.fontello-icon-celcius:before { content: '\e82a'; } /* '' */
+.fontello-icon-sun:before { content: '\e818'; } /* '' */
+.fontello-icon-flash:before { content: '\e81c'; } /* '' */
+.fontello-icon-sun-filled:before { content: '\e819'; } /* '' */
+.fontello-icon-flash-outline:before { content: '\e81b'; } /* '' */
+.fontello-icon-headphones:before { content: '\e829'; } /* '' */
+.fontello-icon-stopwatch:before { content: '\e827'; } /* '' */
+.fontello-icon-temperatire:before { content: '\e82b'; } /* '' */
+.fontello-icon-wristwatch:before { content: '\e828'; } /* '' */
+.fontello-icon-waves-outline:before { content: '\e826'; } /* '' */
+.fontello-icon-waves:before { content: '\e825'; } /* '' */
+.fontello-icon-cloud:before { content: '\e81a'; } /* '' */
+.fontello-icon-rain:before { content: '\e824'; } /* '' */
+.fontello-icon-moon:before { content: '\e81d'; } /* '' */
+.fontello-icon-cloud-sun:before { content: '\e823'; } /* '' */
+.fontello-icon-drizzle:before { content: '\e822'; } /* '' */
+.fontello-icon-snow:before { content: '\e821'; } /* '' */
+.fontello-icon-cloud-flash:before { content: '\e820'; } /* '' */
+.fontello-icon-cloud-wind:before { content: '\e81f'; } /* '' */
+.fontello-icon-wind:before { content: '\e81e'; } /* '' */
+.fontello-icon-emo-happy:before { content: '\e813'; } /* '' */
+.fontello-icon-emo-wink:before { content: '\e812'; } /* '' */
+.fontello-icon-emo-unhappy:before { content: '\e810'; } /* '' */
+.fontello-icon-emo-sleep:before { content: '\e80f'; } /* '' */
+.fontello-icon-emo-thumbsup:before { content: '\e80e'; } /* '' */
+.fontello-icon-emo-devil:before { content: '\e80d'; } /* '' */
+.fontello-icon-emo-surprised:before { content: '\e80c'; } /* '' */
+.fontello-icon-emo-tongue:before { content: '\e80b'; } /* '' */
+.fontello-icon-emo-coffee:before { content: '\e80a'; } /* '' */
+.fontello-icon-emo-sunglasses:before { content: '\e809'; } /* '' */
+.fontello-icon-emo-displeased:before { content: '\e808'; } /* '' */
+.fontello-icon-bicycle:before { content: '\e815'; } /* '' */
+.fontello-icon-emo-beer:before { content: '\e807'; } /* '' */
+.fontello-icon-emo-grin:before { content: '\e806'; } /* '' */
+.fontello-icon-emo-angry:before { content: '\e805'; } /* '' */
+.fontello-icon-emo-saint:before { content: '\e804'; } /* '' */
+.fontello-icon-emo-cry:before { content: '\e803'; } /* '' */
+.fontello-icon-emo-shoot:before { content: '\e801'; } /* '' */
+.fontello-icon-emo-squint:before { content: '\e802'; } /* '' */
+.fontello-icon-emo-laugh:before { content: '\e800'; } /* '' */
+.fontello-icon-emo-wink2:before { content: '\e811'; } /* '' */
+.fontello-icon-pitch:before { content: '\e814'; } /* '' */
+.fontello-icon-school:before { content: '\e817'; } /* '' */
+.fontello-icon-skiing:before { content: '\e816'; } /* '' */

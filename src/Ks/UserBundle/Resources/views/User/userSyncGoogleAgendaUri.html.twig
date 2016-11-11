@@ -1,0 +1,14 @@
+{% block content %}
+    {#<h1>
+        {{ 'users.import_sync_google_agenda'|trans }}
+    </h1>
+    #}
+
+    {% set redirectUri = url('ksSetServiceGoogleAgenda') %}
+
+    <a id="link_google" class="btn btn-primary"
+        {% if googleUri is defined and googleUri is not null %} href="{{ googleUri }}" {% endif %} title="Connect to Google Agenda">
+        {{ 'ks.connect_your_google_account'|trans }} : {{ email }}
+    </a>
+    
+{% endblock %}

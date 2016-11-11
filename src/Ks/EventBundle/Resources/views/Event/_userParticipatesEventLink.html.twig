@@ -1,0 +1,29 @@
+    {% if participations|userParticipatesEvent(app.user.id) %}
+        <a class="btn btn-danger pull-right" rel="userNotParticipatesAnymoreEventTrigger-{{ event.id }}" href="{{ path('ksEvent_removeUserParticipation', {'eventId': event.id}) }}">{{ 'article.unsubscribe'|trans }} </a>
+    {% else %}
+        <a class="btn btn-success pull-right" rel="userParticipatesEventTrigger-{{ event.id }}" href="{{ path('ksEvent_userParticipation', {'eventId': event.id}) }}">{{ 'article.subscribe'| trans }}</a>
+    {% endif %}
+    
+    {% if participationsToAffich is not defined %}
+        {% set participationsToAffich = participations %}
+    {% endif %}
+    
+    </br></br>
+        
+    {% for user in participationsToAffich %}
+        <div class="pull-left">
+            {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                'user_id' : user.user_id, 
+                'user_username' : user.user_username, 
+                'user_imageName': user.user_imageName, 
+                'user_league_category' : user.ll_categoryLabel, 
+                'user_league_stars' : user.ll_starNumber
+            } %}
+        </div>
+    {% endfor %}
+        
+    
+<script type="text/javascript">
+    attachUserNotParticipatesAnymoreEvent_Event($('a[rel="userNotParticipatesAnymoreEventTrigger-{{ event.id }}"]'));
+    attachUserParticipatesEvent_Event($('a[rel="userParticipatesEventTrigger-{{ event.id }}"]'));
+</script>

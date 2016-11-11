@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="fr" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>event.list</source>
+                <target>Evénements</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>event.name</source>
+                <target>Nom</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>event.author</source>
+                <target>Auteur</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>event.content</source>
+                <target>Auteur</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>event.creationDate</source>
+                <target>Date de création</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>event.lastModificationDate</source>
+                <target>Date de dernière modification</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>event.add</source>
+                <target>Ajouter un événement</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>event.show</source>
+                <target>Voir</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>event.edit</source>
+                <target>Editer</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>event.delete</source>
+                <target>Supprimer</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>event.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>event.listEvents</source>
+                <target>Voici la liste des événements</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>event.listEventsClub</source>
+                <target>Liste des événements du club : </target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>event.event</source>
+                <target>Evénement : </target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>users.club_list_event</source>
+                <target>Lister les événements du club </target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>event.edit_event</source>
+                <target>Editer l'événement</target>
+            </trans-unit> 
+            <trans-unit id="17">
+                <source>event.event_competition</source>
+                <target>Compétition</target>
+            </trans-unit> 
+            <trans-unit id="18">
+                <source>event.event_training</source>
+                <target>Entrainement</target>
+            </trans-unit> 
+            <trans-unit id="19">
+                <source>event.event_meal</source>
+                <target>Repas</target>
+            </trans-unit> 
+        </body>
+    </file>
+</xliff>

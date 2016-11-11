@@ -1,0 +1,94 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+     <script type="text/javascript">
+        $(document).ready(function() {
+            {% if club.latitude is not null and club.longitude is not null %}
+            if( typeof( google.maps ) != 'undefined' ) {
+                var map             = new google.maps.Map(
+                    document.getElementById("gmapAdressClub"), {
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    center: new google.maps.LatLng( "{{ club.latitude }}", "{{ club.longitude }}" ),
+                    zoom : 8,
+                });
+
+                var locationMarker = new google.maps.Marker({
+                    map     : map,
+
+                    {#//icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/location.png') }}" ),
+                    position: new google.maps.LatLng( {{ club.longitude }}, {{ club.latitude }}  ),#}
+                    position: new google.maps.LatLng( "{{ club.latitude }}", "{{ club.longitude }}" ),
+                });
+            };
+            {% endif %}
+        });
+     </script>
+{% endblock %}
+
+{% block left_column %}
+    {#% render "KsClubBundle:Club:leftColumn" with { 'clubId' : club.id } %#}
+{% endblock %}     
+     
+{% block body %}
+    <h1 class="clubs">{{ club.name }} : Informations </h1>
+    <div class="blocHeaderSeparator"></div>
+    
+    <div class="row-fluid">
+        <div class="span3">
+            {% include 'KsClubBundle:Club:_clubImage_big.html.twig' with { 'club_id': club.id, 'club_avatar': club.avatar, 'club_name': club.name } %}
+        </div>
+        <div class="span9">
+            <h3 class="clubs">Contact</h3>
+            <div class="blocHeaderSeparator"></div>
+            <p>
+                    <ul>
+                    {% for key, user in club.presidents %}
+                        <li>
+                            <a href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                                {% if user.userDetail is defined and user.userDetail is not null %}
+                                    {{ user.userDetail.firstname ~ " " ~ user.userDetail.lastname }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    {% if club.telNumber is not null %}
+                    <p>☎ : {{ club.telNumber }}</p>
+                    {% endif %}
+                    
+                    {% if club.telNumber is not null %}
+                    <p>☎ : {{ club.mobileNumber }}</p>
+                    {% endif %}
+                </p>
+                <p><b>{{ "club.adresse.label"|trans }} :</b> {{ club.adressName }}</p>
+                <p><b>{{ "club.town.label"|trans }} :</b> {{ club.town }}</p>
+                <div id="gmapAdressClub" class="ksBloc thumbnail" style="height:200px;"></div>
+                
+                {% if club.email is not null %}
+                <p><b>{{ "club.email.label"|trans }} :</b> {{ club.email }}</p>
+                {% endif %}
+                
+                {% if club.urlSiteWeb is not null %}
+                <p><b>{{ "club.site.label"|trans }} :</b> <a href="{{ club.urlSiteWeb }}" target="_blank">{{ club.urlSiteWeb }}</a></p>
+                {% endif %}
+                
+                
+                <h3 class="clubs">Sports</h3>
+                <div class="blocHeaderSeparator"></div>
+                <ul>
+                {% for key, sport in club.sports %}
+                    <li><a href="#">{{ ("sports." ~ sport.codeSport)|trans }}</a></li>
+                {% endfor %}   
+                </ul>
+        </div>
+    </div>
+
+            
+{% endblock %}

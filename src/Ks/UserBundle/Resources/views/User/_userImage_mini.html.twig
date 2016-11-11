@@ -1,0 +1,18 @@
+{% if user_imageName is defined and user_imageName is not null %}
+
+    {% if user_id is defined and user_id is not null and asset('img/users/' ~ user_id ~ '/resize_48x48/' ~ user_imageName)|issetImg %}
+        <img class="userImage_mini" src="{{ asset('img/users/' ~ user_id ~ '/resize_48x48/' ~ user_imageName) }}" alt="Avatar Keepinsport" />
+        
+    {# ancien chemin #}
+    {% elseif asset('uploads/images/users/resize_48x48/' ~ user_imageName)|issetImg %}
+        <img class="userImage_mini" src="{{ asset('uploads/images/users/resize_48x48/' ~ user_imageName) }}" alt="Avatar Keepinsport" />
+        
+    {% else %}
+    <img class="userImage_mini" src="{{ asset('bundles/ksuser/images/no_avatar_ks_48x48.png') }}" alt="Pas d'avatar" />
+    {% endif %}
+{% else %}
+    <img class="userImage_mini" src="{{ asset('bundles/ksuser/images/no_avatar_ks_48x48.png') }}" alt="Pas d'avatar" />
+{% endif %}
+            
+
+

@@ -1,0 +1,63 @@
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th><input class="selectAllCb" type="checkbox"/></th>
+            <th>Avatar</th>
+            <th>Nom</th>
+            <th>Provenance</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contact in fbFriendsAndGoogleContacts %}
+        <tr 
+            {% if contact.isFacebookFriend %}
+                fbId="{{ contact.fbId }}"
+            {% endif %} 
+            {% if contact.isGoogleContact %}
+                email="{{ contact.email }}"
+            {% endif %} 
+            {% if contact.ksSubscribed %}
+                ksId="{{ contact.ksId }}"
+            {% endif %}
+            > 
+            <td>
+                {% if not contact.ksFriendWithMe and not contact.ksAwaitingRFResponse %} 
+                    <input type="checkbox"/>
+                {% endif %}
+            </td>
+            <td>
+                {% if contact.picture is not null %} 
+                    <img style="width:32px;height:32px;" src="{{ contact.picture }}" title="Avatar de {{ contact.name }}" alt="Avatar de {{ contact.name }}"/>
+                {% else %}
+                    <img style="width:32px;height:32px;" src="{{ asset('bundles/ksuser/images/no_avatar.png') }}" title="Avatar de {{ contact.name }}" alt="Avatar de {{ contact.name }}"/>
+                {% endif %}
+            </td>
+            <td>{{ contact.name }}</td>
+            <td>
+                {% if contact.isFacebookFriend %}
+                    <img rel="tooltip" title="Ami Facebook" src="{{ asset('bundles/ksuser/images/facebook_round_32.png') }}" alt="Ami Facebook"/>
+                {% endif %}
+                {% if contact.isGoogleContact %}
+                    <img rel="tooltip" title="Contact Google" src="{{ asset('bundles/ksuser/images/gmail_round_32.png') }}" alt="Contact Google"/>
+                {% endif %} 
+                {% if contact.ksSubscribed %}
+                    <img rel="tooltip" title="Inscrit sur Keepinsport" src="{{ asset('img/keepinsport_logo_32.png') }}" alt="Inscrit sur Keepinsport"/>
+                {% endif %}
+            </td>
+            <td width="40">
+                {% if contact.ksSubscribed %}
+                    <span class="btn btn-friends plusButton {% if contact.ksFriendWithMe or contact.ksAwaitingRFResponse %}disabled{% endif %}" type="button" >
+                        <i class="glyphicon glyphicon-plus icon-white"></i> 
+                    </span>
+                
+                {% elseif contact.isFacebookFriend or contact.isGoogleContact %}
+                    <span class="btn btn-friends plusButton {% if contact.ksFriendWithMe or contact.ksAwaitingRFResponse %}disabled{% endif %}" type="button" >
+                        <i class="icon-envelope icon-white"></i> 
+                    </span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

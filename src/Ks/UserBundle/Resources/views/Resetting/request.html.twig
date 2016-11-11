@@ -1,0 +1,21 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("home"); //pour activer le css correspondant
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper">
+        {% include "FOSUserBundle:Resetting:request_content.html.twig" %}
+    </div>
+{% endblock body %}

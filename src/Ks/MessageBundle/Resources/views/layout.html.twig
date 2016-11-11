@@ -1,0 +1,35 @@
+{% extends is_granted("ROLE_USER")
+    ? "::layout_V2.html.twig"
+    : "::noauth.html.twig"
+%}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksmessage/js/scripts.js') }}"></script>
+{% endblock %}
+    
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {#{% if app.session is defined and app.session is not null and app.session.getFlashes()|length > 0 %}
+        {% for key, message in app.session.getFlashes() %}
+            <div class="container">
+                <center>
+                    <div class="{{ key }}">
+                        {{ message|trans }}
+                    </div>
+                </center>
+            </div>
+        {% endfor %}
+    {% endif %}#}
+
+    {% block content %}
+    {% endblock %}
+    
+{% endblock %}

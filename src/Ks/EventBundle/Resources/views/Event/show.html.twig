@@ -1,0 +1,20 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/ksevent/js/scripts.js') }}"></script>
+{% endblock %}
+    
+{% block content %}
+
+<h1 class="wikisport">{{ event.title }}</h1>
+<div class="blocHeaderSeparator"></div>
+
+{% include 'KsEventBundle:Event:_eventInfos.html.twig' with {'event': event, "participations" : participations } %}
+
+
+{% endblock %}

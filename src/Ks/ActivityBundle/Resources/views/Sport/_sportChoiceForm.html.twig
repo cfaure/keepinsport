@@ -1,0 +1,40 @@
+{% set activityId = app.request.attributes.get('activityId') %}
+{% set isDone = app.request.attributes.get('isDone') %}
+{% if activityId == "new" or activityId == "forceNew" %}
+<div>
+    <form class="sportChoiceForm" method="post" {#{ form_enctype(form) }#}>
+        <h1 class="title {% if app.user.isAllowedPackElite %}elite{% elseif app.user.isAllowedPackPremium %}premium{% else %}defis{% endif %}">
+            {% if isDone is defined and isDone == 1 %} {{ 'menu.publish-activity'|trans }} {% else %} {{ 'menu.publish-no-activity'|trans }} {% endif %}
+        </h1>
+        <div class="bloc1-nav">
+            <!--Navleft-->
+            <div id="selectSport">
+                {{ form_widget(form.sport) }}
+            </div>
+            <!--NavRight-->
+            <div class="navbar-right">
+                <button id="syncButton" type="button" class="btn btn-success"><span class="glyphicon glyphicon-refresh"></span> {{ 'menu.sync-activity'|trans }}</button>
+            </div>
+        </div>
+
+        {% if event.id is defined and event.id is not null %}
+            <input type="hidden" value="{{ event.id }}" name="eventId" id="eventId"/>
+        {% endif %}     
+
+    {# Affiche tous les champs restants du formulaire, #}
+    {# ainsi que les champs cachés (token crsf inclus) et la balise de fin de form #}
+    {#{ form_rest(form) }#}
+     
+    </form>
+</div>
+{% else %}
+    <h1 class="title {% if app.user.isAllowedPackElite %}elite{% elseif app.user.isAllowedPackPremium %}premium{% else %}defis{% endif %}">{{ 'menu.update-activity'|trans }} {{ ("sports."~activity.sport.codeSport)|trans }}</h1>
+    <div class="bloc1-nav">
+        {% if activity is defined and activity is not null %}
+            {#<img class="pull-left" src='{{ asset('V2/images/sports/' ~ activity.sport.codeSport ~ '.png') }}'/>#}
+            <div id="selectSport">
+                {{ form_widget(form.sport) }}
+            </div>
+        {% endif %}
+    </div>
+{% endif %} 

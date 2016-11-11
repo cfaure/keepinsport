@@ -1,0 +1,25 @@
+{% for key, photo in photos %}
+
+    {% set deprecatedUrl = asset('img/wiki/' ~ articleId ~ '/' ~ photo.path ) %}
+    {% set originalUrl = asset('img/wiki/' ~ articleId ~ '/original/' ~ photo.path ) %}
+    {% set thumbnailUrl = asset('img/wiki/' ~ articleId ~ '/thumbnail/' ~ photo.path ) %}
+
+    {% if originalUrl|issetImg %}
+        <a rel="photo_{{ articleId }}" href="{{ originalUrl }}" title="{{ photo.description }}">
+            {% if thumbnailUrl|issetImg %}
+                <img class="photoForGallery" src="{{ thumbnailUrl }}" alt="{{ photo.title }}" >
+            {% else %}
+                <img class="photoForGallery" src="{{ originalUrl }}" alt="{{ photo.title }}" >
+            {% endif %}
+        </a>
+    {% else %}
+        {% if deprecatedUrl|issetImg %}
+            <a rel="photo_{{ articleId }}" href="{{ deprecatedUrl }}" title="{{ photo.description }}">
+                <img class="photoForGallery" src="{{ deprecatedUrl }}" alt="{{ photo.title }}" >
+            </a>
+        {% endif %}
+    {% endif %}
+{% endfor %}
+<script>
+    $('a[rel=photo_{{ articleId }}]').swipebox();
+</script>

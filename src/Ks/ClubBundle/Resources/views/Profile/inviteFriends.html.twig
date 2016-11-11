@@ -1,0 +1,68 @@
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "KsClubBundle::layout_full.html.twig" %}
+{% else %}
+    {% set extends = "KsClubBundle::layout_3_9.html.twig" %}    
+{% endif %}
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        <ul class="breadcrumb">
+            <li><a href="{{ path('ksProfileClub_informations', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">1. Informations</a> <span class="divider">></span></li>
+            <li><a href="{{ path('ksProfileClub_adresses', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">2. Adresse</a> <span class="divider">></span></li>
+            <li><a href="{{ path('ksProfileClub_avatars', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">3. Avatar</a> <span class="divider">></span></li>
+            <li><a href="{{ path('ksProfileClub_sports', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">4. Sports</a> <span class="divider">></span></li>
+            <li><a href="{{ path('ksProfileClub_inviteFriends', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">5. Inviter mes amis</a></li>
+        </ul>
+        {% set submitButtonText = "Etape suivante" %}
+    {% else %}
+        <h1 class="clubs">Edition : {% if clubInfos.name is not null %}{{ clubInfos.name }}{% endif %}</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ksClub_public_profile', {'clubId' : clubInfos.id}) }}">
+                    <span class="avatarBloc">
+                        {% include 'KsClubBundle:Club:_clubImage.html.twig' with { 'club_id': clubInfos.id, 'club_avatar': clubInfos.avatar, 'club_name': clubInfos.name } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_informations', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Informations</a>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_adresses', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Adresse</a>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_avatars', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Avatar</a>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_sports', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Sports</a>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_inviteFriends', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Inviter mes amis</a>
+                <a class="btn btn-clubs" href="{{ path('ksClubAdmin_delete', {'id' : clubInfos.id }) }}">
+                    <i class="icon-remove icon-white"></i> Supprimer
+                </a>
+            </div>
+        </div>
+        <br/>
+        {% set submitButtonText = "Enregistrer" %}
+    {% endif %}
+        
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="clubs">Inviter mes amis</h3>
+        <div class="blocHeaderSeparator"></div>
+        
+        <form class="form-horizontal" action="{{ path('ksProfileClub_inviteFriends', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}" method="post" {#{ form_enctype(form) }#}>
+            {% include 'KsClubBundle:Profile:_inviteFriends.html.twig' with { 'clubInfos' : clubInfos, 'friends' : friends } %} 
+                
+            {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+            <br clear="all"/>
+            <input type="submit" class=" btn btn-clubs pull-right" value="{{ submitButtonText }}"/>
+            <br clear="all"/>
+            {% endif %}
+        </form> 
+    </div>
+{% endblock %}

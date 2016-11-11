@@ -1,0 +1,8 @@
+{% for key, tagId in articleTagsId %}
+    {% set findTag = tags|get_tag(tagId) %}
+    {% if findTag.find %}
+        {#<a href="{{ path('ksArticle_searchArticleByTag', {"tagId" : findTag.tag.id }) }}">{{ findTag.tag.label }}</a>#}
+        {{ findTag.tag.label }}
+        {% if key != articleTagsId|length - 1 %},{% endif %}
+    {% endif %}
+{% endfor %}

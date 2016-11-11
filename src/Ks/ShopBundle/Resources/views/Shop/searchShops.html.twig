@@ -1,0 +1,229 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <style>
+        thead, table caption {
+            text-align: center;
+            font-variant: small-caps;
+            font-weight: bold;
+            color:white;
+        }
+        
+        table.listeShopsTable {
+            border:3px solid #000000;
+        }
+        table.listeShopsTable thead {
+            background-color: #000000;
+            color: white;
+            text-align: center;
+        }
+        table.listeShopsTable caption, .goldStars {
+            color: #000000;
+        }
+    </style>
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksshop/js/editShop.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+             $('#all_shops_table').dataTable( {
+                 "sPaginationType": "bootstrap",
+                 "bLengthChange": true,
+                 "bFilter": true,
+                 "bSort": true,
+                 "aaSorting": [[5,'desc']],
+                 "aoColumns": [ 
+                    { "bSortable": true },
+                    { "bSortable": true },
+                    { "bSortable": true },
+                    { "bSortable": true },
+                    { "bSortable": true },
+                    { "iDataSort": 5},
+                    { "sType" : "numeric", "bVisible" : false},
+                    { "bSortable": true }
+                ],
+                 "bInfo": false,
+                 "bAutoWidth": true,
+                 "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            } ); 
+        
+            $("#newButton").click(function() {
+                editShop();
+            });
+        });
+    </script>
+    
+    <script>
+        function attachVoteOnShopEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.voteLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        function attachRemoveVoteOnShopEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.voteLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        
+        function attachDeleteShopEvent(shopId) {
+            var callback = function() {
+                $.get(
+                    Routing.generate('ksShop_delete', {'shopId' : shopId}),
+                    function(data) {
+                        if (data.responseDelete == -1) modalInfo(data.errorMessage);
+                        else {
+                            showInformation("Ton magasin a bien été supprimé !<br> Redirection en cours...", "shops");
+                            document.location.href = Routing.generate('ksSearch_shops', {})
+                        }
+                    }
+                )
+            };
+
+            var message = "Tu es sur le point de supprimer ce magasin (action irréversible)<br/>Es-tu sûr de vouloir continuer ?";
+
+            askConfirmation(message, 'sportif', callback, null);
+            return false;
+        }
+        
+        function attachEditShopEvent(shopId) {
+            editShop(shopId);
+        }
+        
+    </script>
+    
+    
+{% endblock %}
+
+{% block body %}
+    {% render 'KsShopBundle:Shop:new_modal' %}
+    
+    <h1 class="shop">{{'shops.search-shops'|trans}}</h1>
+    <div class="blocHeaderSeparator"></div>
+    <br clear="all"/>
+    
+    <div class="alert alert-info">{{'shops.message-1'|trans}} </div>
+    <div class="alert alert-info">{{'shops.message-2'|trans}} </div>
+    
+    <div class="shops">
+        <table id = "all_shops_table" class="table table-bordered listeShopsTable">
+            <thead>
+                <tr>
+                    <td>{{'shops.name'|trans}}</td>
+                    <td>{{'shops.address'|trans}}</td>
+                    <td>{{'shops.town'|trans}}</td>
+                    <td>{{'shops.details'|trans}}</td>
+                    <!--td>{{'shops.sports'|trans}}</td-->
+                    <td>{{'shops.status'|trans}}</td>
+                    <td>{{'shops.votes'|trans}}</td>
+                    <td></td>
+                    <td>{{'shops.actions'|trans}}</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shop in shops %}
+                    {% if shop.status %}
+                        <tr style="font-weight:bold" class ="{{ shop.id }}">
+                    {% else %}
+                        <tr class ="{{ shop.id }}">
+                    {% endif %} 
+                        <td> {{ shop.name }} </td>
+                        <td> {{ shop.address }} </td>
+                        <td> {{ shop.town }} </td>
+                        <td> 
+                            {% if shop.url_site_web %} <a href="{{ shop.url_site_web }}">{{ shop.url_site_web }}</a> </br>
+                            {% endif %}
+                            {% if shop.email %} {{ shop.email }} </br>
+                            {% endif %}
+                            {% if shop.tel_number %} {{ shop.tel_number }}
+                            {% endif %}
+                        </td>
+                        {#<td> 
+                            {% if shop.sports|length > 0 %}
+                                <ul>
+                                    {% for sport in club.sports %}
+                                            <li> {{ sport.label }} </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>#}
+                        <td>
+                            {% if shop.status %}
+                                {{'shops.reference-KS'|trans}}
+                            {% else %}
+                                {{'shops.waiting-for-approval'|trans}}
+                            {% endif %}    
+                        </td>    
+                        <td style="text-align:center">
+                            {% if shop.status %}
+                                <a class="btn btn-mini btn-shops" rel="tooltip" title="Voir" target="_blank" href="{{ shop.url_site_web }}">
+                                    <i class="icon-search icon-white"></i> 
+                                </a> 
+                            {% else %}
+                                {% include 'KsShopBundle:Shop:_voteLink.html.twig' %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ shop.numVotes }}
+                        </td>
+                        <td style="text-align:center">
+                            {% if shop.user_id == userId%}
+                                <a class="btn btn-mini btn-shops" rel="tooltip" title="Editer" onclick="attachEditShopEvent({{ shop.id }});">
+                                    <i class="glyphicon glyphicon-pencil icon-white"></i>
+                                </a>
+                                {% if shop.numVotes == 0 %}
+                                    <a class="btn btn-mini btn-shops" rel="tooltip" title="Supprimer" onclick="attachDeleteShopEvent({{ shop.id }});">
+                                        <i class="icon-trash icon-white"></i>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </td>   
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br clear="all"/>    
+    
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        <span id="newButton" class="btn btn-shops pull-right" rel="tooltip" title="{{ 'shops.proposal'|trans }}" >
+            <i class="glyphicon glyphicon-plus"></i> {{ 'shops.new-shop'|trans }}
+        </span>
+        <br clear="all"/>
+    {% endif %}
+
+ {% endblock %}

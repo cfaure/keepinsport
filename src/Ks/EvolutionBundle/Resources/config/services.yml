@@ -1,0 +1,7 @@
+parameters:
+#    evolution.example.class: Ks\EvolutionBundle\Example
+
+services:
+#    evolution.example:
+#        class: %evolution.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

@@ -1,0 +1,1189 @@
+{% extends "::layout_V2.html.twig" %}
+
+{% block title %}
+	{{ parent() }} - Services
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://apis.google.com/js/client.js"></script>
+    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/services.js') }}"></script>
+    <script type="text/javascript">
+        //Nike plus actions 
+        $('#bStravaSync').click(function(){
+            if (!$('#bStravaSync').hasClass('disabled')) {
+                $('#bStravaSync').addClass('disabled');
+                $syncStatusBloc = $( "#bStravaSync" ).parent().parent().find( ".syncStatus" );
+                $.post( Routing.generate('ksActivity_createStravaJob' ), {}, function( response ) {
+                    if ( response.syncResponse == 1 ) {
+                        $syncStatusBloc.html( response.successMessage );
+                    } else {
+                    $( "#bStravaSync" ).removeClass( "disabled" );
+                        $syncStatusBloc.html( response.errorMessage );
+                    }
+                })
+            }
+        });
+        
+        //Nike plus actions 
+        $('#bNikePlusSync').click(function(){
+        if (!$('#bNikePlusSync').hasClass('disabled')) {
+            $('#bNikePlusSync').addClass('disabled');
+            $syncStatusBloc = $( "#bNikePlusSync" ).parent().parent().find( ".syncStatus" );
+            $.post( Routing.generate('ksActivity_createNikePlusJob' ), {}, function( response ) {
+                    if ( response.syncResponse == 1 ) {
+                        $syncStatusBloc.html( response.successMessage );
+                    } else {
+                    $( "#bNikePlusSync" ).removeClass( "disabled" );
+                        $syncStatusBloc.html( response.errorMessage );
+                    }
+            })
+        }
+        });
+
+        $('#bRunkeeperSync').click(function(){
+            if( ! $( "#bRunkeeperSync" ).hasClass( "disabled" ) ) {
+                $( "#bRunkeeperSync" ).addClass( "disabled" );
+                $syncStatusBloc = $( "#bRunkeeperSync" ).parent().parent().find( ".syncStatus" );
+                $.post( Routing.generate('ksyncRunkeeper_createJob' ), {}, function( response ) {
+                    if ( response.syncResponse == 1 ) {
+                        $syncStatusBloc.html( response.successMessage );
+                    } else {
+                        $( "#bRunkeeperSync" ).removeClass( "disabled" );
+                        $syncStatusBloc.html( response.errorMessage );
+                    }
+                });
+            }
+        });
+
+        $('#bEndomondoSync').click(function(){
+            if (!$('#bEndomondoSync').hasClass('disabled')) {
+                $('#bEndomondoSync').addClass('disabled');
+                $syncStatusBloc = $('#bEndomondoSync').parent().parent().find('.syncStatus');
+                $.post(
+                        Routing.generate('ksyncEndomondo_createJob'),
+                        {},
+                        function(response) {
+                            if (response.syncResponse == 1) {
+                                $syncStatusBloc.html(response.successMessage);
+                            } else {
+                                $('#bEndomondoSync').removeClass('disabled');
+                                $syncStatusBloc.html(response.errorMessage);
+                            }
+                        }
+                );
+            }
+        });
+
+        $('#bGarminSync').click(function(){
+            if (!$('#bGarminSync').hasClass('disabled')) {
+                $('#bGarminSync').addClass('disabled');
+                $syncStatusBloc = $('#bGarminSync').parent().parent().find('.syncStatus');
+                $.post(
+                        Routing.generate('ksyncGarmin_createJob'),
+                        {},
+                        function(response) {
+                            if (response.syncResponse == 1) {
+                                $syncStatusBloc.html(response.successMessage);
+                            } else {
+                                $('#bGarminSync').removeClass('disabled');
+                                $syncStatusBloc.html(response.errorMessage);
+                            }
+                        }
+                );
+            }
+        });
+       
+        $('#bPolarSync').click(function(){
+            if (!$('#bPolarSync').hasClass('disabled')) {
+                $('#bPolarSync').addClass('disabled');
+                $syncStatusBloc = $('#bPolarSync').parent().parent().find('.syncStatus');
+                $.post(
+                        Routing.generate('ksyncPolar_createJob'),
+                        {},
+                        function(response) {
+                            if (response.syncResponse == 1) {
+                                $syncStatusBloc.html(response.successMessage);
+                            } else {
+                                $('#bPolarSync').removeClass('disabled');
+                                $syncStatusBloc.html(response.errorMessage);
+                            }
+                        }
+                );
+            }
+        });
+
+        function attachConfigureNikePlusEvent(elt)
+        {
+            var configureNikeAccountModal = $("#configureNikeAccountModal");
+            var formRegisterNike    = configureNikeAccountModal.find('.formRegisterNike');
+            var mailNike            = configureNikeAccountModal.find('.mailNike');
+            var mdpNike             = configureNikeAccountModal.find('.mdpNike');
+            var messagesBloc        = configureNikeAccountModal.find('.messages');
+            var loader              = configureNikeAccountModal.find('.loader');
+            var configureButton     = configureNikeAccountModal.find('a.configure');
+            var cancelButton        = configureNikeAccountModal.find('a.cancel');
+            var initialMailValue    = mailNike.val();
+            var initialMdpValue     = mdpNike.val();
+
+            loader.hide();
+            messagesBloc.hide();
+            formRegisterNike.show();        
+            elt.click(function(e) {
+                //On désactive le boutton
+                //configureButton.addClass("disabled");
+                cancelButton.html("Annuler");
+                //descriptionTextarea.show();
+                configureButton.show();
+
+                configureButton.removeClass("disabled");
+
+                var authenticate = function() {
+                    loader.css('visibility', 'visible');
+                    loader.show();
+                    configureButton.addClass('disabled');
+                    $.post(Routing.generate('ksActivity_configureNikePlusAccount'), {
+                            "mailNike"   : mailNike.val(),
+                            "mdpMail"    : mdpNike.val()
+                        },
+                        function(response) {
+                        if (response.configureResponse == 1) {
+                            window.location.href = Routing.generate('ksActivity_activitiesList', {});
+                            /*loader.hide();
+                            formRegisterNike.hide();
+                            messagesBloc.html("Ton compte est bien configuré !");
+                            messagesBloc.show();
+                            configureButton.hide();
+                            cancelButton.html("Fermer");*/
+            
+                        } else {
+                            messagesBloc.html(response.errorMessage);
+                            messagesBloc.show();
+                            loader.hide();
+                            configureButton.removeClass('disabled');
+                        }
+                    }).fail(function(jqXHR, textStatus) {
+                        console.log("error " + textStatus);
+                    });
+                };
+
+                var pressedEnter = false;
+
+                configureButton.unbind();
+                configureButton.click(authenticate);
+
+                configureNikeAccountModal.on('shown', function() {
+                    loader.hide();
+                    mailNike.focus();
+                });
+
+                configureNikeAccountModal.on('hide', function() {
+                    //configureNikeAccountModal.modal('hide');
+                    mailNike.val(initialMailValue);
+                    mdpNike.val(initialMdpValue);
+                    messagesBloc.hide();
+                    formRegisterNike.show();
+                });
+
+                configureNikeAccountModal.modal('show');
+                configureNikeAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+                return false;
+            });
+        }
+
+        function attachConfigureEndomondoEvent(elt)
+        {
+            var configureEndomondoAccountModal  = $("#configureEndomondoAccountModal");
+            var formRegisterEndomondo           = configureEndomondoAccountModal.find('.formEndomondo');
+            var messagesBloc                    = configureEndomondoAccountModal.find('.messages');
+            var loader                          = configureEndomondoAccountModal.find('.loader');
+            var configureButton                 = configureEndomondoAccountModal.find('a.configure');
+            var cancelButton                    = configureEndomondoAccountModal.find('a.cancel');
+
+            loader.hide();
+            messagesBloc.hide();
+            formRegisterEndomondo.show(); 
+
+            elt.unbind();
+            elt.click(function(e) {
+
+                //if ($("#service_Endomondo").is(':checked')){
+                    $("#bSyncEndomondoAccountModal").removeAttr('disabled'); 
+
+                    var authenticate = function() {
+                        // NOTE CF: pourquoi faire simple...
+                        loader.css('visibility', 'visible');
+                        loader.show();
+                        configureButton.addClass('disabled');
+                        
+                        $.post(
+                            Routing.generate('ksActivity_configureEndomondoAccount'),
+                            {
+                                'mailEndomondo' : $('#mailEndomondo').val(),
+                                'mdpEndomondo'  : $('#mdpEndomondo').val()
+                            },
+                            function(response) {
+                                if (response.configureResponse == 1) {
+                                    window.location.href = Routing.generate('ksActivity_activitiesList', {});
+                                    /*formRegisterEndomondo.hide();
+                                    messagesBloc.html('Le compte est bien configuré.');
+                                    messagesBloc.show();
+                                    configureButton.hide();
+                                    cancelButton.html("Fermer");*/
+                                } else {
+                                    messagesBloc.html(response.errorMessage);
+                                    messagesBloc.show();
+                                    loader.hide();
+                                    configureButton.removeClass('disabled');
+                                }
+                            }
+                        ).fail(function(jqXHR, textStatus) {
+                            console.log('error ' + textStatus);
+                        });
+                    };
+
+                    var pressedEnter = false;
+
+                    configureButton.unbind();
+                    configureButton.click(authenticate);
+
+                    cancelButton.html("Annuler");
+                    configureButton.show();
+                    configureButton.removeClass("disabled");
+                    configureEndomondoAccountModal.on('shown', function() {
+                        loader.hide();
+
+                    });
+
+                    configureEndomondoAccountModal.on('hide', function() {
+                        //configureEndomondoAccountModal.modal('hide');
+                        messagesBloc.hide();
+                        location.reload();
+                    });
+
+                    configureEndomondoAccountModal.modal('show');
+                    configureEndomondoAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                        e.stopPropagation();
+                    });
+                    return false;
+                /*}else{
+                    $("#bSyncEndomondoAccountModal").attr('disabled','disabled');
+                    //ajax pour enlever le jeton en base pour récupérer un autre jeton
+                    $.post(
+                        Routing.generate('ksRevokeServiceToken'),
+                        {
+                            'idService' : $('#id_service_Endomondo').val()
+                        },
+                        function(response) {
+                            if (response.removeToken != 1) {
+                                messagesBloc.html(response.errorMessage);
+                                messagesBloc.show();
+                            }
+                        }
+                    ).fail(function(jqXHR, textStatus) {
+                        showInformation("Impossible de supprimer le jeton Endomondo");
+                    });
+                }*/
+            });
+        }
+
+        function attachConfigureGarminEvent(elt)
+        {
+            var configureGarminAccountModal  = $("#configureGarminAccountModal");
+            var formRegisterGarmin           = configureGarminAccountModal.find('.formGarmin');
+            var messagesBloc                 = configureGarminAccountModal.find('.messages');
+            var loader                       = configureGarminAccountModal.find('.loader');
+            var configureButton              = configureGarminAccountModal.find('a.configure');
+            var cancelButton                 = configureGarminAccountModal.find('a.cancel');
+
+            loader.hide();
+            messagesBloc.hide();
+            formRegisterGarmin.show();
+
+            elt.unbind();
+            elt.click(function(e) {
+
+                //if ($("#service_Garmin").is(':checked')){
+                $("#bSyncGarminAccountModal").removeAttr('disabled');
+
+                var authenticate = function() {
+                    // NOTE CF: pourquoi faire simple...
+                    loader.css('visibility', 'visible');
+                    loader.show();
+                    configureButton.addClass('disabled');
+
+                    $.post(
+                            Routing.generate('ksActivity_configureGarminAccount'),
+                            {
+                                'mailGarmin' : $('#mailGarmin').val(),
+                                'mdpGarmin'  : $('#mdpGarmin').val()
+                            },
+                            function(response) {
+                                if (response.configureResponse == 1) {
+                                    //window.location.href = Routing.generate('ksActivity_activitiesList', {});
+                                    window.location.href = Routing.generate('ksSport_activitySessionForm', {'activityId' : 'new'});
+                                    /*formRegisterGarmin.hide();
+                                     messagesBloc.html('Le compte est bien configuré.');
+                                     messagesBloc.show();
+                                     configureButton.hide();
+                                     cancelButton.html("Fermer");*/
+                                } else {
+                                    messagesBloc.html(response.errorMessage);
+                                    messagesBloc.show();
+                                    loader.hide();
+                                    configureButton.removeClass('disabled');
+                                }
+                            }
+                    ).fail(function(jqXHR, textStatus) {
+                                console.log('error ' + textStatus);
+                            });
+                };
+
+                var pressedEnter = false;
+
+                configureButton.unbind();
+                configureButton.click(authenticate);
+
+                cancelButton.html("Annuler");
+                configureButton.show();
+                configureButton.removeClass("disabled");
+                configureGarminAccountModal.on('shown', function() {
+                    loader.hide();
+
+                });
+
+                configureGarminAccountModal.on('hide', function() {
+                    //configureGarminAccountModal.modal('hide');
+                    messagesBloc.hide();
+                    location.reload();
+                });
+
+                configureGarminAccountModal.modal('show');
+                configureGarminAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+                return false;
+                /*}else{
+                 $("#bSyncGarminAccountModal").attr('disabled','disabled');
+                 //ajax pour enlever le jeton en base pour récupérer un autre jeton
+                 $.post(
+                 Routing.generate('ksRevokeServiceToken'),
+                 {
+                 'idService' : $('#id_service_Garmin').val()
+                 },
+                 function(response) {
+                 if (response.removeToken != 1) {
+                 messagesBloc.html(response.errorMessage);
+                 messagesBloc.show();
+                 }
+                 }
+                 ).fail(function(jqXHR, textStatus) {
+                 showInformation("Impossible de supprimer le jeton Garmin");
+                 });
+                 }*/
+            });
+        }
+        
+        function attachConfigurePolarEvent(elt)
+        {
+            var configurePolarAccountModal  = $("#configurePolarAccountModal");
+            var formRegisterPolar           = configurePolarAccountModal.find('.formPolar');
+            var messagesBloc                 = configurePolarAccountModal.find('.messages');
+            var loader                       = configurePolarAccountModal.find('.loader');
+            var configureButton              = configurePolarAccountModal.find('a.configure');
+            var cancelButton                 = configurePolarAccountModal.find('a.cancel');
+
+            loader.hide();
+            messagesBloc.hide();
+            formRegisterPolar.show();
+
+            elt.unbind();
+            elt.click(function(e) {
+
+                //if ($("#service_Polar").is(':checked')){
+                $("#bSyncPolarAccountModal").removeAttr('disabled');
+
+                var authenticate = function() {
+                    // NOTE CF: pourquoi faire simple...
+                    loader.css('visibility', 'visible');
+                    loader.show();
+                    configureButton.addClass('disabled');
+
+                    $.post(
+                            Routing.generate('ksActivity_configurePolarAccount'),
+                            {
+                                'mailPolar' : $('#mailPolar').val(),
+                                'mdpPolar'  : $('#mdpPolar').val()
+                            },
+                            function(response) {
+                                if (response.configureResponse == 1) {
+                                    //window.location.href = Routing.generate('ksActivity_activitiesList', {});
+                                    window.location.href = Routing.generate('ksSport_activitySessionForm', {'activityId' : 'new'});
+                                    /*formRegisterPolar.hide();
+                                     messagesBloc.html('Le compte est bien configuré.');
+                                     messagesBloc.show();
+                                     configureButton.hide();
+                                     cancelButton.html("Fermer");*/
+                                } else {
+                                    messagesBloc.html(response.errorMessage);
+                                    messagesBloc.show();
+                                    loader.hide();
+                                    configureButton.removeClass('disabled');
+                                }
+                            }
+                    ).fail(function(jqXHR, textStatus) {
+                                console.log('error ' + textStatus);
+                            });
+                };
+
+                var pressedEnter = false;
+
+                configureButton.unbind();
+                configureButton.click(authenticate);
+
+                cancelButton.html("Annuler");
+                configureButton.show();
+                configureButton.removeClass("disabled");
+                configurePolarAccountModal.on('shown', function() {
+                    loader.hide();
+
+                });
+
+                configurePolarAccountModal.on('hide', function() {
+                    //configurePolarAccountModal.modal('hide');
+                    messagesBloc.hide();
+                    location.reload();
+                });
+
+                configurePolarAccountModal.modal('show');
+                configurePolarAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+                return false;
+            });
+        }
+        
+        //Configuration service Strava
+        function attachConfigureStravaEvent(elt) {
+            var configureStravaAccountModal = $("#configureStravaAccountModal");
+            var formRegisterStrava          = configureStravaAccountModal.find('.formRunkeeper');
+            var messagesBloc                = configureStravaAccountModal.find('.messages');
+            var loader                      = configureStravaAccountModal.find('.loader');
+            var configureButton             = configureStravaAccountModal.find('a.configure');
+            var cancelButton                = configureStravaAccountModal.find('a.cancel');
+            
+            loader.hide();
+            messagesBloc.hide();
+            formRegisterStrava.show(); 
+
+            elt.unbind();
+            elt.click(function(e) {
+                $("#bSyncStravaAccountModal").removeAttr('disabled'); 
+                cancelButton.html("Annuler");
+                configureButton.show();
+                configureButton.removeClass("disabled");
+                configureStravaAccountModal.on('shown', function() {
+                    loader.hide();
+                });
+
+                configureStravaAccountModal.on('hide', function() {
+                    messagesBloc.hide();
+                    formRegisterStrava.show();
+                });
+
+                configureStravaAccountModal.modal('show');
+                configureStravaAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+                
+                return false;
+            });
+        }
+
+        //Configuration service Runkeeper    
+        function attachConfigureRunkeeperEvent(elt) {
+
+            var configureRunkeeperAccountModal = $("#configureRunkeeperAccountModal");
+            var formRegisterRunkeeper = configureRunkeeperAccountModal.find('.formRunkeeper');
+            var messagesBloc = configureRunkeeperAccountModal.find('.messages');
+            var loader = configureRunkeeperAccountModal.find('.loader');
+            var configureButton = configureRunkeeperAccountModal.find('a.configure');
+            var cancelButton = configureRunkeeperAccountModal.find('a.cancel');
+
+            loader.hide();
+            messagesBloc.hide();
+            formRegisterRunkeeper.show(); 
+
+            elt.unbind();
+            elt.click(function(e) {
+
+                /*if ($("#service_Runkeeper").is(':checked')){*/
+
+                    $("#bSyncRunkeeperAccountModal").removeAttr('disabled'); 
+
+                    cancelButton.html("Annuler");
+                    configureButton.show();
+                    configureButton.removeClass("disabled");
+                    configureRunkeeperAccountModal.on('shown', function() {
+                        loader.hide();
+
+                    });
+
+                    configureRunkeeperAccountModal.on('hide', function() {
+                        //configureRunkeeperAccountModal.modal('hide');
+                        messagesBloc.hide();
+                        formRegisterRunkeeper.show();
+                    });
+
+                    configureRunkeeperAccountModal.modal('show');
+                    configureRunkeeperAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                        e.stopPropagation();
+                    });
+                    return false;
+                /*}else{
+                    $("#bSyncRunkeeperAccountModal").attr('disabled','disabled');
+                    //ajax pour enlever le jeton en base pour récupérer un autre jeton
+                    $.post(
+                        Routing.generate('ksRevokeServiceToken'),
+                        {
+                            'idService' : $('#id_service_Runkeeper').val()
+                        },
+                        function(response) {
+                            if (response.removeToken != 1) {
+                                messagesBloc.html(response.errorMessage);
+                                messagesBloc.show();
+                            }
+                        }
+                    ).fail(function(jqXHR, textStatus) {
+                        showInformation("Impossible de supprimer le jeton Runkeeper");
+                    });
+                }*/
+            });
+        }
+        
+        //Configuration service Suunto    
+        function attachConfigureSuuntoEvent(elt) {
+
+            var configureSuuntoAccountModal = $("#configureSuuntoAccountModal");
+            var formRegisterSuunto = configureSuuntoAccountModal.find('.formSuunto');
+            var messagesBloc = configureSuuntoAccountModal.find('.messages');
+            var loader = configureSuuntoAccountModal.find('.loader');
+            var configureButton = configureSuuntoAccountModal.find('a.configure');
+            var cancelButton = configureSuuntoAccountModal.find('a.cancel');
+
+            loader.hide();
+            messagesBloc.hide();
+            formRegisterSuunto.show(); 
+
+            elt.unbind();
+            elt.click(function(e) {
+
+                /*if ($("#service_Suunto").is(':checked')){*/
+
+                    $("#bSyncSuuntoAccountModal").removeAttr('disabled'); 
+
+                    cancelButton.html("Annuler");
+                    configureButton.show();
+                    configureButton.removeClass("disabled");
+                    configureSuuntoAccountModal.on('shown', function() {
+                        loader.hide();
+
+                    });
+
+                    configureSuuntoAccountModal.on('hide', function() {
+                        //configureSuuntoAccountModal.modal('hide');
+                        messagesBloc.hide();
+                        formRegisterSuunto.show();
+                    });
+
+                    configureSuuntoAccountModal.modal('show');
+                    configureSuuntoAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                        e.stopPropagation();
+                    });
+                    return false;
+                /*}else{
+                    $("#bSyncSuuntoAccountModal").attr('disabled','disabled');
+                    //ajax pour enlever le jeton en base pour récupérer un autre jeton
+                    $.post(
+                        Routing.generate('ksRevokeServiceToken'),
+                        {
+                            'idService' : $('#id_service_Suunto').val()
+                        },
+                        function(response) {
+                            if (response.removeToken != 1) {
+                                messagesBloc.html(response.errorMessage);
+                                messagesBloc.show();
+                            }
+                        }
+                    ).fail(function(jqXHR, textStatus) {
+                        showInformation("Impossible de supprimer le jeton Suunto");
+                    });
+                }*/
+            });
+        }
+
+        //Configuration service Google Agenda
+        function attachConfigureGoogleAgendaEvent(elt)
+        {
+            var configureGoogleAccountModal = $("#configureGoogleAgendaAccountModal");
+            var formGoogle      = configureGoogleAccountModal.find('.formGoogleAgenda');
+            var messagesBloc    = configureGoogleAccountModal.find('.messages');
+            var loader          = configureGoogleAccountModal.find('.loader');
+            var configureButton = configureGoogleAccountModal.find('a.configure');
+            var cancelButton    = configureGoogleAccountModal.find('a.cancel');
+
+            loader.hide();
+            messagesBloc.hide();
+            formGoogle.show(); 
+
+            elt.unbind();
+            elt.click(function(e) {
+                //Si coché authorisation et synchronistion du service
+                //if($("#service_Google-Agenda").is(':checked')){
+                if (true) {
+                    configureGoogleAccountModal.removeAttr('disabled');
+                    cancelButton.html("Annuler");
+                    configureButton.show();
+                    configureButton.removeClass("disabled");
+                    configureGoogleAccountModal.on('shown', function() {
+                        loader.hide();
+
+                    });
+
+                    configureGoogleAccountModal.on('hide', function() {
+                        //configureGoogleAccountModal.modal('hide');
+                        messagesBloc.hide();
+                        formGoogle.show();
+                    });
+
+                    configureGoogleAccountModal.modal('show');
+                    configureGoogleAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                        e.stopPropagation();
+                    });
+                    return false;
+
+                //Sinon suppression du token
+                }else{
+                    //ajax pour enlever le jeton en base 
+                    $.post(Routing.generate('ksRevokeServiceToken'), {
+                            'idService' : $('#id_service_Google-Agenda').val()
+                        },
+                        function(response) {
+                        if (response.removeToken != 1) {
+                            messagesBloc.html(response.errorMessage);
+                            messagesBloc.show();
+                        }
+                    }).fail(function(jqXHR, textStatus) {
+                        showInformation("Impossible de supprimer le jeton Google Agenda !");
+                    });
+                }
+            });
+        }
+        
+        //Information pour l'application google
+        var clientId = '774996425691.apps.googleusercontent.com';
+        var apiKey = 'AIzaSyAL3oC2JfcvDNkxhb0rx0VeemXMJaSLWzA';
+        var scopes = 'https://www.googleapis.com/auth/plus.me';
+            
+        function handleClientLoad() {
+            gapi.client.setApiKey(apiKey);
+            window.setTimeout(checkAuthGoogle,1);
+        }
+
+        function checkAuthGoogle() {
+            gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: true}, handleAuthGoogleResult);
+        }
+
+        function handleAuthGoogleResult(authResult) {
+            console.log(authResult);
+            var $authorizeButton = $("#GoogleButton");
+            if (authResult && !authResult.error) {
+                console.log("auth ok");
+                console.log(gapi.auth);
+                $authorizeButton.removeClass("disabled");
+                $authorizeButton.removeClass("btn-sportif")
+                $authorizeButton.removeClass("disabled");
+                $authorizeButton.addClass("btn-danger")
+                $authorizeButton.html("Désactiver");
+                makeApiCall();
+            } else {
+                console.log(authResult);
+                console.log("auth not ok");
+                $authorizeButton.removeClass("disabled");
+                $authorizeButton.click(handleAuthGoogleClick);
+            }
+        }
+
+        function handleAuthGoogleClick(event) {
+            gapi.auth.authorize({client_id: clientId, scope: scopes, immediate: false}, handleAuthGoogleResult);
+            return false;
+        }
+        
+        function makeApiCall() {
+            /*var authParams = gapi.auth.getToken() // from Google oAuth
+            console.log(authParams);
+            authParams.alt = 'json';
+            
+            $.get('https://www.google.com/m8/feeds/contacts/default/full', 
+                authParams,
+                function(response) {
+                    console.log(response)
+            }).fail(function(jqXHR, textStatus) {
+                showInformation(textStatus);
+            });*/
+                    
+            /*$.get({
+                url: 'https://www.google.com/m8/feeds/contacts/default/full',
+                dataType: 'jsonp',
+                data: authParams,
+                success: function(data) { console.log(data); }
+            });*/
+            
+             //var contactsFeedUri = 'https://www.google.com/m8/feeds/contacts/default/full'; //?max-results=9999&alt=json&v=3.0
+            //var query = new google.gdata.contacts.ContactQuery(contactsFeedUri);
+            //gapi.client.load('contacts', 'v3', function() {
+                /*var request = gapi.client.oauth2.userinfo.get({
+                    'userId': 'me'
+                });*/
+                
+                /*var restRequest = gapi.client.request({
+                    'path': '/plus/v1/activities',
+                    'params': {'query': 'Google+', 'orderBy': 'best'}
+                });*/
+
+                /*request.execute(function(resp) {
+                    console.log(resp);
+                });*/
+            //});
+        }
+
+        $(document).ready(function()
+        {
+            $("#body").addClass("message"); //pour activer le css correspondant
+            //
+            // Attach events
+            attachConfigureNikePlusEvent($("#service_NikePlus"));
+            attachConfigureRunkeeperEvent($("#service_Runkeeper"));
+            attachConfigureSuuntoEvent($("#service_Suunto"));
+            attachConfigureGoogleAgendaEvent($("#service_Google-Agenda"));
+            attachConfigureEndomondoEvent($("#service_Endomondo"));
+            attachConfigureStravaEvent($("#service_Strava"));
+            attachConfigureGarminEvent($("#service_Garmin"));
+            attachConfigurePolarEvent($("#service_Polar"));
+
+            $("#valid-runkeep").hide();
+            if ($("#service_Runkeeper").is(':checked')){
+                $("#bSyncRunkeeperAccountModal").removeAttr('disabled'); 
+            } else {
+                $("#bSyncRunkeeperAccountModal").attr('disabled','disabled'); 
+            }
+            if ($("#service_NikePlus").is(':checked')){
+            $("#bGetNikePlusActivities").removeAttr('disabled'); 
+            } else {
+                $("#bGetNikePlusActivities").attr('disabled','disabled'); 
+            }
+            if ($("#service_Endomondo").is(':checked')){
+                $("#bGetEndomondoActivities").removeAttr('disabled'); 
+            } else {
+                $("#bGetEndomondoActivities").attr('disabled','disabled'); 
+            }
+            if ($("#service_Suunto").is(':checked')){
+                $("#bSyncSuuntoAccountModal").removeAttr('disabled'); 
+            } else {
+                $("#bSyncSuuntoAccountModal").attr('disabled','disabled'); 
+            }
+            $("#valid-strava").hide();
+            if ($("#service_Strava").is(':checked')){
+                $("#bSyncStravaAccountModal").removeAttr('disabled'); 
+            } else {
+                $("#bSyncStravaAccountModal").attr('disabled','disabled'); 
+            }
+            if ($("#service_Garmin").is(':checked')){
+                $("#bSyncGarminAccountModal").removeAttr('disabled');
+            } else {
+                $("#bSyncGarminAccountModal").attr('disabled','disabled');
+            }
+            if ($("#service_Polar").is(':checked')){
+                $("#bSyncPolarAccountModal").removeAttr('disabled');
+            } else {
+                $("#bSyncPolarAccountModal").attr('disabled','disabled');
+            }
+
+
+            $("#link_suunto").click(function() {
+                if( !$("#link_suunto").hasClass("disabled") ) {
+                    $("#loader_suunto").show();
+                    $("#link_suunto").addClass("disabled");
+                }
+           });
+           $("#link_google").click(function() {
+                if( !$("#link_google").hasClass("disabled") ) {
+                    $("#loader_google").show();
+                    $("#link_google").addClass("disabled");
+                }
+           });
+        });
+    </script>
+{% endblock %}        
+    
+{% block body %}
+
+<!--WRAPPER-->
+<div class="wrapper">
+    <div class="bloc1 messervices">
+        <div class="container">
+            <h1 class="title premium">{{ 'menu.configure-services'|trans }}</h1>     
+        </div>
+    </div>
+    
+    <!--Nike plus modal  -->         
+    <div id="configureNikeAccountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">Nike+</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="formRegisterNike">
+                        <div class="input-prepend">
+                            <span class="add-on" style="margin-left:0px;">
+                                {{ 'users.email'|trans }}
+                            </span>
+                            <input class="mailNike" name="mailEndomondo" type="text" class="input-large" value="" style="margin-bottom:0">
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on" style="margin-left:0px;">
+                                {{ 'users.password'|trans }}
+                            </span>
+                            <input class="mdpNike" name="mdpEndomondo" type="password" class="input-large" value="" style="margin-bottom:0">
+                        </div>   
+                    </div>
+                    <div class="messages"></div>     
+                </div>
+                <div class='modal-footer'>
+                    <div class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                    <a href='#' class='configure btn btn-primary'>Configurer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="syncRunsModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">Synchronisation de vos courses Nike +</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="messages"></div>     
+                </div>
+                <div class='modal-footer'>
+                    <div class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                    {#<a href='#' class='sync btn btn-primary'>{{ 'runs.sync'|trans }}</a>#}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Endomondo modal -->
+    <div id="configureEndomondoAccountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">Endomondo</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="formRegisterEndomondo">
+                        <div class="input-prepend">
+                            <span class="add-on" style="margin-left:0px;">
+                                {{ 'users.email'|trans }}
+                            </span>
+                            <input id="mailEndomondo" name="mailEndomondo" type="text" class="input-large" value="" style="margin-bottom:0">
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on" style="margin-left:0px;">
+                                {{ 'users.password'|trans }}
+                            </span>
+                            <input id="mdpEndomondo" name="mdpEndomondo" type="password" class="input-large" value="" style="margin-bottom:0">
+                        </div>
+                    </div>
+                    <div class="messages">Vos identifiants Endomondo ne seront pas stockés sur nos serveurs.</div>
+                </div>
+                <div class='modal-footer'>
+                    <div class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                    <a href='#' class='configure btn btn-primary'>{{ 'endomondo.configure'|trans }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Runkeeper -->
+
+    <div id="configureRunkeeperAccountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">Runkeeper</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="formRunkeeper">
+                         {% include 'KsUserBundle:User:userImportRunkeeper.html.twig' %}
+                    </div>
+                    <div class="messages"></div>     
+                </div>
+                <div class='modal-footer'>
+                    <div class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strava // FIXME: que de code en double... :'( -->
+    <div id="configureStravaAccountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">Strava</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="formStrava">
+                         {% include 'KsUserBundle:User:userImportStrava.html.twig' %}
+                    </div>
+                    <div class="messages"></div>     
+                </div>
+                <div class='modal-footer'>
+                    <div class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                </div>
+            </div> 
+        </div>
+    </div>
+
+    <!-- Garmin modal -->
+    <div id="configureGarminAccountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">Garmin</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="formRegisterGarmin">
+                        <div class="input-prepend">
+                            <span class="add-on" style="margin-left:0px;">
+                                {{ 'users.email'|trans }}
+                            </span>
+                            <input id="mailGarmin" name="mailGarmin" type="text" class="input-large" value="" style="margin-bottom:0">
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on" style="margin-left:0px;">
+                                {{ 'users.password'|trans }}
+                            </span>
+                            <input id="mdpGarmin" name="mdpGarmin" type="password" class="input-large" value="" style="margin-bottom:0">
+                        </div>
+                    </div>
+                    <div class="messages">Vos identifiants Garmin ne seront pas stockés sur nos serveurs.</div>
+                </div>
+                <div class='modal-footer'>
+                    <div class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                    <a href='#' class='configure btn btn-primary'>{{ 'garmin.configure'|trans }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Polar modal -->
+    <div id="configurePolarAccountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">Polar (Personal Trainer)</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="formRegisterPolar">
+                        <div class="input-prepend">
+                            <span class="add-on" style="margin-left:0px;">
+                                {{ 'users.emailOrLogin'|trans }}
+                            </span>
+                            <input id="mailPolar" name="mailPolar" type="text" class="input-large" value="" style="margin-bottom:0">
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on" style="margin-left:0px;">
+                                {{ 'users.password'|trans }}
+                            </span>
+                            <input id="mdpPolar" name="mdpPolar" type="password" class="input-large" value="" style="margin-bottom:0">
+                        </div>
+                    </div>
+                    <div class="messages">Vos identifiants Polar ne seront pas stockés sur nos serveurs.</div>
+                </div>
+                <div class='modal-footer'>
+                    <div class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                    <a href='#' class='configure btn btn-primary'>{{ 'polar.configure'|trans }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Suunto -->
+
+    <div id="configureSuuntoAccountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">Suunto</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="formSuunto">
+                         {% include 'KsUserBundle:User:userImportSuunto.html.twig' %}
+                    </div>
+                    <div class="messages"></div>     
+                </div>
+                <div class='modal-footer'>
+                    <div id="loader_suunto" class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                </div>
+            </div> 
+        </div>
+    </div>
+    <!-- Google agenda -->
+
+    <div id="configureGoogleAgendaAccountModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3 class="sportif">{{ 'configure_google-agenda_account'|trans }}</h3>
+                </div>
+                <div class='modal-body'>
+                    <div class="formGoogleAgenda">
+                        {% render "KsUserBundle:User:userSyncGoogleAgendaUri" %}
+                    </div>
+                    <div class="messages"></div>     
+                </div>
+                <div class='modal-footer'>
+                    <div id="loader_google" class="loader pull-left" style="display:none" ><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                    <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                </div>
+            </div>
+        </div>
+    </div>   
+
+    <!---BLOC2---->
+    <div class="bloc2">
+        <div class="container">        
+            <form action="{{ path('ks_set_services') }}" method="post">
+                <table class="table table-striped"> 
+                    <thead>
+                        <tr>
+                            <th>{{ 'users.service_name'|trans }}</th>
+                            {#<th>{{ 'users.service_is_active'|trans }}</th>#}
+
+                            {#<th>{{ 'users.sync_service_to_user'|trans }}</th>
+                            <th>{{ 'users.sync_user_to_service'|trans }}</th>#}
+                            <th >{{ 'users.actions'|trans }}</th>
+                            {#<th style="width:100px;">{{ 'users.status'|trans }}</th>#}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for key, service in services %}
+                        {% set userHasService   = userHasServices and userHasServices[service.name] is defined ? userHasServices[service.name] : false %}
+                        {% set stateCheckbox    = userHasService and userHasService.isActive == 1 ? ' checked=checked ' : '' %}
+                        {% set serviceEnabled   = userHasService and userHasService.isActive == 1 ? true : false %}
+
+                        {%  if (service.name == "Runkeeper"
+                            or service.name == "NikePlus"
+                            or service.name == "Endomondo"
+                            or service.name == "Suunto"
+                            or service.name == "Garmin"
+                            or service.name == "Polar"
+                            or service.name != "Strava"
+                            or service.name == "Google-Agenda" and isAllowed)
+                            and service.name != "Runraid"
+                            
+                        %}
+                        <tr>
+                            {#<input type="hidden" name="id_service_{{ key }}" value="{{ service.id }}" id="id_service_{{service.name}}"/> #}
+                            <td>{{ service.name }}</td>
+                            {#<td>
+                                <input type="checkbox" name="service_is_active_{{ key }}" {{ stateCheckbox }} />  
+                            </td>#}
+                            <td>   
+                                {% if userHasServices[service.name].token is defined and userHasServices[service.name].token != '' or userHasServices[service.name].connectionId is defined and userHasServices[service.name].connectionId != ''%}
+                                    {% set awaitingApproval = false %}
+                                    {% if service.name == 'Suunto' %}
+                                        {% if userHasServices[service.name].status == 'to validate on MOVESCOUNT' %}
+                                            {% set awaitingApproval = true %}
+                                        {% endif %}
+                                    {% endif %}
+                                    <span>
+                                        {% include 'KsUserBundle:User:_activeServiceButton.html.twig' with { 'service' : service, 'user' : app.user, 'awaitingApproval' : awaitingApproval } %}
+                                    </span>
+                                {% endif %}
+                                <button id="service_{{service.name}}" type="button" class="btn btn-success"><span class="glyphicon glyphicon-cog"></span> {{ 'users.setup'|trans }}</button>
+                                {#% if userHasService and userHasService.isActive %}
+                                    {% if service.name == "Runkeeper"  %}
+                                         <span id="bRunkeeperSync" class="btn btn-primary {% if userHasService.status == "pending" %}disabled{% endif %}">Synchroniser</span> 
+                                    {% elseif service.name == "NikePlus" %}
+                                         <span id="bNikePlusSync" class="btn btn-primary {% if userHasService.status == "pending" %}disabled{% endif %}">Synchroniser</span>
+                                    {% elseif service.name == "Endomondo" %}
+                                         <span id="bEndomondoSync" class="btn btn-primary {% if userHasService.status == "pending" %}disabled{% endif %}">Synchroniser</span>
+                                    {% endif %}
+                               {% endif %#}
+                            </td>
+                            {#<td class="syncStatus"> 
+                                {% if userHasService and userHasService.status %}
+                                    {% if userHasService.status == "pending" %}
+                                        Synchronisation des activités en cours de traitement
+                                    {% elseif userHasService.status == "done" %}
+                                        Synchronisé depuis {{ userHasService.lastSyncAt|date('d/m/Y H:i:s') }}
+                                    {% endif %}          
+                                {% endif %}  
+                            </td>#}
+                        </tr>
+                        {% endif %} 
+                    {% endfor %}
+                        {#<tr>
+                            <td> GARMIN </td>
+                            <td>
+                                <a class="btn btn-sportif" rel="tooltip" title="Nécessite un compte GARMIN" href="{{ path("ksActivity_garminIndex") }}">Importer</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> SUUNTO </td>
+                            <td>
+                                <span class="btn btn-sportif disabled" rel="tooltip" title="{{'activity.available-soon'|trans }}">{{'users.connect'|trans}}</span>
+                                <span class="btn btn-sportif disabled" rel="tooltip" title="{{'activity.available-soon'|trans }}"><span class="icon-cog"></span> {{ 'users.setup'|trans }} </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td> POLAR </td>
+                            <td>
+                                <span class="btn btn-sportif disabled" rel="tooltip" title="{{'activity.available-soon'|trans }}">{{'users.connect'|trans}}</span>
+                                <span class="btn btn-sportif disabled" rel="tooltip" title="{{'activity.available-soon'|trans }}"><span class="icon-cog"></span> {{ 'users.setup'|trans }} </span>
+                            </td>
+                        </tr>#}
+                    </tbody>
+                </table>   
+            </form>
+            <div class="alert alert-info">{{'menu.services-message'|trans}}</div>  
+        </div>
+        <!--/CONTAINER--> 
+    </div>
+    <!--/BLOC2--> 
+</div>
+{% endblock %}

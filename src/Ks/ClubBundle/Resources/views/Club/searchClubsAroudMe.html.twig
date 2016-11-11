@@ -1,0 +1,43 @@
+{% block content %}
+
+{# <h4 class="titleAround">{{ 'user.sports_around_you'|trans }}</h4> #}
+
+{% if aClubsSuggest %}
+    
+    {% for clubSuggest in aClubsSuggest %}
+
+        <table class="userSuggest margin-bottom7" class="table">
+            <tbody>
+                <tr>
+                    <td class="avatar_width">
+                        {% include 'KsClubBundle:Club:_clubImage.html.twig' with{ 'club_avatar': clubSuggest.avatar,'club_id': clubSuggest.id, 'club_name': clubSuggest.name } %}
+                    </td>
+                    <td class="padding-left5 width-users-infos"> 
+                        <a href="{{ path('ksClub_public_profile', { 'clubId': clubSuggest.id }) }}" rel="tooltip" title="{{ clubSuggest.name }}">
+                            {% if clubSuggest.name|length > 25 %}   
+                                {% set usernametruncated = clubSuggest.name|substr(0,24) %}
+                                {{ usernametruncated }}... 
+                            {% else %}
+                                {{ clubSuggest.name }}   
+                            {% endif %}
+                        </a> 
+                        <br/>
+                        {% if clubSuggest.proximite is defined %}
+                            <small class="muted">{{ clubSuggest.proximite }} Km</small>
+                        {% endif %}
+                        {% if clubSuggest.numCommonFriends is defined %}
+                            <small class="muted">{{ clubSuggest.numCommonFriends }} ami(s) en commun</small>
+                        {% endif %}
+                    </td>                           
+                     <td class="padding-left5">
+                        {% include 'KsClubBundle:Club:_askForMembershipLink.html.twig' with {'club_id': clubSuggest.id } %}
+                    </td>
+
+                </tr>
+            </tbody>    
+        </table>    
+    {% endfor %}    
+
+{% endif %}
+
+{% endblock %}

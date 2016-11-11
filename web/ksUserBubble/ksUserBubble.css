@@ -1,0 +1,64 @@
+/*********************
+User bubble
+**********************/
+
+.userBubble {
+    position: relative;
+}
+
+.userBubble:hover span.bubble {
+    padding: 4px 0 6px;
+    visibility: visible;
+    opacity: 1;
+    
+    text-align: left;
+}
+.userBubble span.bubble {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 120%;
+    left: -25px;
+    right: 0;
+    z-index: 1000;
+}
+
+/*.userBubble span.bubbleInLeagueBloc {
+    bottom: 90%;
+}*/
+
+.userBubble span.bubble ul {
+    list-style: none outside none;
+    width:300px;
+    background-clip: padding-box;
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 5px 10px #E0E0E0;
+}
+.userBubble span.bubble:before, .userBubble span.bubble:after, .userBubble span.bubble ul > li:first-child:after {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 10px;
+    width: 0;
+    height: 0;
+    border: 7px outset transparent;
+}
+
+.userBubble span.bubble:after {
+    bottom: 3px;
+    left : 43px;
+    border-top: 7px solid white;
+}
+.userBubble span.bubble ul > li {
+    padding: 0 12px;
+    font-size: 11px;
+    color: black;
+    /*text-shadow: 0 1px white;*/
+}
+.userBubble span.bubble ul > li.sep {
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid #b4bbce;
+}

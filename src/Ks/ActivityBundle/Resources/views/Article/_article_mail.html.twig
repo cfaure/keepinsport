@@ -1,0 +1,12 @@
+<div id="avatarBloc-{{ activity.id }}" class="span1">
+    {{ activity.user.username }}
+</div>
+<div id="activityBloc-{{ activity.id }}"class="span11">
+    <div class="activityBloc">
+       
+        <a href="{{ path('ks_user_public_profile', { 'username' : activity.user.username }) }}">{{ activity.user.username }}</a> a créé l'article {{ activity.label }}.
+        {% include 'KsActivityBundle:Article:_article_toBeShared.html.twig' with {'activity': activity } %}
+
+        {% include 'KsActivityBundle:Comment:_commentsBloc_mail.html.twig' with {'activity': activity } %}
+   </div>
+</div>

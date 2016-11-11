@@ -1,0 +1,63 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Club'|trans }}
+{% endblock %}
+    
+{% block content %}
+
+<h1 class="clubs">{{ 'users.club_view_title'|trans }}</h1>
+<div class="blocHeaderSeparator"></div>
+<table class="table table-bordered table-striped">
+    <tbody>
+        <tr>
+            <th>Name</th>
+            <td>{{ entity.name }}</td>
+        </tr>
+        <tr>
+            <th>Country_area</th>
+            <td>{{ entity.countryarea }}</td>
+        </tr>
+        <tr>
+            <th>Country_code</th>
+            <td>{{ entity.countrycode }}</td>
+        </tr>
+        <tr>
+            <th>Adress_name</th>
+            <td>{{ entity.adressname }}</td>
+        </tr>
+        <tr>
+            <th>Tel_number</th>
+            <td>{{ entity.telnumber }}</td>
+        </tr>
+        <tr>
+            <th>Mobile_number</th>
+            <td>{{ entity.mobilenumber }}</td>
+        </tr>
+        <tr>
+            <th>Email</th>
+            <td>{{ entity.email }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<ul class="record_actions">
+    <li>
+        <a href="{{ path('ksClub_myClubs') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('ksClub_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>
+        <form action="{{ path('admin_club_delete', { 'id': entity.id }) }}" method="post">
+            {{ form_widget(delete_form) }}
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+</ul>
+
+{% endblock %}

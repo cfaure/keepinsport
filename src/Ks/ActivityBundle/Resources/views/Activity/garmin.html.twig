@@ -1,0 +1,117 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}   
+    {# zoom sur photos #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksactivity/css/garmin/communicator2.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            console.log("ici");
+            $("#body").addClass("message"); //pour activer le css correspondant
+            console.log("l");
+            
+            $("#readDataButton").on('click', function() {
+                console.log("read");
+            });
+
+            $("#readSelectedButton").on('click', function() {
+                console.log("select");
+            });
+        });
+    </script>
+{% endblock %}
+    
+{% block bottomscripts %}
+    <script type="text/javascript">	
+        jQuery.noConflict();
+    </script>
+    
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/prototype/prototype.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/garmin/device/GarminDeviceDisplay.js') }}"></script>
+    
+    <script type="text/javascript">
+        function load() {
+	    var display = new Garmin.DeviceDisplay("garminDisplay", { 
+                pathKeyPairsArray: ["http://www.keepinsport.com", "b772bc52b9c093095e51b2f5976b6b54"],
+                showReadDataElement: true,
+                showProgressBar: true,
+                showFindDevicesElement: true,
+                showFindDevicesButton: false,
+                showDeviceButtonsOnLoad: false,
+                showDeviceButtonsOnFound: false,
+                autoFindDevices: true,
+                showDeviceSelectOnLoad: true,
+                autoHideUnusedElements: true,
+                showReadDataTypesSelect: false,
+                readDataType: Garmin.DeviceControl.FILE_TYPES.tcxDir,
+                deviceSelectLabel:  "{{ 'garmin.select-device'|trans }}",
+                readDataButtonText: "{{ 'garmin.activity-list'|trans }}",
+                readSelectedButtonText: "{{ 'garmin.upload'|trans }}",
+                showCancelReadDataButton: false,
+                lookingForDevices:  '{{ 'garmin.looking-for-device'|trans|raw }}',
+                uploadsFinished:    "{{ 'garmin.upload-successful'|trans }}",
+                uploadSelectedActivities: true,
+                uploadCompressedData: false,    // Turn on data compression by setting to true.
+                uploadMaximum: 1, 
+                dataFound: "{{ 'garmin.data-found'|trans }}",
+                showReadDataElementOnDeviceFound: true,
+                postActivityHandler: function(activityXml, display) {
+                    $('activity').innerHTML = '<div class="bodyLoader" align="center"><img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"></div>';
+                    new Ajax.Request(Routing.generate('ksActivity_garminImport'), {
+                        method: 'post',
+                        parameters: {
+                            'activity': activityXml
+                        },
+                        onSuccess: function(xhr, json) {
+                            window.location.href = Routing.generate('ksActivity_activitiesList');
+                        },
+                        onFailure: function(response) {
+                            alert('{{ 'garmin.on-failure'|trans }}');
+                        }
+                    });	
+                }
+            });
+        }
+    
+        load();
+        
+        
+
+    </script>
+{% endblock %}
+    
+{% block body %}    
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <!--bloc1-->
+        <div class="bloc1 small" id="bloc1">
+            <div class="container">
+                <h3 class="title bleu">{{ 'garmin.import-activity'|trans }}</h3>
+                <br clear="all"/>
+                <center>
+                    <img src="{{ asset('bundles/ksactivity/images/garmin/garmin-white.gif') }}"/>
+                    <table border="0" cellpadding="4" cellspacing="0" width="800px">
+                        <tr>
+                                <td>
+                                        <div id="garminDisplay"></div>
+                                </td>
+                        </tr>
+                        <tr>
+                                <td>
+                                        <div id="activity"></div>
+                                </td>
+                        </tr>
+                    </table>
+                </center>
+            </div>
+        </div>
+    </div>
+{% endblock %}

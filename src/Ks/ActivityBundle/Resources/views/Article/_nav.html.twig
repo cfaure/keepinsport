@@ -1,0 +1,14 @@
+<ul class="nav" > 
+    {% for category in articleCategories %}
+    <li class="wikisport">
+        <a href="{{ path('ksArticle_category', {'tagId' : category.id }) }}">{{ category.label }}</a>
+    </li>
+    {% endfor %}
+
+    
+    <li class="wikisport">
+        <a target="_blank" href="{{ path('ksUser_consultBlog') }}">
+            Blog
+        </a>
+    </li>
+</ul>

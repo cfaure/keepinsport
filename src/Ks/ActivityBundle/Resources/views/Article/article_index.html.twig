@@ -1,0 +1,249 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('js/timeline/timeline.css') }}" />#}
+    
+    <style>
+        .lastArticlesBloc {
+            /*width       : 30%;*/
+            height      :300px;       
+            position : relative;
+            /*margin-bottom  : 20px;
+            margin-left: 0px;
+            margin-right: 0px;*/
+
+        }
+
+        .lastArticlesBloc .resultsList mark {
+            background-color: #C91D2F;
+            color:white;
+            font-weight        : bold;
+        }
+
+        .lastArticlesBloc .lastArticlesBloc_title {
+            width              : 93%;
+
+            border-radius      : 4px 4px 4px 4px;
+            text-align         : center;
+            font-size          : 1.5em;
+            padding            : 10px;
+            margin-bottom      : 20px;
+        }
+
+        .lastArticlesBloc .resultsList {
+            overflow-y: scroll;
+            height: 190px;
+        }
+
+        .lastArticlesBloc a.bNewArticle
+        {
+            display             : block;
+            position            : absolute;
+            right               : 5px;
+            bottom              : 5px;
+        }
+
+    </style>
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    {#<script type="text/javascript" src="{{ asset('js/timeline/jquery.masonry.min.js') }}"></script>#}
+    <script type="text/javascript" src="{{ asset('js/bootstrap-typeahead.js') }}"></script>
+    <script type="text/javascript">
+        $("#cbSubscriptions").live("click", function() {
+            if( $( this ).is(':checked') ) {
+               $( "#articlesBloc" ).hide();
+               $( "#subscriptionsBloc" ).show();
+           } else {
+               $( "#articlesBloc" ).show();
+               $( "#subscriptionsBloc" ).hide();
+           }
+        });
+        
+        $(document).ready(function() {           
+            $('#inputSearchArticles').val();
+                        
+            //Construction de listes d'articles en js
+            var articleCategoriesId = new Array();
+            {% for articleCategoryId in articleCategoriesId %}
+                articleCategoriesId.push( {{ articleCategoryId }} );
+            {% endfor %}
+            var articlesByCategories = new Array();
+            var articlesLabelsByCategories = new Array();
+            {% for categoryId, articles in articlesByCategories %}
+                articlesByCategories[{{ categoryId }}] = new Object();
+                articlesLabelsByCategories[{{ categoryId }}] = new Array();
+                {% for articleId, article in articles %}
+                    {% set lastTitle = article.modifications|last_mofified_content('title') %}
+                    {% if lastTitle is null %}
+                        {% set lastTitle = article.label %}
+                    {% endif %}
+                    articlesByCategories[{{ categoryId }}]["{{ articleId }}"] = "{{ lastTitle }}";
+                    articlesLabelsByCategories[{{ categoryId }}].push("{{ lastTitle }}");
+                {% endfor %}
+            {% endfor %}  
+                
+            var subscriptionsByCategories = new Array();
+            var subscriptionsLabelsByCategories = new Array();
+            {% for categoryId, articles in subscriptionsByCategories %}
+                subscriptionsByCategories[{{ categoryId }}] = new Object();
+                subscriptionsLabelsByCategories[{{ categoryId }}] = new Array();
+                {% for articleId, article in articles %}
+                    {% set lastTitle = article.modifications|last_mofified_content('title') %}
+                    {% if lastTitle is null %}
+                        {% set lastTitle = article.label %}
+                    {% endif %}
+                    subscriptionsByCategories[{{ categoryId }}]["{{ articleId }}"] = "{{ lastTitle }}";
+                    subscriptionsLabelsByCategories[{{ categoryId }}].push("{{ lastTitle }}");
+                {% endfor %}
+            {% endfor %}  
+            
+                        
+            $('#inputSearchArticles').change(function() {
+                var inputSearchArticlesVal = $('#inputSearchArticles').val();
+                $.each( articleCategoriesId , function(key, categoryId) {
+                    //On filtre les résultats en fonction de la recherche
+                    if( $( "#cbSubscriptions" ).is(':checked') ) {
+                        var results = $.ui.autocomplete.filter(subscriptionsLabelsByCategories[categoryId], inputSearchArticlesVal );
+                        
+                        //On met à jour la liste des résultats
+                        majArticleCategoriesBloc( categoryId, subscriptionsByCategories[ categoryId ], results, inputSearchArticlesVal );
+                    } else {
+                        var results = $.ui.autocomplete.filter(articlesLabelsByCategories[categoryId], inputSearchArticlesVal );
+                        
+                        //On met à jour la liste des résultats
+                        majArticleCategoriesBloc( categoryId, articlesByCategories[ categoryId ], results, inputSearchArticlesVal );
+                    }
+                    
+                    
+                });
+            });
+                        
+            $('#inputSearchArticles').keyup(function(event) {
+                if( $( this ).val() != $( this ).data('val') ){ // check if value changed
+                    $( this ).data('val',  $( this ).val() ); // save new value
+                    $( this ).change(); // simulate "change" event
+                }
+            }).keydown(function(event) {
+                if (event.which == 13) {
+                    event.preventDefault();
+                }  
+            });
+        });
+        
+        function majArticleCategoriesBloc(categoryId, articlesCompleteList, articlesResultsList, inputSearchArticlesVal ) {
+            if( $( "#cbSubscriptions" ).is(':checked') ) {
+                var $articleCategoriesBloc = $("div.lastSubscriptionsBloc[categoryId=" + categoryId +"]");
+            } else {
+                var $articleCategoriesBloc = $("div.lastArticlesBloc[categoryId=" + categoryId +"]");
+            }
+            
+            var $resultsList = $articleCategoriesBloc.find(".resultsList");
+            
+            //On efface les résultats présents
+            $resultsList.html("");
+            
+            //On met à jour
+            $.each( articlesResultsList , function( key, articleLabel ) {
+                //On ne souhaite montrer que 10 articles par catégorie
+                var addedArticles = 0;
+                
+                if( addedArticles >= 10 ) {
+                    return ( false );  //le break de $.each
+                }
+                else {
+                    articleId = findArticleIdWithLabel( articlesCompleteList, articleLabel );
+
+                    if( articleId != null ) {
+                        var regEx = new RegExp("("+inputSearchArticlesVal.toLowerCase()+")");
+                        articleLabelWithMark = articleLabel.toLowerCase().replace(regEx,"<mark>$1</mark>");
+                        paragraph = $("<p>");
+                        articleLink = $("<a>", { href : Routing.generate('ksArticle_show', { 'articleId': articleId }) }).html( articleLabelWithMark );
+                        paragraph.append( articleLink );
+                        $resultsList.append( paragraph );
+                        addedArticles += 1;
+                    }
+               }
+            });
+        }
+        
+        function findArticleIdWithLabel( articlesCompleteList, articleLabelToSearch ) {
+            articleIdReturn = null;
+            
+            $.each( articlesCompleteList , function( articleId, articleLabel ) {
+                
+                //On compare les label en minuscule
+                if( articleLabel.toLowerCase() == articleLabelToSearch.toLowerCase()) {
+                    
+                    //L'article a été trouvé, on retourne l'id
+                    articleIdReturn = articleId;
+                    
+                    return( false ); //le break de $.each
+                }
+            });
+            
+            return articleIdReturn;
+        }
+    </script>
+{% endblock %}
+    
+{% block activity_content %}
+    <h1 class="wikisport">Wikisport</h1>
+    <div class="blocHeaderSeparator"></div>
+    <div class="row-fluid">
+        <div class="input-prepend span6">
+            <span class="add-on"><i class="icon-search"></i></span>
+            <input type="text" class="input-xlarge" style="margin-bottom:0" id="inputSearchArticles" value="">
+        </div>
+        <div class="span6">
+            <label class="checkbox">
+                <input id="cbSubscriptions" type="checkbox"> filtre sur mes abonnements
+              </label>
+        </div>
+    </div>
+    <div id="articlesBloc" style="">
+        {% include 'KsActivityBundle:Article:_last_articles_by_categories.html.twig'  with { 'lastArticlesByCategories' : lastArticlesByCategories, 'articleCategories' : articleCategories, 'type' : 'Articles' } %}     
+    </div>
+    
+    <div id="subscriptionsBloc" style="display:none">
+        {% include 'KsActivityBundle:Article:_last_articles_by_categories.html.twig'  with { 'lastArticlesByCategories' : lastSubscriptionsByCategories, 'articleCategories' : articleCategories, 'type' : 'Subscriptions' } %}  
+    </div>
+    
+    <div id="newArticleModal" class='modal hide fade'>
+        <div class='modal-header'>
+            <a class='close' data-dismiss='modal'>&times;</a>
+            <h3>Ajout d'un article</h3>
+        </div>
+        <div class='modal-body'>
+            <form  method="post" {{ form_enctype(articleForm) }}>
+                <div class="input-prepend input-append categoryBloc">
+                    <span class="add-on" style="margin-right:-5px">Catégorie du nouvel article</span>
+                    <select class="selectCategory" style="margin-bottom:0">
+                        {% for category in articleCategories %}
+                            <option value="{{ category.id }}" >{{ category.label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input-prepend">
+                    <span class="add-on " style="margin-right:-5px">Titre</span>
+                    {{ form_widget(articleForm.label, { attr: { class:"articleLabel input-xlarge", style: "margin-bottom:0"} }) }}
+                </div>
+
+                {{ form_rest(articleForm) }}  
+            </form>
+            <div class="errorsBloc"></div>
+            <div class="messagesBloc"></div>
+        </div>
+        <div class='modal-footer'>
+            <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+            <a href='#' class='create btn btn-primary'>Créer</a>
+        </div>
+    </div>
+{% endblock %}

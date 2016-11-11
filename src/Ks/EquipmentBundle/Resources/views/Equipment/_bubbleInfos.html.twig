@@ -1,0 +1,101 @@
+<div style="color: black;font-size:12px;">
+    <h3 class="sportif">
+        {% if equipment.brand is defined and equipment.brand != "" %}
+            {{ equipment.brand }} / 
+        {% endif %}
+        {{ equipment.name }}
+    </h3>
+    <hr style="margin:0"/>
+    <p>
+        <u>{{ 'equipment.type'|trans }} :</u> {{ ("equipmentsTypes." ~ equipment.type_code) |trans }}
+    </p>
+    
+    {% if equipment.weight is defined and equipment.weight is not null %}
+        <p>
+            <u>{{ 'equipment.weight'|trans }} :</u> {{ equipment.weight }} {{ 'equipment.weight-unity'|trans }}
+        </p>
+    {% endif %}
+    
+    {% if equipment.isByDefault is defined and equipment.isByDefault == '1' %}
+        <u>{{ 'equipment.by-default'|trans }}</u> 
+    {% endif %}
+        
+    <div class="thumbnail ksBloc">
+        <div class="row-fluid resume">
+            <div class="media span3" style="margin : 0 0 10px 0" align="center">
+                <div class="media-body" alt="{{ 'equipment.sportsmen'|trans }}" title="{{ 'equipment.sportsmen'|trans }}">
+                    <center>
+                        <span class="glyphicon glyphicon-user"></span>
+                        <br/>
+                        {{ equipment.sportsmen }}
+                    </center>
+                </div>
+            </div>
+            <div class="media span3" style="margin : 0 0 10px 0" align="center">
+                <div class="media-body" alt="{{ 'equipment.activities'|trans }}" title="{{ 'equipment.activities'|trans }}">
+                    <center>
+                        <span class="glyphicon glyphicon-calendar"></span>
+                        <br/>
+                        {{ equipment.activities }}
+                    </center>
+                </div>
+            </div>
+            <div class="media span3" style="margin : 0 0 10px 0" align="center">
+                <div class="media-body" alt="tooltip" title="{{ 'equipment.distance'|trans }}">
+                    <center>
+                        <span class="glyphicon glyphicon-road"></span>
+                        <br/>
+                            {% if equipment.distance is not null %}
+                                {{ equipment.distance }} {# 'equipment.distance-mesure'|trans #}
+                            {% else %}
+                                -
+                            {% endif %}
+                    </center>
+                </div>
+            </div>
+            <div class="media span3" style="margin : 0 0 10px 0" align="center">
+                <div class="media-body" alt="{{ 'equipment.time'|trans }}" title="{{ 'equipment.distance'|trans }}">
+                    <center>
+                        <span class="glyphicon glyphicon-time"></span>
+                        <br/>
+                        {% if equipment.time is not null %}
+                            {{ equipment.time }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if equipment.lastname is not null and equipment.firstname is not null %}
+        {% set titleTooltip = equipment.firstname ~ " " ~ equipment.lastname %}
+    {% else %} 
+        {% set titleTooltip = equipment.username %}
+    {% endif %}
+    {% if titleTooltip is not null %}    
+        <p>
+            {{ 'equipment.owner'|trans }} :
+            <a href="{{ path('ks_user_public_profile', { 'username': equipment.username }) }}" rel="tooltip" title="{{ titleTooltip }}">
+                {% if equipment.username|length > 25 %}   
+                    {{ equipment.username|substr(0,24) ~ "..." }}
+                {% else %}
+                    {{ equipment.username }}
+                {% endif %}
+            </a>
+        </p>
+    {% endif %}
+        
+    <hr style="margin:0"/>
+    <div style="text-align: center;">
+        {% if equipment.activity_id is defined and equipment.activity_id is not null %}
+            <a href="{{ path('ksWikisport_show', { 'id' : equipment.activity_id }) }}" class="btn btn-xs btn-success" rel="tooltip" title="{{ 'equipment.show-main-article'|trans }}"><span class="glyphicon glyphicon-search"></span></a>
+        {% endif %}
+        {% if equipment.user_id == userId or userId == '1' %}
+            <a onclick="attachEditEquipmentEvent({{ equipment.id }});" class="btn btn-xs btn-primary" rel="tooltip" title="{{ 'equipment.edit-my-equipment'|trans }}"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a onclick="attachDeleteEquipmentEvent({{ equipment.id }}, {{ intCreationOrEdition }});" class="btn btn-xs btn-danger" rel="tooltip" title="{{ 'equipment.delete-my-equipment'|trans }}"><span class="glyphicon glyphicon-trash"></span></a>
+        {% endif %}
+    </div>  
+</div>
+

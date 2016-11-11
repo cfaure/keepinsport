@@ -1,0 +1,732 @@
+{#MENU sur mobile#}
+<header class="visible-phone" style="margin-top:5px">
+    {% set isExpertMode = app.session.get('isExpertMode') %}
+    <div class="ksBloc thumbnail">
+        <center>
+            <a href="{{ path('ksActivity_activitiesList') }}">
+                <img style="max-height:75px" src="{{ asset('img/ks_typo_logo.png') }}" />
+            </a>
+        </center>
+        
+        <center>
+            <span class="activityBtn btn btn-link link-sportif" style="padding:20px 5px 0px 20px">
+                <a class="icon-plus" rel="tooltip" title="{{ "menu.publish-activity"|trans }}" href="{{ path('ksSport_activitySessionForm', {'activityId' : 'new'}) }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('publishSession', true);"{% endif %}></a> 
+            </span>
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <a class="icon-list-ol" rel="tooltip" title="{{ "menu.ranking"|trans }}" href="{{ path('ksLeague_ranking') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('ranking', false);"{% endif %}></a> 
+            </span>
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <a class="icon-list-alt" rel="tooltip" title="{{ "menu.news-feed"|trans }}" href="{{ path('ksActivity_activitiesList') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('newsFeed', false);"{% endif %}></a> 
+            </span>
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <a class="icon-money" rel="tooltip" title="{{ "menu.gifts"|trans }}" href="{{ path('ksShop_list') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('shop', true);"{% endif %}></a> 
+            </span>
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <a class="icon-calendar " rel="tooltip" title="{{ "menu.agenda"|trans }}" {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}href="{{ path('ksAgenda_index', {"id" : app.user.id }) }}"{% else %}onclick="addVisitorAction('agenda', true);"{% endif %}></a> 
+            </span>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% for clubHasUser in app.user.clubs %}
+                    <span class="btn btn-link link-clubs" style="padding:20px 5px 0px 5px">
+                        <a class="icon-calendar link-clubs" rel="tooltip" title="{{ clubHasUser.club.name }}" href="{{ path('ksAgendaClub_index', {'id' : clubHasUser.club.id }) }}"> </a> 
+                    </span>
+                {% endfor %}
+            {% endif %}
+            
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <a id="menuModeBtnMobile" class="icon-cog " {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}onclick="addVisitorAction('mode', true);"{% endif %} rel="tooltip" title="{% if isExpertMode == '0' %} {{ "menu.expert-mode"|trans }} {% else %} {{ "menu.noob-mode"|trans }} {% endif %}"></a>
+            </span>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <span class="btn btn-link link-sportif" style="color:#646464;padding:20px 5px 0px 5px">
+                    <a id="servicesSynchroBtnMobile" class="icon-refresh" rel="tooltip" title="{{ 'menu.sync-button'|trans }}"></a>
+                </span>
+                <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                    <a class="icon-off" rel="tooltip" title="{{ "menu.disconnect"|trans }}" href="{{ path('fos_user_security_logout') }}"></a> 
+                </span>
+                {% if app.user.id == 1 or app.user.username == "keepinsport" %}
+                    <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                       <a class="icon" href="{{ path('ksUser_netaffiliation_728x90_form') }}">
+                           <span class="icon-cog"></span>
+                       </a>
+                    </span>
+                {% endif %}
+            {% else %}
+                <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                    <a href="{{ path('fos_user_security_login') }}">
+                        <span class="icon-off"></span> {{ "menu.connect"|trans }}
+                    </a>
+                </span>
+                <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                    <a href="{{ path('fos_user_registration_register') }}">
+                        <span class="icon-signin"></span> {{ "menu.register"|trans }}
+                    </a>
+                </span>
+            {% endif %} 
+        </center>
+    </div>  
+</header>
+
+<header id="headerTablet" class="visible-tablet" style="width:100%;">
+    <div class="container thumbnail ksBloc">
+        {#<a class="pull-left" style="" href="{{ path('ksActivity_activitiesList') }}">#}
+
+        {% set page = app.session.get('page') %}
+        
+        {# si on est sur la page principale le logo KEEPINSPORT renvoit vers le haut de la page (si on a scrollé c'est pratique)
+           si on est sur toute autre page, il se comporte comme un retour arrière de navigateur
+        <a class="pull-left" style="" href="{% if page == 'newsFeed' or page == 'clubProfile' %} javascript:window.scrollTo (0, 0); {% else %} javascript:history.back(); {% endif %}">
+        <a class="pull-left" style="" href="javascript:window.scrollTo (0, 0);">#}
+        <a class="pull-left" style="" href="{{ path('ksActivity_activitiesList') }}">
+            <img src="{{ asset('img/keepinsport_logo_32.png') }}" style="margin-top:15px"/>
+        </a>
+        {% set isExpertMode = app.session.get('isExpertMode') %}
+            
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <span class="dropdown visible-desktop visible-tablet" id="lastNotificationsMenu_tablet">
+                    {% render "KsNotificationBundle:Notification:notificationsBlocList" with {'context' : 'tablet'} %}
+                </span>
+            </span>
+        {% endif %}
+        <span class="activityBtn btn btn-link link-sportif" style="padding:20px 5px 0px 20px">
+            <a class="icon-plus" rel="tooltip" title="{{ "menu.publish-activity"|trans }}" href="{{ path('ksSport_activitySessionForm', {'activityId' : 'new'}) }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('publishSession', true);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a class="icon-list-ol" rel="tooltip" title="{{ "menu.ranking"|trans }}" href="{{ path('ksLeague_ranking') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('ranking', false);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a class="icon-list-alt" rel="tooltip" title="{{ "menu.news-feed"|trans }}" href="{{ path('ksActivity_activitiesList') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('newsFeed', true);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a class="icon-money" rel="tooltip" title="{{ "menu.gifts"|trans }}" href="{{ path('ksShop_list') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('shop', true);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a class="icon-calendar " rel="tooltip" title="{{ "menu.agenda"|trans }}" {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}href="{{ path('ksAgenda_index', {"id" : app.user.id }) }}"{% else %}onclick="addVisitorAction('agenda', false);"{% endif %}></a> 
+        </span>
+        
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% for clubHasUser in app.user.clubs %}
+                <span class="btn btn-link link-clubs" style="padding:20px 5px 0px 5px">
+                    <a class="icon-calendar link-clubs" rel="tooltip" title="{{ clubHasUser.club.name }}" href="{{ path('ksAgendaClub_index', {'id' : clubHasUser.club.id  }) }}"> </a> 
+                </span>
+            {% endfor %}
+        {% endif %}
+            
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a id="menuModeBtnTablet" class="icon-cog " {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}onclick="addVisitorAction('mode', true);"{% endif %} rel="tooltip" title="{% if isExpertMode == '0' %} {{ "menu.expert-mode"|trans }} {% else %} {{ "menu.noob-mode"|trans }} {% endif %}"></a>
+        </span>
+        
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <span class="btn btn-link link-sportif" style="color:#646464;padding:20px 5px 0px 5px">
+                <a id="servicesSynchroBtnTablet" class="icon-refresh" rel="tooltip" title="{{ 'menu.sync-button'|trans }}"></a>
+            </span>
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <a class="icon-off" rel="tooltip" title="{{ "menu.disconnect"|trans }}" {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}href="{{ path('fos_user_security_logout') }}"{% endif %}></a> 
+            </span>
+        {% endif %}
+            
+        
+        <div class="pull-right " style="margin-left:5px;margin-top:2px">
+            {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% set app_user_id = 1 %}
+                {% set app_user_username = 'visitor' %}
+                {% set app_user_userDetail = null %}
+                {% set app_user_userDetail_imageName = null %}
+                {% set app_user_leagueLevel_category_label = null %}
+                {% set app_user_leagueLevel_starNumber = null %}
+            {% else %}
+                {% set app_user_id = app.user.id %}
+                {% set app_user_username = app.user.username %}
+                {% set app_user_userDetail = app.user.userDetail %}
+                {% set app_user_userDetail_imageName = (app.user.userDetail is not null ? app.user.userDetail.imageName : null) %}
+                {% set app_user_leagueLevel_category_label = app.user.leagueLevel.category.label %}
+                {% set app_user_leagueLevel_starNumber = app.user.leagueLevel.starNumber %}
+            {% endif %}
+            {% include 'KsUserBundle:User:_userImage_league_mini.html.twig' with { 
+                'user_id' : app_user_id, 
+                'user_username' : app_user_username, 
+                'user_imageName': app_user_userDetail_imageName,
+                'user_league_category' : app_user_leagueLevel_category_label, 
+                'user_league_stars' : app_user_leagueLevel_starNumber,
+                'withCustomTooltip' : false,
+                'withBubble' : false,
+                'bubblePlacement' : "bottom"
+            } %}
+        </div>
+            
+        <div class="pull-right" style="margin-left:20px;margin-top:20px;">
+            <input type="hidden" id="searchSelectTablet" class="searchSelectTablet" />
+        </div>
+            
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% if app.user.id == 1 or app.user.username == "keepinsport" %}
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+               <a class="icon" href="{{ path('ksUser_netaffiliation_728x90_form') }}">
+                   <span class="icon-cog"></span>
+               </a>
+            </span>
+            {% endif %}
+        {% else %}
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 25px" >
+                <a href="{{ path('fos_user_security_login') }}">
+                    <span class="icon-off"></span> {{ "menu.connect"|trans }}
+                </a>
+            </span>
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <a href="{{ path('fos_user_registration_register') }}">
+                    <span class="icon-signin"></span> {{ "menu.register"|trans }}
+                </a>
+            </span>
+        {% endif %}    
+    </div>
+</header>
+
+<header id="headerDesktop" class="visible-desktop" style="width:100%;padding-top:-2px;margin-top:-70px;position:fixed;z-index:1000;">
+    <div id="stepHeader" class="container thumbnail ksBloc" style="">
+        {#
+        background-color:rgb(242, 242, 242)
+        <a class="pull-left" style="" href="{{ path('ksActivity_activitiesList') }}">#}
+
+        {% set page = app.session.get('page') %}
+            
+        {# si on est sur la page principale le logo KEEPINSPORT renvoit vers le haut de la page (si on a scrollé c'est pratique)
+           si on est sur toute autre page, il se comporte comme un retour arrière de navigateur
+        <a class="pull-left" style="" href="{% if page == 'newsFeed' or page == 'clubProfile' %} javascript:window.scrollTo (0, 0); {% else %} javascript:history.back(); {% endif %}">
+        <a class="pull-left" style="" href="javascript:window.scrollTo (0, 0);">#}
+        <a class="pull-left" style="" href="{{ path('ksActivity_activitiesList') }}">
+            <img src="{{ asset('img/ks_typo_logo.png') }}" style="height:50px;margin-top:3px"/>
+        </a>
+        {% set isExpertMode = app.session.get('isExpertMode') %}
+            
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <span class="dropdown visible-desktop visible-tablet" id="lastNotificationsMenu_desktop">
+                    {% render "KsNotificationBundle:Notification:notificationsBlocList" with {'context' : 'desktop'} %}
+                </span>
+            </span>
+        {% endif %}
+        <span class="activityBtn btn btn-link link-sportif" style="padding:20px 5px 0px 20px">
+            <a id="stepPublishActivity" class="icon-plus" rel="tooltip" title="{{ "menu.publish-activity"|trans }}" href="{{ path('ksSport_activitySessionForm', {'activityId' : 'new'}) }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('pusblishSession', true);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a id="stepStats" class="icon-bar-chart" rel="tooltip" title="{{ "menu.statistics"|trans }}" {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %} href="{{ path('ksDashboard_statistics', { "id" : app.user.id }) }}" {% else %} onclick="addVisitorAction('stats', false);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a id="stepRanking" class="icon-list-ol" rel="tooltip" title="{{ "menu.ranking"|trans }}" href="{{ path('ksLeague_ranking') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('ranking', false);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a class="icon-list-alt" rel="tooltip" title="{{ "menu.news-feed"|trans }}" href="{{ path('ksActivity_activitiesList') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('newsFeed', false);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a id="stepGifts" class="icon-money" rel="tooltip" title="{{ "menu.gifts"|trans }}" href="{{ path('ksShop_list') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('shop', true);"{% endif %}></a> 
+        </span>
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a id="stepAgenda" class="icon-calendar" rel="tooltip" title="{{ "menu.agenda"|trans }}" {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}href="{{ path('ksAgenda_index', {"id" : app.user.id }) }}"{% else %}onclick="addVisitorAction('agenda', true);"{% endif %}></a> 
+        </span>
+
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% for clubHasUser in app.user.clubs %}
+                <span class="btn btn-link link-clubs" style="padding:20px 5px 0px 5px">
+                    <a class="icon-calendar link-clubs" rel="tooltip" title="{{ clubHasUser.club.name }}" href="{{ path('ksAgendaClub_index', {'id' : clubHasUser.club.id }) }}"> </a> 
+                </span>
+            {% endfor %}
+        {% endif %}       
+            
+        <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+            <a id="menuModeBtnDesktop" data-tooltipClass='forMenuModeBtnDesktop' class="icon-cog " {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}onclick="addVisitorAction('mode', true);"{% endif %} rel="tooltip" title="{% if isExpertMode == '0' %} {{ "menu.expert-mode"|trans }} {% else %} {{ "menu.noob-mode"|trans }} {% endif %}"></a>
+        </span>
+        
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <span class="btn btn-link link-sportif" style="color:#646464;padding:20px 5px 0px 5px">
+                <a id="servicesSynchroBtnDesktop" class="icon-refresh" rel="tooltip" title="{{ 'menu.sync-button'|trans }}"></a>
+            </span>
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+                <a class="icon-off" rel="tooltip" title="{{ "menu.disconnect"|trans }}" href="{{ path('fos_user_security_logout') }}"></a> 
+            </span>
+        {% endif %}
+        
+        <div id="stepProfil" class="pull-right " style="margin-left:5px;margin-top:2px">
+            {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% set app_user_id = 1 %}
+                {% set app_user_username = 'visitor' %}
+                {% set app_user_userDetail = null %}
+                {% set app_user_userDetail_imageName = null %}
+                {% set app_user_leagueLevel_category_label = null %}
+                {% set app_user_leagueLevel_starNumber = null %}
+            {% else %}
+                {% set app_user_id = app.user.id %}
+                {% set app_user_username = app.user.username %}
+                {% set app_user_userDetail = app.user.userDetail %}
+                {% set app_user_userDetail_imageName = (app.user.userDetail is not null ? app.user.userDetail.imageName : null) %}
+                {% set app_user_leagueLevel_category_label = app.user.leagueLevel.category.label %}
+                {% set app_user_leagueLevel_starNumber = app.user.leagueLevel.starNumber %}
+            {% endif %}
+            {% include 'KsUserBundle:User:_userImage_league_mini.html.twig' with { 
+                'user_id' : app_user_id, 
+                'user_username' : app_user_username, 
+                'user_imageName': app_user_userDetail_imageName,
+                'user_league_category' : app_user_leagueLevel_category_label, 
+                'user_league_stars' : app_user_leagueLevel_starNumber,
+                'withCustomTooltip' : false,
+                'withBubble' : false,
+                'bubblePlacement' : "bottom"
+            } %}
+        </div>
+            
+        <div class="pull-right" style="margin-left:20px;margin-top:20px;">
+            <input type="hidden" id="searchSelectDesktop" class="searchSelectDesktop" />
+        </div>    
+            
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% if app.user.id == 1 or app.user.username == "keepinsport" %}
+            <span class="btn btn-link link-sportif" style="padding:20px 5px 0px 5px" >
+               <a class="icon" href="{{ path('ksUser_netaffiliation_728x90_form') }}">
+                   <span class="icon-cog"></span>
+               </a>
+            </span>
+            {% endif %}
+        {% else %}
+            <span class="btn btn-link link-wikisport" style="padding:20px 5px 0px 25px" >
+                <a class="link-wikisport" href="{{ path('fos_user_security_login') }}">
+                    <span class="icon-off"></span> {{ "menu.connect"|trans }}
+                </a>
+            </span>
+            <span class="btn btn-link link-wikisport" style="padding:20px 5px 0px 5px" >
+                <a class="link-wikisport" href="{{ path('fos_user_registration_register') }}">
+                    <span class="icon-signin"></span> {{ "menu.register"|trans }}
+                </a>
+            </span>
+        {% endif %}
+    </div>
+</header>
+
+<script type="text/javascript">
+    function expertMode() {
+        showInformation("Mode avancé activé...découvre toutes les fonctions avancées du nouveau menu !");
+        $.ajax({
+            url: Routing.generate('ksUser_setExpertMode'),
+            type: "POST",
+            success: function (data) {
+                document.location.href = Routing.generate('ksActivity_activitiesList');
+            }
+        });
+    }
+    
+    function addUserAction(action, type, result, error) {
+        var ajaxRequest = $.post(Routing.generate('ksActivity_addUserAction', {'action' : action, 'type' : type, 'result' : result, 'error' : error})
+            , 
+            function(response) {
+            }
+        ).complete(function() {
+        });
+
+        return ajaxRequest;
+    }
+    
+    function addVisitorAction (action, message) {
+        addUserAction(action, 'visite', 'OK');
+        if (message) showInformation('{{ 'actions.login-required'|trans }}');
+    }
+    
+    $(document).ready(function() {
+        
+        //Test si l'utilisateur a des services activés
+        $("#menuModeBtnDesktop, #menModeBtnTablet").click(function() {
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% if isExpertMode == '0' %} 
+                    expertMode();
+                {% else %} 
+                    showInformation("Mode simplifié activé...bon sport !");
+                    $.ajax({
+                        url: Routing.generate('ksUser_setNoobMode'),
+                        type: "POST",
+                        success: function (data) {
+                            document.location.href = Routing.generate('ksActivity_activitiesList');
+                        }
+                    });
+                {% endif %}
+            {% else %}
+                addVisitorAction('mode');
+            {% endif %}
+        });
+        
+        var checkUserHasActiveServices = function() {
+            $.post(
+                Routing.generate('ksActivity_checkUserHasActiveServices'), 
+                {},
+                function(response) {
+                    if( response.userHasActiveServices ) {
+                        $("#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop").show();
+                        //checkServicesSynchronization();
+                    } else {
+                        $("#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop").hide();
+                    }
+                }
+            );
+        };
+            
+        var checkServicesSynchronization = function() {
+            $.post(
+                Routing.generate('ksActivity_checkSynchronisationInProgress'), 
+                {},
+                function(response) {
+                    if( response.servicesAreBeingSynchronized ) {
+                        $("#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop").addClass('icon-spin');
+
+                        //On re vérifiera dans 30 secondes
+                        window.setTimeout(checkServicesSynchronization, 30000);
+                    } else {
+                        $("#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop").removeClass('icon-spin');
+
+                        if( response.activitiesSynchronizedNb > 0 ) {
+                            $("#showSynchronizedActivitiesBloc").show();
+                            $("#showInviteSyncButtonBloc").hide();
+                        }
+                    }
+                }
+            );
+        };
+        
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            //checkUserHasActiveServices();
+            $("#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop").show();
+        
+            $("#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop").click(function() {
+                $("#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop").addClass('icon-spin');
+                
+                document.location.href = Routing.generate('ksActivity_syncFromList');
+                
+                /*AVANT : on lance une demande de synchro des services
+                $.post(Routing.generate('ksyncEndomondo_createJob'), {}, function(response) {
+                    if (response.syncResponse == 1) {
+                        //showInformation(response.successMessage);
+                        checkServicesSynchronization();
+                    } 
+                    else if (response.syncResponse == -1) {
+                        $('#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop').removeClass('icon-spin');
+                        showInformation(response.errorMessage);
+                    }
+                });
+
+                $.post( Routing.generate('ksActivity_createNikePlusJob' ), {}, function( response ) {
+                    if ( response.syncResponse == 1 ) {
+                        //showInformation(response.successMessage );
+                        checkServicesSynchronization();
+                    } 
+                    else if (response.syncResponse == -1) {
+                        $('#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop').removeClass('icon-spin');
+                        showInformation( response.errorMessage );
+                    }
+                });
+
+                $.post( Routing.generate('ksyncRunkeeper_createJob' ), {}, function( response ) {
+                    if ( response.syncResponse == 1 ) {
+                        //showInformation(response.successMessage );
+                        checkServicesSynchronization();
+                    } 
+                    else if (response.syncResponse == -1) {
+                        $('#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop').removeClass('icon-spin');
+                        showInformation( response.errorMessage );
+                    }
+                });
+
+                $.post( Routing.generate('ksyncSuunto_createJob' ), {}, function( response ) {
+                    if ( response.syncResponse == 1 ) {
+                        //showInformation(response.successMessage );
+                        checkServicesSynchronization();
+                    } 
+                    else if (response.syncResponse == -1) {
+                        $('#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop').removeClass('icon-spin');
+                        showInformation( response.errorMessage );
+                    }
+                });
+                
+                $.post( Routing.generate('ksSetServiceGoogleAgenda' ), {}, function( response ) {
+                    if ( response.syncResponse == 1 ) {
+                        //showInformation(response.successMessage );
+                        checkServicesSynchronization();
+                    } 
+                    else if (response.syncResponse == -1) {
+                        $('#servicesSynchroBtnMobile, #servicesSynchroBtnTablet, #servicesSynchroBtnDesktop').removeClass('icon-spin');
+                        showInformation( response.errorMessage );
+                    }
+                });*/
+
+            });
+        {% endif %}
+    });
+</script>
+
+<script type="text/javascript">
+    //Gestion des événements sur le menu
+    function showLoader() {
+        {% if isExpertMode %}
+            var $loader = $("#loaderExpert");
+        {% else %}
+            var $loader = $("#loaderNoob");
+        {% endif %}
+        $loader.css('visibility', 'visible');
+        $loader.show();
+    }
+    $(document).ready(function() {
+        //FMO : obligé avec le menu avancé actuel de passer par ces event plutôt que en href sinon ça rend pas du tout sur le menu..
+        attachPublishActivityEvent($(".activityBtn"));
+        {% if session is not defined %}
+            {% set session = 'default' %}
+        {% endif %}
+        
+        {% if isExpertMode and session == "newsFeed" %}
+            attachPublishStatusEvent($(".statusBtn"));
+            attachPublishLinkEvent($(".linkBtn"));
+            attachPublishPhotoEvent($(".photosBtn"));
+        {% endif %}
+        attachArticleEvent($(".articleBtn"));
+        attachInvitEvent($(".invitBtn"));
+        attachNewsFeedEvent($(".newsFeedBtn"));
+        attachMailsEvent($(".mailsBtn"));
+        attachEvolutionEvent($(".evolutionBtn"));
+        attachLocalisationsEvent($(".localisationsBtn"));
+        attachShopsEvent($(".shopsBtn"));
+        attachEquipmentEvent($(".equipmentBtn"));
+        attachSportsmenEvent($(".sportsmenBtn"));
+        attachClubsEvent($(".clubsBtn"));
+        attachWikisportEvent($(".wikisportBtn"));
+        attachMyEquipmentEvent($(".myEquipmentBtn"));
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            attachAgendaEvent($(".agendaBtn"));
+            attachComparisonEvent($(".comparisonBtn"));
+            attachRankingEvent($(".rankingBtn"));
+            attachStatisticsEvent($(".statisticsBtn"));
+            attachMyProfileEvent($(".myProfileBtn"));
+            {% for clubHasUser in app.user.clubs %}
+                attachMyClub{{clubHasUser.club.id}}Event($(".myClub{{clubHasUser.club.id}}Btn"));
+            {% endfor %}
+        {% endif %}
+        attachMyHomePageEvent($(".myHomePageBtn"));
+        attachMyProfilePageEvent($(".myProfilePageBtn"));
+        attachMyServicesEvent($(".myServicesBtn"));
+
+        attachNoobEvent($(".noobBtn"));
+        attachExpertEvent($(".expertBtn"));
+        attachLogoutEvent($(".logoutBtn"));
+
+        function attachArticleEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                createNewArticle('-1'); //Création d'un article sans type sélectionné, l'utilisateur le choisi après dans la modal
+            });
+        }
+        
+        function attachInvitEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksFriends_invite');
+            });
+        }
+            
+        function attachPublishActivityEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksSport_activitySessionForm', {'activityId' : 'new'});
+            });
+        }
+
+        function attachNewsFeedEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksActivity_activitiesList');
+            });
+        }
+        
+        function attachMailsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksMessage_box', {'numPage' : 1});
+            });
+        }
+
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            function attachAgendaEvent(elt) {
+                elt.click(function(e) {
+                    showLoader();
+                    document.location.href = Routing.generate('ksAgenda_index', {"id" : {{ app.user.id }} });
+                });
+            }
+        
+            function attachComparisonEvent(elt) {
+                elt.click(function(e) {
+                    showLoader();
+                    document.location.href = Routing.generate('ksDashboard_comparison', { "id" : {{ app.user.id }} });
+                });
+            }
+
+            function attachRankingEvent(elt) {
+                elt.click(function(e) {
+                    showLoader();
+                    document.location.href = Routing.generate('ksLeague_ranking', { "id" : {{ app.user.id }} });
+                });
+            }
+            
+            function attachStatisticsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksDashboard_statistics', { "id" : {{ app.user.id }} });
+            });
+            }
+
+            function attachMyProfileEvent(elt) {
+                elt.click(function(e) {
+                    showLoader();
+                    document.location.href = Routing.generate('ks_user_public_profile', { 'username' : '{{ app.user.username }}'});
+                });
+            }
+
+            {% for clubHasUser in app.user.clubs %}
+                function attachMyClub{{clubHasUser.club.id }}Event(elt) {
+                    elt.click(function(e) {
+                        showLoader();
+                        document.location.href = Routing.generate('ksClub_public_profile', { "clubId" : {{ clubHasUser.club.id }} });
+                    });
+                }
+            {% endfor %}
+        {% endif %}
+
+        function attachEvolutionEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('KsEvolution_list');
+            });
+        }
+
+        function attachLocalisationsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksSportingActivities_localisations');
+            });
+        }
+
+        function attachShopsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksShop_list');
+            });
+        }
+
+        function attachEquipmentEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksProfile_equipment', { "creationOrEdition" : "edition" });
+            });
+        }
+
+        function attachSportsmenEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ks_sportifs_all');
+            });
+        }
+
+        
+
+        function attachClubsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksClub_all');
+            });
+        }
+
+        function attachWikisportEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksWikisport_index');
+            });
+        }
+
+        
+
+        function attachMyEquipmentEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksProfile_equipment', { "creationOrEdition" : "edition" });
+            });
+        }
+        
+        function attachMyEquipmentEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksProfile_equipment', { "creationOrEdition" : "edition" });
+            });
+        }
+        
+        function attachMyHomePageEvent(elt) {
+            elt.click(function(e) {
+                //document.location.href = Routing.generate('ks_set_services')
+            });
+        }
+
+        function attachMyProfilePageEvent(elt) {
+            elt.click(function(e) {
+                //document.location.href = Routing.generate('ks_set_services')
+            });
+        }
+
+        function attachMyServicesEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ks_set_services');
+            });
+        }
+
+        function attachNoobEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                showInformation("Mode simplifié activé...bon sport !");
+                $.ajax({
+                    url: Routing.generate('ksUser_setNoobMode'),
+                    type: "POST",
+                    success: function (data) {
+                        document.location.href = Routing.generate('ksActivity_activitiesList');
+                    }
+                });
+            });
+        }
+
+        function attachExpertEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                showInformation("Mode avancé activé...découvre toutes les fonctions avancées du nouveau menu !");
+                $.ajax({
+                    url: Routing.generate('ksUser_setExpertMode'),
+                    type: "POST",
+                    success: function (data) {
+                        document.location.href = Routing.generate('ksActivity_activitiesList');
+                    }
+                });
+            });
+        }
+
+        function attachLogoutEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('fos_user_security_logout');
+            });
+        }
+
+        $(function() {
+            var menu_ul = $('.menu > li > ul'),
+            menu_a  = $('.menu > li > a');
+            menu_ul.hide();
+            menu_a.click(function(e) {
+                //e.preventDefault(); //sinon le href ne se fait pas !
+                if(!$(this).hasClass('active')) {
+                    menu_a.removeClass('active');
+                    menu_ul.filter(':visible').slideUp('normal');
+                    $(this).addClass('active').next().stop(true,true).slideDown('normal');
+                } else {
+                    $(this).removeClass('active');
+                    $(this).next().stop(true,true).slideUp('normal');
+                }
+            });
+        });      
+    });
+    
+</script>

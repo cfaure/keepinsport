@@ -1,0 +1,311 @@
+<div class="modal fade" id="shareActivityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class='modal-header'>
+                <a class='close' data-dismiss='modal'>&times;</a>
+                <h3 class="sportif" id="shareTitle" style="display:none">{{ 'actions.share'|trans }}</h3>
+                <h3 class="sportif" id="shareInfo" style="display:none">{{ 'actions.info'|trans }}</h3>
+            </div>
+            <div class='modal-body'>
+                <div class="messages"></div>
+                <div class="shareButtonsBloc">
+                    <label class="pull-left" style="margin-left:10px">
+                        <span class="pull-left" style="margin-right:5px"><input type="radio" name="shareOn" value="fb"></span>
+                        <span class="pull-left">Partager sur FB</span>
+                    </label>
+                    <label class="pull-left" style="margin-left:10px">
+                        <span class="pull-left" style="margin-right:5px"><input type="radio" name="shareOn" value="mail"></span>
+                        <span class="pull-left">Partager par mail</span>
+                    </label>
+                    {#<label class="pull-left" style="margin-left:10px">
+                        <span class="pull-left" style="margin-right:5px"><input type="radio" name="shareOn" value="ks"></span>
+                        <span class="pull-left" >Partager sur Ks</span>
+                    </label>#}
+                </div>
+                <br clear="all"/><br/>
+                <div class="emailsBloc">
+                    <label for="emails"  id="label-email-guest"> Emails (Sépare les e-mails par des ";") : </label>
+                    <input type="text" name="emails" value="" class="input-block-level emails"/>
+                </div>
+                <div id="descriptionBloc" class="descriptionBloc">
+                    <label for="description" id="label-description-share"> Description : </label>
+                    <textarea class='description input-block-level' style="resize: none"  placeholder="Description" value="" name="description"></textarea>
+                </div>
+                <center class="loader">
+                    <img  src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+                </center>
+                <div class='activityToBeShared-bloc'></div>
+            </div>
+            <div class='modal-footer'>
+                <img class="loader pull-left" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+                <span class='cancel btn btn-primary' data-dismiss='modal' >Annuler</span>
+                <span id="shareButton" class='share btn btn-success'>{{ 'activity.share'|trans }}</span>
+                <span id="connectFacebookButtonFromModal" class="btn btn-success">
+                    {{ 'users.connexion'|trans }} <span class="facebook-icon">Facebook</span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    
+    var isConnectedToFB = false;
+    $("#shareButton").hide();
+            
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '106071199501870', // App ID
+            status     : true, // check login status
+            //channelUrl : 'http://www.keepinsport.com/',
+            cookie     : true, // enable cookies to allow the server to access the session
+            xfbml      : true,  // parse XFBML
+            oauth      : true
+        });
+
+        // Additional initialization code here
+        FB.getLoginStatus(function(response) {
+            $("#connectFacebookButtonFromModal").show();
+            $("#shareButton").hide();
+
+            if (response.status === 'connected') {
+                isConnectedToFB = true;
+                console.log('FB: auth ok');
+                //$("#connectFacebookButtonFromModal").addClass("disabled");
+                $("#connectFacebookButtonFromModal").hide();
+                $("#shareButton").show();
+            } else if (response.status === 'not_authorized') {            
+                console.log('FB: not auth');
+            } else {
+                console.log('FB: not logged in');
+            }
+        });
+    };
+
+    // Load the SDK Asynchronously
+    (function(d){
+        var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement('script'); js.id = id; js.async = true;
+        js.src = "//connect.facebook.net/fr_FR/all.js";
+        ref.parentNode.insertBefore(js, ref);
+        }(document));
+
+    $("#connectFacebookButtonFromModal").click(function() {
+        if( ! $( this ).hasClass("disabled") ) {
+            //shareActivity26084OnFb();
+            if(! isConnectedToFB ) {
+                FB.login(function(response) {
+                    if (response.status === 'connected') {
+                        isConnectedToFB = true;
+                        console.log('FB: auth ok');
+                        //$("#connectFacebookButtonFromModal").addClass("disabled");
+                        $("#connectFacebookButtonFromModal").hide();
+                        $("#shareButton").show();
+                        addUserAction('click on connexion FB', 'from posting activity', 'OK', null);
+                        showInformation("Connexion Facebook effectuée avec succès !");
+                    } else if (response.status === 'not_authorized') {
+                        console.log('FB: not auth');
+                        addUserAction('click on connexion FB', 'FB from posting activity', 'not_authorized', response.error.message);
+                        showInformation("Connexion Facebook KO, recharge la page et essaye encore stp !");
+                    } else {
+                        console.log('FB: not logged in');
+                        addUserAction('click on connexion FB', 'from posting activity', 'not logged in', response.error.message);
+                        showInformation("Connexion Facebook KO, recharge la page et essaye encore stp !");
+                    }
+                }, {scope: 'publish_actions,user_photos'});
+            }
+        }
+    });
+    
+    var $shareActivityModal     = $("#shareActivityModal");
+        
+    //Le corp de la fenêtre
+    var $modalBody              = $shareActivityModal.find("div.modal-body");
+    var $shareButtonsBloc       = $modalBody.find("div.shareButtonsBloc");
+    var $shareOnKs              = $modalBody.find("input[type=radio][name=shareOn][value=ks]");
+    var $shareOnMail            = $modalBody.find("input[type=radio][name=shareOn][value=mail]");
+    var $shareOnFb              = $modalBody.find("input[type=radio][name=shareOn][value=fb]");
+    var $emailsBloc             = $modalBody.find("div.emailsBloc");
+    var $inputEmail             = $modalBody.find("input.emails");
+    var $descriptionBloc        = $modalBody.find('div.descriptionBloc');
+    var $descriptionTextarea    = $modalBody.find('textarea.description');
+    var $activityToBeSharedBloc = $modalBody.find('.activityToBeShared-bloc');
+    var $loader                 = $modalBody.find('.loader');
+    var $messagesBloc           = $modalBody.find('.messages');
+    
+
+    //Le pied de la fenêtre
+    var $modalFooter            = $shareActivityModal.find("div.modal-footer");
+    var $shareButton            = $modalFooter.find('span.share');
+    var $cancelButton           = $modalFooter.find('span.cancel');
+    var $loaderFooter           = $modalFooter.find('.loader');
+    
+    //Pour le partage par mail
+    $shareOnMail.iCheck({
+        radioClass: 'iradio_square-blue',
+    });
+    $shareOnMail.on('ifChecked', function(event){
+        $emailsBloc.show();
+        $shareButton.show();
+        $("#connectFacebookButtonFromModal").hide();
+        $descriptionBloc.show();
+    });
+
+    //Pour le partage sur Keepinsport
+    $shareOnKs.iCheck({
+        radioClass: 'iradio_square-blue',
+    });
+    $shareOnKs.on('ifChecked', function(event){
+        $emailsBloc.hide();
+        $shareButton.show();
+        $("#connectFacebookButtonFromModal").hide();
+        $descriptionBloc.show();
+    });
+
+    //Pour le partage sur Facebook
+    $shareOnFb.iCheck({
+        radioClass: 'iradio_square-blue',
+    });
+    $shareOnFb.on('ifChecked', function(event){
+        $emailsBloc.hide();
+        if (isConnectedToFB) {
+            $shareButton.show();
+            $("#connectFacebookButtonFromModal").hide();
+        }
+        else {
+            $shareButton.hide();
+            $("#connectFacebookButtonFromModal").show();
+        }
+        
+        $descriptionBloc.hide();
+    });
+    
+    var closeShareModal = function() {
+        $shareActivityModal.modal('hide');
+    }
+    
+    var shareActivityOnKS = function( activityId ) {
+        if( !$shareButton.hasClass( "disabled" )) {
+            $shareButton.addClass( "disabled" );
+            $loaderFooter.show();
+            var description = $descriptionTextarea.val();
+
+            $.post(Routing.generate('ksActivity_shareActivity', {'activityId' : activityId}), { 
+                "description"   : description
+            }, 
+            function(response) {
+                if ( response.shareResponse == 1 ) {
+                    if ( $('#activitiesBlockList').size() > 0 ) {
+                        $('#activitiesBlockList').prepend(response.html);
+
+                        //On incrémente l'offset des activités, vu qu'on vient d'en ajouter une au flux 
+                        activitiesOffset = $('#activitiesBlockList').attr('data-offset');
+                        $('#activitiesBlockList').attr('data-offset', parseInt(activitiesOffset) + 1)
+                    }
+                    
+                    $shareButtonsBloc.hide();
+                    $descriptionBloc.hide();
+
+                    $messagesBloc.addClass("alert alert-info");
+                    $messagesBloc.html( "L'activité a bien été partagée" );
+                    $messagesBloc.show();
+                    
+                    //On désactive le boutton
+                    $shareButton.addClass("disabled");
+                    $shareButton.hide();
+
+                    //Le bouton Annuler devient fermer
+                    $cancelButton.html("Fermer");
+                    setTimeout(closeShareModal,2000);
+                }
+                $loaderFooter.hide();
+            });
+        }
+    };
+    
+    var shareActivityOnMail = function( activityId ) {
+        if( !$shareButton.hasClass( "disabled" )) {  
+            var description = $descriptionTextarea.val();
+            var emails = $inputEmail.val();
+            
+            var areMailsValid = true;
+       
+            email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;  
+
+            var aEmails = $inputEmail.val().split(";");
+
+            var errorMessage = "";
+            var id = 0;
+            $.each( aEmails, function(key, email) {
+                if(!email_regex.test(email)){
+                    areMailsValid = false;
+                    id = key +1;
+                    errorMessage += "L'adresse mail n°" + id +" n'est pas valide.<br/>";
+                }
+            });
+
+            if( areMailsValid ){
+                $shareButton.addClass( "disabled" );
+                $loaderFooter.show();
+
+                $.post(Routing.generate('ksActivity_shareEmailActivity', {'activityId' : activityId}), { 
+                    "description"   : description,
+                    "emails"   : emails
+
+                }, 
+                function(response) {
+                    if ( response.shareResponse == 1 ) {
+                        if ( $('#activitiesBlockList').size() > 0 ) {
+                            $('#activitiesBlockList').prepend(response.html);
+
+                            //On incrémente l'offset des activités, vu qu'on vient d'en ajouter une au flux 
+                            activitiesOffset = $('#activitiesBlockList').attr('data-offset');
+                            $('#activitiesBlockList').attr('data-offset', parseInt(activitiesOffset) + 1)
+                        }
+
+                        $shareActivityModal.find("div.alert").hide();
+
+                        $shareButtonsBloc.hide();
+                        $descriptionBloc.hide();
+                        $emailsBloc.hide();
+                        $activityToBeSharedBloc.hide();
+                        
+                        $messagesBloc.addClass("alert alert-info");
+                        $messagesBloc.html( "L'activité a bien été partagée !" );
+                        $messagesBloc.show();
+                
+                        //On désactive le boutton
+                        $shareButton.addClass("disabled");
+                        $shareButton.hide();
+
+                        //Le bouton Annuler devient fermer
+                        $cancelButton.html("Fermer");
+                        setTimeout(closeShareModal,2000);
+                    }
+                    $loaderFooter.hide();
+                });
+            }else{
+                $messagesBloc.addClass("alert alert-error");
+                $messagesBloc.html( errorMessage );
+                $messagesBloc.show();
+            }
+         }
+    };
+    
+    var shareActivity = function( context, activityId, type ) {
+        //On cache le bloc de messages
+        $messagesBloc.hide().removeClass("alert").removeClass("alert-error").removeClass("alert-info").html("");
+
+        if( $shareOnKs.is(":checked") ) {
+            shareActivityOnKS( activityId );
+        }
+        if( $shareOnMail.is(":checked") ) {
+            shareActivityOnMail( activityId );
+        }
+        if( $shareOnFb.is(":checked")) {
+            //closeShareModal();
+            eval("shareActivity" + activityId + "OnFb('" + context + "','" + type + "')");
+        }
+    };
+</script>

@@ -1,0 +1,84 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <style>
+        div.row {
+            margin-left: 0;
+        }
+    </style>
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+     <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+     <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+     <script type="text/javascript">
+
+        /*2 fonctions pour trier les ligues*/
+        jQuery.fn.dataTableExt.oSort['ligue-asc']  = function(x,y) {
+            var valX = parseInt($(x).find(".rank").prevObject[0].innerHTML);
+            var valY = parseInt($(y).find(".rank").prevObject[0].innerHTML);
+            return ((valX < valY) ? -1 : ((valX > valY) ?  1 : 0));
+        };
+
+        jQuery.fn.dataTableExt.oSort['ligue-desc'] = function(x,y) {
+            var valX = parseInt($(x).find(".rank").prevObject[0].innerHTML);
+            var valY = parseInt($(y).find(".rank").prevObject[0].innerHTML);
+            return ((valX < valY) ? 1 : ((valX > valY) ?  -1 : 0));
+        };
+
+        $(document).ready(function() {
+             $('#usersTable').dataTable({
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    //{ "sType": 'ligue' },
+                    { "bSortable": false },
+                    { "bSortable": false },
+                    { "bSortable": false }
+                ],
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            }); 
+            
+            $('#usersTableLight').dataTable({
+                "aoColumns": [
+                    null,
+                    { "bSortable": false }
+                ],
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });
+        });
+           
+    </script>
+{% endblock %}
+    
+{% block content %}
+    
+    
+    <h1 class="friends">{{ 'menu.my-friends'|trans }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    
+    {#<div>
+        <a class="btn btn-friends" href="{{ path('ksFriends_invite') }}">
+            <i class="icon-envelope icon-white"></i> Inviter un sportif
+        </a>
+        <a class="btn btn-friends" href="{{ path('ks_sportifs_all') }}">
+            <i class="icon-list icon-white"></i> {{ 'titles.all-sportsmen'|trans }}
+        </a>
+    </div>
+    <br/>#}
+    {% render 'KsLeagueBundle:League:communityGraph'  with {'userId' : app.user.id} %}
+    <br/>
+    <div>
+        {% include 'KsUserBundle:User:_usersTable.html.twig' with { 'users' : users } %}
+    </div>
+
+{% endblock %}        

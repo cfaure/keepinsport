@@ -1,0 +1,37 @@
+<div class="row-fluid" style="line-height: 30px">
+    {% if withLink is defined and not withLink %}
+        <center>
+        <img style="height:25px" src="{{ asset('bundles/ksactivity/images/RunKeeper.png' ) }}"/>    
+        <img style="height:25px" src="{{ asset('bundles/ksactivity/images/endomondo.png' ) }}"/>    
+        <img style="height:25px" src="{{ asset('bundles/ksactivity/images/NikePlus.png' ) }}"/> 
+        <br clear="all">
+        <img style="height:25px" src="{{ asset('bundles/ksactivity/images/garmin.png' ) }}"/>
+        <img style="height:20px" src="{{ asset('bundles/ksactivity/images/Gpx.png' ) }}"/>
+        <img style="height:25px" src="{{ asset('bundles/ksactivity/images/ffa.png' ) }}"/>    
+        <img style="height:25px" src="{{ asset('bundles/ksactivity/images/googleAgenda.gif' ) }}"/>
+        </center>
+    {% else %}
+        <a class="imageLink" href="{{ path("ks_set_services") }}">
+            <img style="height:25px" src="{{ asset('bundles/ksactivity/images/RunKeeper.png' ) }}"/>
+        </a>
+        <a class="imageLink" href="{{ path("ks_set_services") }}">
+            <img style="height:25px" src="{{ asset('bundles/ksactivity/images/endomondo.png' ) }}"/>
+        </a>
+        <a class="imageLink" href="{{ path("ks_set_services") }}">
+            <img style="height:25px" src="{{ asset('bundles/ksactivity/images/NikePlus.png' ) }}"/>
+        </a>
+        <a class="imageLink" href="{{ path("ks_user_upload_gpx_file") }}">
+            <img style="height:25px" src="{{ asset('bundles/ksactivity/images/garmin.png' ) }}"/>
+        </a>
+        <a class="imageLink" href="{{ path("ks_user_upload_gpx_file") }}">
+            <img style="height:20px" src="{{ asset('bundles/ksactivity/images/Gpx.png' ) }}"/>
+        </a>
+        <a class="imageLink" href="{{ path("ksActivity_uploadFfaActivities") }}">
+            <img style="height:25px" src="{{ asset('bundles/ksactivity/images/ffa.png' ) }}"/>
+        </a>
+        <a class="imageLink" href="{{ path("ks_set_services") }}">
+            <img style="height:25px" src="{{ asset('bundles/ksactivity/images/googleAgenda.gif' ) }}"/>
+        </a>
+    {% endif %}
+</div>
+    

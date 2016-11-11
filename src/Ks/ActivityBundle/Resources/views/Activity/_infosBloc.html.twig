@@ -1,0 +1,30 @@
+{% if activity.source is defined and activity.source is not null%}
+    {% set classe = activity.source %}
+    <div class="thumbnail {{ classe }}" style=" width:64px; height: 64px; border-radius:15px; ">      
+{% else %}
+    {% set style = "background-color:" ~ activity.sportType_hexadecimalColor %}
+    <div class="thumbnail" style=" width:64px; height: 64px; border-radius:15px; {{ style }}">
+{% endif %}
+
+    <div>
+        <div style="float:left;width:50%">
+            <a rel="tooltip" title="{{ activity.sport_label }}">
+                {% if asset('img/sports/' ~ activity.sport_codeSport ~ '.png')|issetImg %}
+                    <img width="32px" src="{{ asset('img/sports/' ~ activity.sport_codeSport ~ '.png') }}"/>
+                {% else %}
+                    <img width="32px" src="{{ asset('img/sports/running.png') }}"/>
+                {% endif %}
+            </a>
+        </div>
+        <div style="float:left;width:50%;padding-top:0px;">
+            {% include 'KsActivityBundle:Activity:_stateOfHealth.html.twig' %}
+        </div>
+    </div>
+    <br clear="all"/>
+    <div style="width:100%;text-align:center;">
+        {% include 'KsActivityBundle:Activity:_service.html.twig' %}
+    </div>
+</div>
+{% if activity.earnedPoints is not null %}
+    <div class="earnedPoints">+{{ activity.earnedPoints }} pts</div>
+{% endif %}

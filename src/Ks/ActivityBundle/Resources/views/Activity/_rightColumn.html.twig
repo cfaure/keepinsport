@@ -1,0 +1,244 @@
+{#<center>
+    <div class="fb-like" data-href="https://www.facebook.com/pages/Keepinsport/303227623023110" data-send="true" data-layout="button_count" data-width="450" data-show-faces="true"></div>
+</center>#}
+
+{#<div class="ksBloc ksBlocOnBlue thumbnail" >
+    <h3 class="sportif">En 1 clic</h3>
+    <div class="blocHeaderSeparator"></div>
+    <a href="{{ path("ksSport_activitySessionForm", {"activityId" : "new"}) }}" class="btn btn-sportif btn-block">
+        Publier une activité sportive
+    </a>
+    <a href="{{ path("ksFriends_invite") }}" class="btn btn-sportif btn-block">
+         Inviter un sportif <span class="icon-envelope icon-white" style="margin-left:15px"></span> | <span class="facebook-icon">f</span> | <span style="font-family: Catull">g</span>
+    </a>
+    <a href="{{ path("ksLeague_ranking") }}" class="btn btn-friends btn-block">
+        <span class="icon-trophy"></span> Accéder au classement
+    </a>
+    <span class="btn btn-clubs btn-block sportsmanSearchBtn">
+         <span class="icon-group"></span> Rechercher des partenaires
+    </span> 
+</div>  #}
+
+{#
+<div  >
+    {#<a class="btn btn-sportif btn-small pull-right" href="{{ path('ksUser_sponsors') }}">
+        <i class="icon-search icon-white"></i>
+    </a>
+    <h3 class="sportif">{{ "titles.sponsors"|trans }}</h3>
+    <div class="blocHeaderSeparator"></div>
+    <center>
+        {#% include 'KsUserBundle:User:_sponsor.html.twig' with {'refSponsor' : refSponsor } 
+        <a href="http://www.privatesportshop.com/invite/MjAxMy0wNC0y==QbvNmLw9GazRncvB3clRXY2lmcwBEdy9Gcz5WawVWZrtybm5Wa?utm_source=emaildedie&utm_medium=cpl&utm_campaign=keepinsport&lp=keepinsport" target="_BLANK">
+            <img src="{{ asset('img/pss_ks_250x250.png') }}" alt="Private Sport Shop" title="Private Sport Shop"/>
+        </a>
+    </center>
+</div>
+#}
+
+{% set page = app.session.get('page') %}
+{% if page == 'login' or page == 'register' %}
+    </br>
+    </br>
+    <div >
+        <a class="btn btn-sportif btn pull-right" rel="tooltip" title="{{ "actions.visit"|trans }}" href="{{ path('ksActivity_activitiesList') }}" style="margin-top:5px">
+            <i class="icon-search icon-white"></i>
+        </a>
+        <h1 class="sportif visible-desktop">{{ "actions.visit-tour-desktop"|trans }}</h1>
+        <h2 class="sportif visible-tablet">{{ "actions.visit-tour-tablet"|trans }}</h2>
+        <div class="blocHeaderSeparator"></div>
+        <div id ="loginComments">
+            {% for citation in citations %}
+                {% if citation.user is defined and citation.user is not null %}
+                    <div class="vds" style="color:#1787c7;margin-bottom:10px">
+                        <div class="media">
+                            <div class="media-object pull-left">
+                                {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                    'user_id' : citation.user.id, 
+                                    'user_username' : citation.user.username, 
+                                    'user_imageName': citation.user.imageName, 
+                                    'user_league_category' : citation.user.leagueCategoryLabel, 
+                                    'user_league_stars' : citation.user.leagueLevelStarNumber,
+                                    'withBubble' : false
+                                } %}
+                                {#<img src="{{ asset('img/cedricdelpoux.jpg') }}" style="width:63px;border:2px solid rgba(0, 0, 0, 0.5);margin-right:5px" class="img-circle pull-left"/>#}
+                            </div>
+                            <div class="media-body">
+                                <span class="icon-quote-left"></span> {{ citation.text }} <span class="icon-quote-right"></span>
+                            </div>
+
+                            <i class="pull-right" style="font-size: 0.8em">{{ citation.user.firstName }}, ligue {{ ("leagues." ~ citation.user.leagueCategoryLabel)|trans }} {{ citation.user.leagueLevelStarNumber }} {{ "leagues.stars-number"|transchoice(citation.user.leagueLevelStarNumber) }}</i>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>        
+        <div id="sliderFrame">
+            <div id="slider">
+            </div>
+        </div>
+    </div>
+{% else %}
+    <div>
+        {% render "KsActivityBundle:Activity:lastActivitiesFromWikisport" with { 'nbActivities' : 10 } %}
+    </div>
+    
+    {% if checklistActions|length > 0 and 1 == 0 %}
+    <div id="stepRightColumnStart" >
+        <a class="btn btn-sportif btn-small pull-right" rel="tooltip" title="{{ "actions.show"|trans }}" href="{{ path('ksUser_showChecklist') }}">
+            <i class="icon-search icon-white"></i>
+        </a>
+        <h3 class="sportif">{{ 'actions.good-start'|trans }}</h3>
+        <div class="blocHeaderSeparator"></div>
+        <div style="height:100px;overflow-y: scroll;">
+            <ul class="checklist">
+                {% for checklistAction in checklistActions %}
+                    {% set href = "#" %}
+                    {% set bubble = false %}
+                    {% if checklistAction.code == "inviteFriends" %}
+                        {% set href = path('ksFriends_invite')  %} {#http://blog.keepinsport.com/bien-debuter-invite-tes-amis/#}
+                    {% elseif checklistAction.code == "paramService" %}
+                        {% set href = path('ks_set_services') %} {#http://blog.keepinsport.com/bien-debuter-parametrer-un-service-runkeeper-nike/" #}
+                    {% elseif checklistAction.code == "createClub" %}
+                        {% set href = path('ksClub_all') %} {#"http://blog.keepinsport.com/bien-debuter-creer-un-club-une-association-un-groupe-de-sportifs/"#}
+                    {% elseif checklistAction.code == "inviteFriendInClub" %}
+                        {% set href = path('ksClub_all') %} {#"http://blog.keepinsport.com/bien-debuter-creer-un-club-une-association-un-groupe-de-sportifs/"#}
+                    {% elseif checklistAction.code == "publishSportActivity" %}
+                        {% set href = path('ksSport_activitySessionForm', {'activityId' : 'new'}) %} {#"http://blog.keepinsport.com/bien-debuter-publier-une-activite-sportive/"#}
+                    {% elseif checklistAction.code == "publishStatusPhotoVideo" %}
+                        {% set href = path('ksActivity_activitiesList') %} {#"http://blog.keepinsport.com/bien-debuter-publier-un-statut-une-photo-une-video/"#}
+                    {% elseif checklistAction.code == "commentLikeShareActivity" %}
+                        {% set href = path('ksActivity_activitiesList') %} {#"http://blog.keepinsport.com/bien-debuter-commenter-aimer-partager-une-activite/"#}
+                    {% elseif checklistAction.code == "subscribeEvent" %}
+                        {% set href = path('ksWikisport_index') %} {#"http://blog.keepinsport.com/bien-debuter-sinscrire-a-un-evenement/"#}
+                    {% elseif checklistAction.code == "participateArticle" %}
+                        {% set href = path('ksWikisport_index') %} {#"http://blog.keepinsport.com/bien-debuter-participer-a-un-article/"#}
+                    {% elseif checklistAction.code == "expertMode" %}
+                        {% set href = "javascript:expertMode();" %}
+                    {% elseif checklistAction.code == "createShop" %}
+                        {% set href = path('ksShop_list') %}
+                    {% elseif checklistAction.code == "visitSeen" %}
+                        {% set href = path('ksActivity_activitiesList') %}
+                    {#% elseif checklistAction.code == "consultBlog" %}
+                        {% set href = "http://blog.keepinsport.com" %#}
+                    {% endif %}
+
+                    {% set href = path('ksUser_showChecklist') %}
+
+                    <li>
+                        {% if checklistAction.date is null %}
+                            <div class="actionBloc">
+                                <a href="{{ href }}" {% if bubble %} class="imageLink" rel="bubble" data-content= '{% include 'KsUserBundle:User:_bubbleChecklist.html.twig' %} {% endif %}'><i class="icon-check-empty"> </i>{{ checklistAction.label }}</a>
+                            </div>
+                        {% endif %}  
+                    </li>
+                {% endfor %}
+                {% for checklistAction in checklistActions %}
+                    {% set href = "#" %}
+                    {% set bubble = false %}
+                    {% if checklistAction.code == "inviteFriends" %}
+                        {% set href = path('ksFriends_invite')  %} {#http://blog.keepinsport.com/bien-debuter-invite-tes-amis/#}
+                    {% elseif checklistAction.code == "paramService" %}
+                        {% set href = path('ks_set_services') %} {#http://blog.keepinsport.com/bien-debuter-parametrer-un-service-runkeeper-nike/" #}
+                    {% elseif checklistAction.code == "createClub" %}
+                        {% set href = path('ksClub_all') %} {#"http://blog.keepinsport.com/bien-debuter-creer-un-club-une-association-un-groupe-de-sportifs/"#}
+                    {% elseif checklistAction.code == "inviteFriendInClub" %}
+                        {% set href = path('ksClub_all') %} {#"http://blog.keepinsport.com/bien-debuter-creer-un-club-une-association-un-groupe-de-sportifs/"#}
+                    {% elseif checklistAction.code == "publishSportActivity" %}
+                        {% set href = path('ksSport_activitySessionForm', {'activityId' : 'new'}) %} {#"http://blog.keepinsport.com/bien-debuter-publier-une-activite-sportive/"#}
+                    {% elseif checklistAction.code == "publishStatusPhotoVideo" %}
+                        {% set href = path('ksActivity_activitiesList') %} {#"http://blog.keepinsport.com/bien-debuter-publier-un-statut-une-photo-une-video/"#}
+                    {% elseif checklistAction.code == "commentLikeShareActivity" %}
+                        {% set href = path('ksActivity_activitiesList') %} {#"http://blog.keepinsport.com/bien-debuter-commenter-aimer-partager-une-activite/"#}
+                    {% elseif checklistAction.code == "subscribeEvent" %}
+                        {% set href = path('ksWikisport_index') %} {#"http://blog.keepinsport.com/bien-debuter-sinscrire-a-un-evenement/"#}
+                    {% elseif checklistAction.code == "participateArticle" %}
+                        {% set href = path('ksWikisport_index') %} {#"http://blog.keepinsport.com/bien-debuter-participer-a-un-article/"#}
+                    {% elseif checklistAction.code == "expertMode" %}
+                        {% set href = "javascript:expertMode();" %}
+                    {% elseif checklistAction.code == "visitSeen" %}
+                        {% set href = path('ksUser_unsetVisitSeen') %}
+                    {#% elseif checklistAction.code == "consultBlog" %}
+                        {% set href = "http://blog.keepinsport.com" %#}
+                    {% endif %}
+                    <li>
+                        {% if checklistAction.date is not null %}
+                            <div class="actionBloc">
+                                <a href="{{ href }}" {% if bubble %} class="imageLink" rel="bubble" data-content= '{% include 'KsUserBundle:User:_bubbleChecklist.html.twig' %} {% endif %}'><i class="icon-check"> </i><s>{{ checklistAction.label }}</s></a>
+                            </div>
+                        {% endif %}  
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>    
+    {% endif %}
+
+    {% if aFriendsSuggest and 1 == 0 %}
+    <div >
+        <a class="btn btn-friends btn-small pull-right" rel="tooltip" title="{{ "actions.show"|trans }}" href="{{ path('ks_sportifs_all') }}">
+            <i class="icon-search icon-white"></i>
+        </a>
+        <h3 class="friends">{{ 'titles.nearby-users'|trans }}</h3>
+        <div class="blocHeaderSeparator"></div>
+        {% include 'KsUserBundle:User:_searchFriendAroudMe.html.twig' %}
+
+    </div>    
+    {% endif %} 
+
+    {% if isExpertMode and 1 == 0 %}
+
+        <div >
+            <a class="btn btn-wikisport btn-small pull-right" rel="tooltip" title="{{ "actions.show"|trans }}" href="{{ path('ksWikisport_index') }}">
+                <i class="icon-search icon-white"></i>
+            </a>
+            <h3 class="wikisport">{{ 'titles.last-articles'|trans }}</h3>
+            <div class="blocHeaderSeparator"></div>
+            {% render "KsActivityBundle:Article:lastModifiedArticles" with { 'nbArticles' : 10 } %}
+        </div>
+
+        {% if aClubsSuggest %}
+        <div >
+            <a class="btn btn-clubs btn-small pull-right" rel="tooltip" title="{{ "actions.show"|trans }}" href="{{ path('ksClub_all') }}">
+                <i class="icon-search icon-white"></i>
+            </a>
+            <h3 class="clubs">{{ 'titles.nearby-clubs'|trans }}</h3>
+            <div class="blocHeaderSeparator"></div>
+            {% include 'KsClubBundle:Club:searchClubsAroudMe.html.twig' %}
+        </div>    
+        {% endif %} 
+
+
+
+
+        {#<div class="rightColumnBloc thumbnail" style="display:none">
+            {% include 'KsEventBundle:Event:_miniCalendar.html.twig' %}
+        </div>#}
+
+        {#<div class="thumbnail ksBloc">
+            <h3 class="sportif">Retrouve nous sur Facebook</h3>
+            <div class="blocHeaderSeparator"></div>
+            <div class="fb-like-box" data-href="https://www.facebook.com/pages/Keepinsport/303227623023110" data-width="262" data-height="370" data-show-faces="true" data-stream="false" data-border-color="#FFFFFF" data-header="false"></div>
+        </div>#}
+
+    {% endif %}
+{% endif %}
+
+{% if not isExpertMode %}
+    </br>
+    <div class="ksBloc ksBlocOn thumbnail">
+        {#<h3 class="sportif">{{ "login.applications"|trans }}</h3>
+        <div class="blocHeaderSeparator"></div>#}
+        <center>
+            <img src="{{ asset('bundles/ksactivity/images/RunKeeper.png' ) }}" width="100"/>    
+            <img src="{{ asset('bundles/ksactivity/images/nike+.jpg' ) }}" width="50"/> 
+            <img src="{{ asset('bundles/ksactivity/images/endomondo.png' ) }}" width="90"/>
+            <br/>
+            <img src="{{ asset('bundles/ksactivity/images/garmin.jpg' ) }}" width="70"/>
+            <img src="{{ asset('bundles/ksactivity/images/polar.jpg' ) }}" width="70"/>
+            <img src="{{ asset('bundles/ksactivity/images/suunto_blanc.jpg' ) }}" width="70"/>
+            <br/>
+            <img src="{{ asset('bundles/ksactivity/images/Gpx2.png' ) }}" width="60"/>
+            <img src="{{ asset('bundles/ksactivity/images/ffa2.png' ) }}" width="40"/>  
+        </center>
+    </div>
+{% endif %}

@@ -1,0 +1,446 @@
+<script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/index.js') }}"></script>
+
+<script type="text/javascript">
+    function getDataGraphDependingOnSport( parameters ) {
+        //$("#detailsAnalysisContainer").html('<center><img id="detailsAnalysisLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"/></center>');
+        $("#statisticsViewLoader").show();
+        $("#detailsAnalysisLabel").html("");
+        $("#activitiesContainer").html("");
+
+        $.post(
+            Routing.generate('ksDashboard_getDataGraphDependingOnSport'),
+            parameters,
+            function(response) {
+                //console.log(response);
+                $("#detailsAnalysisContainer").html("");
+                if (response.chart.cumulCompetitionsTrainings["training"] + response.chart.cumulCompetitionsTrainings["competition"] <1 ) {
+                    $("#activitiesContainer").html("");
+                    $("#detailsAnalysisContainer").html("{{ 'coaching.no-activities-found'|trans }} </br></br>");
+                }
+                else {
+                    
+                    if (parameters["init"]) $("#customSelectSportsStats").select2("val", {% if favoriteSport is defined and favoriteSport is not null and favoriteSport != ''%} {{ favoriteSport }} {% else %} null {% endif %});
+
+                    $("#teamSportSessionResultsBloc").hide();
+                    $("#distancesAndGradiantsBloc").hide();
+                    if( response.sport.type != null ) {
+                        if(response.sport.type == "TS" ) $("#teamSportSessionResultsBloc").show();
+                        if(response.sport.type == "EOE" || response.sport.type == "EUW" || response.sport.type == "OT") $("#distancesAndGradiantsBloc").show();
+                    }
+                    
+                    var highchartsOptions = {};
+                    highchartsOptions.chart = {
+                        renderTo: 'detailsAnalysisContainer',
+                    };
+
+                    highchartsOptions.title = {
+                        text: ''
+                    };
+                    highchartsOptions.series = [];
+                    highchartsOptions.xAxis = xAxisOptions;
+
+                    if( response.sport.type != null) {
+                        if (response.sport.type == "OT") {
+                            highchartsOptions.yAxis = [{
+                                title: {
+                                    text: 'Durée'
+                                },
+                                tickInterval: 1
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.durations) * 1.75,//FMO si on met pas de max, il se fait tout seul mais le pie cache les données...
+                                title: {
+                                    text: ''
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return secondsToTime( this.value );
+                                    }
+                                },
+                                //tickInterval: 3600,
+                                lineWidth: 0,
+                                minorGridLineWidth: 0,
+                                lineColor: 'transparent',      
+                                labels: {
+                                    enabled: false
+                                },
+                                minorTickLength: 0,
+                                tickLength: 0
+                            }];
+
+                            highchartsOptions.series.push({
+                                type:   'pie',
+                                name: "cumul",
+                                data: [
+                                    { name: 'Compétitions',    y: response.chart.cumulCompetitionsTrainings["competition"]}, 
+                                    { name: 'Entraînements',   y: response.chart.cumulCompetitionsTrainings["training"]},
+                                ],
+                                center: [100, 60],
+                                size: 100,
+                                showInLegend: false,
+                                dataLabels: {
+                                    enabled: false
+                                }
+                            });
+
+                            highchartsOptions.labels = {
+                                items: [{
+                                    html: 'Entraînements/Compétitions',
+                                    style: {
+                                        left: '15px',
+                                        top: '8px',
+                                        color: 'black',
+                                        font: 'PT Sans'
+                                    }
+                                }]
+                            };
+                        }
+                        if(response.sport.type == "TS") {
+                            var maxV = Math.max.apply(Math, response.chart.teamSportSessionResults["v"]);
+                            var maxN = Math.max.apply(Math, response.chart.teamSportSessionResults["n"]);
+                            var maxD = Math.max.apply(Math, response.chart.teamSportSessionResults["d"]);
+                            var max = Math.max(maxV, maxD, maxN);
+                            highchartsOptions.yAxis = [{
+                                min: 0,
+                                max: max * 1.75,//FMO si on met pas de max, il se fait tout seul mais le pie cache les données...
+                                title: {
+                                    text: 'Occurences'
+                                },
+                                tickInterval: 1
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.durations) * 1.5,//FMO si on met pas de max, il se fait tout seul mais le pie cache les données...
+                                title: {
+                                    text: ''
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return secondsToTime( this.value );
+                                    }
+                                },
+                                //tickInterval: 3600,
+                                lineWidth: 0,
+                                minorGridLineWidth: 0,
+                                lineColor: 'transparent',      
+                                labels: {
+                                    enabled: false
+                                },
+                                minorTickLength: 0,
+                                tickLength: 0
+                            }];
+
+                            //Victoires
+                            highchartsOptions.series.push({
+                                name: "Victoires",
+                                type: 'column',
+                                data: response.chart.teamSportSessionResults["v"],
+                            });
+                            //Nuls
+                            highchartsOptions.series.push({
+                                name: "Nuls",
+                                type: 'column',
+                                data: response.chart.teamSportSessionResults["n"],
+                            });
+                            //Défaites
+                            highchartsOptions.series.push({
+                                name: "Défaites",
+                                type: 'column',
+                                data: response.chart.teamSportSessionResults["d"],
+                            });
+
+                            //Camembert pour cumul des victoires/nuls/Défaites
+                            highchartsOptions.series.push({
+                                type:   'pie',
+                                name: "cumul",
+                                data: [
+                                    { name: 'Victoires',    y: response.chart.cumulResuts["v"], color: colors[0]},
+                                    { name: 'Nuls',         y: response.chart.cumulResuts["n"], color: colors[1]},
+                                    { name: 'Défaites',     y: response.chart.cumulResuts["d"], color: colors[2]},
+                                ],
+                                center: [250, 60],
+                                size: 100,
+                                showInLegend: false,
+                                dataLabels: {
+                                    enabled: false
+                                }
+                            });
+
+                            highchartsOptions.series.push({
+                                type:   'pie',
+                                name: "cumul",
+                                data: [
+                                    { name: 'Compétitions',    y: response.chart.cumulCompetitionsTrainings["competition"]}, 
+                                    { name: 'Entraînements',   y: response.chart.cumulCompetitionsTrainings["training"]},
+                                ],
+                                center: [100, 60],
+                                size: 100,
+                                showInLegend: false,
+                                dataLabels: {
+                                    enabled: false
+                                }
+                            });
+
+                            highchartsOptions.labels = {
+                                items: [{
+                                    html: 'Entraînements/Compétitions',
+                                    style: {
+                                        left: '15px',
+                                        top: '8px',
+                                        color: 'black'
+                                    }
+                                },{
+                                    html: 'Résultats',
+                                    style: {
+                                        left: '225px',
+                                        top: '8px',
+                                        color: 'black'
+                                    }
+                                }]
+                            };
+                        }
+                        if(response.sport.type == "EOE" || response.sport.type == "EUW") {
+                            highchartsOptions.yAxis = [{
+                                min: 0,
+                                max: Math.max.apply(Math, response.chart.enduranceSessionDetails["distance"]) * 1.5,//FMO si on met pas de max, il se fait tout seul mais le pie cache les données...
+                                title: {
+                                    text: 'DISTANCE (km)' 
+                                },
+                                labels: {
+                                    formatter: function() {
+                                        //Pour ne pas que ça transforme "1000" en "1k"
+                                        return this.value;
+                                    }
+                                }
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.durations) * 1.5,//FMO si on met pas de max, il se fait tout seul mais le pie cache les données...
+                                title: {
+                                    text: '' //Durée
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return secondsToTime( this.value );
+                                    }
+                                },
+                                //tickInterval: 3600,
+                                lineWidth: 0,
+                                minorGridLineWidth: 0,
+                                lineColor: 'transparent',
+                                labels: {
+                                    enabled: false
+                                },
+                                minorTickLength: 0,
+                                tickLength: 0
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.enduranceSessionDetails["d+"]) * 1.5,//FMO si on met pas de max, il se fait tout seul mais le pie cache les données...
+                                title: {
+                                    text: 'DENIVELES (m)'
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return this.value;
+                                    }
+                                },
+                            }];
+
+                            //Kilomètres
+                            highchartsOptions.series.push({
+                                name: "Distance",
+                                type: 'column',
+                                data: response.chart.enduranceSessionDetails["distance"],
+                            });
+
+                            //Dénivelés
+                            highchartsOptions.series.push({
+                                name: "D+",
+                                yAxis: 2,
+                                type: 'column',
+                                data: response.chart.enduranceSessionDetails["d+"],
+                            });
+                            highchartsOptions.series.push({
+                                name: "D-",
+                                yAxis: 2,
+                                type: 'column',
+                                data: response.chart.enduranceSessionDetails["d-"],
+                            });
+
+                            highchartsOptions.labels = {
+                                items: [{
+                                    html: 'Entraînements/Compétitions',
+                                    style: {
+                                        left: '15px',
+                                        top: '8px',
+                                        color: 'black',
+                                        font: 'bold 16px "pt sans"'
+                                    }
+                                }]
+                            };
+
+                            highchartsOptions.series.push({
+                                type:   'pie',
+                                name: "cumul",
+                                data: [
+                                    { name: 'Compétitions',    y: response.chart.cumulCompetitionsTrainings["competition"]},
+                                    { name: 'Entraînements',   y: response.chart.cumulCompetitionsTrainings["training"]},
+                                ],
+                                center: [100, 60],
+                                size: 100,
+                                showInLegend: false,
+                                dataLabels: {
+                                    enabled: false
+                                }
+                            });
+                        }
+                    }
+                }
+
+                highchartsOptions.tooltip = {
+                    formatter: function() {
+                        var s;
+                        if (this.point.name) { // the pie chart
+                            s = this.point.name +': '+ this.y;
+                        } else {
+                            s = '<b>'+ this.x +'</b><br/>'+
+                            this.series.name +': ';
+
+                            if( this.series.name == "Durée" ) s+= secondsToTime( this.y );
+                            else s+= this.y;
+                        }
+                        return s;
+                    }
+                };
+
+                highchartsOptions.plotOptions = plotOptionsGraphOptions;
+                highchartsOptions.plotOptions.column.stacking = null;
+                highchartsOptions.credits = creditsOptions;
+
+                //Courbe de durée
+                highchartsOptions.series.push({
+                    name: "Durée",
+                    yAxis: 1,
+                    type: 'spline',
+                    data: response.chart.durations,
+                    color : '#feb323'
+                });
+
+                highchartsOptions.xAxis.categories = response.periods;
+                //FIXME : apparemment encodage différent en local / serveur pas réussi à faire propre rapidement...
+                for ($i=0;$i<response.periods.length;$i++) {
+                    //console.log(response.periods[$i]);
+                    response.periods[$i].replace('dÃ©c', 'déc');
+                    response.periods[$i].replace('aoÃ»t', 'aout');
+                    response.periods[$i].replace('fÃ©vr', 'févr');
+                    //console.log(response.periods[$i]);
+                }
+
+                //console.log(highchartsOptions.yAxis);
+                
+                new Highcharts.Chart(
+                    highchartsOptions,
+                    function(chart) {
+                        if(response.sport.type == "EOE" || response.sport.type == "EUW" || response.sport.type == "OT") {
+                            var s = 'Durée : ' + secondsToTime( response.chart.cumulDurations ) + '<br/>';
+                        }
+
+                        if (response.sport.type == "EOE" || response.sport.type == "EUW") {
+                            s +=  'Distance : ' + response.chart.cumulKilometers + ' km<br/>'
+                                + 'D+ : ' + response.chart.cumulDenPos +' mètres<br/>'
+                                + 'D- : ' + response.chart.cumulDenNeg +' mètres';
+                        }
+
+                        var text = chart.renderer.text(
+                            s, 
+                            200 + chart.plotLeft, 
+                            50 + chart.plotTop
+                        ).attr({
+                            zIndex: 5
+                        }).add();
+
+                        var box = text.getBBox();
+                        var rect = chart.renderer.rect(box.x - 5, box.y - 5, box.width + 10, box.height + 10, 5)
+                        .attr({
+                            fill: 'white',
+                            stroke: 'black',
+                            'stroke-width': 1,
+                            zIndex: 4
+                        })
+                        .add();
+
+                        //Titre
+                        var text = chart.renderer.text(
+                            '{{ 'dashboard.sum-period'|trans }}', 
+                            (rect.x + rect.width /2) - 45, 
+                            rect.y - 10
+                        ).attr({
+                            zIndex: 5
+                        }).add();
+                    }
+                );
+            }
+        );
+    }
+
+    $(document).ready(function() {
+        $( "#ksSportTypeStats_sport" ).change(function() {
+            var customSelectSports = $("#customSelectSportsStats").select2("val");
+            $("select.equipments").select2("val", "");
+
+            if(customSelectSports != "" ) {
+                var parameters = {
+                    //"planId"                : "{{ planId }}", FMO : Mise en commentaire 24/01/15 car sinon ça ne récupère pas les activités faites hors plan
+                    "userId"                : {{ user.id }},
+                    "sportId"               : customSelectSports,
+                    "equipmentId"           : null,
+                    "lastMonths"            : 12,
+                    "startOn"               : '{{ startOn }}',
+                    "endOn"                 : '{{ endOn }}'
+                };
+
+                getDataGraphDependingOnSport( parameters );
+            }
+        });
+
+        // matériel
+        $("select.equipments").select2({
+            //'containerCssClass' : 'light input-block-level',
+            placeholder: "{{ 'dashboard.select-equipment'|trans }}",
+            allowClear: true,
+        }).on("change", function(e) {
+            var customSelectSports = $("#customSelectSportsStats").select2("val");
+            var selectedEquipment = $("select.equipments").select2("val");
+
+            if(selectedEquipment != "" && customSelectSports != "") {
+                var parameters = {
+                    //"planId"                : "{{ planId }}", FMO : Mise en commentaire 24/01/15 car sinon ça ne récupère pas les activités faites hors plan
+                    "userId"                : {{ user.id }},
+                    "sportId"               : customSelectSports,
+                    "equipmentId"           : "",
+                    "lastMonths"            : 12,
+                    "startOn"               : '{{ startOn }}',
+                    "endOn"                 : '{{ endOn }}'
+                };
+                getDataGraphDependingOnSport( parameters );
+            }
+        });
+
+        var parameters = {
+            "init"                  : true,
+            //"planId"                : "{{ planId }}", FMO : Mise en commentaire 24/01/15 car sinon ça ne récupère pas les activités faites hors plan
+            "userId"                : {{ user.id }},
+            "sportId"               : "{% if favoriteSport is defined and favoriteSport is not null and favoriteSport != ''%} {{ favoriteSport }} {% else %} null {% endif %}",
+            "equipmentId"           : "",
+            "lastMonths"            : 12,
+            "startOn"               : '{{ startOn }}',
+            "endOn"                 : '{{ endOn }}'
+        };
+        //console.log("planId="+"{{ planId }}");
+        getDataGraphDependingOnSport( parameters );
+    });
+
+</script>
+
+<h4 class="bleu">{{ 'dashboard.detailed-analysis'|trans }} : 
+    {{ form_widget(activitySportChoiceForm.sport) }}
+</h4>
+<div id="detailsAnalysisContainer"></div>

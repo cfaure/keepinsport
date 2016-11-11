@@ -1,0 +1,128 @@
+{% for key, articleCategory in articleCategories %}
+    <div class="span6 "  style="padding: 10px;margin:0">
+        <div class="lastArticlesBloc thumbnail category_{{ key }}"categoryId="{{ articleCategory.id }}" >
+            <div class="lastArticlesBloc_title btn-wikisport">{{ articleCategory.label }}</div>
+
+            <div class="resultsList"> 
+            {% for article in lastArticlesByCategories[articleCategory.id] %}
+                <p>
+                    <a href="{{ path('ksArticle_show', { 'articleId': article.id }) }}">
+                        {% set lastTitle = article.modifications|last_mofified_content('title') %}
+                        {% if lastTitle is null %}
+                            {% set lastTitle = article.label %}
+                        {% endif %}
+                        {{ lastTitle }}
+                    </a>
+                </p>
+            {% endfor %}
+            </div>
+            <br/>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <a class="bNewArticle btn btn-wikisport"><i class="icon-white glyphicon glyphicon-plus"></i>  Nouveau</a>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+<script type="text/javascript">
+    function createNewArticle(categoryId) {
+        
+        var $newArticleModal = $("#newArticleModal");
+        var $modalBody       = $newArticleModal.find('.modal-body');
+        var $modalFooter     = $newArticleModal.find('.modal-footer');
+        var $articleForm     = $modalBody.find("form");
+        var $articleLabel    = $articleForm.find("input.articleLabel");
+        var $categoryBloc    = $articleForm.find(".categoryBloc");
+        var $errorsBloc      = $modalBody.find(".errorsBloc");
+        var $messagesBloc    = $modalBody.find(".messagesBloc");
+        var $selectCategory  = $categoryBloc.find("select.selectCategory");
+        var $cancelButton    = $modalFooter.find('a.cancel');
+        var $createButton    = $modalFooter.find('a.create');
+        
+        $categoryBloc.hide();
+        //On selectionne la bonne categorie
+        $.each( $selectCategory.find("option") , function( key, categoryOption ) {
+            if ( $( categoryOption ).val() == categoryId ) {
+                $( this ).attr( "selected", "selected" );
+            }
+        });
+        
+        $articleLabel.val("");
+        $articleForm.show();
+        $errorsBloc.html("");
+        $errorsBloc.hide();
+        $messagesBloc.html("");
+        $messagesBloc.hide();
+        $createButton.removeClass( "disabled" );
+        $createButton.show();
+        $cancelButton.html("Annuler");
+        
+        var closeModal = function() {
+            
+            $confirmModal.modal('hide'); 
+        }
+        
+        var createArticle = function() {
+            if ( !$createButton.hasClass( "disabled" ) ) {
+                articleLabel = $articleLabel.val();
+                if( articleLabel == "" ) {
+                    errorsBloc.html("Le titre de l'article ne doit pas être vide");
+                } else {
+                    $(".error_list").hide();
+                    $createButton.addClass( "disabled" );
+                    $.post(
+                        //form.attr('action'), 
+                        Routing.generate('ksArticle_create', { "categoryId" : categoryId }),
+                        $articleForm.serialize(), 
+                        function(response) {
+                        if ( response.response == 1 ) {
+                            $articleForm.hide();
+
+                            paragraph = $("<p>").html("L'article " + response.article.label + " a été créé avec succès.");
+                            $messagesBloc.append( paragraph );
+
+                            articleLink = $("<a>", { "class": "btn btn-primary", href : Routing.generate('ksArticle_edit', { 'articleId': response.article.id }) }).html( "Editer l'article" );
+                            $messagesBloc.append( articleLink );
+                            $messagesBloc.show();
+
+                            $createButton.hide();
+                            $cancelButton.html("Fermer");
+
+                        } else {
+                            processingErrorsForm( $errorsBloc, response.errors );
+                        }
+                        $createButton.removeClass( "disabled" );
+                    }).error(function(xqr, error) {
+                        console.log("error " + error);
+                    });
+                }
+            }
+        };
+        
+        $createButton.unbind();
+        $createButton.click(function() {
+            createArticle();
+        });
+        
+        $articleLabel.keypress(function(e) {
+            if(e.which == 13) {
+                createArticle();
+                e.preventDefault();
+            }
+        });
+        
+        $newArticleModal.on('shown', function() {
+            $articleLabel.focus();
+        });
+
+        $newArticleModal.modal('show');
+        $newArticleModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+            e.stopPropagation();
+        });
+    }
+    
+    $(".bNewArticle").click(function() {
+        categoryId = $( this ).parent().attr("categoryId");
+        createNewArticle(categoryId);
+    });
+</script>

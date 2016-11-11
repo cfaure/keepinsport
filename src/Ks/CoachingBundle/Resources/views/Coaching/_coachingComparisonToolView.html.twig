@@ -1,0 +1,356 @@
+<script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/index.js') }}"></script>
+
+<script type="text/javascript">
+    function getDataComparisonTool( parameters ) {
+        $("#comparisonAnalysis").html("");
+        $.post(
+            Routing.generate('ksDashboard_getDataComparisonTool'),
+            parameters,
+            function(response) {
+                //console.log(response);
+                $("#comparisonToolViewLoader").hide();
+                if (!response.isAllowedPackPremium && !response.isAllowedPackElite) {
+                    $("#comparisonAnalysis").html("<center> <span class='alert alert-warning'>Disponible uniquement pour les membres <span class='label label-elite'>ELITE</span> et <span class='label label-premium'>PREMIUM</span> ! </span></center></br></br>");
+                }
+                else {
+                    if (response.chart.details["issuedAt"].length ==0 ) {
+                        $("#comparisonAnalysis").html("<center> <span class='alert alert-warning'>Pour pouvoir comparer cette activité aux autres du même type, il faut qu'elle soit rattachée à une catégorie et une séance ! </span></center></br></br>");
+                    }
+                    else {
+                        $("#comparisonToolViewTitle").html("Comparateur de séance : " + response.coachingSessionName);
+                        if (response.chart.details["issuedAt"].length ==1 ) {
+                            $("#comparisonAnalysis").html("<center> <span class='alert alert-warning'>Il n'y a pas d'autres activités comparables ! </span></center></br></br>");
+                        }
+                        else {
+                        
+
+                            var highchartsOptions = {};
+                            highchartsOptions.chart = {
+                                renderTo: 'comparisonAnalysis',
+                            };
+
+                            highchartsOptions.title = {
+                                text: ''
+                            };
+                            highchartsOptions.series = [];
+                            highchartsOptions.xAxis = xAxisOptions;
+
+                            highchartsOptions.yAxis = [{
+                                min: 0,
+                                max: Math.max.apply(Math, response.chart.details["distance"]),
+                                title: {
+                                    text: 'DISTANCE (km)' 
+                                },
+                                labels: {
+                                    formatter: function() {
+                                        //Pour ne pas que ça transforme "1000" en "1k"
+                                        return this.value;
+                                    }
+                                }
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.details["duration"]),
+                                title: {
+                                    text: '' //Durée
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return secondsToTime( this.value );
+                                    }
+                                },
+                                //tickInterval: 3600,
+                                lineWidth: 0,
+                                minorGridLineWidth: 0,
+                                lineColor: 'transparent',
+                                labels: {
+                                    enabled: false
+                                },
+                                minorTickLength: 0,
+                                tickLength: 0
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.details["d+"]),
+                                title: {
+                                    text: 'DENIVELES (m)'
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return this.value;
+                                    }
+                                },
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.details["averageSpeed"]),
+                                title: {
+                                    text: '' //Vitesse moyenne
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return this.value;
+                                    }
+                                },
+                                //tickInterval: 3600,
+                                lineWidth: 0,
+                                minorGridLineWidth: 0,
+                                lineColor: 'transparent',
+                                labels: {
+                                    enabled: false
+                                },
+                                minorTickLength: 0,
+                                tickLength: 0
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.details["averageHR"]),
+                                title: {
+                                    text: '' //FC moyenne
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return this.value;
+                                    }
+                                },
+                                //tickInterval: 3600,
+                                lineWidth: 0,
+                                minorGridLineWidth: 0,
+                                lineColor: 'transparent',
+                                labels: {
+                                    enabled: false
+                                },
+                                minorTickLength: 0,
+                                tickLength: 0
+                            },{ min: 0,
+                                max: Math.max.apply(Math, response.chart.details["averageTemperature"]),
+                                title: {
+                                    text: '' //Temperature moyenne
+                                },
+                                opposite: true,
+                                labels: {
+                                    formatter: function() {
+                                        return this.value;
+                                    }
+                                },
+                                //tickInterval: 3600,
+                                lineWidth: 0,
+                                minorGridLineWidth: 0,
+                                lineColor: 'transparent',
+                                labels: {
+                                    enabled: false
+                                },
+                                minorTickLength: 0,
+                                tickLength: 0
+                            }];
+
+                            //Kilomètres
+                            highchartsOptions.series.push({
+                                name: "Distance",
+                                type: 'column',
+                                data: response.chart.details["distance"],
+                            });
+
+                            //Dénivelés
+                            highchartsOptions.series.push({
+                                name: "D+",
+                                yAxis: 2,
+                                type: 'column',
+                                data: response.chart.details["d+"],
+                            });
+                            highchartsOptions.series.push({
+                                name: "D-",
+                                yAxis: 2,
+                                type: 'column',
+                                data: response.chart.details["d-"],
+                            });
+                        }
+
+                        highchartsOptions.tooltip = {
+                            formatter: function() {
+                                var s;
+                                if (this.point.name) { // the pie chart
+                                    s = this.point.name +': '+ this.y;
+                                } else {
+                                    s = '<b>'+ this.x +'</b><br/>'+
+                                    this.series.name +': ';
+
+                                    if( this.series.name == "Durée" ) s+= secondsToTime( this.y );
+                                    else if( this.series.name == "Vitesse moyenne" ) s+= this.y + ' km/h';
+                                    else if( this.series.name == "Distance" ) s+= this.y + ' km';
+                                    else if( this.series.name == "FC moyenne" ) s+= this.y;
+                                    else if( this.series.name == "Température moyenne" ) s+= this.y + ' °C';
+                                    else s+= this.y + ' m';
+                                }
+                                return s;
+                            }
+                        };
+
+                        highchartsOptions.plotOptions = plotOptionsGraphOptions;
+                        highchartsOptions.plotOptions.column.stacking = null;
+                        highchartsOptions.credits = creditsOptions;
+
+                        //Courbe de durée
+                        highchartsOptions.series.push({
+                            name: "Durée",
+                            yAxis: 1,
+                            type: 'spline',
+                            data: response.chart.details["duration"],
+                            color : '#feb323'
+                        });
+
+                        //Courbe de vitesse moyenne
+                        highchartsOptions.series.push({
+                            name: "Vitesse moyenne",
+                            yAxis: 3,
+                            type: 'spline',
+                            data: response.chart.details["averageSpeed"],
+                            color : '#fe8f23'
+                        });
+
+                        //Courbe de cardio
+                        highchartsOptions.series.push({
+                            name: "FC moyenne",
+                            yAxis: 4,
+                            type: 'spline',
+                            data: response.chart.details["averageHR"],
+                            color : '#da2032'
+                        });
+
+                        //Courbe de température
+                        highchartsOptions.series.push({
+                            name: "Température moyenne",
+                            yAxis: 5,
+                            type: 'spline',
+                            data: response.chart.details["averageTemperature"],
+                            color : '#8121bd'
+                        });
+
+                        highchartsOptions.xAxis.categories = response.chart.details["issuedAt"];
+                        //console.log(highchartsOptions.yAxis);
+
+                        new Highcharts.Chart(
+                            highchartsOptions,
+                            function(chart) {
+                            }
+                        );
+                    }
+                }
+            }
+        );
+    }
+
+    $(document).ready(function() {
+    
+        $('input[type=checkbox][name=checkboxCT]').iCheck({
+            checkboxClass: 'icheckbox_square-blue',
+        });
+        $('input[type=checkbox][name=checkboxCT]').iCheck('check');
+
+        var parameters = {
+            "userId"        : {{ user.id }},
+            "activityId"    : {{ activityId }},
+            "checkboxCT"    : 1
+        };
+
+        $('input[type=checkbox][name=checkboxCT]').on('ifChecked', function (event) {
+            $("#comparisonToolViewLoader").show();
+            parameters['checkboxCT'] = 1;
+            getDataComparisonTool( parameters );
+        });
+        $('input[type=checkbox][name=checkboxCT]').on('ifUnchecked', function (event) {
+            $("#comparisonToolViewLoader").show();
+            parameters['checkboxCT'] = 0;
+            getDataComparisonTool( parameters );
+        });
+        
+        $("#ksCoachingCategorySessionType_coachingSession").select2({
+            placeholder         : '{{ 'coaching.change-session'|trans }}',
+            containerCssClass   : 'light '
+        }).on("change", function(e) {
+            //On lie l'activité à la bonne catégorie et la bonne séance puis on ré-affiche le comparateur
+            $("#comparisonAnalysis").html("");
+            $("#comparisonToolViewLoader").show();
+            $.post(
+                Routing.generate('ksCoaching_updateSessionOnActivity', {'activityId' : {{ activityId }}}),
+                {'sessionId' : $("#ksCoachingCategorySessionType_coachingSession").val()},
+                function(response) {
+                    if (response.update == 1) {
+                        getDataComparisonTool( parameters );
+                    }
+                }
+            );
+        });
+        
+        getDataComparisonTool( parameters );
+        
+        $("#bSessionsTool").click(function() {
+            var params = {
+                "isCreation"    : true,
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and user is defined and user is not null and app.user.id == user.id and (app.user.isAllowedPackPremium or app.user.isAllowedPackElite) %} "userId"        : "{{ app.user.id }}", {% endif %}
+                "isPublic"      : false,
+                "modalTitle"    : "{{ 'coaching.sessions-tool'|trans }}"
+            };
+            showEventFormModal(params);
+
+            $("#typeVisibilityBloc").hide();
+            $("#divNewPlan").show();
+            $("#toolBtn").show();
+            $("#ksEventType_name").hide();
+            if ($("#ksCoachingPlanType_name").val() != null) {
+                $("#ksEventType_coachingPlan").select2("val", $("#ksCoachingPlanType_name").val()[0]);
+            }
+            $modalFooter.hide();
+            $("#detailBlocUsers").hide();
+            $("#distance").attr('disabled', false);
+            $("#duration").attr('disabled', false);
+            $("#elevationGain").attr('disabled', false);
+            $("#elevationLost").attr('disabled', false);
+            $("#speedAverage").attr('disabled', false);
+            $("#hrAverage").attr('disabled', false);
+            $("#detailBlocDate").hide();
+            $("#detailBlocDifficulty").hide();
+            $("#detailBlocPlace").hide();
+            $("#btnsTool").show();
+            $("#newPlanBtn").show();
+            $("#newPlanText").show();
+            $("#deletePlanBtn").show();
+            $("#newCategoryText").show();
+            $("#newCategoryBtn").show();
+            $("#editCategoryBtn").show();
+            $("#enableCategoryBtn").show();
+            $("#disableCategoryBtn").show();
+            $("#deleteCategoryBtn").show();
+            $("#dataScheduled").hide();
+            $("#coachingSessionDetail").hide();
+        });
+    });
+
+</script>
+<br><br>
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    {% include 'KsEventBundle:Event:_eventModalForm.html.twig' with {'form' : eventForm, "userId" : app.user.id} %}
+{% endif %}
+<center>
+    {#<a class="glyphicon glyphicon-question-sign" rel="tooltip" title="En cours d'amélioration !"></a>#}
+    <h3 class="bleu" id="comparisonToolViewTitle"> Comparateur de séances</h3>
+    {#<div class="row">
+        <div class="col-md-12">
+            <h5 class="bleu">{{ 'coaching.category'|trans }} :</h5>
+            {{ form_widget(form.coachingCategory, { attr: {class:"coachingCategory "} }) }}
+        </div>
+    </div>#}
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and user.id == app.user.id and user.getIsAllowedPackPremium %} 
+        {{ form_widget(form.coachingSession, { attr: {class:"coachingSession "} }) }}
+        <br>
+        <a id="bSessionsTool" class="glyphicon glyphicon-cog" rel="tooltip" title="{{ "coaching.sessions-tool"|trans }}"> Mes séances "type"</a>
+    {% endif %}
+</center>
+<div class="row" rel="tooltip" title="{{ "coaching.lap-ct-tooltip"|trans }}">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-1">
+        <input class="pull-right" id="checkboxCT"  name="checkboxCT" type="checkbox">
+    </div>
+    <div class="col-md-7">
+        {{ 'coaching.lap-ct'|trans }}
+    </div>
+</div>
+<br>
+<div class="col-md-12" id="comparisonAnalysis"></div>

@@ -1,0 +1,26 @@
+<div class="bloc1" id="bloc1">
+    <div class="container">
+        <h1 class="title bleu">{{ 'titles.resetting-password'|trans }}</h1>
+        <div class="centered-block-outer">
+            <div class="centered-block-middle">
+                <div class="centered-block-inner">
+                    <br>
+                    <form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
+                        <div>
+                            {% if invalid_username is defined %}
+                                <p>{{ 'resetting.request.invalid_username'|trans({'%username%': invalid_username}, 'FOSUserBundle') }}</p>
+                            {% endif %}
+                            <label for="username">{{ 'resetting.request.username'|trans({}, 'FOSUserBundle') }}</label>
+                            <input type="text" id="username" name="username" />
+                            <br>
+                            <br>
+                            <center>
+                                <input class ="btn btn-success" type="submit" value="{{ 'resetting.request.submit'|trans({}, 'FOSUserBundle') }}" />
+                            </center>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

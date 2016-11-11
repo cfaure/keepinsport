@@ -1,0 +1,6 @@
+{% if activity.club_id is not null %}
+    {% include 'KsClubBundle:Activity:_activity_clubImage.html.twig' %}
+{% else %}
+    {% include 'KsActivityBundle:Activity:_activity_userImage.html.twig' %}
+{% endif %}
+

@@ -1,0 +1,39 @@
+{% extends is_granted("ROLE_USER")
+    ? "::layout_full.html.twig"
+    : "::noauth.html.twig"
+%}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksdashboard/css/style.css') }}" /> #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksactivity/css/style.css') }}" /> 
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    {#<script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/scripts.js') }}"></script>#}
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/scripts.js') }}"></script>
+    
+    {# zoom sur photos #}
+    <script src="{{ asset('colorbox/jquery.colorbox.js') }}"></script>
+{% endblock %}
+    
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {% if app.session is defined and app.session is not null and app.session.getFlashes()|length > 0 %}
+        {% for key, message in app.session.getFlashes() %}
+            <div class="{{ key }}">
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+   
+    
+    {% block content %}
+    {% endblock %}
+    
+{% endblock %}

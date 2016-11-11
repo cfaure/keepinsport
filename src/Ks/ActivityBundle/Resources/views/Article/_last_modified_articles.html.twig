@@ -1,0 +1,17 @@
+<div class="floatLeft">
+    <div id="lastArticlesModified">
+        {% for article in articles %}
+            <li>
+                <a href="{{ path('ksWikisport_show', { 'id' : article.id }) }}">
+                    <b>{{ article.title}}</b>
+                </a>
+            </li>
+        {% endfor %}
+    </div>
+</div>
+<div class="floatLeft">
+    <div id="sliderFrame">
+        <div id="slider">
+        </div>
+    </div>
+</div>    

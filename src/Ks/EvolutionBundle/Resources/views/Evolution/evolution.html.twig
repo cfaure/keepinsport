@@ -1,0 +1,231 @@
+{% extends "KsActivityBundle::layout_3_9.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <style>
+        thead, table caption {
+            text-align: center;
+            font-variant: small-caps;
+            font-weight: bold;
+        }
+        
+        table.listeEvolutionTable {
+            border:3px solid #DB2033;
+        }
+        table.listeEvolutionsTable thead {
+            background-color: #DB2033;
+            color: white;
+            text-align: center;
+        }
+        table.listeEvolutionsTable caption, .goldStars {
+            color: #DB2033;
+        }
+    </style>
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+            $('table.listeEvolutionsTable').dataTable({
+                 "bPaginate": false,
+                 "bLengthChange": true,
+                 "bFilter": true,
+                 "bSort": true,
+                 "aaSorting": [[4,'desc']],
+                 "aoColumns": [ 
+                    { "bSortable": true },
+                    { "bSortable": true },
+                    { "bSortable": true },
+                    { "iDataSort": 4},
+                    { "sType" : "numeric", "bVisible" : false},
+                    { "bSortable": true },
+                    { "bSortable": true }
+                ],
+                 "bInfo": false,
+                 "bAutoWidth": true,
+                 "sScrollY": "600px",
+                 "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });
+            var $filter_all              = $("input[type=radio][name=evolutionsFilter][value=all]");
+            var $filter_subscriptions    = $("input[type=radio][name=evolutionsFilter][value=mine]");
+            $filter_all.iCheck({
+                radioClass: 'iradio_square-red',
+            });
+            $filter_all.on('ifChecked', function(event){
+                $('#all_evolutions_table tr').each(function() {
+                    $(this).show();
+                });
+            });
+            $filter_subscriptions.iCheck({
+                radioClass: 'iradio_square-red',
+            });
+            $filter_subscriptions.on('ifChecked', function(event){
+                $('#all_evolutions_table tr').each(function() {
+                    $id = $(this).find('td').eq(0).html();
+                    $test = $(this).find('td').eq(3).html().indexOf('evolutions/voteOnEvolution', 0);
+                    if ($test != -1 && $id != 'Identifiant') 
+                    {
+                        $(this).hide();
+                    }
+                });
+            });
+            
+            $filter_all.iCheck('check');
+        });
+    </script>
+    <script>
+        function attachVoteOnEvolutionEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.voteLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        function attachRemoveVoteOnEvolutionEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.voteLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }   
+    </script>
+{% endblock %}
+
+{% block body %}
+    <h1 class="wikisport">{{ 'menu.evolutions'|trans }} </h1>
+    <div class="blocHeaderSeparator"></div>
+    <br clear="all"/>
+    <div class="alert alert-info">{{'evolutions.message_vote'|trans}}</div>
+    
+    <div>
+        <label class="pull-left" >
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="evolutionsFilter" value="all" checked></span>
+            <span class="pull-left">{{'evolutions.all_evolutions'|trans}}</span>
+        </label>
+
+        <label class="pull-left" style="margin-left:10px">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="evolutionsFilter" value="mine" ></span>
+            <span class="pull-left">{{'evolutions.my_evolutions'|trans}}</span>
+        </label>
+    </div>
+    <br clear="all"/>
+
+    <div class="evolutions">
+        <table id = "all_evolutions_table" class="table table-bordered listeEvolutionsTable">
+            <thead>
+                <tr>
+                    <td>{{'evolutions.id'|trans}}</td>
+                    <td>{{'evolutions.descriptionShort'|trans}}</td>
+                    <td>{{'evolutions.description'|trans}}</td>
+                    <td>{{'evolutions.votes'|trans}}</td>
+                    <td></td>
+                    <td>{{'evolutions.creation_date'|trans}}</td>
+                    <td>{{'evolutions.release_date'|trans}}</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% set i = 0 %}
+                {% for evolution in evolutions %}
+                    {% set i = i + 1 %}
+                    {% if i == 1 %}
+                        {% set color = '#e8b419' %}
+                        {% set size = '15px' %}
+                    {% elseif i == 2 %}
+                        {% set color = '#aaaaaa' %}
+                        {% set size = '15px' %}
+                    {% elseif i == 3 %}
+                        {% set color = '#d16909' %}
+                        {% set size = '15px' %}
+                    {% else %}
+                        {% set color = '' %}
+                        {% set size = '15px' %}
+                    {% endif %}
+                    
+                    <tr class ="{{ evolution.id }}" style="color:{{ color }};font-size:{{ size }}">
+                        {% if i > 3 %}
+                            <td>
+                                {{ evolution.id }}
+                            </td>
+                            <td>
+                                {{ evolution.descriptionShort }}
+                            </td>
+                            <td>
+                                {{ evolution.description }}
+                            </td>
+                            <td>
+                                {% include 'KsEvolutionBundle:Evolution:_voteLink.html.twig' %}
+                            </td>
+                            <td>
+                                {{ evolution.numVotes }}
+                            </td>
+                            <td>
+                                {{ evolution.creationDate|date("d/m/Y") }}
+                            </td>  
+                            <td>
+                                {% if evolution.releaseDate is not null %}
+                                    <b>{{ evolution.releaseDate|date("d/m/Y") }}</b>
+                                {% endif %}
+                            </td>
+                        {% else %}
+                            <td>
+                                <b>{{ evolution.id }}</b>
+                            </td>
+                            <td>
+                                <b>{{ evolution.descriptionShort }}</b>
+                            </td>
+                            <td>
+                                <b>{{ evolution.description }}</b>
+                            </td>
+                            <td>
+                                <b>{% include 'KsEvolutionBundle:Evolution:_voteLink.html.twig' %}</b>
+                            </td>
+                            <td>
+                                {{ evolution.numVotes }} {# FMO : c'est moche mais j'ai pas trouvé mieux sinon le tri fonctionne pas si <b></b> ici !! :( #}
+                            </td>
+                            <td>
+                                <b>{{ evolution.creationDate|date("d/m/Y") }}</b>
+                            </td>  
+                            <td>
+                                {% if evolution.releaseDate is not null %}
+                                    <b>{{ evolution.releaseDate|date("d/m/Y") }}</b>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <br clear="all"/>    
+    <div class="alert alert-info">{{'evolutions.message_vote2'|trans}}</div>  
+    
+ {% endblock %}

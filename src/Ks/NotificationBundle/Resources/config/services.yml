@@ -1,0 +1,17 @@
+parameters:
+#    ks_notification.example.class: Ks\NotificationBundle\Example
+
+services:
+    ks_notification.notificationService:
+        class: Ks\NotificationBundle\Service\NotificationService
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          - "@service_container"
+          - "@translator"
+
+    ks_notification.twig.extension:
+        class: Ks\NotificationBundle\Twig\Extensions\KsNotificationExtension
+        tags:
+            - { name: twig.extension }

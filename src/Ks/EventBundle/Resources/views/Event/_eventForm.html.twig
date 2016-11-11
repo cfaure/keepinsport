@@ -1,0 +1,1333 @@
+{% if clubId is defined %}
+    {% if eventId is defined %}
+        {% set action = path('ksEventClub_update', {"id" : eventId }) %}
+    {% else %}
+        {% set action = path('ksEventClub_create', {"id" : clubId }) %}
+    {% endif %}
+{% elseif userId is defined %}
+    {% set action = path('ksAgenda_createEvent', {"id" : userId }) %}
+{% else %}
+    {% set action = "" %}
+{% endif %}
+
+<div class="row">
+    <center>
+        <div id="newPlanOK" class="alert alert-info" style="display:none">{{ 'coaching.message-new-plan-OK'|trans }}</div>
+        <div id="newPlanKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-new-plan-KO'|trans }}</div>
+        <div id="deletePlanOK" class="alert alert-info" style="display:none">{{ 'coaching.message-del-plan-OK'|trans }}</div>
+        <div id="deletePlanKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-del-plan-KO'|trans }}</div>
+
+        <div id="newCategoryOK" class="alert alert-info" style="display:none">{{ 'coaching.message-new-category-OK'|trans }}</div>
+        <div id="newCategoryKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-new-category-KO'|trans }}</div>
+        <div id="enableCategoryOK" class="alert alert-info" style="display:none">{{ 'coaching.message-enable-category-OK'|trans }}</div>
+        <div id="enableCategoryKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-enable-category-KO'|trans }}</div>
+        <div id="editCategoryOK" class="alert alert-info" style="display:none">{{ 'coaching.message-edit-category-OK'|trans }}</div>
+        <div id="editCategoryKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-edit-category-KO'|trans }}</div>
+        <div id="disableCategoryOK" class="alert alert-info" style="display:none">{{ 'coaching.message-disable-category-OK'|trans }}</div>
+        <div id="disableCategoryKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-disable-category-KO'|trans }}</div>
+        <div id="deleteCategoryOK" class="alert alert-info" style="display:none">{{ 'coaching.message-del-category-OK'|trans }}</div>
+        <div id="deleteCategoryKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-del-category-KO'|trans }}</div>
+        <div id="deleteCategoryKO2" class="alert alert-danger" style="display:none">{{ 'coaching.message-del-category-KO2'|trans }}</div>
+
+        <div id="newSessionOK" class="alert alert-info" style="display:none">{{ 'coaching.message-new-session-OK'|trans }}</div>
+        <div id="newSessionKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-new-session-KO'|trans }}</div>
+        <div id="updateSessionOK" class="alert alert-info" style="display:none">{{ 'coaching.message-update-session-OK'|trans }}</div>
+        <div id="updateSessionKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-update-session-KO'|trans }}</div>
+        <div id="deleteSessionOK" class="alert alert-info" style="display:none">{{ 'coaching.message-del-session-OK'|trans }}</div>
+        <div id="deleteSessionKO" class="alert alert-danger" style="display:none">{{ 'coaching.message-del-session-KO'|trans }}</div>
+
+        <div id="requiredType" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-type'|trans }}</div>
+        <div id="requiredPlan" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-plan'|trans }}</div>
+        <div id="requiredCategory" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-category'|trans }}</div>
+        <div id="chooseCategory" class="alert alert-danger" style="display:none">{{ 'coaching.message-choose-category'|trans }}</div>
+        <div id="requiredTitle" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-title'|trans }}</div>
+        <div id="requiredParticipants" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-participants'|trans }}</div>
+        <div id="requiredOnlyOneParticipant" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-only-one'|trans }}</div>
+        <div id="requiredSport" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-sport'|trans }}</div>
+        <div id="requiredData" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-data'|trans }}</div>
+        <div id="requiredDuration" class="alert alert-danger" style="display:none">{{ 'coaching.message-required-duration'|trans }}</div>
+    </center>
+</div>
+
+<form class="eventForm" method="post" action="{{ action }}" {{ form_enctype(form) }} novalidate="novalidate">
+    <div class="row" id="typeVisibilityBloc">
+        <div class="col-md-6">
+            <span class="title bleu">
+                Type : &nbsp;
+                {% if app.user.isAllowedPackPremium or app.user.isAllowedPackElite%} 
+                    <span class="bleu glyphicon glyphicon-book eventTypeIcon" typeEvent="event_coaching" rel="tooltip" title="{{'events.event_coaching'|trans }}"></span>
+                    {#<span id="toolBtn" style="display:none" class="bleu glyphicon glyphicon-cog cogTypeIcon" rel="tooltip" title="{{'coaching.sessions-tool'|trans }}"></span>#}
+                {% endif %}
+                <span class="bleu glyphicon glyphicon-cutlery eventTypeIcon" typeEvent="event_meal" rel="tooltip" title="{{'events.event_meal'|trans }}"></span>
+                {% if clubId is defined %}
+                    <span class="bleu glyphicon glyphicon-home eventTypeIcon" typeEvent="event_training" rel="tooltip" title="{{'events.event_training'|trans }}"></span>
+                {% endif %}
+                {#<span class="icon-trophy icon-btn eventTypeIcon" typeEvent="event_competition" rel="tooltip" title="Compétition"></span>#}
+                <span class="bleu glyphicon glyphicon-info-sign eventTypeIcon" typeEvent="event_misc" rel="tooltip" title="{{'events.event_misc'|trans }}"></span>
+            </span>
+        </div>
+        <div class="col-md-4">
+            <span class="title bleu">
+                Visibilité :&nbsp;
+                {{ form_widget(form.isPublic, { attr: { class:"isPublic" } }) }} Public
+            </span>
+            {{ form_widget(form.isWarning, { attr: {class:"sessionWarning", style: "display:none"} }) }}
+        </div>
+        <div class="col-md-2">
+            <span rel="tooltip" title="{{ "coaching.warning"|trans }}" class="sessionWarningIcon glyphicon glyphicon-exclamation-sign btn-danger">
+            </span>
+        </div>
+    </div>
+
+    {{ form_widget(form.typeEvent, { attr: {class:"typeEvent", style: "display:none"} }) }}
+    <div id="divNewPlan">
+        <div class="row">
+            {#<div class="col-md-6">
+                {{ form_widget(form.coachingPlan, { attr: {class:"coachingPlan "} }) }}
+            </div>#}
+            <div style="display:none;" class="col-md-12">
+                {{ form_widget(form.coachingPlan, { attr: {class:"coachingPlan "} }) }}
+                <br/>
+                <br/>
+            </div>
+            <div class="col-md-12">
+                <h5 class="bleu">{{ 'coaching.category'|trans }} : {{ form_widget(form.coachingCategory, { attr: {class:"coachingCategory "} }) }}</h5>
+            </div>
+            <div id="categoryBloc">
+                <div class="col-md-8" style="padding-top: 5px;">
+                    <input id="newCategoryText" class="pull-right" style="display:none;" type="text" name="newCategory" value="" maxlength="25" placeholder="{{ 'coaching.new-category'|trans }}"/>
+                </div>
+                <div class="col-md-4" style="padding-top: 5px;">
+                    <div class="pull-right">
+                        <span class="btn btn-xs btn-success" id="newCategoryBtn" style="display:none"><span class="glyphicon glyphicon-plus" rel="tooltip" title="{{ 'coaching.create-new-category'|trans }}"></span></span>
+                        <span class="btn btn-xs btn-primary" id="editCategoryBtn" style="display:none"><span class="glyphicon glyphicon-pencil" rel="tooltip" title="{{ 'coaching.edit-category'|trans }}"></span></span>
+                        {#<span class="btn btn-xs btn-primary" id="enableCategoryBtn" style="display:none"><span class="glyphicon glyphicon-repeat" rel="tooltip" title="{{ 'coaching.enable-category'|trans }}"></span></span>#}
+                        <span class="btn btn-xs btn-primary" id="disableCategoryBtn" style="display:none"><span class="glyphicon glyphicon-remove" rel="tooltip" title="{{ 'coaching.disable-category'|trans }}"></span></span>
+                        <span class="btn btn-xs btn-danger" id="deleteCategoryBtn" style="display:none"><span class="glyphicon glyphicon-minus" rel="tooltip" title="{{ 'coaching.delete-category'|trans }}"></span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h5 class="bleu">{{ 'coaching.session'|trans }} : {{ form_widget(form.coachingSession, { attr: {class:"coachingSession "} }) }}</h5>
+            </div>
+        </div>
+        <div class="row" id="btnsTool" style="display:none">
+            <div class="col-md-8">
+            </div>
+            <div class="col-md-4">
+                <div class="pull-right">
+                    <button type="button" class="btn btn-xs btn-primary" id="newSessionBtn" rel="tooltip" title="{{ 'coaching.create-new-session'|trans }}"><span class="glyphicon glyphicon-plus"></span></button>
+                    <button type="button" class="btn btn-xs btn-primary" id="updateSessionBtn" rel="tooltip" title="{{ 'coaching.update-selected-session'|trans }}"><span class="glyphicon glyphicon-pencil"></span></button>
+                    <button type="button" class="btn btn-xs btn-danger" id="deleteSessionBtn" rel="tooltip" title="{{ 'coaching.delete-selected-session'|trans }}"><span class="glyphicon glyphicon-minus"></span></button>
+                    <button type="button" class="btn btn-xs btn-primary" id="cancelTitleBtn" rel="tooltip" title="{{ 'coaching.cancel-selected-session'|trans }}"><span class="glyphicon glyphicon-refresh"></span></button>
+                    <button type="button" class="btn btn-xs btn-success" id="saveTitleBtn" rel="tooltip" title="{{ 'coaching.save-selected-session'|trans }}"><span class="glyphicon glyphicon-save"></span></button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <input id="newSessionText" style="display:none" class="" type="text" name="newSession" value="" maxlength="35" placeholder="{{ 'coaching.new-session-label'| trans }}" style="display:none"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                {#<textarea id="coachingSessionDetail" disabled="true" class="content " value="" maxlength="512" placeholder="{{ 'coaching.session-details'|trans }}"> </textarea>#}
+                {{ form_widget(form.content, { attr: {class:"content ", placeholder: 'coaching.session-details'|trans } }) }}
+                <div id="liste_description"></div>
+            </div>
+        </div>
+        <div id="detailBlocDifficulty" class="row">
+            {% if form.difficulty is defined %}
+                <div class="col-md-5">
+                    <center><div class="title bleu">{{ 'coaching.difficulty'|trans }} </div></center>
+                    <div id="difficultyBloc">
+                        {{ form_widget(form.difficulty) }}
+                        <center>
+                            <span rel="tooltip" title="{{ "intensity.low"|trans }}" data-code="low" class="icon-green icon-btn icon-circle icon-2x"></span>
+                            <span rel="tooltip" title="{{ "intensity.medium"|trans }}" data-code="medium" class="icon-orange icon-btn icon-circle icon-2x"></span>
+                            <span rel="tooltip" title="{{ "intensity.high"|trans }}" data-code="high" class="icon-red icon-btn icon-circle icon-2x"></span>
+                        </center>
+                    </div>
+                </div>
+            {% endif %}
+            <div class="col-md-7">
+                <center><div class="title bleu">Sport</div></center>
+                <center>
+                    {{ form_widget(form.sport, { attr: {class:"selectSports", style:"display:none" } }) }}
+                    {% render "KsActivityBundle:Sport:customSelectSports" with {"multiple": "0"} %}
+                </center>
+            </div>
+        </div>
+        <div class="row" id="dataScheduled">
+            <div class="col-md-12">
+                <h5 class="bleu">{{ 'coaching.data-global'|trans }} :</h5>
+            </div>
+            <div class="col-md-6">
+                <span class="add-on"><i class="glyphicon glyphicon-road"></i>
+                    <input style="width:40%" type="number" id="distanceMin" placeholder="Distance min" class="input-mini" value="">
+                    <input style="width:40%" type="number" id="distanceMax" placeholder="Distance max" class="input-mini" value="">
+                </span>
+                <br/>
+                <span class="add-on"><i class="glyphicon glyphicon-arrow-up"></i>
+                    <input style="width:40%" type="number" id="elevationGainMin" placeholder="D+ min" class="input-mini" value="">
+                    <input style="width:40%" type="number" id="elevationGainMax" placeholder="D+ max" class="input-mini" value="">
+                </span>
+                <br/>
+                <span class="add-on"><i class="glyphicon glyphicon-dashboard"></i>
+                    <input style="width:40%" type="number" id="speedAverageMin" placeholder="V. moy. min" class="input-mini" value="">
+                    <input style="width:40%" type="number" id="speedAverageMax" placeholder="V. moy. max" class="input-mini" value="">
+                </span>
+                <br/>
+            </div>
+            <div class="col-md-6">
+                <span class="add-on"><i class="glyphicon glyphicon-time"></i>
+                    <input style="width:40%" type="text" id="durationMin" placeholder="Durée min" class="input-mini" value="">
+                    <input style="width:40%" type="text" id="durationMax" placeholder="Durée max" class="input-mini" value="">
+                </span>
+                <br/>
+                <span class="add-on"><i class="glyphicon glyphicon-arrow-down"></i>
+                    <input style="width:40%" type="number" id="elevationLostMin" placeholder="D- min" class="input-mini" value="">
+                    <input style="width:40%" type="number" id="elevationLostMax" placeholder="D- max" class="input-mini" value="">
+                </span>
+                <br/>
+                <span class="add-on"><i class="glyphicon glyphicon-flash"></i>
+                    <input style="width:40%" type="number" id="powMin" placeholder="Puiss. min" class="input-mini" value="">
+                    <input style="width:40%" type="number" id="powMax" placeholder="Puiss. max" class="input-mini" value="">
+                </span>
+                <br/>
+            </div>
+        </div>
+        <div class="row" id="dataIntervalTool">
+            <div class="col-md-12">
+                <h5 class="bleu">{{ 'coaching.data-interval'|trans }} :</h5>
+            </div>
+            <div class="col-md-6">
+                <span class="add-on"><i class="glyphicon glyphicon-heart"></i>
+                    <input style="width:40%" type="number" id="hrCoeffMin" placeholder="Coeff min" class="input-mini" min="0" max="100" value="">
+                    <input style="width:40%" type="number" id="hrCoeffMax" placeholder="Coeff max" class="input-mini" min="0" max="100" value="">
+                </span>
+                <br>
+                <span class="add-on"><i class="glyphicon glyphicon-heart"></i>
+                    <input style="width:40%" disabled type="number" id="hrBPMMin" placeholder=" BPM min" class="input-mini" value="">
+                    <input style="width:40%" disabled type="number" id="hrBPMMax" placeholder=" BPM max" class="input-mini" value="">
+                </span>
+                <br><br>
+                <select id="hrType" class=""><option value="0">FC max</option><option value="1">FC Rés.</option></select>
+                <input style="width:20%" disabled type="number" id="hrFCRef" placeholder="" class="input-mini" value=""> bpm
+            </div>
+            <div class="col-md-6">
+                <span class="add-on"><i class="glyphicon glyphicon-road"></i>
+                    <input style="width:80%" type="number" id="intervalDistance" placeholder="Distance de fractionné" class="input-mini" value="">
+                </span>
+                <br>
+                <span class="add-on"><i class="glyphicon glyphicon-time"></i>
+                    <input style="width:40%" disabled type="text" id="intervalDuration" placeholder="Durée" class="input-mini" value="">
+                    à <input style="width:20%" disabled type="number" id="intervalSpeed" class="input-mini" value=""> km/h
+                </span>
+                <br>
+                <span class="add-on"><i class="glyphicon glyphicon-dashboard"></i>
+                    VMA <input style="width:37%" disabled type="number" id="VMA" placeholder="en km/h" class="input-mini" value="">
+                    x
+                    <input style="width:18%" type="number" id="VMACoeff" placeholder="Coeff" class="input-mini" value="100" min="50" max="150">
+                    %
+                </span>
+                <br>
+            </div>
+        </div>
+    </div>
+    
+    <center>{{ form_widget(form.name, { attr: {class:"name ", style: "display:none;width:90%", placeholder: "Titre"} }) }}</center>
+    <br/>
+    {% if form.usersParticipations is defined %}
+        <div id="detailBlocUsers" class="row">
+            <center><div class="title bleu">Participants</div></center>
+            <div class="bleu">{{ 'events.max-participations'|trans }} {{ form_widget(form.maxParticipations, { attr: {class:" maxParticipations"} }) }}</div>
+            <div>
+                {{ form_widget(form.usersParticipations, { attr: { "data-placeholder":"Sélectionne les participants", class:"multiple-users-select2 usersParticipations"} }) }}
+            </div>
+        </div>
+        <br/>
+    {% endif %}
+    
+    <div id="detailBlocDate" class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <span class="add-on">Du &nbsp;<i class="glyphicon glyphicon-calendar"></i>
+                    {{ form_widget(form.startDate.date, { attr: { class:"startDate datepicker input-mini"} }) }}
+                </span>
+                
+                <div class=" bootstrap-timepicker pull-right">
+                    <span class="glyphicon glyphicon-time"></span>
+                    {{ form_widget(form.startDate.time, { attr: { class:"startTime timepicker " } }) }}
+                </div>
+            </div>
+            <div class="row">
+                <span class="add-on">Au &nbsp;<i class="glyphicon glyphicon-calendar"></i>
+                    {{ form_widget(form.endDate.date, { attr: { class:"endDate datepicker input-mini"} }) }}
+                </span>
+                
+                <div class=" bootstrap-timepicker pull-right">
+                    <span class="glyphicon glyphicon-time"></span>
+                    {{ form_widget(form.endDate.time, { attr: { class:"endTime timepicker " } }) }}
+                </div>
+
+                <label class="checkbox pull-left">
+                    {{ form_widget(form.isAllDay, { attr: { class:"isAllDay" } }) }} Toute la journée
+                </label>
+            </div>
+        </div>
+        <div class="col-md-6">
+            {# form_widget(form.content, { attr: {class:"content ", placeholder: 'coaching.session-details'|trans } }) #}
+            <div id="detailBlocPlace" class="row">
+                <div class="col-md-12">
+                    <center><div class="title bleu">Lieu</div></center>
+                    {{ form_widget(form.place) }}
+                </div>
+            </div> 
+        </div>
+    </div>   
+    {{ form_rest(form) }}
+</form>
+
+<script type="text/javascript">
+    var $form                   = $("form.eventForm");
+    var $startDate              = $form.find(".startDate");
+    var $endDate                = $form.find(".endDate");
+    var $startTime              = $form.find(".startTime");
+    var $endTime                = $form.find(".endTime");
+    var $timepicker             = $form.find(".timepicker");
+    var $datepicker             = $form.find(".datepicker");
+    var $eventTypeIcon          = $form.find(".eventTypeIcon");
+    var $typeEventSelect        = $form.find(".typeEvent");
+    var $selectSports           = $form.find(".selectSports");
+    var $customSelectSports     = $form.find(".customSelectSports");
+    var $sessionWarningIcon     = $form.find(".sessionWarningIcon");
+    var $sessionWarningSelect   = $form.find(".sessionWarning");
+    
+    
+    if($startDate.val() == "") {
+        $startDate.val($.fullCalendar.formatDate(new Date, "dd/MM/yyyy"));
+    } 
+    
+    if($endDate.val() == "") {
+        $endDate.val($.fullCalendar.formatDate(new Date, "dd/MM/yyyy"))
+    }    
+
+    //initialisation des date et timepicker
+    $datepicker.datepicker({
+        dateFormat: "dd/mm/yy",
+        firstDay: 1,
+        changeDate: function(e) {
+            //e.preventDefault();
+        }
+    });
+    
+    $timepicker.timepicker({
+        showSeconds: false,
+        showMeridian: false
+    });
+    
+    $datepicker.css("z-index", "0");
+    $timepicker.css("z-index", "0");
+    $("#duration").css("z-index", "0");
+    
+    $("#hrDuration").durationpicker({
+        showSeconds: true,
+        showMeridian: false
+    });
+    
+    $("#durationMin").durationpicker({
+        showSeconds: true,
+        showMeridian: false
+    });
+    if( $("#durationMin").val() == "" ) $("#durationMin").val("01:00:00");
+    
+    $("#durationMax").durationpicker({
+        showSeconds: true,
+        showMeridian: false
+    });
+    if( $("#durationMax").val() == "" ) $("#durationMax").val("01:00:00");
+    
+    $sessionWarningIcon.click(function() {
+        if( $( this ).hasClass("selected") ) {
+            $( this ).removeClass("selected");
+            $sessionWarningSelect.removeAttr("checked");
+            isWarning = 0;
+        }
+        else {
+            $( this ).addClass("selected");
+            $sessionWarningSelect.attr('checked','checked');
+            $isWarning = 1;
+        }
+    });
+    
+    //Type de l'événement
+    $eventTypeIcon.click(function() {
+        $("#requiredType").hide();
+        if( $( this ).hasClass("selected") ) {
+            $( this ).removeClass("selected");
+            
+            $.each($typeEventSelect.children(), function(key, option) { 
+                $( option ).removeAttr("selected");
+            });
+            
+            //$typeEventSelect.find("option[val=]").attr("selected", "selected");
+        } else {
+            //On déselectionne tout
+            $eventTypeIcon.removeClass("selected");
+
+            //On efface tous les tooltip
+            $( this ).parent().find(".tooltip").removeClass("in");
+            
+            //On sélectionne l'icone sur laquelle on a cliqué
+            $( this ).addClass("selected");
+            var typeEvent = $( this ).attr("typeEvent");
+
+            {% set access = 0 %}
+            {% if clubId is not defined %}
+                {% set access = 1 %}
+            {% else %}
+                {#% if club.name == 'GEEP!' or club.name == 'Keepinsport' or club.name == 'TOEC Tennis Association'%#}
+                {% if club.delayWarning > 0 %}
+                    {% set access = 1 %}
+                {% endif %}
+            {% endif%}
+            
+            $("#toolBtn").hide();
+            
+            if (typeEvent === "event_coaching" && {{ access }} == 0) {
+                $eventFormModal.modal('hide');
+                showInformation("{{ 'coaching.message-auth' | trans }}");
+            }
+            else {
+                //On sélectionne le bon élément dans la liste déroulante
+                $.each($typeEventSelect.children(), function(key, option) { 
+                    if( $( option ).text() == typeEvent ) { 
+                        $( option ).attr("selected", "selected");
+                    } else {
+                        $( option ).removeAttr("selected");
+                    }
+                });
+
+                //Si plan d'entrainement on affiche divNewPlan et on alimente par défaut le plan éventuellement sélectionné dans le filtre de l'agenda
+                if (typeEvent === "event_coaching") {
+                    $("#divNewPlan").show();
+                    $("#detailBlocUsers").hide();
+                    $("#toolBtn").show();
+                    $("#ksEventType_name").hide();
+                    if ($("#ksCoachingPlanType_name").val() != null) {
+                        $("#ksEventType_coachingPlan").select2("val", $("#ksCoachingPlanType_name").val()[0]);
+                    }
+                }
+                else {
+                    $("#divNewPlan").hide();
+                    $("#detailBlocUsers").show();
+                    $("#toolBtn").hide();
+                    //$("#ksEventType_name").val(""); //FMO : sinon dans le cas event_misc le texte saute...
+                    $("#ksEventType_name").show();
+                    $("#ksEventType_coachingPlan").select2("val", ""); //obligatoire sinon risque de sauvegarder un lien si choix type autre que coachingPlan !
+                    $("#ksEventType_coachingCategory").select2("val", "");
+                    $("#ksEventType_coachingSession").select2("val", "");
+                }
+            }
+        }
+    });
+    
+    var typeEvent = $typeEventSelect.find("option:selected").text();
+    
+    if( typeof(typeEvent) != 'undefined' && typeEvent != "" ) {//&& typeEvent != "event_without_type" ) {
+        $form.find("span[typeEvent=" + typeEvent + "]").click();    
+    }
+
+        
+    if( document.body.clientWidth >= 963 ) {
+        $customSelectSports.select2({
+            placeholder: "Sélectionne un sport",
+            allowClear: true,
+            width : 250,
+            formatResult: function(state) {
+                var codeSport = state.element[0].getAttribute("codeSport");
+                if (!codeSport) return state.text; 
+                return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+            },
+        });
+        $customSelectSports.select2("val", "");
+    }
+    
+    $customSelectSports.change(function() {
+        $selectSports.val($( this ).val());
+        $("#requiredSport").hide();
+    });
+    
+    var connectIconsAndSelect = function( bloc, select ) {
+        bloc.find(".icon-btn").click(function() {
+            //On déselectionne tout
+            bloc.find(".icon-btn").removeClass("selected");
+
+            //On efface tous les tooltip
+            $( this ).parent().find(".tooltip").removeClass("in");
+
+            //On sélectionne l'icone sur laquelle on a cliqué
+            $( this ).addClass("selected");
+            var code = $( this ).data("code");
+            
+            //On sélectionne le bon élément dans la liste déroulante
+            $.each(select.children(), function(key, option) { 
+                if( $( option ).text() == code ) { 
+                    $( option ).attr("selected", "selected");
+                } else {
+                    $( option ).removeAttr("selected");
+                }
+            });
+        });
+    }
+    
+    //Difficulty
+    var $difficultyBloc = $("#difficultyBloc");
+    var $difficultySelect = $("#ksEventType_difficulty");
+    connectIconsAndSelect( $difficultyBloc, $difficultySelect );
+    
+    if( $difficultySelect.val() == "") {
+        $difficultyBloc.find(".icon-btn:eq(1)").click();
+    }
+    else {
+        $difficultyBloc.find(".icon-btn:eq(" + ($difficultySelect.val() - 1) + ")").click();
+    }
+    
+    
+    
+    $(document).ready(function() {
+        $("#ksEventType_isAllDay").iCheck({
+            checkboxClass: 'icheckbox_flat-blue'
+        });
+        //Au clic sur "toute la journée" on cache ou montre les champs d'heure
+        $("#ksEventType_isAllDay").on('ifChecked', function (event) {
+            $startTime.parent().hide();
+            $endTime.parent().hide();
+        });
+        $("#ksEventType_isAllDay").on('ifUnchecked', function (event) {
+            $startTime.parent().show();
+            $endTime.parent().show();
+        });
+        $("#ksEventType_isAllDay").iCheck("check");
+        
+        checkboxIsPublic = true;
+        {% if clubId is defined and clubId is not null %}
+            checkboxIsPublic = false;
+            $("#ksEventType_isPublic").iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                'checked': false
+            });
+            $("#ksEventType_isPublic").iCheck('uncheck');
+        {% elseif userId is defined and userId is not null %}
+            checkboxIsPublic = true;
+            $("#ksEventType_isPublic").iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                'checked': true
+            });
+            $("#ksEventType_isPublic").iCheck('check');
+        {% endif %}
+
+        $("#ksEventType_isPublic").on('ifChecked', function (event) {
+            checkboxIsPublic = true;
+        });
+        $("#ksEventType_isPublic").on('ifUnchecked', function (event) {
+            checkboxIsPublic = false;
+        });
+        
+        $("#ksEventType_name").hide();
+        /*function format(session) {
+            //if (!session.id) return session.text; // optgroup
+            console.log(session.id + "/" + session.text);
+            return "<img src='{{ asset('img/new.PNG') }}'/> " + session.text;
+        }*/
+        $("#ksEventType_coachingPlan").select2({
+            placeholder         : '{{ 'coaching.my-plans'|trans }}',
+            containerCssClass   : 'light '
+        }).on("change", function(e) {
+            $("#newPlanOK").hide();
+            $("#newPlanText").val("");
+            $("#deletePlanOK").hide();
+        });
+        $('#ksEventType_coachingPlan').on("select2-selecting", function(e) { 
+            $("#requiredPlan").hide();
+        });
+        
+        $newCategory = false;
+        $sessionChoosed = false;
+        
+        function format(state) {
+            if (state.text == 'COMPETITIONS') {
+                return "<span class='icon-trophy'/> " + state.text;
+            }
+            else return state.text;
+        }
+        $("#ksEventType_coachingCategory").select2({
+            placeholder         : '{{ 'coaching.my-categories'|trans }}',
+            containerCssClass   : 'light ',
+            formatResult        : format,
+            formatSelection     : format,
+            escapeMarkup        : function(m) { return m; }
+        }).on("change", function(e) {
+            $("#newCategoryOK").hide();
+            $("#newCategoryText").val("");
+            $("#deleteCategoryOK").hide();
+            $("#ksEventType_name").hide();
+            $coachingSessionDetails = [];
+            $("#ksEventType_content").val("");
+            resetSessionFields();
+            $sessionChoosed = false;
+            
+            //Remise à zéro du sport éventuellement déjà sélectionné lors du changement volontaire par écran d'une catégorie
+            if ($coachingSessionIdInit == null) {
+                $customSelectSports.select2("val", "");
+                $customSelectSports.change();
+            }
+            
+            //console.log("changed");
+            
+            if (!$newCategory) {
+                //FMO : Mise à jour de la liste des séances possibles en fonction de la catégorie sélectionnée sauf lors de la création d'une nouvelle catégorie
+                $("#ksEventType_coachingSession").select2("enable", false);
+                $.ajax({
+                    url: Routing.generate('ksCoaching_getSessionsFromCategory', {'clubId' : clubId}),
+                    type: "POST",
+                    data: "categoryId="+ $("#ksEventType_coachingCategory").val(),
+                    success : function(response) {
+                        if ( response.publishResponse == 1 ) {
+                            $("#ksEventType_coachingSession").select2("enable", true);
+                            $("#ksEventType_coachingSession").empty();
+                            $("#ksEventType_coachingSession").select2("val", "");
+                            for ($i=0;$i<response.coachingSessions.length;$i++) {
+                                $("#ksEventType_coachingSession").append("<option value=\"" + response.coachingSessions[$i]['id'] + "\">"+response.coachingSessions[$i]['name']+"</option>");
+                                $coachingSessionDetails[$i] = new Array(
+                                    response.coachingSessions[$i]['id'], 
+                                    response.coachingSessions[$i]['name'], 
+                                    response.coachingSessions[$i]['detail'],
+                                    response.coachingSessions[$i]['hrCoeffMin'],
+                                    response.coachingSessions[$i]['hrCoeffMax'],
+                                    response.coachingSessions[$i]['hrType'],
+                                    response.coachingSessions[$i]['intervalDuration'],
+                                    response.coachingSessions[$i]['intervalDistance'],
+                                    response.coachingSessions[$i]['VMACoeff'],
+                                    response.coachingSessions[$i]['distanceMin'],
+                                    response.coachingSessions[$i]['distanceMax'],
+                                    response.coachingSessions[$i]['durationMin'],
+                                    response.coachingSessions[$i]['durationMax'],
+                                    response.coachingSessions[$i]['elevationGainMin'],
+                                    response.coachingSessions[$i]['elevationGainMax'],
+                                    response.coachingSessions[$i]['elevationLostMin'],
+                                    response.coachingSessions[$i]['elevationLostMax'],
+                                    response.coachingSessions[$i]['speedAverageMin'],
+                                    response.coachingSessions[$i]['speedAverageMax'],
+                                    response.coachingSessions[$i]['powMin'],
+                                    response.coachingSessions[$i]['powMax'],
+                                    response.coachingSessions[$i]['date'],
+                                    response.coachingSessions[$i]['sport']
+                                );
+                            }
+                            //console.log($coachingSessionDetails);
+                            //$("#ksEventType_coachingSession").select2("val", "");//Nécessaire sinon le 1er est sélectionné mais non affiché et porte donc à confusion !
+                            
+                            //FMO : pour l'init de la popup, nécessaire pour afficher les bonnes séances selon la catégorie et sélectionner la séance de l'event (_eventModalForm.html.twig)
+                            if ($coachingSessionIdInit != null) {
+                                //console.log("$coachingSessionIdInit="+$coachingSessionIdInit);
+                                $("#ksEventType_coachingSession").select2("val", $coachingSessionIdInit);
+                                $("#ksEventType_content").val($coachingSessionDetailInit);
+                                $coachingSessionIdInit = null;
+                            }
+                            else {
+                                $("#ksEventType_content").val("");
+                            }
+                            if ($("#ksEventType_coachingCategory option:selected").text() == 'COMPETITIONS') {
+                                $("#newSessionBtn").addClass("disabled");
+                                $("#updateSessionBtn").addClass("disabled");
+                                $("#deleteSessionBtn").addClass("disabled");
+                            }
+                            else {
+                                $("#newSessionBtn").removeClass("disabled");
+                                $("#updateSessionBtn").removeClass("disabled");
+                                $("#deleteSessionBtn").removeClass("disabled");
+                            }
+                        }
+                    }
+                });
+            }
+            $newCategory = false;
+        });
+        $('#ksEventType_coachingCategory').on("select2-selecting", function(e) { 
+            $("#requiredCategory").hide();
+            $("#ksEventType_coachingSession").select2("val", "");
+            $("#ksEventType_content").val("");
+            resetSessionFields();
+            $sessionChoosed = false;
+        });
+        
+        $("#ksEventType_coachingSession").select2({
+            placeholder         : '{{ 'coaching.my-favorite-sessions'|trans }}',
+            containerCssClass   : 'light '
+        }).on("change", function(e) {
+           updatecoachingSession(true);
+           $sessionChoosed = true;
+        });
+        $('#ksEventType_coachingSession').on("select2-selecting", function(e) { 
+            updatecoachingSession(true);
+            $sessionChoosed = true;
+        });
+        
+        $("#hrType").select2({
+            placeholder         : '',
+            containerCssClass   : 'light '
+        }).on("change", function() {
+            updateBPMData();
+        });
+        $('#hrType').on("select2-selecting", function(e) {
+            updateBPMData();
+        });
+        
+        $("#intervalDistance, #VMACoeff").on("change", function() {
+            updateIntervalData();
+        });
+        
+        $("#hrCoeffMin, #hrCoeffMax").on("change", function() {
+            updateBPMData();
+        });
+        
+        function resetSessionFields() {
+            $("#distanceMin").val("");$("#distanceMax").val("");$("#intervalDistance").val("");
+            $("#durationMin").val("");$("#durationMax").val("");$("#intervalDuration").val("");
+            $("#elevationGainMin").val("");$("#elevationGainMax").val("");
+            $("#elevationLostMin").val("");$("#elevationLostMax").val("");
+            $("#speedAverageMin").val("");$("#speedAverageMax").val("");$("#VMACoeff").val("");$("#intervalSpeed").val("");
+            $("#powMin").val("");$("#powMax").val("");
+            $("#hrCoeffMin").val("");$("#hrCoeffMax").val("");$("#hrType").select2("val", "");$("#hrFCRef").val();$("#hrBPMMin").val("");$("#hrBPMMax").val("");
+            $("#ksEventType_difficulty").val(2);
+            $("#difficultyBloc").find(".icon-btn:eq(" + (2 - 1) + ")").click();
+            
+            //console.log("updateBPMData from resetSessionFields");
+            //updateBPMData();
+            //updateIntervalData();
+        }
+        
+        function updatecoachingSession (mode) {
+            //console.log(mode);
+            //console.log($("#ksEventType_coachingSession").val());
+            $("#newSessionOK").hide();
+            $("#newSessionText").val("");
+            $("#deleteSessionOK").hide();
+            $("#ksEventType_name").hide();
+            $("#requiredTitle").hide();
+            $("#ksEventType_name").val($("#ksEventType_coachingSession option:selected").text());
+            if (mode) {
+                $("#ksEventType_content").val("");
+                //console.log($coac hingTitleDetails);
+                //FMO : mise à jour du détail en fonction de la séance sélectionnée
+                if ($coachingSessionDetails != null) {
+                    for ($i=0;$i<$coachingSessionDetails.length;$i++) {
+                        if ($coachingSessionDetails[$i][0] == $("#ksEventType_coachingSession").val()) {
+                            $("#ksEventType_content").val($coachingSessionDetails[$i][2]);
+                            $("#hrCoeffMin").val($coachingSessionDetails[$i][3]);
+                            $("#hrCoeffMax").val($coachingSessionDetails[$i][4]);
+                            $("#hrType").select2("val", $coachingSessionDetails[$i][5]);
+                            $("#intervalDuration").val($coachingSessionDetails[$i][6]);
+                            $("#intervalDistance").val($coachingSessionDetails[$i][7]);
+                            $("#VMACoeff").val($coachingSessionDetails[$i][8]);
+                            $("#distanceMin").val($coachingSessionDetails[$i][9]);
+                            $("#distanceMax").val($coachingSessionDetails[$i][10]);
+                            $("#durationMin").val($coachingSessionDetails[$i][11]);
+                            $("#durationMax").val($coachingSessionDetails[$i][12]);
+                            $("#elevationGainMin").val($coachingSessionDetails[$i][13]);
+                            $("#elevationGainMax").val($coachingSessionDetails[$i][14]);
+                            $("#elevationLostMin").val($coachingSessionDetails[$i][15]);
+                            $("#elevationLostMax").val($coachingSessionDetails[$i][16]);
+                            $("#speedAverageMin").val($coachingSessionDetails[$i][17]);
+                            $("#speedAverageMax").val($coachingSessionDetails[$i][18]);
+                            $("#powMin").val($coachingSessionDetails[$i][19]);
+                            $("#powMax").val($coachingSessionDetails[$i][20]);
+                            
+                            if ($coachingSessionDetails[$i][21] != null && $coachingSessionDetails[$i][22] != null) {
+                                //Cas d'une compétition, on force la difficulté à intensif, la date et le sport en fonction des données de l'article
+                                $('.startDate').val($coachingSessionDetails[$i][21]);
+                                $('.endDate').val($coachingSessionDetails[$i][21]);
+                                $customSelectSports.select2("val", $coachingSessionDetails[$i][22]);
+                                $customSelectSports.change();
+                                $("#ksEventType_difficulty").val(3);
+                                $("#difficultyBloc").find(".icon-btn:eq(" + (3 - 1) + ")").click();
+                            }
+                        }
+                    }
+                }
+            }
+            else if (!mode) $("#ksEventType_coachingCategory").change();
+            else if (mode == 'updateSession'){
+                //On ne fait rien volontairement
+            }
+            
+            if ($("#ksEventType_coachingCategory option:selected").text() == 'COMPETITIONS') {
+                $("#newSessionBtn").addClass("disabled");
+                $("#updateSessionBtn").addClass("disabled");
+                $("#deleteSessionBtn").addClass("disabled");
+                $("#saveTitleBtn").addClass("disabled");
+                $("#cancelTitleBtn").addClass("disabled");
+            }
+            else {
+                $("#newSessionBtn").removeClass("disabled");
+                $("#updateSessionBtn").removeClass("disabled");
+                $("#deleteSessionBtn").removeClass("disabled");
+            }
+        }
+        
+        $('#ksEventType_usersParticipations').on("select2-selecting", function(e) {
+            $("#requiredParticipants").hide();
+            $("#requiredOnlyOneParticipant").hide();
+        });
+        
+        {% if clubId is defined %}
+            var clubId = {{ club.id }};
+        {% else %}
+            var clubId = 0;
+        {% endif %}
+        
+        $("#newPlanBtn").click(function() {
+            if( ! $("#newPlanBtn").hasClass("disabled") ) {
+                var newPlan = $("#newPlanText").val();
+                if (newPlan !="") {
+                    $("#newPlanBtn").addClass("disabled");
+                    $.ajax({
+                        url: Routing.generate('ksCoaching_createNewPlan', {'clubId' : clubId}),
+                        type: "POST",
+                        data: "newPlan="+ newPlan,
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                $("#ksEventType_coachingPlan").append("<option value=\"" + response.value + "\">"+newPlan+"</option>");
+                                $("#ksEventType_coachingPlan").change();
+                                $("#ksEventType_coachingPlan").select2("val", response.value);
+                                hideMessages();
+                                $("#newPlanOK").show();
+                                $("#newPlanBtn").removeClass("disabled");
+                            }
+                            else {
+                                hideMessages();
+                                $("#newPlanKO").show();
+                                $("#newPlanBtn").removeClass("disabled");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        $("#deletePlanBtn").click(function() {
+            if( ! $("#deletePlanBtn").hasClass("disabled") ) {
+                var planId = $("#ksEventType_coachingPlan").val();
+                if (planId !="") {
+                    $("#deletePlanBtn").addClass("disabled");
+                    $.ajax({
+                        url: Routing.generate('ksCoaching_deletePlan', {'planId' : planId}),
+                        type: "POST",
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                $('#ksEventType_coachingPlan option[value="' + planId +'"]').remove();
+                                $("#ksEventType_coachingPlan").select2("val", "");
+                                hideMessages();
+                                $("#deletePlanOK").show();
+                                $("#deletePlanBtn").removeClass("disabled");
+                            } else {
+                                hideMessages();
+                                $("#deletePlanKO").show();
+                                $("#deletePlanBtn").removeClass("disabled");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        
+        $("#newCategoryBtn").click(function() {
+            if( ! $("#newCategoryBtn").hasClass("disabled") ) {
+                var newCategory = $("#newCategoryText").val();
+                if (newCategory !="") {
+                    $("#newCategoryBtn").addClass("disabled");
+                    $.ajax({
+                        url: Routing.generate('ksCoaching_createNewCategory', {'clubId' : clubId}),
+                        type: "POST",
+                        data: "newCategory="+ newCategory,
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                $newCategory = true;
+                                updatecoachingSession(false);
+                                $("#ksEventType_coachingCategory").append("<option value=\"" + response.value + "\">"+newCategory+"</option>");
+                                $("#ksEventType_coachingCategory").change();
+                                $("#ksEventType_coachingCategory").select2("val", response.value);
+                                $("#ksEventType_name").select2("val", "");
+                                $("#ksEventType_coachingSession").select2("val", "");
+                                $("#ksEventType_content").val("");
+                                hideMessages();
+                                $("#newCategoryOK").show();
+                                $("#newCategoryBtn").removeClass("disabled");
+                            }
+                            else {
+                                hideMessages();
+                                $("#deleteCategoryKO").show();
+                                $("#newCategoryBtn").removeClass("disabled");
+                            }
+                        }
+                    });
+                }
+                else $("#chooseCategory").show();
+            }
+        });
+        
+        $("#editCategoryBtn").click(function() {
+            if( ! $("#editCategoryBtn").hasClass("disabled") ) {
+                var categoryId = $("#ksEventType_coachingCategory").val();
+                var editCategory = $("#newCategoryText").val();
+                if (categoryId !="" && editCategory !="") {
+                    $("#editCategoryBtn").addClass("disabled");
+                    hideMessages();
+                    $.ajax({
+                        url: Routing.generate('ksCoaching_editCategory', {'categoryId' : categoryId}),
+                        type: "POST",
+                        data: "editCategory="+ editCategory,
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                hideMessages();
+                                $("#editCategoryOK").show();
+                                $("#editCategoryBtn").removeClass("disabled");
+                                $("#ksEventType_coachingCategory option:selected").text(editCategory);
+                                $("#ksEventType_coachingCategory").select2("val", categoryId);
+                                $("#newCategoryText").val("");
+                            } else {
+                                hideMessages();
+                                $("#editCategoryKO").show();
+                                if (response.publishResponse == -1) $("#editCategoryKO").show();
+                                $("#editCategoryBtn").removeClass("disabled");
+                            }
+                        }
+                    });
+                }
+                else $("#requiredCategory").show();
+            }
+        });
+        
+        $("#enableCategoryBtn").click(function() {
+            if( ! $("#enableCategoryBtn").hasClass("disabled") ) {
+                var categoryId = $("#ksEventType_coachingCategory").val();
+                if (categoryId !="") {
+                    $("#enableCategoryBtn").addClass("disabled");
+                    $.ajax({
+                        url: Routing.generate('ksCoaching_enableCategory', {'categoryId' : categoryId}),
+                        type: "POST",
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                hideMessages();
+                                $("#enableCategoryOK").show();
+                                $("#enableCategoryBtn").removeClass("disabled");
+                            } else {
+                                hideMessages();
+                                $("#enableCategoryKO").show();
+                                if (response.publishResponse == -1) $("#enableCategoryKO").show();
+                                $("#enableCategoryBtn").removeClass("disabled");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        
+        $("#disableCategoryBtn").click(function() {
+            if( ! $("#disableCategoryBtn").hasClass("disabled") ) {
+                var categoryId = $("#ksEventType_coachingCategory").val();
+                if (categoryId !="") {
+                    $("#disableCategoryBtn").addClass("disabled");
+                    $.ajax({
+                        url: Routing.generate('ksCoaching_disableCategory', {'categoryId' : categoryId}),
+                        type: "POST",
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                hideMessages();
+                                $("#disableCategoryOK").show();
+                                $("#disableCategoryBtn").removeClass("disabled");
+                            } else {
+                                hideMessages();
+                                $("#disableCategoryKO").show();
+                                if (response.publishResponse == -1) $("#disableCategoryKO").show();
+                                $("#disableCategoryBtn").removeClass("disabled");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        
+        $("#deleteCategoryBtn").click(function() {
+            if( ! $("#deleteCategoryBtn").hasClass("disabled") ) {
+                var categoryId = $("#ksEventType_coachingCategory").val();
+                if (categoryId !="") {
+                    $("#deleteCategoryBtn").addClass("disabled");
+                    $.ajax({
+                        url: Routing.generate('ksCoaching_deleteCategory', {'categoryId' : categoryId}),
+                        type: "POST",
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                updatecoachingSession(false);
+                                $('#ksEventType_coachingCategory option[value="' + categoryId +'"]').remove();
+                                $("#ksEventType_coachingCategory").select2("val", "");
+                                $("#ksEventType_coachingSession").select2("val", "");
+                                hideMessages();
+                                $("#deleteCategoryOK").show();
+                                $("#deleteCategoryBtn").removeClass("disabled");
+                            } else {
+                                hideMessages();
+                                $("#deleteCategoryKO").show();
+                                if (response.publishResponse == -1) $("#deleteCategoryKO").show();
+                                else if (response.publishResponse == -2) $("#deleteCategoryKO2").show();
+                                $("#deleteCategoryBtn").removeClass("disabled");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        
+        $mode = null;
+        $("#newSessionBtn").click(function() {
+            if( ! $("#newSessionBtn").hasClass("disabled") ) {
+                $categoryId = $("#ksEventType_coachingCategory").val();
+                if ($categoryId != null && $categoryId != "") {
+                    $mode = "new";
+                    enableSessionFields();
+                    $("#categoryBloc").hide();
+                    $("#ksEventType_coachingSession").select2("enable", false);
+                    $("#s2id_ksEventType_coachingSession").hide();
+                    $("#ksEventType_coachingCategory").select2("enable", false);
+                    $("#newSessionBtn").addClass("disabled");
+                    $("#updateSessionBtn").addClass("disabled");
+                    $("#deleteSessionBtn").addClass("disabled");
+                    $("#saveTitleBtn").removeClass("disabled");
+                    $("#cancelTitleBtn").removeClass("disabled");
+                    $("#newSessionText").attr("placeholder", "{{ 'coaching.new-session-label'| trans }}");
+                    $("#newSessionText").show();
+
+                    $("#ksEventType_content").attr('disabled', false);
+                    $("#ksEventType_content").val("");
+                    resetSessionFields();
+                }
+                else {
+                    $("#requiredCategory").show();
+                    $("#s2id_ksEventType_coachingSession").show();
+                    $("#ksEventType_coachingSession").select2("enable", true);
+                    $("#ksEventType_coachingCategory").select2("enable", true);
+                    $("#categoryBloc").show();
+                }
+            }
+        });
+        
+        $("#updateSessionBtn").click(function() {
+            if( ! $("#updateSessionBtn").hasClass("disabled") && 
+                  $sessionChoosed) {
+                enableSessionFields();
+                $mode = "update";
+                $("#categoryBloc").hide();
+                $("#ksEventType_coachingCategory").select2("enable", false);
+                $("#ksEventType_coachingSession").select2("enable", false);
+                $("#newSessionBtn").addClass("disabled");
+                $("#updateSessionBtn").addClass("disabled");
+                $("#deleteSessionBtn").addClass("disabled");
+                $("#saveTitleBtn").removeClass("disabled");
+                $("#cancelTitleBtn").removeClass("disabled");
+                $("#newSessionText").attr("placeholder", "{{ 'coaching.update-session-label'| trans }}");
+                $("#newSessionText").show();
+                
+                $("#ksEventType_content").attr('disabled', false);
+            }
+            else $("#categoryBloc").show();
+        });
+        
+        $("#cancelTitleBtn").addClass("disabled");
+        $("#cancelTitleBtn").click(function() {
+            if( !$("#cancelTitleBtn").hasClass("disabled") ) {
+                disableSessionFields();
+                $("#ksEventType_coachingSession").select2("enable", true);
+                $("#newSessionBtn").removeClass("disabled");
+                $("#updateSessionBtn").removeClass("disabled");
+                $("#deleteSessionBtn").removeClass("disabled");
+                $("#cancelTitleBtn").removeClass("disabled");
+                $("#saveTitleBtn").addClass("disabled");
+                $("#newSessionText").hide();
+                
+                $("#ksEventType_content").attr('disabled', true);
+                $("#ksEventType_content").val("");
+                resetSessionFields();
+                updatecoachingSession(true);
+                $("#categoryBloc").show();
+                $("#s2id_ksEventType_coachingSession").show();
+                $("#ksEventType_coachingSession").select2("enable", true);
+                $("#ksEventType_coachingCategory").select2("enable", true);
+                $("#ksEventType_coachingCategory").change();
+            }   
+        });
+        
+        $("#saveTitleBtn").addClass("disabled");
+        $("#saveTitleBtn").click(function() {
+            if( ! $("#saveTitleBtn").hasClass("disabled") ) {
+                var newSession = $("#newSessionText").val();
+                var newDetail = $("#ksEventType_content").val();
+                var categoryId =  $("#ksEventType_coachingCategory").val();
+                var hrCoeffMin = $("#hrCoeffMin").val();
+                var hrCoeffMax = $("#hrCoeffMax").val();
+                var hrType = $("#hrType").val();
+                var intervalDuration = $("#intervalDuration").val();
+                var intervalDistance = $("#intervalDistance").val();
+                var VMACoeff = $("#VMACoeff").val();
+                var durationMin = $("#durationMin").val();
+                var durationMax = $("#durationMax").val();
+                var distanceMin = $("#distanceMin").val();
+                var distanceMax = $("#distanceMax").val();
+                var elevationGainMin = $("#elevationGainMin").val();
+                var elevationGainMax = $("#elevationGainMax").val();
+                var elevationLostMin = $("#elevationLostMin").val();
+                var elevationLostMax = $("#elevationLostMax").val();
+                var speedAverageMin = $("#speedAverageMin").val();
+                var speedAverageMax = $("#speedAverageMax").val();
+                var powMin = $("#powMin").val();
+                var powMax = $("#powMax").val();
+                
+                
+                if ( $mode == "new") {
+                    //Cas de la création d'une nouvelle séance type
+                    //console.log(categoryId);
+                    if (newSession !="") {
+                        $("#saveTitleBtn").addClass("disabled");
+                        $.ajax({
+                            url: Routing.generate('ksCoaching_createNewSession', {'clubId' : clubId}),
+                            type: "POST",
+                            data: "newSession="+ newSession + "&newDetail=" + newDetail + "&categoryId="+categoryId + 
+                                  "&hrCoeffMin=" + hrCoeffMin + "&hrCoeffMax=" + hrCoeffMax + "&hrType=" + hrType + "&intervalDuration=" + intervalDuration + "&intervalDistance=" + intervalDistance + 
+                                  "&VMACoeff=" + VMACoeff + "&durationMin=" + durationMin + "&durationMax=" + durationMax + "&distanceMin=" + distanceMin + "&distanceMax=" + distanceMax + 
+                                  "&elevationGainMin=" + elevationGainMin + "&elevationGainMax=" + elevationGainMax + "&elevationLostMin=" + elevationLostMin + "&elevationLostMax=" + elevationLostMax + 
+                                  "&speedAverageMin=" + speedAverageMin + "&speedAverageMax=" + speedAverageMax + "&powMin=" + powMin + "&powMax=" + powMax,
+                            success : function(response) {
+                                if ( response.publishResponse == 1 ) {
+                                    updatecoachingSession(false);
+                                    $("#ksEventType_coachingSession").append("<option value=\"" + response.value + "\">"+newSession+"</option>");
+                                    $("#ksEventType_coachingSession").select2("val", response.value);
+                                    $("#ksEventType_name").val($("#ksEventType_coachingSession option:selected").text());
+                                    hideMessages();
+                                    $("#newSessionOK").show();
+                                    $("#newSessionBtn").removeClass("disabled");
+                                    $("#updateSessionBtn").removeClass("disabled");
+                                    $("#deleteSessionBtn").removeClass("disabled");
+                                    $("#saveTitleBtn").addClass("disabled");
+                                    $("#cancelTitleBtn").addClass("disabled");
+                                    $("#newSessionText").hide();
+                                    $("#categoryBloc").show();
+                                    $("#ksEventType_content").attr('disabled', true);
+                                    $("#s2id_ksEventType_coachingSession").show();
+                                    $("#ksEventType_coachingSession").select2("enable", true);
+                                    $("#ksEventType_coachingCategory").select2("enable", true);
+                                    disableSessionFields();
+                                }
+                                else if ( response.publishResponse == -1 ) {
+                                    hideMessages();
+                                    $("#requiredData").show();
+                                    $("#saveTitleBtn").removeClass("disabled");
+                                    $("#cancelTitleBtn").removeClass("disabled");
+                                }
+                                else {
+                                    hideMessages();
+                                    $("#newSessionKO").show();
+                                    $("#newSessionBtn").removeClass("disabled");
+                                    $("#updateSessionBtn").removeClass("disabled");
+                                    $("#deleteSessionBtn").removeClass("disabled");
+                                    $("#saveTitleBtn").removeClass("disabled");
+                                    $("#cancelTitleBtn").removeClass("disabled");
+                                }
+                            }
+                        });
+                    }
+                }
+                else {
+                    //Cas de la modification d'une séance type
+                    var sessionId = $("#ksEventType_coachingSession").val();
+                    if (newSession == "") newSession = $("#ksEventType_name").val();
+                    
+                    if (sessionId !="" && sessionId != null) {
+                        $("#saveTitleBtn").addClass("disabled");
+                        $.ajax({
+                            url: Routing.generate('ksCoaching_updateSession', {'clubId' : clubId}),
+                            type: "POST",
+                            data: "sessionId="+ sessionId + "&newSession=" + newSession + "&detail=" + newDetail + 
+                                  "&hrCoeffMin=" + hrCoeffMin + "&hrCoeffMax=" + hrCoeffMax + "&hrType=" + hrType + "&intervalDuration=" + intervalDuration + "&intervalDistance=" + intervalDistance + 
+                                  "&VMACoeff=" + VMACoeff + "&durationMin=" + durationMin + "&durationMax=" + durationMax + "&distanceMin=" + distanceMin + "&distanceMax=" + distanceMax + 
+                                  "&elevationGainMin=" + elevationGainMin + "&elevationGainMax=" + elevationGainMax + "&elevationLostMin=" + elevationLostMin + "&elevationLostMax=" + elevationLostMax + 
+                                  "&speedAverageMin=" + speedAverageMin + "&speedAverageMax=" + speedAverageMax + "&powMin=" + powMin + "&powMax=" + powMax,
+                            success : function(response) {
+                                if ( response.publishResponse == 1 ) {
+                                    updatecoachingSession('updateSession');
+                                    //$("#ksEventType_coachingSession").append("<option value=\"" + response.value + "\">"+newSession+"</option>");
+                                    $("#ksEventType_coachingSession").select2("val", response.value);
+                                    $("#ksEventType_name").val($("#ksEventType_coachingSession option:selected").text());
+                                    $("#ksEventType_coachingCategory").select2("enable", true);
+                                    $("#ksEventType_coachingCategory").change();
+                                    hideMessages();
+                                    $("#updateSessionOK").show();
+                                    $("#newSessionBtn").removeClass("disabled");
+                                    $("#updateSessionBtn").removeClass("disabled");
+                                    $("#deleteSessionBtn").removeClass("disabled");
+                                    $("#saveTitleBtn").addClass("disabled");
+                                    $("#cancelTitleBtn").addClass("disabled");
+                                    $("#newSessionText").hide();
+                                    $("#categoryBloc").show();
+                                    $("#ksEventType_coachingSession").select2("enable", true);
+                                    $("#ksEventType_content").attr('disabled', true);
+                                    disableSessionFields();
+                                }
+                                else if ( response.publishResponse == -1 ) {
+                                    $("#requiredData").show();
+                                    $("#saveTitleBtn").removeClass("disabled");
+                                    $("#categoryBloc").show();
+                                    $("#ksEventType_coachingSession").select2("enable", true);
+                                }
+                                else {
+                                    hideMessages();
+                                    $("#updateSessionKO").show();
+                                    $("#newSessionBtn").removeClass("disabled");
+                                    $("#updateSessionBtn").removeClass("disabled");
+                                    $("#deleteSessionBtn").removeClass("disabled");
+                                    $("#saveTitleBtn").addClass("disabled");
+                                    $("#cancelTitleBtn").addClass("disabled");
+                                }
+                            }
+                        });
+                    }
+                }    
+            }
+        });
+        $("#deleteSessionBtn").click(function() {
+            if( ! $("#deleteSessionBtn").hasClass("disabled") && $sessionChoosed ) {
+                var sessionId = $("#ksEventType_coachingSession").val();
+                if (sessionId !="" && sessionId != null) {
+                    $("#deleteSessionBtn").addClass("disabled");
+                    $.ajax({
+                        url: Routing.generate('ksCoaching_deleteSession', {'sessionId' : sessionId}),
+                        type: "POST",
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                $('#ksEventType_coachingSession option[value="' + sessionId +'"]').remove();
+                                $("#ksEventType_coachingSession").select2("val", "");
+                                $("#ksEventType_coachingCategory").change();
+                                hideMessages();
+                                resetSessionFields();
+                                updatecoachingSession(true);
+                                $sessionChoosed = false;
+                                $("#deleteSessionOK").show();
+                                $("#deleteSessionBtn").removeClass("disabled");
+                            } else {
+                                hideMessages();
+                                $("#deleteSessionKO").show();
+                                $("#deleteSessionBtn").removeClass("disabled");
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        
+        
+        //FMO 06/07/15 en cours !
+        var articlesList = [
+            {   
+                "label" : "footing",
+            },
+            {   
+                "label" : "gamme",
+            },
+        ];
+        /*
+        $('#ksEventType_content').keyup(function(e) {
+            //On construit un tableau que de labels
+            articlesLabelsList = new Array();
+            for( var i=0; i< articlesList.length; i++ ){
+                articlesLabelsList.push(articlesList[i].label);
+            }
+
+            var target = $('#ksEventType_content').val();
+            var parent = target.parentNode;
+            var keyCode = event.keyCode;
+            
+            var motEnCours = target.trim();
+            
+            console.log("keyCode=" + keyCode);
+            
+            if ( motEnCours != null && motEnCours.substr(0, 1) == "@") {
+            
+                //sans le "@"
+                mot = motEnCours.substr(1);
+                console.log("mot=" + mot);
+
+                $("#liste_description").html("");
+
+                //On construit la liste des résultats
+                var elementStyle = this.style;
+                //console.log(that.textarea)
+                //var width = $( "#"+textareaId ).css("width");
+                var ul = this.ownerDocument.createElement("ul");
+                classe = this.ownerDocument.createAttribute("class") 
+                classe.value = "typeahead dropdown-menu"
+                ul.setAttributeNode(classe);
+                style = this.ownerDocument.createAttribute("style") 
+                //style.value = "display: block;top:"+elementStyle.top+";left:"+elementStyle.left;
+                style.value = "position:relative;display: block;float:none;width:95%;";
+                ul.setAttributeNode(style);
+
+                var results = $.ui.autocomplete.filter(articlesLabelsList, mot)
+
+                if( results.length > 0 ) {
+                    //results = results.sort(function(a, b){return ($(b).text().toLowerCase()) < ($(a).text().toLowerCase());});
+                    //Tri par ordre alphabétique
+                    results = results.sort(function(a, b){return (b < a);});
+                    //results = results.sort(compareLabel);
+                    var regEx = new RegExp("("+mot.toLowerCase()+")");
+                    for( i=0; i< results.length; i++ ){
+                        //console.log("1")
+                        li = this.ownerDocument.createElement("li");
+
+                        if ( mot.length > 0) {
+                            text = results[i].toLowerCase().replace(regEx,"<mark>$1</mark>");
+                        } else {
+                            text = results[i].toLowerCase();
+                        }
+
+                        li.innerHTML = text;
+
+                        $( li ).attr("name", results[i]);
+
+                        ul.appendChild(li);
+
+                    }
+                    document.getElementById("liste_description").appendChild(ul);
+
+                    $("#liste_description > ul > li").hover( function() {
+                        $( this ).css("background-color", "#0074CC");
+                    }, function() {
+                        $( this ).css("background-color", "");
+                    });
+
+                    $("#liste_description > ul > li").click( function() {
+                        console.log($(this).attr("name"));
+                        var texte = $('#ksEventType_content').val();
+                        console.log(texte.substr(0, texte.length-mot.length-2));
+                        $(this).unbind();
+                        $("#liste_description").html("");
+                        //$('#ksEventType_content').val(texte + $(this).attr("name"));
+                    });
+                } else {
+                    $("#liste_description").html("Pas de résultats");
+                }
+            }
+            
+        });*/
+    });
+</script>

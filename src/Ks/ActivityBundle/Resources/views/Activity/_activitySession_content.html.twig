@@ -1,0 +1,39 @@
+<br clear="all" />
+
+<p><b>Durée:</b> {{ activity.duration|date('H:i:s') }}</p>
+
+{% if usersWhoHaveParticipated|length > 0 %}
+    <div>
+        Partenaires :
+        {% for teamMate_user in usersWhoHaveParticipated %}
+            {% if teamMate_user != activity.user %}
+                <a href="{{ path('ks_user_public_profile', { 'username' : teamMate_user.username }) }}">
+                    {{ teamMate_user.username }}
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+    
+{% if opponentsWhoHaveParticipated|length > 0 %}
+    <div>
+        Adversaires :
+        {% for opponent_user in opponentsWhoHaveParticipated %}
+        <a href="{{ path('ks_user_public_profile', { 'username' : opponent_user.username }) }}">
+            {{ opponent_user.username }}
+        </a>
+        {% endfor %}
+    </div>
+{% endif %}
+
+{% if activity.label is defined and activity.label is not null %}
+    <br/>
+    <p>{{ activity.label|nl2br }}</p>
+{% endif %}
+{% if activity.description is defined and activity.description is not null %}
+    <br/>
+    <p>{{ activity.description|nl2br }}</p>
+{% endif %}
+    
+{% include 'KsActivityBundle:PhotoAlbum:_photos.html.twig' %}
+        

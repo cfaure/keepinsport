@@ -1,0 +1,63 @@
+<div id="publishPhotoModal" class='modal hide fade'>
+    <div class='modal-header'>
+        <a class='close' data-dismiss='modal'>&times;</a>
+        <h3 class="sportif">{{ 'publish_a_photo'|trans }}</h3>
+    </div>
+    <div class='modal-body'>
+        <div class="messages"></div>     
+        {% if club is defined %}  
+            {% set action = path('ksClub_publishAlbumPhoto', {'clubId' : club.id }) %}   
+        {% else %}
+            {% set action = path('ksActivity_publishAlbumPhoto') %}
+        {% endif %}
+        <form id="photoForm"  action="{{ action }}" method="post" {{ form_enctype(form) }} novalidate="novalidate">
+            {{ form_errors(form) }}
+            {{ form_widget(form.description, { attr: {class:"description input-block-level", style: "height:54px; resize: none;"} } ) }}
+            {#{ form_widget(form.place) }#}
+            
+            {#<div class="dropbox">
+                <span class="message">Drop images here to upload. <br /><i>(they will only be visible to you)</i></span>
+                <div class="uploaded_photos" style="display:none"></div>
+            </div>#}
+            {{ form_rest(form) }}
+        </form>
+        <div id="jqueryFileUpload_photoForm">
+            {% include 'KsImageBundle::index.html.twig' with {'uploadDirName' : 'photos', 'context' : 'sportif'} %}
+        </div>
+       
+        <div class="errors error_list"></div>
+        
+    </div>
+    <div class='modal-footer'>
+        <img class="loader pull-left" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+        <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+        <a href='#' class='publish btn btn-sportif'>{{ 'activities.publishPhoto'|trans }}</a>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+	/*$(document).ready(function(){
+        var publishPhotoModal = $("#publishPhotoModal");
+        var loader = publishPhotoModal.find('.loader');
+        var publishButton = publishPhotoModal.find('a.publish');
+        //var publishPhotoDropbox = publishPhotoModal.find('.dropbox');
+        var jqueryFileUpload = publishPhotoModal.find("div.jqueryFileUpload");
+        var descriptionTextarea = $('#ks_activitybundle_activitylinktype_description');
+        descriptionTextarea.val("");
+        descriptionTextarea.html("");
+        
+        //On prépare la zone de drag and drop pour les photos
+        var maxfiles = 1;
+        var maxfilesize = 2;
+        var erase = true;
+        var imgPreviewWidth = 100;
+        var imgWidthHeight = 100;
+        attachDndEvent(publishPhotoDropbox, "activities", maxfiles, maxfilesize, erase, imgPreviewWidth, imgWidthHeight); 
+    });*/
+    
+    $(document).ready(function(){
+       
+    });
+
+</script>

@@ -1,0 +1,8 @@
+{% if user.userDetail.firstname is defined and user.userDetail.firstname is not null and user.userDetail.lastname is defined and user.userDetail.lastname is not null %}
+   {% set name = user.username ~ " (" ~ user.userDetail.firstname ~ " " ~ user.userDetail.lastname ~")" %}
+{% else %}
+    {% set name = user.username %}
+{% endif %}
+Ton feedback est bien reçu, nous le traitons dans les meilleurs délais et te tenons informé rapidement ! 
+<br/><br/>
+Merci pour ton aide.

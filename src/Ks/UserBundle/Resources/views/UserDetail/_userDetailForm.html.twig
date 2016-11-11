@@ -1,0 +1,321 @@
+{% if entity is defined %}
+    {% set path = path('userdetail_update', { 'id': entity.id }) %}
+{% else %}
+    {% set path = path('userdetail_create') %}
+{% endif %}
+<form id="userProfileForm" action="{{ path }}" method="post" {{ form_enctype(userForm) }} >
+    <div class="row-fluid-fluid">
+        <div class="span4 left-bloc">
+            <div class="thumbnail">
+                <div style="float:left">
+                    {% if app.user.userDetail is defined and app.user.userDetail != null %}
+                        {% set user_imageName = app.user.userDetail.imageName %}
+                    {% else %}
+                        {% set user_imageName = null %}
+                    {% endif %}
+                    {% include 'KsUserBundle:User:_userImage.html.twig' with {' user_imageName' :  user_imageName }%}
+                </div>
+                <div>{{ app.user.username }}</div>
+                <a href="{{ path('ks_user_public_profile', { 'username' : app.user.username }) }}">Voir mon profil public</a>
+                <span class="clearfix"></span>
+            </div>
+            <div class="bs-docs-sidebar">
+                <ul id="paramMenu" class="nav nav-list bs-docs-sidenav ">
+                    <li><a href="#informations"><i class="icon-chevron-right"></i> Mes informations</a></li>
+                    <li><a href="#adresses"><i class="icon-chevron-right"></i> Mon adresse</a></li>
+                    <li><a href="#avatars"><i class="icon-chevron-right"></i> Mon avatar</a></li>
+                    <li><a href="#sports"><i class="icon-chevron-right"></i> Mes sports</a></li>
+                    <li><a href="#mails"><i class="icon-chevron-right"></i> Mails</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="span8 right-bloc">
+            <div id="informationsBloc" class="rightColumnBloc thumbnail paramBloc">
+                    <h3 class="sportif">Utilisateur</h3>
+                    <div class="blocHeaderSeparator"></div>
+
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                            Nom d'utilisateur*
+                        </span>
+                        <input type="text" name="username" value="{{ app.user.username }}" id="username" style="margin-bottom:0"/>
+                    </div>
+
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                            {{ form_label(userForm.userDetail.firstname, 'users.profil_firstname') }}
+                        </span>
+                        {{ form_widget(userForm.userDetail.firstname, { attr: { style: "margin-bottom:0"} }) }}
+                    </div>
+                    {{ form_errors(userForm.userDetail.firstname ) }}
+
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                            {{ form_label(userForm.userDetail.lastname, 'users.profil_lastname' ) }}
+                        </span>
+                        {{ form_widget(userForm.userDetail.lastname, { attr: { style: "margin-bottom:0"} }) }}
+                    </div>
+                    {{ form_errors(userForm.userDetail.lastname ) }}
+
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                            {{ form_label(userForm.email, 'Email*' ) }}
+                        </span>
+                        {{ form_widget(userForm.email, { attr: { style: "margin-bottom:0"} }) }}
+                    </div>
+                    {{ form_errors(userForm.email ) }}
+                    
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                            {{ form_label(userForm.userDetail.sexe, 'users.profil_sexe' ) }}
+                        </span>
+                        {{ form_widget(userForm.userDetail.sexe, { attr: { style: "margin-bottom:0"} }) }}
+                    </div>
+                    {{ form_errors(userForm.userDetail.sexe ) }}
+
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+                        <input type="text" name="bornedAtInput" id="bornedAtInput" value=""  style="margin-bottom:0"/>
+                            {{ form_widget(userForm.userDetail.bornedAt, { attr: { class: "bornedAt", style: "margin-bottom:;display:none"} }) }}
+                    </div>
+                    {{ form_errors(userForm.userDetail.bornedAt ) }}
+
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                        {{ form_label(userForm.userDetail.weight, 'users.profil_weight' ) }}
+                        </span>
+                        {{ form_widget(userForm.userDetail.weight, { attr: { style: "margin-bottom:0"} }) }}
+                    </div>
+                    {{ form_errors(userForm.userDetail.weight ) }}
+
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                        {{ form_label(userForm.userDetail.height, 'users.profil_height' ) }}
+                        </span>
+                        {{ form_widget(userForm.userDetail.height, { attr: { style: "margin-bottom:0"} }) }}
+                    </div>
+                    {{ form_errors(userForm.userDetail.height ) }}
+                    
+                    <div>
+                        * : obligatoire
+                        <br/>
+                        ** : recommandé pour le <a href="http://blog.keepinsport.com/des-points-pour-chaque-activite-sportive/">calcul automatique des points</a>
+                    </div>
+                    <br/>
+                    <h3 class="sportif">Changer le mot de passe</h3>
+                    <div class="blocHeaderSeparator"></div>
+                    
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                            Ancien
+                        </span>
+                        <input id="oldPassword" type="password" name="oldPassword" value=""  style="margin-bottom:0"/>
+                    </div>
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                            Nouveau
+                        </span>
+                        <input type="password" name="newPassword" value="" style="margin-bottom:0"/>
+                    </div>
+                    <div class="input-prepend">
+                        <span class="add-on before" style="">
+                            Répéter
+                        </span>
+                        <input type="password" name="newPasswordRepeat" value=""  style="margin-bottom:0"/>
+                    </div>
+                        
+
+            </div>
+
+            <div id="adressesBloc" class="rightColumnBloc thumbnail paramBloc">
+                <h3 class="sportif">Mon adresse</h3>
+                <div class="blocHeaderSeparator"></div>
+
+                {{ google_map_container(map) }}
+                {{ google_map_js(map) }}
+                {{ google_map_css(map) }}
+
+
+                <div>
+                    <!-- Génération du label. -->
+                    {#{ form_label(userForm.userDetail.full_address, 'users.profil_full_address') }#}
+
+                    <!-- Affichage des erreurs pour ce champ précis. -->
+                    {{ form_errors(userForm.userDetail.full_address ) }}
+
+                    <!-- Génération de l'input. -->
+                    {{ form_widget(userForm.userDetail.full_address) }}
+                </div> 
+
+
+                <div>
+                    <!-- Génération du label. -->
+                    {{ form_label(userForm.userDetail.country_area, 'users.profil_country_area') }}
+
+                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                    {{ form_errors(userForm.userDetail.country_area ) }}
+
+                    <!-- Génération de l'input. -->
+                    {{ form_widget(userForm.userDetail.country_area) }}
+                </div> 
+
+                <div>
+                    <!-- Génération du label. -->
+                    {{ form_label(userForm.userDetail.country_code,  'users.profil_country_code' ) }}
+
+                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                    {{ form_errors(userForm.userDetail.country_code ) }}
+
+                    <!-- Génération de l'input. -->
+                    {{ form_widget(userForm.userDetail.country_code) }}
+                </div>
+
+                <div>
+                    <!-- Génération du label. -->
+                    {{ form_label(userForm.userDetail.town, 'users.profil_town' ) }}
+
+                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                    {{ form_errors(userForm.userDetail.town ) }}
+
+                    <!-- Génération de l'input. -->
+                    {{ form_widget(userForm.userDetail.town) }}
+                </div> 
+
+                <div>
+                    <!-- Génération du label. -->
+                    {{ form_label(userForm.userDetail.longitude, 'users.profil_longitude' ) }}
+
+                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                    {{ form_errors(userForm.userDetail.longitude ) }}
+
+                    <!-- Génération de l'input. -->
+                    {{ form_widget(userForm.userDetail.longitude) }}
+                </div>    
+
+                <div>
+                    <!-- Génération du label. -->
+                    {{ form_label(userForm.userDetail.latitude, 'users.profil_latitude' ) }}
+
+                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                    {{ form_errors(userForm.userDetail.latitude ) }}
+
+                    <!-- Génération de l'input. -->
+                    {{ form_widget(userForm.userDetail.latitude) }}
+                </div>
+
+                <div class="alert alert-info">{{'users.adresse_uses'|trans}} </div>
+            </div>
+
+            <div id="avatarsBloc" class="rightColumnBloc thumbnail paramBloc">
+                <h3 class="sportif">Mon avatar</h3>
+                <div class="blocHeaderSeparator"></div>
+                    
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            {#<th>{{ 'users.profil_edit_avatar_facebook'|trans }}</th>#}
+                            <th>{{ 'users.profil_edit_avatar_keepin'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            {#<td> {% if entity is defined and entity.urlAvatarFacebook %}
+                                    <img src="{{entity.urlAvatarFacebook}}" alt="Avatar facebook" /> 
+                                {% else %} 
+                                    <img src="{{ asset('bundles/ksuser/images/no_avatar.png') }}" />
+                                {% endif %}
+                            </td>#}
+                            <td>
+                                {% if app.user.userDetail is null or (not asset('uploads/images/users/resize_48x48/' ~ app.user.userDetail.imageName)|issetImg) %}
+                                    <img width="48px" src="{{ asset('bundles/ksuser/images/no_avatar.png') }}" alt="Pas d'avatar" />
+                                {% else %}
+                                    <img width="48px" src="{{ asset('uploads/images/users/resize_48x48/' ~ app.user.userDetail.imageName) }}" alt="Avatar Keepinsport" />
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>        
+
+                <div>
+                    <!-- Génération du label. -->
+                    {{ form_label(userForm.userDetail.image, 'users.profil_avatar' ) }}
+
+                    <!-- Affichage des erreurs pour ce champ précis. -->
+                    {{ form_errors(userForm.userDetail.image) }}
+
+                    <!-- Génération de l'input. -->
+                    {{ form_widget(userForm.userDetail.image, { attr: { value : "aaaaaaaaaaa" } }) }}
+
+                </div>
+            </div>
+
+            <div id="sportsBloc" class="rightColumnBloc thumbnail paramBloc">
+                <h3 class="sportif">Mes sports</h3>
+                <div class="blocHeaderSeparator"></div>
+
+                <div class="input-prepend">
+                    <span class="add-on before" style="">
+                        {{ form_label(userForm.userDetail.description, 'Objectifs' ) }}
+                    </span>
+                    {{ form_widget(userForm.userDetail.description, { attr: { style: "margin-bottom:0"} }) }}
+                </div>
+                {{ form_errors(userForm.userDetail.description ) }}
+
+
+                {{ form_widget(userForm.userDetail.sports, { attr: {class : "selectSports", style: "display:none"} } ) }}
+
+                {{ form_errors(userForm.userDetail.sports ) }}
+
+                {{ form_label(userForm.userDetail.sports, "Sports Préférés") }}
+                {#% for sport in sports %}
+                    {% if asset('img/sports/' ~ sport.codeSport ~ '.png')|issetImg %}
+                        <img class="sportImg" id="sportImg_{{ sport.id }}" rel="{{ sport.id }}" width="100px" style="opacity:0.5;float:left;" src="{{ asset('img/sports/' ~ sport.codeSport ~ '.png') }}"/>
+                    {% endif %}
+                {% endfor %}
+                <span class="clearfix"></span>#}
+                <table class="table table-bordered">
+                    {% for sport in sports %}
+                        {% if asset('img/topLeftCorner/' ~ sport.codeSport ~ '.png')|issetImg %}
+                    <tr>
+                        <td style="background-image: url('{{ asset('img/topLeftCorner/' ~ sport.codeSport ~ '.png') }}'); background-repeat: no-repeat;height: 20px;padding-left:30px;padding-top:13px">
+                            {{ sport.label }}    
+                        </td>
+                        <td><input class="sportCb" id="sportCb_{{ sport.id }}" type="checkbox" sportId="{{ sport.id }}"/></td>
+                    </tr>
+                        {% endif %}
+                    {% endfor %}
+                </table>
+            </div>
+            <div id="mailsBloc" class="rightColumnBloc thumbnail paramBloc">
+                <h3 class="sportif">Paramétrage des mails quotidiens</h3>
+                <div class="blocHeaderSeparator"></div>
+                
+                {{ form_widget(userForm.userDetail.receivesDailyEmail) }}
+                {{ form_errors(userForm.userDetail.receivesDailyEmail ) }}
+                <br/>
+
+                <h3 class="sportif">Paramétrage des notifications envoyées par mails</h3>
+                <div class="blocHeaderSeparator"></div>
+
+                {{ form_widget(userForm.mailNotifications) }}
+                {{ form_errors(userForm.mailNotifications ) }}
+                
+            </div>
+            {{ form_rest(userForm) }}
+                
+            {#{ form_rest(userForm) }#}
+
+            <br/>
+            <input type="submit" value="Enregistrer" id="submitbtn" class="btn btn-primary">
+        </div>
+
+    </div>
+        
+        
+</form>
+
+
+<script type="text/javascript">
+    function testFMO() {
+    }
+</script>

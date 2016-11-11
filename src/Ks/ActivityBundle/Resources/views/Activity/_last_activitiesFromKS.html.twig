@@ -1,0 +1,22 @@
+{% if context is not defined %}
+    {% set context = 'fromKS' %}
+{% endif %}
+{% if activitiesFromKS|length %}
+    <div id ="lastActivities_fromKS">
+        {% for datas in activitiesFromKS %}
+            <div class="info">
+                {% include 'KsActivityBundle:Activity:_activity.html.twig' with {
+                    'context': context,
+                    'activity':  datas.activity,
+                    'photos': datas.photos,
+                    'comments': datas.comments,
+                    'activityTeamates': datas.activityTeamates,
+                    'activityOpponents': datas.activityOpponents,
+                    'connectedActivity': datas.connectedActivity,
+                    'activityScores': datas.activityScores,
+                    'clubManagers': datas.clubManagers
+                } %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

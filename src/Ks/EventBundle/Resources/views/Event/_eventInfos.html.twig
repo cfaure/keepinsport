@@ -1,0 +1,215 @@
+{% if event.coachingPlan_id is not null %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="title">
+                <span class="bleu">{{ 'coaching.attach'|trans }}</span> : {{ event.plan }}
+            </div>
+        </div>
+    </div>
+    </br>
+{% endif %}
+<div class="row">
+    <div class="col-md-3">
+        {% if event.sport_label is not null %}
+            <img class="pull-left" style="padding-right: 10px;" src='{{ asset('V2/images/sports/' ~ event.sport_code ~ '-black.png') }}'/> <span class="bleu">{{ ("sports."~event.sport_code)|trans }}</span>
+            <br/>
+            <br/>
+            <div class="title"><center><b><span class="bleu">{{ event.category|upper }}</span></b></center></div>
+            {% if event.eventCompetition is defined and event.eventCompetition is not null %} 
+                </br>
+                </br>
+                <center>
+                    <a class="btn btn-success" href="{{ path('ksWikisport_show', { 'id' : event.eventCompetition }) }}" rel="tooltip" title="">
+                        <span class="glyphicon glyphicon-search"></span>
+                        {{ 'coaching.infos-competition'|trans }}
+                    </a>
+                </center>
+            {% endif %}
+        {% else %}
+            {% if event.type == 'event_google' %}
+                <p>
+                    <img class="pull-left" src='{{ asset('img/google.jpg') }}'/>
+                </p>
+            {% else %}
+                <p>
+                    {{ event.title }}
+                </p>
+            {% endif %}
+        {% endif %}
+    </div>
+    {% if event.type == 'event_google' %}
+        <div class="col-md-9">
+            <div class="row">
+                <p>
+                    <span class="glyphicon glyphicon-calendar"></span>
+                    {% if event.end|date('d/m/Y H:i') - event.start|date('d/m/Y H:i') == 0 %}
+                        {{ event.start|date('d/m/Y') }} {{ event.start|date('H:i') }} - {{ event.end|date('H:i') }}
+                    {% elseif  event.end|date('d/m/Y H:i') - event.start|date('d/m/Y H:i') > 1 %}
+                         {{ 'coaching.from'|trans }} {{ event.start|date('d/m/Y H:i') }} {{ 'coaching.to'|trans }} {{ event.end|date('d/m/Y H:i') }}
+                    {% else %}
+                        {{ event.start|date('d/m/Y') }}
+                    {% endif %}
+                </p>
+            </div>
+            <div class="row">
+                <div class="title">
+                    <span class="bleu">{{ event.title|raw }}</span>
+                </div>
+            </div>
+            </br>
+            <div class="row">
+                <p> {{ event.content|raw|nl2br }} </p>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        {% if affichDesc is not defined or ( affichDesc is defined and affichDesc) %}
+            {% if event.coachingPlan_id is not null %}
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="title">
+                            <span class="bleu">{{ 'coaching.session'|trans }}</span>: {{ event.title|raw }}
+                        </div>
+                    </div>
+                    <div class="sessionDetail row">
+                        {% if event.isWarning %} <span class='pull-right icon-warning-sign icon-btn icon-red icon-2x selected' rel="tooltip" title="{{ "coaching.warning"|trans }}"></span> {% endif %}
+                        {% if event.content is not null %} 
+                            {{ event.content|raw|nl2br }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </div>
+                    <br/>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 class="bleu">{{ 'coaching.data-global'|trans }} :</h5>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="add-on"><i class="glyphicon glyphicon-road"></i>
+                            {% if event.eventDistanceMin is not null and event.eventDistanceMax is not null and event.eventDistanceMin != event.eventDistanceMax %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{{ 'coaching.between'|trans }} {{ event.eventDistanceMin }} {{ 'coaching.and'|trans }} {{ event.eventDistanceMax }}">
+                            {% elseif event.eventDistanceMin is null and event.eventDistanceMax is null %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="-">
+                            {% else %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{% if event.eventDistanceMin is not null %} {{ event.eventDistanceMin }} {% else %} {{ event.eventDistanceMax }} {% endif %}">
+                            {% endif %}
+                        </span>
+                        <br/>
+                        <span class="add-on"><i class="glyphicon glyphicon-arrow-up"></i>
+                            {% if event.eventElevationGainMin is not null and event.eventElevationGainMax is not null and event.eventElevationGainMin != event.eventElevationGainMax %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{{ 'coaching.between'|trans }} {{ event.eventElevationGainMin }} {{ 'coaching.and'|trans }} {{ event.eventElevationGainMax }}">
+                            {% elseif event.eventElevationGainMin is null and event.eventElevationGainMax is null %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="-">
+                            {% else %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{% if event.eventElevationGainMin is not null %} {{ event.eventElevationGainMin }} {% else %} {{ event.eventElevationGainMax }} {% endif %}">
+                            {% endif %}
+                        </span>
+                        <br/>
+                        <span class="add-on"><i class="glyphicon glyphicon-dashboard"></i>
+                            {% if event.eventSpeedAverageMin is not null and event.eventSpeedAverageMax is not null and event.eventSpeedAverageMin != event.eventSpeedAverageMax %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{{ 'coaching.between'|trans }} {{ event.eventSpeedAverageMin }} {{ 'coaching.and'|trans }} {{ event.eventSpeedAverageMax }}">
+                            {% elseif event.eventSpeedAverageMin is null and event.eventSpeedAverageMax is null %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="-">
+                            {% else %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{% if event.eventSpeedAverageMin is not null %} {{ event.eventSpeedAverageMin }} {% else %} {{ event.eventSpeedAverageMax }} {% endif %}">
+                            {% endif %}
+                        </span>
+                        <br/>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="add-on"><i class="glyphicon glyphicon-time"></i>
+                            {% if event.eventDurationMin is not null and event.eventDurationMax is not null and event.eventDurationMin != event.eventDurationMax %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{{ 'coaching.between'|trans }} {{ event.eventDurationMin }} {{ 'coaching.and'|trans }} {{ event.eventDurationMax }}">
+                            {% elseif event.eventDurationMin is null and event.eventDurationMax is null %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="-">
+                            {% else %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{% if event.eventDurationMin is not null %} {{ event.eventDurationMin }} {% else %} {{ event.eventDurationMax }} {% endif %}">
+                            {% endif %}
+                        </span>
+                        <br/>
+                        <span class="add-on"><i class="glyphicon glyphicon-arrow-down"></i>
+                            {% if event.eventElevationLostMin is not null and event.eventElevationLostMax is not null and event.eventElevationLostMin != event.eventElevationLostMax %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{{ 'coaching.between'|trans }} {{ event.eventElevationLostMin }} {{ 'coaching.and'|trans }} {{ event.eventElevationLostMax }}">
+                            {% elseif event.eventElevationLostMin is null and event.eventElevationLostMax is null %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="-">
+                            {% else %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{% if event.eventElevationLostMin is not null %} {{ event.eventElevationLostMin }} {% else %} {{ event.eventElevationLostMax }} {% endif %}">
+                            {% endif %}
+                        </span>
+                        <br/>
+                        <span class="add-on"><i class="glyphicon glyphicon-flash"></i>
+                            {% if event.eventPowMin is not null and event.eventPowMax is not null and event.eventPowMin != event.eventPowMax %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{{ 'coaching.between'|trans }} {{ event.eventPowMin }} {{ 'coaching.and'|trans }} {{ event.eventPowMax }}">
+                            {% elseif event.eventPowMin is null and event.eventPowMax is null %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="-">
+                            {% else %}
+                                <input style="width:80%" type="text" disabled class="input-mini" value="{% if event.eventPowMin is not null %} {{ event.eventPowMin }} {% else %} {{ event.eventPowMax }} {% endif %}">
+                            {% endif %}
+                        </span>
+                        <br/>
+                    </div>
+                </div>
+                <br/>
+                {% if event.eventHrCoeffMin is not null and event.eventHrCoeffMax is not null or event.eventIntervalDistance is not null %}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="bleu">{{ 'coaching.data-interval'|trans }} :</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="add-on"><i class="glyphicon glyphicon-heart"></i>
+                                {% if event.eventHrCoeffMin is not null and event.eventHrCoeffMax is not null %}
+                                    {% if event.eventHrType == 0 %}
+                                        <input style="width:80%" type="text" disabled class="input-mini" value="{{ 'coaching.between'|trans }} {{ (event.eventHrCoeffMin * HRMax /100) | number_format}} {{ 'coaching.and'|trans }} {{ (event.eventHrCoeffMax * HRMax /100) | number_format}} bpm">
+                                    {% else %}
+                                        <input style="width:80%" type="text" disabled class="input-mini" value="{{ 'coaching.between'|trans }} {{ (event.eventHrCoeffMin /100 * (HRMax - HRRest) + HRRest) | number_format}} {{ 'coaching.and'|trans }} {{ (event.eventHrCoeffMax /100 * (HRMax - HRRest) + HRRest) | number_format}} bpm">
+                                    {% endif %}    
+                                {% else %}
+                                    <input style="width:80%" type="text" disabled class="input-mini" value="-">
+                                {% endif %}
+                            </span>
+                            <br>
+                        </div>
+                        {% if event.eventIntervalDistance is not null %}
+                            <div class="col-md-6">
+                                <span class="add-on"><i class="glyphicon glyphicon-road"></i>
+                                    {% if event.eventIntervalDistance is not null %}
+                                        <input style="width:80%" type="text" disabled class="input-mini" value="{{ event.eventIntervalDistance }} m">
+                                    {% else %}
+                                        <input style="width:80%" type="text" disabled class="input-mini" value="-">
+                                    {% endif %}
+                                </span>
+                                <br>
+                                <span class="add-on"><i class="glyphicon glyphicon-time"></i>
+                                    {% if event.eventIntervalDuration is not null %}
+                                        <input style="width:40%" disabled type="text" class="input-mini" value="{{ event.eventIntervalDuration }}">
+                                    {% else %}
+                                        <input style="width:40%" disabled type="text" class="input-mini" value="-">
+                                    {% endif %}    
+                                    {% if event.eventVMACoeff is not null %}
+                                        à <input style="width:34%" disabled type="text" class="input-mini" value="{{ (event.eventVMACoeff /100 * VMASpeed) | number_format(1) }} km/h">
+                                    {% else %}
+                                        à <input style="width:34%" disabled type="text" class="input-mini" value="-">
+                                    {% endif %}    
+                                </span>
+                                <br>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</div>
+    
+{% if event.full_adress %}
+    <div class="row">
+        <div class="span3">
+            <span class="icon-map-marker"></span> 
+                {{ event.full_adress }}
+        </div>
+    {% endif %}
+</div>

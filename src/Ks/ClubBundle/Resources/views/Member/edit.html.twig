@@ -1,0 +1,37 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>{{ 'users.club_edit_member_title'|trans }} </h1>
+
+<form action="{{ path('ks_member_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
+    {{ form_widget(edit_form) }}
+ 
+     <input type="hidden" value="{{ idClub }}" name="idClub">    
+
+        <p>
+                <input type="submit" value="{{ 'crud.edit'|trans }}">
+        </p>
+  
+</form>
+
+<ul class="record_actions">
+    <li>
+        <form action="{{ path('ks_member_delete', { 'id': entity.id, 'idClub': idClub }) }}" method="post">
+            {{ form_widget(delete_form) }}
+  
+           
+            
+            <p>
+                <input type="submit" value="{{ 'crud.delete'|trans }}">
+            </p>
+            
+        </form>
+    </li>
+</ul>
+
+{% endblock %}

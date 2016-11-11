@@ -1,0 +1,179 @@
+<header class="connexion" id="headerV2" style="z-index:9999">
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and app.user.completedHisProfileRegistration %}
+        <div class="container">
+            <div id="stepHeader" class="row">
+                <div class="col-md-3 mobile"><a href="{{ path('ksActivity_activitiesList') }}"><img src="{{ asset('V2/images/logo.png') }}"></a></div>
+                <div class="col-md-12 desktop">
+                    <div class="logoDesktop">
+                        <a href="{{ path('ksActivity_activitiesList') }}"><img src="{{ asset('V2/images/logo_short.png') }}"></a>
+                    </div>
+                    <!--Search-->
+                    <div class="">
+                        <input type="hidden" id="searchSelectDesktop" class="searchSelectDesktop" />
+                    </div>
+                    <!--/.search-->
+                    
+                    <!--feed-->
+                    <div class="dropdown" id="lastNotificationsMenu_desktop">
+                        {% render "KsNotificationBundle:Notification:notificationsBlocList" with {'context' : 'desktop'} %}
+                    </div>
+                    <!--end feed-->
+
+                    <!--NAV-->
+                    <ul class="nav nav-pills">
+                        <li><a id="stepDashboard" href="{{ path('ksAgenda_index', {"id" : app.user.id }) }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('agenda', false);"{% endif %}>{{ "menu.agenda"|trans }}</a></li>
+                        <li><a id="stepPublishActivity" href="{{ path('ksSport_activitySessionForm', {'activityId' : 'new'}) }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('pusblishSession', true);"{% endif %}>{{ "menu.publish-activity"|trans }}</a></li>
+                        <li><a id="stepRanking" href="{{ path('ksLeague_ranking') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('ranking', false);"{% endif %}>{{ "menu.ranking"|trans }}</a></li>
+                        <li><a id="stepCompetitions" href="{{ path('ksWikisport_competitions') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('competitions', false);"{% endif %}>{{ "menu.competitions"|trans }}</a></li>
+                        <li><a href="{{ path('ksActivity_activitiesList') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('newsFeed', false);"{% endif %}>{{ "menu.news-feed"|trans }}</a></li>
+                        {% for clubHasUser in app.user.myClubsManaged %}
+                            <li><a style="color:#da2032!important;" href="{{ path('ksAgendaClub_index', {'id' : clubHasUser.club.id }) }}"><b>{{ clubHasUser.club.name }}</b></a> </li>
+                        {% endfor %}
+                        {% if not app.user.isAllowedPackPremium and not app.user.isAllowedPackElite %}
+                            {#<li ><a onclick="showInformation('Bientôt disponible !'); addVisitorAction('offers', false);" style="color:#da2032!important;"><b>Voir les offres KS !</b></a></li>#}
+                            <li ><a id="stepOffers" style="color:#da2032!important;" href="{{ path('ksOffers') }}"><b>Voir les offres KS !</b></a></li>
+                        {% endif %}
+                        {% if app.user.isAllowedPackPremium %}
+                            <li ><a href="{{ path('ksWikisport_index') }}" style="color:#da2032!important;"><b>Plans coachs</b></a></li>
+                        {% endif %}
+                    </ul><!--/.nav-->
+
+                    <!--Account-->
+                    <div id="stepProfil" class="account">
+                        {#<a class="btn-choix confort" style="padding-right: 10px;" href="{{ path('ksProfile_V2') }}">{{ app.user.username }}</a>#}
+                        <a style="padding-right: 10px;" href="{{ path('ksProfile_V2') }}"><img src="{{ asset('V2/images/btn-blanc-login.jpg') }}"/>{{ app.user.username }}</a>
+                        <span style="padding-left: 15px; border-left: 1px solid #caeafc;">
+                            <span class="btn btn-xs btn-default"><a class="icon-off" href="{{ path('fos_user_security_logout') }}" rel="tooltip" data-placement="bottom" title="{{ "menu.disconnect"|trans }}"></a></span>
+                        </span>
+                        {#{% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            {% set app_user_id = 1 %}
+                            {% set app_user_username = 'visitor' %}
+                            {% set app_user_userDetail = null %}
+                            {% set app_user_userDetail_imageName = null %}
+                            {% set app_user_leagueLevel_category_label = null %}
+                            {% set app_user_leagueLevel_starNumber = null %}
+                        {% else %}
+                            {% set app_user_id = app.user.id %}
+                            {% set app_user_username = app.user.username %}
+                            {% set app_user_userDetail = app.user.userDetail %}
+                            {% set app_user_userDetail_imageName = (app.user.userDetail is not null ? app.user.userDetail.imageName : null) %}
+                            {% set app_user_leagueLevel_category_label = app.user.leagueLevel.category.label %}
+                            {% set app_user_leagueLevel_starNumber = app.user.leagueLevel.starNumber %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage_league_mini.html.twig' with { 
+                            'user_id' : app_user_id, 
+                            'user_username' : app_user_username, 
+                            'user_imageName': app_user_userDetail_imageName,
+                            'user_league_category' : app_user_leagueLevel_category_label, 
+                            'user_league_stars' : app_user_leagueLevel_starNumber,
+                            'withCustomTooltip' : false,
+                            'context' : 'ksProfile_V2'
+                        } %}#}
+                    </div><!--/.account-->
+
+                </div><!--col-md-5-->
+
+                <div class="col-md-9 mobile">
+                    <div class="dropdown mobile menu">
+                        <a data-toggle="dropdown" href="#">Menu</a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                            <li><a id="stepAgenda" href="{{ path('ksAgenda_index', {"id" : app.user.id }) }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('agenda', false);"{% endif %}>{{ "menu.agenda"|trans }}</a></li>
+                            <li><a id="stepPublishActivity" href="{{ path('ksSport_activitySessionForm', {'activityId' : 'new'}) }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('pusblishSession', true);"{% endif %}>{{ "menu.publish-activity"|trans }}</a></li>
+                            <li><a id="stepRanking" href="{{ path('ksLeague_ranking') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('ranking', false);"{% endif %}>{{ "menu.ranking"|trans }}</a></li>
+                            <li><a href="{{ path('ksActivity_activitiesList') }}" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %} onclick="addVisitorAction('newsFeed', false);"{% endif %}>{{ "menu.news-feed"|trans }}</a></li>
+                            {% for clubHasUser in app.user.myClubsManaged %}
+                                <li>
+                                    <a href="{{ path('ksAgendaClub_index', {'id' : clubHasUser.club.id }) }}">{{ clubHasUser.club.name }}</a> 
+                                </span>
+                            {% endfor %}
+                            <li>
+                                <!--Account-->
+                                <div class="account"> <a href="{{ path('ksProfile_V2') }}"><img src="{{ asset('V2/images/btn-blanc-login.jpg') }}"/>{{ app.user.username }}</a> </div>
+                                <!--/.account-->
+                            </li>
+                            <li>
+                                <a class="icon-off" href="{{ path('fos_user_security_logout') }}" rel="tooltip" title="{{ "menu.disconnect"|trans }}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--end nav-->
+                </div><!--col-md-5-->
+
+
+            </div><!--row-->
+        </div><!--container-->
+    {% else %}
+        <div class="container">
+            {% include '::loginModal.html.twig' %}
+            <div class="row desktop">
+                <div class="col-md-7"><a href="{{ path('fos_user_security_login') }}"><img src="{{ asset('V2/images/logo-blanc.png') }}"></a></div>
+                <div class="col-md-5">
+                    <ul class="nav nav-tabs">
+                        <li id="menuHeaderLogin"><a id="menuHeaderBtnLogin" href="#" onclick="showLoginModal();"><img src="{{ asset('V2/images/btn-login.jpg') }}" alt="">Déjà inscrit ?</a></li>
+                        <li id="menuHeaderRegister"><a id="menuHeaderBtnRegister" href="{{ path('fos_user_registration_register') }}">Je veux m'inscrire !</a></li>
+                        <li id="menuHeaderOffers"><a id="menuHeaderBtnOffers" href="{{ path('fos_user_security_login') }}">Voir les offres !</a></li>
+                        {#<li><a href="#">EN</a></li>
+                        <li class="active"><a href="#">FR</a></li>
+                        <li><a href="#">RU</a></li>#}
+                    </ul>
+                </div><!--/.nav-->
+            </div>
+            <!--nav responsive-->
+            <a href="#" class="mobile logo"><img src="{{ asset('V2/images/logo-blanc.png') }}"></a>
+            
+            <div class="col-md-9 mobile">
+                <div class="dropdown mobile menu">
+                    <a data-toggle="dropdown" href="#"><img src="{{ asset('V2/images/btn-login.jpg') }}" alt=""></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                        <li id="menuHeaderLogin"><a id="menuHeaderBtnLogin" href="#" onclick="showLoginModal();">Déjà inscrit ?</a></li>
+                        <li id="menuHeaderRegister"><a id="menuHeaderBtnRegister" href="{{ path('fos_user_registration_register') }}">Je veux m'inscrire !</a></li>
+                        <li id="menuHeaderOffers"><a id="menuHeaderBtnOffers" href="{{ path('fos_user_security_login') }}">Voir les offres !</a></li>
+                    </ul>
+                </div>
+                <!--end nav-->
+            </div><!--col-md-5-->
+        </div>
+    {% endif %}
+</header>
+
+<script type="text/javascript">
+    function addUserAction(action, type, result, error) {
+        var ajaxRequest = $.post(Routing.generate('ksActivity_addUserAction', {'action' : action, 'type' : type, 'result' : result, 'error' : error})
+            , 
+            function(response) {
+            }
+        ).complete(function() {
+        });
+
+        return ajaxRequest;
+    }
+    
+    var ajaxRequest = null;
+    
+    function showBubbleInfos(userId) {
+        //console.log($("#" + userId).attr("data-displayed"));
+        if( ajaxRequest != null ) {
+            ajaxRequest.abort();
+            ajaxRequest = null;
+        }
+        
+        if ($("#" + userId).attr("data-displayed") == '0') 
+            ajaxRequest = $.post(Routing.generate('ksUser_bubbleInfos', {'userId' : userId })
+                , 
+                function(response) {
+                    //console.log("mise à jour bubble "+ userId);
+                    //$("#" + userId).attr("data-content",response);
+                    $("#bubbleContent" + userId).html(response);
+                    $("#" + userId).attr("data-displayed", '1');
+                    $("#" + userId).attr("data-content", response);
+                    ajaxRequest = null;
+                }
+            ).complete(function() {
+            });
+    }
+    
+    function addVisitorAction (action, message) {
+        addUserAction(action, 'visite', 'OK');
+        if (message) showInformation('{{ 'actions.login-required'|trans }}');
+    }
+</script>

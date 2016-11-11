@@ -1,0 +1,73 @@
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "KsUserBundle::layout_full.html.twig" %}
+{% else %}
+    {% set extends = "KsUserBundle::layout_3_9.html.twig" %}    
+{% endif %}
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        {% include 'KsUserBundle:Profile:_breadcrumb.html.twig' with {'step': 7, 'creationOrEdition' : creationOrEdition} %}
+        {% set submitButtonText = "Etape suivante" %}
+    {% else %}
+        <h1 class="sportif">{{ 'menu.my-profile'|trans }}</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ks_user_public_profile', {'username' : app.user.username}) }}">
+                    <span class="avatarBloc">
+                        {% set user_imageName = null %}
+                        {% if app.user.userDetail is not null %}
+                            {% set user_imageName = app.user.userDetail.imageName %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                 {% include 'KsUserBundle:Profile:_buttons.html.twig' with{'creationOrEdition' : creationOrEdition } %}
+            </div>
+        </div>
+        <br/>
+        {% set submitButtonText = 'users.save'|trans %}
+    {% endif %}
+    
+    <div class="thumbnail rightColumnBloc">
+        <h2 class="sportif">{{ 'checklist.good-start'| trans }}</h2>
+        <div class="blocHeaderSeparator"></div>
+        <center>
+            <img style="" src="{{ asset('img/Thématique.jpg') }}" />
+        </center>
+    </div>
+        
+    <br/>
+    
+    
+    <center>
+        <a href="{{ path('ksActivity_activitiesList', {}) }}" class="btn btn-sportif ">Accès au site !</a>
+    </center>
+    <br/>
+{% endblock %}
+        
+        

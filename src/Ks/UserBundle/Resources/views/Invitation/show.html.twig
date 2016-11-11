@@ -1,0 +1,37 @@
+<h1>Invitation</h1>
+
+<table class="record_properties">
+    <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ entity.id }}</td>
+        </tr>
+        <tr>
+            <th>Email_guest</th>
+            <td>{{ entity.emailguest }}</td>
+        </tr>
+        <tr>
+            <th>Pending_friend_request</th>
+            <td>{{ entity.pendingfriendrequest }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<ul class="record_actions">
+    <li>
+        <a href="{{ path('invitation') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('invitation_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>
+        <form action="{{ path('invitation_delete', { 'id': entity.id }) }}" method="post">
+            {{ form_widget(delete_form) }}
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+</ul>

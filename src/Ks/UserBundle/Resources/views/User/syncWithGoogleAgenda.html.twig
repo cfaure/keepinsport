@@ -1,0 +1,137 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Agenda'|trans }}
+{% endblock %}
+    
+{% block content %}
+        
+<h1>{{ 'users.synchro_with_google_agenda'|trans }}</h1>
+
+{% if googleUri %}
+
+<ul>    
+    <li> <a href='{{ googleUri }}'>{{ 'users.auth_gagenda_access'|trans }}  </a> </li>
+</ul>  
+
+{% else %}
+
+    {#
+
+    <h2>{{ 'users.event_feed_found'|trans }}</h2>
+
+    {% if listFeed %}
+             
+         <table id="idGoogleEvents" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{{ 'users.feed_title'|trans }}</th>
+                    <th>{{ 'users.id_feed'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key, feed in listFeed %}
+                <tr>
+                    <td>{{ feed.title }}</td>
+                    <td>{{ feed.id }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>     
+        </table>
+
+    {% else %}    
+         {{ 'users.no_feed_events'|trans }}
+    {% endif %}
+    
+    #}
+    
+    {% if eventFeed %}
+    
+    <form action="{{ path('ks_add_google_events_to_keepin_agenda') }}" method="post">
+
+        <p>
+            <input type="submit" value="{{'events.add_google_event_to_keepin_calendar'|trans}}">
+        </p>
+        
+        <h2>{{ 'users.google_agenda_events'|trans }}</h2>
+        
+        <table id="idGoogleEvents" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{{ 'users.club_event_name'|trans }}</th>
+                    <th>{{ 'users.club_event_start'|trans }}</th>
+                    <th>{{ 'users.club_event_end'|trans }}</th>
+                    <th>Etat </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set nbEvents = eventFeed|length %}
+                {% for key, feed in eventFeed %}
+                <tr>
+                    <td>
+                        {{ eventFeed[key]["title"] }}
+                        <input type="hidden" name="title_{{key}}" value="{{ eventFeed[key]["title"] }}" />   
+                    </td>
+                    <td>
+                        {% if eventFeed[key]["startTime"] != "" %}
+                            {{ eventFeed[key]["startTime"]|date('d/m/Y H:i:s')  }}
+                            <input type="hidden" name="startTime_{{key}}" value="{{ eventFeed[key]["startTime"]|date('Y-m-d H:i:s')  }}" /> 
+                        {% else %}    
+                             <input type="hidden" name="startTime_{{key}}" value="" />  
+                        {% endif %}  
+                        
+                             
+                    </td>
+                    <td>
+                         {% if eventFeed[key]["endTime"] != "" %}
+                            {{ eventFeed[key]["endTime"]|date('d/m/Y H:i:s')  }}
+                            <input type="hidden" name="endTime_{{key}}" value="{{ eventFeed[key]["endTime"]|date('Y-m-d H:i:s')  }}" /> 
+                         {% else %}    
+                             <input type="hidden" name="endTime_{{key}}" value="" />  
+                        {% endif %}     
+    
+                    </td>
+                    <td>
+                         {{eventFeed[key]["stateEvent"]}}
+                    </td>    
+                </tr>
+                
+                <input type="hidden" name="id_event_url_{{key}}" value="{{ eventFeed[key]["id"] }}" />  
+                
+                 {% if eventFeed[key]['tobesyncwithgoogle'] %}
+                       <input type="hidden" name="tobesyncwithgoogle_{{key}}" value="{{ eventFeed[key]['tobesyncwithgoogle'] }}" />
+                 {% endif %} 
+                       
+                 {% if eventFeed[key]['idEventBDD'] %}  
+                      <input type="hidden" name="idEventBDD_{{key}}" value="{{ eventFeed[key]['idEventBDD'] }}" /> 
+                 {% endif %}           
+                            
+                {% if eventFeed[key]["content"] %}
+                    <input type="hidden" name="content_event_{{key}}" value="{{ eventFeed[key]["content"] }}" /> 
+                {% endif %}
+               
+                {% endfor %}
+            </tbody>     
+        </table>
+        
+         <input type="hidden" name="nbEvents" value="{{ nbEvents }}" />  
+        
+        
+       
+        
+   </form>
+        
+    {% else %}    
+         {{ 'users.no_google_agenda_events'|trans }}
+    {% endif %}
+
+        
+
+  
+    
+    
+
+{% endif %}
+
+
+{% endblock %}

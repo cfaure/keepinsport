@@ -1,0 +1,19 @@
+{% if changed %}
+    <center>
+        <span class="icon-ok-circle icon-2x"></span>
+    </center>
+    {% if previousModif is defined and previousModif is not null %}
+        <a class="btn btn-mini btn-wikisport" rel="tooltip" title="Voir les différences avec la version précédente" id="bShowDiffsWithPrev_{{ modification.id }}" afterArticleId="{{ previousModif.id }}" beforeArticleId="{{ modification.id }}" differencesType="{{ differencesType }}"/>
+        <i class="icon-search icon-white"></i>
+        </a>
+    {% endif %}
+{% else %}
+    <center>
+        <span class="icon-remove-circle icon-2x"></span>
+    </center>
+{% endif %}
+{% if lastModif is defined and lastModif is not null %}
+    <a class="btn btn-mini btn-wikisport" rel="tooltip" title="Voir les différences avec la version actuelle" id="bShowDiffsWithActual_{{ modification.id }}" afterArticleId="{{ lastModif.id }}" beforeArticleId="{{ modification.id }}" differencesType="{{ differencesType }}"/>
+        <i class="icon-search icon-white"></i>
+    </a> 
+{% endif %}

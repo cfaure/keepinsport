@@ -1,0 +1,132 @@
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "KsClubBundle::layout_full.html.twig" %}
+{% else %}
+    {% set extends = "KsClubBundle::layout_3_9.html.twig" %}    
+{% endif %}
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{asset('jQueryFileUpload/css/jquery.fileupload-ui.css')}}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{asset('jQueryFileUpload/js/tmpl.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.iframe-transport.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload-ui.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/locale.js')}}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.fileUploadForm').fileupload({
+                acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+                maxNumberOfFiles : 1
+            });
+            
+            $("#bchangeAvatar").click(function() {
+                
+                
+                 if( !$("#bchangeAvatar").hasClass("disabled") ) {
+                    $("#bchangeAvatar").addClass("disabled");
+                    $("#changeAvatarLoader").show();
+                    
+                    //on récupère les photos téléchargées
+                    var uploadedPhotos = new Array();
+
+                    $.each($("tr.template-download"), function(key, templateDownload) {
+                        uploadedPhotos.push( $( this ).attr("imgName") );
+                    });
+
+                    $.post(
+                        Routing.generate('ksProfileClub_changeAvatar', { "clubId" : {{ clubInfos.id }} }), 
+                        { 
+                            "uploadedPhotos" : uploadedPhotos
+                        },
+                        function(response) {
+                            if( response.response == 1 ) {
+                                $(".addFileButton").removeClass("disabled");
+                                $(".filesInputDl").removeClass("disabled");
+                            }
+                            $(".avatarBloc").html(response.html);
+                            $("tr.template-download").html("");
+                            
+                            $("#bchangeAvatar").removeClass("disabled");
+                            $("#changeAvatarLoader").hide();
+                        }
+                    );
+                 }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        <ul class="breadcrumb">
+            <li><a href="{{ path('ksProfileClub_informations', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">1. Informations</a> <span class="divider">></span></li>
+            <li><a href="{{ path('ksProfileClub_adresses', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">2. Adresse</a> <span class="divider">></span></li>
+            <li><a href="{{ path('ksProfileClub_avatars', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">3. Avatar</a> <span class="divider">></span></li>
+            <li class="active">4. Sports <span class="divider">></span></li>
+            <li class="active">5. Inviter mes amis</li>
+        </ul>
+        {% set submitButtonText = "Etape suivante" %}
+    {% else %}
+        <h1 class="clubs">Edition : {% if clubInfos.name is not null %}{{ clubInfos.name }}{% endif %}</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ksClub_public_profile', {'clubId' : clubInfos.id}) }}">
+                    <span class="avatarBloc">
+                        {% include 'KsClubBundle:Club:_clubImage.html.twig' with { 'club_id': clubInfos.id, 'club_avatar': clubInfos.avatar, 'club_name': clubInfos.name } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_informations', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Informations</a>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_adresses', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Adresse</a>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_avatars', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Avatar</a>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_sports', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Sports</a>
+                <a class="btn btn-clubs" href="{{ path('ksProfileClub_inviteFriends', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}">Inviter mes amis</a>
+                <a class="btn btn-clubs" href="{{ path('ksClubAdmin_delete', {'id' : clubInfos.id }) }}">
+                    <i class="icon-remove icon-white"></i> Supprimer
+                </a>
+            </div>
+        </div>
+        <br/>
+        {% set submitButtonText = "Enregistrer" %}
+    {% endif %}
+        
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="clubs">Avatar</h3>
+        <div class="blocHeaderSeparator"></div>
+
+        <div class="row-fluid">
+            <div class="avatarBloc span2">
+                {% include 'KsClubBundle:Club:_clubImage.html.twig' with { 'club_id': clubInfos.id, 'club_avatar': clubInfos.avatar, 'club_name': clubInfos.name } %}
+            </div>
+
+            <div class="span10">
+                <div class="jqueryFileUpload">
+                    {% include 'KsImageBundle::index.html.twig' with {'uploadDirName' : 'clubs', 'context' : 'clubs'} %}
+
+                </div>
+                <a id="bchangeAvatar" class="btn btn-clubs">
+                    Sauvegarder l'avatar
+                </a>
+                <img id="changeAvatarLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none">
+            </div>
+        </div>
+        
+        {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        <br clear="all"/>
+        <a href="{{ path('ksProfileClub_sports', {'clubId' : clubInfos.id, 'creationOrEdition' : creationOrEdition}) }}" class=" btn btn-clubs pull-right">{{ submitButtonText }}</a>
+        <br clear="all"/>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% if user.userDetail.firstname is defined and user.userDetail.firstname is not null and user.userDetail.lastname is defined and user.userDetail.lastname is not null %}
+   {% set name = user.username ~ " (" ~ user.userDetail.firstname ~ " " ~ user.userDetail.lastname ~")" %}
+{% else %}
+    {% set name = user.username %}
+{% endif %}
+{{ name }}  t'invite à le rejoindre sur Keepinsport.
+<br/><br/>
+Dès ton inscription validée, tu pourras :
+<br/><br/>
+<ul>
+    <li>Partager tes activités sportives avec {{ user.username }} et ta communauté après les avoir importées en un clic,</li>
+    <li>Consulter et participer à de nombreux articles sportifs (événements sportifs, plans d’entraînement, conseils nutritionnels, matériel…),</li>
+    <li>Trouver facilement de nombreux partenaires de sport près de chez toi,</li>
+    <li>Créer une vitrine et un espace de communication pour ton club et les adhérents,</li>
+    <li>Et profiter de nombreux autres services.</li>
+</ul>
+<br/>
+Ajoute {{ user.username }} comme parrain lors de ton inscription, tu gagneras encore plus de points !
+<br/><br/>
+A tout de suite sur keepinsport : <a href="{{ host }}{{ path('fos_user_registration_register') }}?userId={{ user.id }}{% if salt is defined and salt is not null and salt != '' %}&salt={{ salt }}{% endif %}">s'incrire</a>
+<br/>

@@ -1,0 +1,204 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }} - {{ 'trophies.label'|trans }}
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/jquery.quicksand.js') }}"></script>
+    <script type="text/javascript">
+
+        // Custom sorting plugin
+        (function($) {
+          $.fn.sorted = function(customOptions) {
+            var options = {
+              reversed: false,
+              by: function(a) { return a.text(); }
+            };
+            $.extend(options, customOptions);
+            $data = $(this);
+            arr = $data.get();
+            arr.sort(function(a, b) {
+              var valA = options.by($(a));
+              var valB = options.by($(b));
+              if (options.reversed) {
+                return (valA < valB) ? 1 : (valA > valB) ? -1 : 0;				
+              } else {		
+                return (valA < valB) ? -1 : (valA > valB) ? 1 : 0;	
+              }
+            });
+            return $(arr);
+          };
+          
+        })(jQuery);
+
+        // DOMContentLoaded
+        $(document).ready(function() {
+
+            // bind radiobuttons in the form
+            var $filterBloc       = $('#filter');
+            var $filterTypeBloc   = $filterBloc.find("div#filterTypeBloc");
+            var $filterTypes      = $filterBloc.find('button[name="type"]');
+            var $filterSorts      = $filterBloc.find('button[name="sort"]');
+
+
+            // get the first collection
+            var $applications = $('#applications');
+
+            // clone applications to get a second collection
+            var $data = $applications.clone();
+ 
+            
+            $filterTypes.add($filterSorts).click(function(e) { 
+                
+                switch ( $( this ).attr( "name" ) )
+                {
+                    case "type":
+                        var $filterActiveType = $( this );
+                        var $filterActiveSort = $filterBloc.find('button[name="sort"].active');
+                        break; 
+                        
+                     case "sort":
+                        var $filterActiveType = $filterBloc.find('button[name="type"].active');
+                        var $filterActiveSort = $( this );
+                        break;  
+                }
+
+                if ( $filterActiveType.val() == 'all') {
+                  var $filteredData = $data.find('li');
+                } else {
+
+                  var $filteredData = $data.find('li[data-type=' + $filterActiveType.val() + ']');
+                }
+              
+                //Sort
+                switch ( $filterActiveSort.val() )
+                {
+                    case "category":
+                        var $sortedData = $filteredData.sorted({
+                            by: function(v) {
+                              return $(v).find('span.category').attr("data-category");
+                            }
+                        });
+                        break; 
+                        
+                     case "points":
+                        var $sortedData = $filteredData.sorted({
+                            reversed : true,
+                            by: function(v) {
+                              return $(v).find('span.points').attr("data-points");
+                            }
+                        });
+                        break;  
+                        
+                    case "state":
+                        var $sortedData = $filteredData.sorted({
+                            reversed : true,
+                            by: function(v) {
+                              return $(v).find('span.state').attr("data-state");
+                            }
+                        });
+                        break;
+                }
+                
+                // finally, call quicksand
+                $applications.quicksand($sortedData, {
+                  duration: 800,
+                  easing: 'easeInOutQuad'
+                });
+            });
+
+            
+
+        });
+
+    </script>
+{% endblock %}
+    
+{% block activity_content %}
+    <center><h3>Trophées de {{ user.username }}</h3></center>
+    <br/>
+    <div id="showcase">{% include 'KsTrophyBundle:Trophy:_showcase.html.twig' with {'showcaseUser' : user, 'editable': true} %}</div>
+
+    <form id="filter">
+      <fieldset>
+        <legend>Filtrer par</legend>
+        <div id="filterTypeBloc" class="btn-group" data-toggle="buttons-radio">
+            <button type="button" class="btn btn-primary active" name="type" value="all">Tous</button>
+            <button type="button" class="btn btn-primary" name="type" value="unlocked">Débloqués</button>
+            <button type="button" class="btn btn-primary" name="type" value="locked">Bloqués</button>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Trier par</legend>
+        <div class="btn-group" data-toggle="buttons-radio">
+            <button type="button" class="btn btn-primary active" name="sort" value="category">Catégorie</button>
+            <button type="button" class="btn btn-primary" name="sort" value="points">Importance</button>
+            <button type="button" class="btn btn-primary" name="sort" value="state">Etat</button>
+        </div>
+      </fieldset>
+    </form>
+
+    <ul id="applications" class="image-grid">
+    {% for key, trophy in trophies %}
+            {% if trophy.isUnlocked == 1 %}
+                {% set state = "unlocked" %}
+            {% else %}
+                {% set state = "locked" %}
+            {% endif %}
+            
+            <li data-id="{{ trophy.id}}" data-type="{{ state }}" >
+             {% if asset('bundles/kstrophy/images/trophies/' ~ trophy.code ~ '.png')|issetImg %}
+                <img class="imgTrophy {{ state }}" id="imgTrophy{{ trophy.id }}" src="{{ asset('bundles/kstrophy/images/trophies/' ~ trophy.code ~ '.png') }}"/>
+            {% else %}
+                {#<img class="imgTrophy" id="imgTrophy{{ trophyInShowcase.trophy.id }}" data-original-title="{{ expodedSince }}" data-content="{{ trophyInShowcase.trophy.label }}" src="{{ asset('bundles/ksactivity/images/trophy-mini.png') }}"/>#}
+                <img class="imgTrophy {{ state }}" id="imgTrophy{{ trophy.id }}" src="{{ asset('bundles/kstrophy/images/trophies/trophy.png') }}"/>
+            {% endif %}
+                <span class="code" data-code="{{ trophy.code }}">{{ trophy.label }}</span>
+                <span class="points" data-points="{{ trophy.pointsNumber }}">{{ trophy.pointsNumber }}</span>
+                <span class="category" data-category="{{ trophy.category.id }}">{{ trophy.category.label }}</span>
+                <span class="state" data-state="{{ state }}">{{ state }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+
+    
+    <style>
+            /* 3.2 =Image Grid
+    ---------------------------------------------------------------------- */
+
+    .image-grid img.imgTrophy{
+        width:128px;
+        height:128px;
+    }
+    
+    .image-grid img.imgTrophy.locked{
+        opacity:.40;
+        filter:alpha(opacity=40);
+        filter: “alpha(opacity=40)”;
+    }
+
+
+    .image-grid li {
+      width: 128px;
+      margin: 20px 0 0 35px;
+      float: left;
+      text-align: center;
+      font-family: "Helvetica Neue", sans-serif;
+      line-height: 17px;
+      color: #686f74;
+      height: 177px;
+      overflow: hidden;
+    }
+
+    .image-grid li img,
+    .image-grid li strong {
+      display: block;
+    }
+
+    .image-grid li strong {
+      color: #fff;
+    }
+    </style>
+{% endblock %}        

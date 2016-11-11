@@ -1,0 +1,281 @@
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "KsUserBundle::layout_full.html.twig" %}
+{% else %}
+    {% set extends = "KsUserBundle::layout_full.html.twig" %}    
+{% endif %}
+
+{% extends extends %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <link rel="stylesheet" href="{{asset('jQueryFileUpload/css/jquery.fileupload-ui.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('plugins/spectrum/spectrum.css') }}" />
+     
+    <style>
+        div.row {
+            margin-left: 0;
+        }
+        
+        #Grid .mix{
+	display: none;
+        }
+    </style>
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('plugins/spectrum/spectrum.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksequipment/js/editEquipment.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('mixitup-1.5.3/jquery.mixitup.min.js') }}"></script>
+    <script src="{{asset('jQueryFileUpload/js/tmpl.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.iframe-transport.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload-ui.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/locale.js')}}"></script>
+    <script>
+        var stringToBoolean = function(string){
+            switch(string.toLowerCase()){
+                    case "true": case "yes": case "1": return true;
+                    case "false": case "no": case "0": case null: return false;
+                    default: return Boolean(string);
+            }
+        }
+        
+        function attachAddOnEquipmentEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            else {
+                                showInformation("Cet équipement a bien été ajouté à ta liste !", "sportif");
+                                //$("#equipmentBloc").html('');
+                                //searchEquipments( 0, nbEquipmentsToLoadLimit );
+                                $( elt ).parent().html(data.addLink);
+                            }
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        
+        function attachDeleteEquipmentEvent(equipmentId, intCreationOrEdition) {
+            var callback = function() {
+                $.get(
+                    Routing.generate('ksEquipment_delete', {'equipmentId' : equipmentId}),
+                    function(data) {
+                        if (data.responseDelete == -1) modalInfo(data.errorMessage);
+                        else {
+                            showInformation("Ton matériel a bien été supprimé !<br> Rafraichissement en cours...", "sportif");
+                            $creationOrEdition = (intCreationOrEdition == 1 ? 'creation' : 'edition');
+                            document.location.href = Routing.generate('ksProfile_equipment', {'creationOrEdition' : $creationOrEdition})
+                            //$("#equipmentBloc").html(''); searchEquipments( 0, nbEquipmentsToLoadLimit ); FIXME FMO : ce rafraichissement donne un bug si on crée 2 équipements à la suite au niveau de l'image à importer :(
+                        }
+                    }
+                )
+            };
+
+            var message = "Tu es sur le point de supprimer ce matériel (action irréversible)<br/>Es-tu sûr de vouloir continuer ?";
+
+            askConfirmation(message, 'sportif', callback, null);
+            return false;
+        }
+        
+        function attachWishOnEquipmentEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.addLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        function attachRemoveWishOnEquipmentEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.addLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        
+        function attachEditEquipmentEvent(equipmentId) {
+            editEquipment(equipmentId);
+        }
+        
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {         
+            $('.fileUploadForm').fileupload({
+                acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+                maxNumberOfFiles : 1
+            });
+            
+            //Bouton pour créer un nouveau matériel
+            $("#newButton").click(function() {
+                editEquipment();
+            }); 
+            
+            $('input[type=checkbox][name=cdAllEquipments]').iCheck({
+                checkboxClass: 'icheckbox_minimal-grey',
+            });
+            
+            $("#searchInput").keyup( function () {
+                    $("#equipmentBloc").html('');
+                    searchEquipments( 0, nbEquipmentsToLoadLimit );
+            });
+            
+            $("#filters").find("button").click(function() {
+                $("#equipmentBloc").html('');
+                
+                //On attend 100 millisecondes car la classe active du bouton n'est pas encore setté
+                //cf. http://stackoverflow.com/questions/13237238/twitter-bootstrap-checkbox-button-value-changed-after-click-event
+                setTimeout(function() {
+                    searchEquipments( 0, nbEquipmentsToLoadLimit );
+                },100);
+            });
+            
+            $('input[type=checkbox][name=cdAllEquipments]').on('ifChanged', function(event){
+                $("#equipmentBloc").html('');
+                searchEquipments( 0, nbEquipmentsToLoadLimit );
+            });
+            
+            $('input[type=checkbox][name=cbMySports]').on('ifChanged', function(event){
+                $("#equipmentBloc").html('');
+                searchEquipments( 0, nbEquipmentsToLoadLimit );
+            });
+            
+            $('input[type=checkbox][name=cbWebEquipments]').on('ifChanged', function(event){
+                $("#equipmentBloc").html('');
+                searchEquipments( 0, nbEquipmentsToLoadLimit );
+            });
+            
+            //On lance la recherche après le chargement
+            searchEquipments( 0, nbEquipmentsToLoadLimit );
+            
+            {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+                $('input[type=checkbox][name=cdAllEquipments]').iCheck('check');
+            {% endif %}
+        });
+           
+    </script>
+{% endblock %}
+    
+{% block body %}
+    {% render 'KsEquipmentBundle:Equipment:new_modal' %}
+    
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        {% include 'KsUserBundle:Profile:_breadcrumb.html.twig' with {'step': 6, 'creationOrEdition' : creationOrEdition} %}
+        {% set submitButtonText = "Etape suivante" %}
+        
+        <a href="{{ path('ksProfile_thematique', {'creationOrEdition' : creationOrEdition}) }}" class="btn btn-sportif pull-right">{{ submitButtonText }}</a>
+        </br>
+        
+    {% else %}
+        <h1 class="sportif">{{ 'menu.my-profile'|trans }}</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ks_user_public_profile', {'username' : app.user.username}) }}">
+                    <span class="avatarBloc">
+                        {% set user_imageName = null %}
+                        {% if app.user.userDetail is not null %}
+                            {% set user_imageName = app.user.userDetail.imageName %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                 {% include 'KsUserBundle:Profile:_buttons.html.twig' with{'creationOrEdition' : creationOrEdition } %}
+            </div>
+        </div>
+        <br/>
+        
+    <br/>
+
+    {% endif %}
+    
+    <h3 class="sportif">
+        {{'equipment.my-equipment'|trans}} 
+    </h3>
+    <div class="blocHeaderSeparator"></div>
+    <br clear="all"/>
+    <div class="alert alert-info">{{'equipment.message_page_edition_equipement'|trans}} </div>
+    
+    <div class="row-fluid">
+        <div class="span5">
+            <div class="input-prepend pull-left">
+                <span class="add-on">
+                    <span class="icon-search"></span>
+                </span>
+                <input id="searchInput" type="text" rel="tooltip" title="{{ 'equipment.search-by'|trans }}" style="width:250px" placeholder="{{ 'equipment.search-tooltip'|trans }}"/>
+            </div>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <br clear="all"/>
+                <label class="pull-left" style="margin-top:2px;margin-left:30px">
+                    <span class="pull-left" style="margin-right:2px"><input type="checkbox" name="cdAllEquipments"></span>
+                    <span class="pull-left" >{{ 'equipment.all-equipment'|trans }}</span>
+                </label>
+                <br clear="all"/>
+            {% endif %}
+        </div>
+        <div class="span7">
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <span id="newButton" class="btn btn-sportif pull-right" style="margin-left:25px">
+                    + {{ 'equipment.new-equipment'|trans }}
+                </span>
+            {% endif %}
+        </div>
+        
+    </div>
+    
+    <br clear="all"/>
+    
+    <div class="blocHeaderSeparator"></div>
+    
+    <img id="searchLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" class="pull-left" style="margin-left:5px;margin-top:7px;display:none">
+    
+    <div id="equipmentBloc">
+    </div>
+
+    <br clear="all"/>
+    <img id="moreResultsLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none">
+    <div id="scrollForMoreResultsBloc"class="alert"  style="display:none">
+        <center>{{ 'equipment.more-equipment'|trans }}  (<span class="nb"></span> {{ 'equipment.missing'|trans }}) <img style="height:20px" src="{{ asset('img/scroll_brown.png') }}" alt="scroll"></center>
+    </div>
+    <div id="searchOverBloc" class="alert alert-info"  style="display:none">
+        <center>{{ 'equipment.all-equipments-loaded'|trans }}</center>
+    </div>
+    <div id="0searchOverBloc" class="alert alert-info"  style="display:none">
+        <center>{{ 'equipment.no-match'|trans }}</center>
+    </div>
+    
+{% endblock %}        

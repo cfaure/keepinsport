@@ -1,0 +1,31 @@
+; These parameters can be imported into other config files
+; by enclosing the key with % (like %database_user%)
+; Comments start with ';', as in php.ini
+[parameters]
+    database_driver =   "pdo_mysql"
+    database_host =     "localhost"
+    database_port =     ""
+    database_name =     "keepinsport"
+    database_user =     "root"
+    database_password = ""
+    mailer_transport =  "smtp"
+    mailer_host =       "localhost"
+    mailer_user =       ""
+    mailer_password =   ""
+    locale =            "fr"
+    facebookauth =      "true"
+    betainvitation =    "false"
+    secret =            "75bce26381d0a2c43653b851b5d8409910767022"
+    host =              "local.keepinsport.com"
+    path_web =          "local.keepinsport.com"
+    google_analytics =  "false"
+    send_mails =        "1"
+    maintenance             = false
+    underMaintenanceUntil   = "5 minutes"
+    ;
+    paybox.site           = "1281621"
+    paybox.rang           = "01"
+    paybox.identifiant    = "259812346"
+    paybox.hmac           = "D51BD2A74E38FDA1453FD5B331C95CE34528F25D59E2F1C6C5B6DF15352B2EFB13395343C7B4ADFFD7D8A232ED87C89330D3AC084A89D63148EC73B6B66345E8"
+    paybox.server         = "preprod-tpeweb.paybox.com"
+    paybox.repondre_a     = "http://localhost/keepinsport/web/payment/validate"

@@ -1,0 +1,71 @@
+{#{% extends fullscreen == 'true' ? "KsActivityBundle::layout_full.html.twig" : "KsActivityBundle::layout_3_9.html.twig" %}#}
+
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}   
+    {# zoom sur photos #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('swipebox/source/swipebox.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+     
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/v3_epoly.js') }}"></script> {# fonctions additionnelles pour l'objet polyline de google map #}
+        
+    <script src="{{ asset('js/jquery.elastic.source.js') }}"></script>
+    
+    {# zoom sur photos #}
+    <script src="{{ asset('swipebox/source/jquery.swipebox.min.js') }}"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("detailsactivites"); //pour activer le css correspondant
+                        
+            //On cré des liens là où il en faut 
+            var rgx = new RegExp('((https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])','ig');
+            $.each( $(".description"), function(key, description) {
+                //console.log( description )
+                //console.log( $( this ).html() )
+                var desc = $( this ).html();
+                var descWithLinks = desc.replace(rgx,"<a href='$1' target='_BLANK'>$1</a>");
+                //console.log(htmlWithLinks)
+                //On remplace le lien dans la description adéquate
+                $(".description").eq(key).html(descWithLinks);
+                //console.log($(response.html).find(".description").eq(key));
+            });
+        });
+    </script>
+{% endblock %}
+    
+{% block activity_content %}
+    <!--WRAPPER-->
+    <div class="wrapper"> 
+    {% if not activity.isValidate and is_granted("IS_AUTHENTICATED_REMEMBERED") and activity.user_id == app.user.id and notification is defined and notification is not null %} 
+        <div>    
+            <span >Souhaites tu valider cette activité ?</span>
+            <a class="btn btn-success" href="{{ path('ksNotification_validateActivity', { 'notificationId': notification.id, 'activityId': notification.activity.id }) }}"><i class="icon-ok"></i> Oui</a>
+            <a class="btn btn-danger " href="{{ path('ksNotification_unvalidateActivity', { 'notificationId': notification.id, 'activityId': notification.activity.id }) }}"><i class="icon-remove"></i> Non</a>
+        </div>
+        <br/>
+       {# <div class="btn-group">
+            <a href="#" class="btn btn-info">Cette activité a besoin d'être validée</a>
+            <a href="#" data-toggle="dropdown" class="btn btn-info dropdown-toggle"><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="{{ path('ksNotification_validateActivity', { 'notificationId': notification.id, 'activityId': notification.activity.id }) }}"><i class="icon-ok"></i> Confirmer</a>
+                </li>
+                <li>
+                    <a href="{{ path('ksNotification_unvalidateActivity', { 'notificationId': notification.id, 'activityId': notification.activity.id }) }}"><i class="icon-remove"></i> Refuser</a>
+                </li>
+            </ul>
+        </div>
+        <br/>#}
+    {% endif %}
+    {% include 'KsActivityBundle:Activity:_activity_details.html.twig' %}
+    </div>
+{% endblock %}

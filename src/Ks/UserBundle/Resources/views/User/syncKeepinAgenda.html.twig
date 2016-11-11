@@ -1,0 +1,91 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Agenda'|trans }}
+{% endblock %}
+    
+{% block content %}
+        
+<h1>{{ 'users.synchro_gagenda_with_keepinagenda'|trans }}</h1>
+
+{% if googleUri %}
+
+<ul>    
+    <li> <a href='{{ googleUri }}'>{{ 'users.auth_gagenda_access'|trans }}  </a> </li>
+</ul>  
+
+{% else %}
+
+
+    {% if events %}
+    
+    <form action="{{ path('ks_add_keepin_events_to_google_agenda') }}" method="post">
+
+        <p>
+            <input type="submit" value="{{'events.add_keepin_event_to_google_calendar'|trans}}">
+        </p>
+        
+        <h2>{{ 'users.keepin_agenda_events'|trans }}</h2>
+        
+        <table id="idGoogleEvents" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{{ 'users.club_event_name'|trans }}</th>
+                    <th>{{ 'users.club_event_start'|trans }}</th>
+                    <th>{{ 'users.club_event_end'|trans }}</th>
+                    <th> Etat </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set nbEvents = events|length %}
+                {% for key, event in events %}
+                <tr>
+                    <td>
+                        {{ event['name'] }}
+                        <input type="hidden" name="title_{{key}}" value="{{ event['name'] }}" />   
+                    </td>
+                    <td>
+                        {% set startDate = event['startDate'] %}
+                        {{ startDate.date|date('d/m/Y H:i:s')  }}
+                        <input type="hidden" name="startTime_{{key}}" value="{{ startDate.date|date('Y-m-d H:i:s')  }}" />       
+                    </td>
+                    <td>
+                        {% set endDate = event['endDate'] %}
+                        {{ endDate.date|date('d/m/Y H:i:s')  }}    
+                        <input type="hidden" name="endTime_{{key}}" value="{{ endDate.date|date('Y-m-d H:i:s')  }}" /> 
+                    </td>
+                    <td>
+                        {{ event['state'] }}
+                        {% if event['idUrlEvent'] %}
+                            <input type="hidden" name="id_event_url_{{key}}" value="{{ event['idUrlEvent'] }}" />
+                        {% endif %}  
+                        {% if event['tobesyncwithgoogle'] %}
+                            <input type="hidden" name="tobesyncwithgoogle_{{key}}" value="{{ event['tobesyncwithgoogle'] }}" />
+                        {% endif %}    
+                    </td>    
+                </tr>
+                
+                {% if event['content'] %}
+                    <input type="hidden" name="content_event_{{key}}" value="{{ event['content'] }}" /> 
+                {% endif %}
+                    
+                <input type="hidden" name="id_event_{{key}}" value="{{ event['id'] }}" />      
+               
+                {% endfor %}
+            </tbody>     
+        </table>
+        
+         <input type="hidden" name="nbEvents" value="{{ nbEvents }}" />  
+        
+        
+       
+        
+   </form>
+        
+    {% else %}    
+         {{ 'users.no_keepin_agenda_events'|trans }}
+    {% endif %}
+    
+{% endif %}
+
+{% endblock %}

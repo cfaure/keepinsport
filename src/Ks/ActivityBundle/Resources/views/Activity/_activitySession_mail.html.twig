@@ -1,0 +1,13 @@
+<div id="avatarBloc-{{ activity.id }}" class="span1">
+    {{ activity.user.username }}
+</div>
+<div id="activityBloc-{{ activity.id }}" class="span11">
+    <div class="activityBloc">
+        
+        <div class="contentBloc">
+            {% include 'KsActivityBundle:Activity:_activitySession_content.html.twig' with {'activity': activity} %}
+        </div>
+ 
+        {% include 'KsActivityBundle:Comment:_commentsBloc_mail.html.twig' with {'activity': activity } %}       
+    </div>
+</div>

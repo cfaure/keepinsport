@@ -1,0 +1,329 @@
+<div class="row">
+    <div class="col-md-3">
+        {% for user in users %}
+            {% if user[0].id == ownerId %} 
+                <br/>
+                {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                    'user_id' : user[0].id, 
+                    'user_username' : user[0].username, 
+                    'user_imageName': user[0].imageName, 
+                    'user_league_category' : user[0].leagueCategoryLabel, 
+                    'user_league_stars' : user[0].leagueLevelStarNumber
+                } %}
+                <div class="name-testimony bleu">{{ 'coaching.owner'|trans }}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="col-md-9">
+        {% if users|length > 1 %}
+            <div id="myCarousel" class="carousel slide desktop" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% set key = 0 %}
+                    {% set first = 0 %}
+                    {% for user in users %}
+                        {% if key % 4 == 0 and first == 0%}
+                            <div class="item active">
+                                <div class="container2">
+                                    {% set first = 1 %}
+                        {% elseif key % 4 == 0 and first == 1 %}
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="container2">
+                        {% endif %}
+                            <div class="col-md-2">
+                                <span class="pull">
+                                    <span class="media-object">
+                                        <br/>
+                                        {% if user[0].id != ownerId %} 
+                                            {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                                'user_id' : user[0].id, 
+                                                'user_username' : user[0].username, 
+                                                'user_imageName': user[0].imageName, 
+                                                'user_league_category' : user[0].leagueCategoryLabel, 
+                                                'user_league_stars' : user[0].leagueLevelStarNumber
+                                            } %}
+                                        {% endif %}
+                                    </span>
+                                </span>
+                            </div>
+                        {% set key = key + 1 %}
+                    {% endfor %}
+                                </div>
+                            </div>
+                </div>
+
+                <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div><!--/ Carousel Desktop-->
+        {% endif %}
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-md-6">
+        <center>
+            <h3 class="title">{{ 'coaching.import-by-end'|trans }}</h3>
+            {#<div class="form-group">
+                <div class="controls">
+                    <label>{{ 'coaching.starting-date'|trans }}</label>
+                    <input type="text" id="startDateByEnd" class="datepicker date-small">
+                </div>
+            </div>#}
+            <div class="form-group">
+                <div class="controls">
+                    <span class="bleu"> {{ 'coaching.your-goal-date'|trans }}</span>
+                    <input type="text" id="endDate" class="datepicker date-small">
+                    <span id="startDateByEnd"></span>
+                    <span class="glyphicon glyphicon-question-sign" rel="tooltip" title="{{ 'coaching.help-import'|trans }}" data-original-title=""></span>
+                    <br>
+                    <input checked id="checkBoxEndDate" type="checkbox" name="checkBoxEndDate" value="" /> {{"coaching.with-length-control"|trans }}
+                    <span class="glyphicon glyphicon-question-sign" rel="tooltip" title="{{ 'coaching.help-import-control'|trans }}" data-original-title=""></span>
+                    <br><br>
+                    <button id="importByEndBtn" type="button" class="btn btn-success" ><span class="glyphicon glyphicon-upload"></span> {{ 'coaching.import-into-my-agenda'| trans }}</button>
+                    <img id="loaderImportByEnd" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display: none;">
+                </div>
+            </div>
+        </center>
+    </div>
+    <div class="col-md-6">
+        <center>
+            <h3 class="title">{{ 'coaching.import-by-start'|trans }}</h3>
+            {#<div class="form-group">
+                <div class="controls">
+                    <label>{{ 'coaching.starting-date'|trans }}</label>
+                    <input type="text" id="startDateByEnd" class="datepicker date-small">
+                </div>
+            </div>#}
+            <div class="form-group">
+                <div class="controls">
+                    <span class="bleu"> {{ 'coaching.starting-date'|trans }}</span> : <b>{{ minStartDate }}</b>
+                    <span class="glyphicon glyphicon-question-sign" rel="tooltip" title="{{ 'coaching.help-import'|trans }}" data-original-title=""></span>
+                    <br><br><br>
+                    <button id="importFromNowBtn" type="button" class="btn btn-success" ><span class="glyphicon glyphicon-upload"></span> {{ 'coaching.import-into-my-agenda'| trans }}</button>
+                    <img id="loaderImportFromNow" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display: none;">
+                </div>
+            </div>
+        </center>
+    </div>
+</div>
+
+<script type="text/javascript">
+    {#attachUserNotParticipatesAnymoreEvent_Event($('a[rel="userNotParticipatesAnymoreEventTrigger-{{ event.id }}"]'));
+    attachUserParticipatesEvent_Event($('a[rel="userParticipatesEventTrigger-{{ event.id }}"]'));#}
+    $(document).ready(function() {
+        /*
+        $('#startDateByEnd').datepicker({
+            beforeShowDay: disableSpecificWeekDaysForStart,
+            dateFormat: "yy-mm-dd",
+            firstDay: 1,
+            minDate: new Date(),
+            onSelect: function(date) {
+                $( "#endDate" ).datepicker( 'setDate', null);
+            },
+        });
+        $('#startDateByEnd').datepicker( $.datepicker.regional[ "fr" ] );
+        */
+        $minDate = '{{ minEndDate }}'.split("-");
+
+        function padStr(i) {
+            return (i < 10) ? "0" + i : "" + i;
+        }
+        
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_flat-blue',
+            radioClass: 'iradio_flat-blue'
+        });
+        
+        $("#checkBoxEndDate").on('ifChecked', function(event){
+            $("#endDate").datepicker("destroy");
+            $('#endDate').datepicker({
+                beforeShowDay: disableSpecificWeekDaysForEnd,
+                dateFormat: "yy-mm-dd",
+                firstDay: 1,
+                minDate: new Date($minDate[0], parseInt($minDate[1])-1, $minDate[2]), //FMO => pour permettre à l'utilisateur de choisir une date possible par rapport aux semaines prévues
+                //minDate: new Date(2014, 10 - 1, 25)
+                onSelect: function(date) {
+                    $startDateByEnd = new Date(date);
+                    $startDateByEnd.setDate($startDateByEnd.getDate() - {{ weeks }}*7 + 1);
+                    $startDateString = padStr($startDateByEnd.getFullYear()) + '-'+ padStr(1+$startDateByEnd.getMonth()) + '-'+ padStr($startDateByEnd.getDate());
+                    $("#startDateByEnd").html("({{ 'coaching.starting-date'|trans }} : <b>" + $startDateString + "</b>)");
+                    //$( "#startDateByEnd" ).datepicker( 'setDate', null);
+                },
+            });
+            $("#endDate").datepicker("refresh");
+        });
+        
+        $("#checkBoxEndDate").on('ifUnchecked', function(event){
+            $("#endDate").datepicker("destroy");
+            $('#endDate').datepicker({
+                beforeShowDay: disableSpecificWeekDaysForEnd,
+                dateFormat: "yy-mm-dd",
+                firstDay: 1,
+                onSelect: function(date) {
+                    $startDateByEnd = new Date(date);
+                    $startDateByEnd.setDate($startDateByEnd.getDate() - {{ weeks }}*7 + 1);
+                    $startDateString = padStr($startDateByEnd.getFullYear()) + '-'+ padStr(1+$startDateByEnd.getMonth()) + '-'+ padStr($startDateByEnd.getDate());
+                    $("#startDateByEnd").html("({{ 'coaching.starting-date'|trans }} : <b>" + $startDateString + "</b>)");
+                    //$( "#startDateByEnd" ).datepicker( 'setDate', null);
+                },
+            });
+            $("#endDate").datepicker("refresh");
+        });
+
+        $('#endDate').datepicker({
+            beforeShowDay: disableSpecificWeekDaysForEnd,
+            dateFormat: "yy-mm-dd",
+            firstDay: 1,
+            minDate: new Date($minDate[0], parseInt($minDate[1])-1, $minDate[2]), //FMO => pour permettre à l'utilisateur de choisir une date possible par rapport aux semaines prévues
+            //minDate: new Date(2014, 10 - 1, 25)
+            onSelect: function(date) {
+                $startDateByEnd = new Date(date);
+                $startDateByEnd.setDate($startDateByEnd.getDate() - {{ weeks }}*7 + 1);
+                $startDateString = padStr($startDateByEnd.getFullYear()) + '-'+ padStr(1+$startDateByEnd.getMonth()) + '-'+ padStr($startDateByEnd.getDate());
+                $("#startDateByEnd").html("({{ 'coaching.starting-date'|trans }} : <b>" + $startDateString + "</b>)");
+                //$( "#startDateByEnd" ).datepicker( 'setDate', null);
+            },
+        });
+
+        function disableSpecificWeekDaysForStart(date) {
+            var day = date.getDay();
+            if (day == {{ firstDay }} ) return [true];
+            else return [false];
+        }
+        function disableSpecificWeekDaysForEnd(date) {
+            var day = date.getDay();
+            if (day == {{ lastDay }} ) return [true];
+            else return [false];
+        }
+        
+        $("#importByEndBtn").click(function() {
+            if( !$("#importByEndBtn").hasClass("disabled") ) {
+                $("#loaderImportByEnd").show();
+                $("#importByEndBtn").addClass("disabled");
+                if ($( "#endDate" ).datepicker( 'getDate') == null) {
+                    showInformation( "{{ 'coaching.choose-one-date'|trans }}" );
+                    $("#importByEndBtn").removeClass("disabled");
+                    $("#loaderImportByEnd").hide();
+                }
+                else {
+                    //On passe le user en premium automatiquement et on importe le plan
+                    $.post(
+                        Routing.generate('ksUser_setPremium'), 
+                        {
+                        },
+                        function(response) {
+                            if (response.response == 1 ) showInformation('{{ 'profile.premium-successful'|trans|raw }}');
+                            if (response.response >= 0) {
+                                $.ajax({
+                                    url: Routing.generate('ksAgenda_getPlanOverlap', {'planId': {{ planId }}}),
+                                    data: "endDate="+$( "#endDate" ).val(),
+                                    type: "POST",
+                                    success: function(response) {
+                                        var callbackYes = function () {
+                                            $.ajax({
+                                                url: Routing.generate('ksAgenda_userImportTrainingPlan', { "planId" : {{ planId }} }), 
+                                                data: "endDate="+$( "#endDate" ).val(),
+                                                type: "POST",
+                                                success : function(response) {
+                                                    if( response.publishResponse == 1 ) {
+                                                        document.location.href = Routing.generate('ksAgenda_index', {'id' : {{ app.user.id }}, 'newPlanId' : response.newPlanId });
+                                                        showInformation('{{ 'coaching.plan-successfully-imported'|trans }}');
+                                                    }
+                                                    else callbackNo();
+                                                }
+                                            });
+                                        }
+                                        var callbackNo = function () {
+                                            $("#importByEndBtn").removeClass("disabled");
+                                            $("#loaderImportByEnd").hide();
+                                        };
+                                        
+                                        if ( response.publishResponse == 1 ) {
+                                            //Plan se supperpose avec un autre, on demande confirmation au sportif avant de l'importer
+                                            askConfirmation(response.message, 'sportif', callbackYes, callbackNo);
+                                        }
+                                        else {
+                                            callbackYes();
+                                        }
+                                    }
+                                });
+                            }
+                            else {
+                                showInformation('{{ 'coaching.premium-required'|trans|raw }}');
+                                $("#importByEndBtn").removeClass("disabled");
+                                $("#loaderImportByEnd").hide();
+                            }
+                        }
+                    );
+                }
+            };
+        });
+
+        $("#importFromNowBtn").click(function() {
+            if( !$("#importFromNowBtn").hasClass("disabled") ) {
+                $("#loaderImportFromNow").show();
+                $("#importFromNowBtn").addClass("disabled");
+                
+                $minDate = '{{ minStartDate }}'.split("-");
+
+                $startDateByEnd = new Date(new Date($minDate[0], parseInt($minDate[1])-1, $minDate[2]));
+                $startDateString = padStr($startDateByEnd.getFullYear()) + '-'+ padStr(1+$startDateByEnd.getMonth()) + '-'+ padStr($startDateByEnd.getDate());
+
+                //console.log($startDateString);
+                //console.log($minDate);
+
+                //On passe le user en premium automatiquement et on importe le plan
+                //On passe le user en premium automatiquement et on importe le plan
+                $.post(
+                    Routing.generate('ksUser_setPremium'), 
+                    {
+                    },
+                    function(response) {
+                        if (response.response == 1 ) showInformation('{{ 'profile.premium-successful'|trans|raw }}');
+                        if (response.response >= 0) {
+                            $.ajax({
+                                url: Routing.generate('ksAgenda_getPlanOverlap', {'planId': {{ planId }}}),
+                                data: "startDate="+$startDateString,
+                                type: "POST",
+                                success: function(response) {
+                                    var callbackYes = function () {
+                                        $.ajax({
+                                            url:Routing.generate('ksAgenda_userImportTrainingPlan', { "planId" : {{ planId }} }), 
+                                            data: "startDate="+$startDateString,
+                                            type: "POST",
+                                            success: function(response) {
+                                                if( response.publishResponse == 1 ) {
+                                                    document.location.href = Routing.generate('ksAgenda_index', {'id' : {{ app.user.id }}, 'newPlanId' : response.newPlanId });
+                                                    showInformation('{{ 'coaching.plan-successfully-imported'|trans }}');
+                                                }
+                                                else callbackNo();
+                                            }
+                                        });
+                                    }
+                                    var callbackNo = function () {
+                                        $("#importFromNowBtn").removeClass("disabled");
+                                        $("#loaderImportFromNow").hide();
+                                    };
+
+                                    if ( response.publishResponse == 1 ) {
+                                        //Plan se supperpose avec un autre, on demande confirmation au sportif avant de l'importer
+                                        askConfirmation(response.message, 'sportif', callbackYes, callbackNo);
+                                    }
+                                    else {
+                                        callbackYes();
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            showInformation('{{ 'coaching.premium-required'|trans|raw }}');
+                            $("#importFromNowBtn").removeClass("disabled");
+                            $("#loaderImportFromNow").hide();
+                        }
+                    }
+                );
+            };
+        });
+    });
+</script>

@@ -1,0 +1,18 @@
+<div id="avatarBloc-{{ activity.id }}" class="span1">
+    {{ activity.user.username }}
+</div>
+<div id="activityBloc-{{ activity.id }}" class="span11">
+    <div class="activityBloc">
+        {% if activity.type == 'status' %}
+            {% include 'KsActivityBundle:Activity:_activityStatus_content.html.twig' with {'activity': activity } %}
+        {% elseif activity.type == 'video' or activity.type == 'link' %}
+            {% include 'KsActivityBundle:Activity:_activityLink_content.html.twig' with {'activity': activity } %}
+        {% elseif activity.type == 'photo' %}
+            {% include 'KsActivityBundle:Activity:_activityPhoto_content.html.twig' with {'activity': activity } %}
+        {% else %}
+            {% include 'KsActivityBundle:Activity:_activityStatus_content.html.twig' with {'activity': activity } %}
+        {% endif %}
+
+        {% include 'KsActivityBundle:Comment:_commentsBloc_mail.html.twig' with {'activity': activity } %}
+    </div>  
+</div>

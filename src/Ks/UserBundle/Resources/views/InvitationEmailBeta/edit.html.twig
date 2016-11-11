@@ -1,0 +1,32 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>InvitationEmailBeta edit</h1>
+
+<form action="{{ path('invitationemailbeta_update', { 'id': entity.id }) }}" method="post" {{ form_enctype(edit_form) }}>
+    {{ form_widget(edit_form) }}
+    <p>
+        <button type="submit">Edit</button>
+    </p>
+</form>
+
+<ul class="record_actions">
+    <li>
+        <a href="{{ path('invitationemailbeta') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <form action="{{ path('invitationemailbeta_delete', { 'id': entity.id }) }}" method="post">
+            {{ form_widget(delete_form) }}
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+</ul>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{#<div id="friendsAroundMe"> FMO : pour permettre le déroulement #}
+<div style="{#width:270px;#}">
+    {% for friendSuggest in aFriendsSuggest %}
+        <div class="" style="margin-bottom:3px;width:100%;margin-let:20px">
+            <table>
+                <tr>
+                    <td>
+                        {% render 'KsUserBundle:User:userImage_league_mini' with { 'userId' : friendSuggest.id } %}
+                    </td>
+                    <td>
+                        <center>
+                            {% if friendSuggest.lastname is not null and friendSuggest.firstname is not null %}
+                                {% set titleTooltip = friendSuggest.firstname ~ " " ~ friendSuggest.lastname %}
+                            {% else %} 
+                                {% set titleTooltip = friendSuggest.username %}
+                            {% endif %}
+                            <a href="{{ path('ks_user_public_profile', { 'username': friendSuggest.username }) }}" rel="tooltip" title="{{ titleTooltip }}">
+                                {% if friendSuggest.username|length > 25 %}   
+                                    {{ friendSuggest.username|substr(0,24) ~ "..." }}
+                                {% else %}
+                                    {{ friendSuggest.username }}
+                                {% endif %}
+                            </a>
+                            <a class="btn btn-mini link-friends btn-link" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': friendSuggest.id }) }}">{{ 'users.add'|trans }}</a>
+                            </br>
+                            <span class="muted" style="font-size:0.7em">
+                                {% if friendSuggest.proximite is defined %}
+                                    {{ friendSuggest.proximite }} Km
+                                {% endif %}
+                                {% if friendSuggest.numCommonFriends is defined %}
+                                    {{ friendSuggest.numCommonFriends }} ami(s) en commun
+                                {% elseif friendSuggest.numCommonClubs is defined %}
+                                    {{ friendSuggest.numCommonClubs }} club(s) en commun
+                                {% endif %}
+                            </span>
+                        </center>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    {% endfor %}
+</div>
+<div id="sliderFrame">
+    <div id="slider">
+    </div>
+</div>           

@@ -1,0 +1,115 @@
+{% form_theme form 'KsUserBundle:Netaffiliation:collection_netaffiliation_layout.html.twig' %}
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+     <script type="text/javascript">
+         var initializeNewCustomSelectSports = function() {
+            $.each($('#netaffiliationsTable').find("select.customSelectSports"), function() {
+                //console.log($( this ).parent().parent());
+                var $selectSports = $( this ).parent().parent().find(".sports");
+                var $customSelectSports = $( this ).select2({
+                    placeholder: "{{ 'actions.select-sport'|trans }}",
+                    //width : 250,
+                    //allowClear: true,
+                    //multiple: true,
+                    containerCssClass : "input-block-level",
+                    formatResult: function(state) {
+                        var codeSport = state.element[0].getAttribute("codeSport");
+                        if (!codeSport) return state.text; 
+                        return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+                    },
+                });
+
+                $customSelectSports.select2("val", $selectSports.val());
+
+                $customSelectSports.change(function() { 
+                    $selectSports.val($( this ).val());
+                });
+            });
+        }
+        
+        $(document).ready(function() {  
+            var netaffiliationsNb = '{{ form.netaffiliations | length }}';
+            $('#add-netaffiliation').click(function() {
+   
+                var netaffiliationsTable = $('#netaffiliationsTable');
+                var newWidget = netaffiliationsTable.attr('data-prototype');
+                newWidget = newWidget.replace(/\$\$name\$\$/g, netaffiliationsNb);
+                //console.log(newWidget);
+                netaffiliationsTable.append(newWidget);
+                initializeNewCustomSelectSports();
+                netaffiliationsNb++;
+            });
+            
+            $(".btn-remove-netaffiliation").live('click', function() {
+                $( this ).parent().parent().remove();
+            });
+            
+            initializeNewCustomSelectSports();
+        });
+     </script>
+{% endblock %}
+    
+{% block content %}
+    <h1 class="sportif">Gestion des pubs Netaffiliation en 728x90</h1>
+    <div class="blocHeaderSeparator"></div>
+   <form action="{{ path('ksUser_netaffiliation_728x90_form') }}" method="post" {{ form_enctype(form) }}>
+       {{ form_label(form.netaffiliations, "") }}
+        <table id="netaffiliationsTable" data-prototype="{{ form_widget(form.netaffiliations.vars.prototype) | e }}" class="table table-bordered">
+            <thead>
+                <tr>
+                    <td>Label</td>
+                    <td>Référence</td>
+                    <td style="width:400px">Sports</td>
+                    <td>x</td>
+                </tr>
+            </thead>
+            <tbody>
+            {% if form.netaffiliations|length > 0 %}
+                {% for num, netaffiliation in form.netaffiliations %}
+                    <tr {{ block('widget_container_attributes') }}>
+                        <td>
+                            {{ form_widget(netaffiliation.label) }} 
+                        </td>
+                        <td>{{ form_widget(netaffiliation.reference) }}</td>
+                        <td>
+                            {{ form_widget(netaffiliation.sports) }}
+                             {% render "KsActivityBundle:Sport:customSelectSports" with {"multiple": "1"} %}    
+                        </td>
+                        <td>
+                            <span class="btn btn-mini btn-danger btn-remove-netaffiliation">
+                                <span class="icon-remove"></span>
+                            </span>
+                            <span style="display:none">
+                                {{ form_rest(netaffiliation) }}
+                            </span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+        <span style="display:none">
+                {{ form_row(form.netaffiliations) }}
+            </span>   
+        <span class="btn btn-sportif" id="add-netaffiliation">
+             <span class="glyphicon glyphicon-plus"></span>
+             Ajouter une référence
+         </span>
+        {{ form_rest(form) }}
+         <br clear="all"/>
+        <input type="submit" class=" btn btn-sportif pull-right" value="Enregistrer"/>
+        <br clear="all"/>
+    </form>
+
+{% endblock %}        

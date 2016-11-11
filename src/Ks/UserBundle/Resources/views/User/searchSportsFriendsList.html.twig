@@ -1,0 +1,77 @@
+{% block content %}
+
+{# <h4 class="titleAround">{{ 'user.common_sports_friends'|trans }}</h4> #}
+
+{% if aSportsFriends %}
+    
+    {% for sportFriend in aSportsFriends %}
+
+        <table class="userSuggest margin-bottom7" class="table">
+            <tbody>
+                <tr>
+                        <td class="avatar_width">
+                            {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : friend.id, 'user_imageName': sportFriend['obj'].userDetail.imageName is not defined or sportFriend['obj'].userDetail.imageName is null ? null : sportFriend['obj'].userDetail.imageName } %}
+                            {#% if sportFriend['obj'].userDetail.imageName is not defined or sportFriend['obj'].userDetail.imageName is null %}
+                                <img src="{{ asset('bundles/ksuser/images/no_avatar.png') }}" />
+                            {% else %}
+                                <img src="{{ asset('uploads/images/users/resize_48x48/' ~ sportFriend['obj'].userDetail.imageName) }}" />
+                            {% endif %#} 
+                        </td>
+                        <td class="padding-left5 width-users-infos">
+                           {% if sportFriend['obj'].userDetail is defined and sportFriend['obj'].userDetail is not null %}
+                                {% if sportFriend['obj'].userDetail.lastname is not null and sportFriend['obj'].userDetail.firstname is not null %}
+                                    {% set titleTooltip = sportFriend['obj'].userDetail.firstname ~ " " ~ sportFriend['obj'].userDetail.lastname %}
+                                {% else %} 
+                                    {% set titleTooltip = sportFriend['obj'].username %}
+                               {% endif %}
+                           {% else %} 
+                                {% set titleTooltip = sportFriend['obj'].username %}
+                           {% endif %}
+                           {% if sportFriend['obj'].username|length > 25 %}   
+                               {% set usernametruncated = sportFriend['obj'].username|substr(0,24) %}
+                               <a href="{{ path('ks_user_public_profile', { 'username': sportFriend['obj'].username }) }}" rel="tooltip" title="{{ titleTooltip }}"> {{ usernametruncated }}... </a> 
+                           {% else %}
+                               <a href="{{ path('ks_user_public_profile', { 'username': sportFriend['obj'].username }) }}" rel="tooltip" title="{{ titleTooltip }}">  {{ sportFriend['obj'].username }}   </a> 
+                           {% endif %}
+                           
+                            <br/>
+                            <small class="muted">{{ sportFriend['commonSport'] }}</small>
+                        </td>                           
+                     <td class="padding-left5">
+                        {% if not sportFriend['friendWithMe'] and not sportFriend['isAwaitingRequestFriendResponse']  and not sportFriend['mustGiveRequestFriendResponse'] %}
+                            {% if sportFriend['obj'].id != app.user.id %}    
+                                <a class="btn btn-mini btn-friends" title="{{ 'modal.ask_friend_request_modal_title'|trans }}{{ sportFriend['obj'].username }}" confirm_message="{{ 'modal.ask_friend_request_confirmation_message'|trans }}{{ sportFriend['obj'].username }}" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': sportFriend['obj'].id }) }}">
+                                    {{ 'users.add'|trans }}
+                                </a>
+                            {% endif %}
+                        {% else %}
+                           {# {% if friendSuggest['mustGiveRequestFriendResponse'] %}
+                                    <a class="btn btn-mini btn-info" title="{{ 'modal.accept_a_friend_request_modal_title'|trans }}{{ sportFriend['obj'].username }}" confirm_message="{{ 'modal.accept_a_friend_request_confirmation_message'|trans }}{{ sportFriend['obj'].username }}" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': sportFriend['obj'].id }) }}">
+                                        {{ 'users.accept_a_friend_request'|trans }}
+                                    </a>
+                                    <br>
+                                    <a class="btn btn-mini btn-info" title="{{ 'modal.refuse_a_friend_request_modal_title'|trans }}{{ sportFriend['obj'].username }}" confirm_message="{{ 'modal.refuse_a_friend_request_confirmation_message'|trans }}{{ sportFriend['obj'].username }}" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': sportFriend['obj'].id }) }}">
+                                        {{ 'users.refuse_a_friend_request'|trans }}
+                                    </a>
+                            {% elseif friendSuggest['isAwaitingRequestFriendResponse'] %}
+                                {{ 'users.friend_request_awaiting'|trans }}<br/>
+                                    <a class="btn btn-mini btn-info" title="{{ 'modal.cancel_the_friend_request_modal_title'|trans }}{{ sportFriend['obj'].username }}" confirm_message="{{ 'modal.cancel_the_friend_request_confirmation_message'|trans }}{{ sportFriend['obj'].username }}" href="{{ path('ks_user_Cancel_the_friend_request', { 'user2Id': sportFriend['obj'].id }) }}">
+                                        {{ 'users.cancel_the_friend_request'|trans }}
+                                    </a>
+                            {% else %}
+                                    <a class="btn btn-mini btn-info" title="{{ 'modal.revoke_a_friend_request_modal_title'|trans }}{{ sportFriend['obj'].username }}" confirm_message="{{ 'modal.revoke_a_friend_request_confirmation_message'|trans }}{{ sportFriend['obj'].username }}" href="{{ path('ks_user_Revoke_a_friend', { 'user2Id': sportFriend['obj'].id }) }}">
+                                        {{ 'users.revoke_a_friend'|trans }}
+                                    </a>
+                            {% endif %} #}
+                        {% endif %}
+                    
+                    </td>
+
+                </tr>
+            </tbody>    
+        </table>    
+    {% endfor %}    
+
+{% endif %}
+
+{% endblock %}

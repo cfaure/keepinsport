@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
+	<head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>{% block title %}Keepinsport{% endblock %}</title>
+
+            {% block stylesheets %}    
+                <link rel="stylesheet" href="{{ asset('V2/css/style.css') }}">
+                <link rel="stylesheet" href="{{ asset('V2/css/bootstrap.min.css') }}">
+                <link rel="stylesheet" href="{{ asset('V2/skins/flat/blue.css') }}">
+                
+                <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}" /> 
+                <link rel="icon" type="image/png" href="{{ asset('img/keepinsport_logo_16.png') }}" />
+                <link rel="apple-touch-icon" href="{{ asset('img/keepinsport_logo_57.png') }}" />
+                <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('img/keepinsport_logo_72.png') }}" />
+                <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('img/keepinsport_logo_114.png') }}" />
+                
+                <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+                <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+                
+                <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.3/css/jquery.dataTables.min.css" />
+                <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/responsive/1.0.2/css/dataTables.responsive.css" />
+                
+                <link rel="stylesheet" href="{{asset('jQueryFileUpload/css/jquery.fileupload-ui.css')}}">
+                
+                {# icon smiley, pastilles #}
+                {#<link rel="stylesheet" type="text/css" href="{{ asset('V2/css/font-awesome.min.css') }}" >#}
+                <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+                
+                {# datepicker jquery #}
+                <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+                
+                {# duration picker bootstrap #}
+                <link rel="stylesheet" href="{{asset('bootstrap-durationpicker/css/bootstrap-durationpicker.min.css')}}">
+                
+                {# custom radio/checkbox button #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/blue.css') }}" type="text/css" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/yellow.css') }}" type="text/css" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/red.css') }}" type="text/css" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/minimal/grey.css') }}" type="text/css" />
+                
+                {# select custom #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('V2/css/select2.css') }}" type="text/css" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('V2/css/select2-bootstrap.css') }}" type="text/css" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('select2-3.4.5/select2.css') }}" type="text/css" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('select2-3.4.5/select2-bootstrap.css') }}" type="text/css" />
+                
+                {# slider #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-slider/css/slider.css') }}" />
+                
+                {# INTRO #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('V2/css/introjs.css') }}"  />
+                
+                {# pour voter #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('V2/css/jquery.raty.css') }}"  />
+                
+            {% endblock %}
+
+            {% block javascripts %}
+                {# google #}
+                <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+                {# scripts agence web #}
+                
+                {# au départ jquery-1.11.1.min.js mais apparemment le jquery-ui-1.8.22.custom.min.js semble être utile pour les popover !
+                    <script src="{{ asset('V2/js/jquery-1.11.1.min.js') }}"></script>
+                #}
+                <script type="text/javascript" src="{{ asset('js/jquery-1.8.2.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('js/ui/jquery-ui-1.8.22.custom.min.js') }}"></script>
+                                
+                <script src="{{ asset('V2/js/bootstrap.min.js') }}"></script>
+                <script src="{{ asset('V2/js/icheck.js') }}"></script>
+                <script src="{{ asset('V2/js/app.js') }}"></script>
+                
+                {# routing js #}
+                <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+                <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+                
+                {# hightcharts #}
+                <script type="text/javascript" src="{{ asset('V2/js/highcharts.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('V2/js/highcharts-more.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('V2/js/solid-gauge.src.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('V2/js/exporting.js') }}"></script>
+                
+                {# Animation scroll sur la page login#}
+                <script src="{{ asset('V2/js/bind-polyfill.js') }}"></script>
+                <script src="{{ asset('V2/js/smooth-scroll.js') }}"></script>
+                
+                {#Pour valider les formulaires #}
+                <script src="//ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js"></script>
+
+                {# timepicker et durationpicker bootstrap #}
+                <script type="text/javascript" src="{{ asset('bootstrap-timepicker/js/bootstrap-timepicker.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('bootstrap-durationpicker/js/bootstrap-durationpicker.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('mobiscroll-2.2/js/mobiscroll-2.2.custom.min.js') }}"></script>
+                
+                {# tables avancées #}
+                <script type="text/javascript" src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
+                <script type="text/javascript" src="//cdn.datatables.net/responsive/1.0.2/js/dataTables.responsive.js"></script>
+                
+                {# gestion des uploads de fichiers #}
+                <script type="text/javascript" src="{{ asset('mixitup-1.5.3/jquery.mixitup.min.js') }}"></script>
+                <script type="text/javascript" src="{{asset('jQueryFileUpload/js/tmpl.js')}}"></script>
+                <script type="text/javascript" src="{{asset('jQueryFileUpload/js/jquery.iframe-transport.js')}}"></script>
+                <script type="text/javascript" src="{{asset('jQueryFileUpload/js/jquery.fileupload.js')}}"></script>
+                <script type="text/javascript" src="{{asset('jQueryFileUpload/js/jquery.fileupload-ui.js')}}"></script>
+                <script type="text/javascript" src="{{asset('jQueryFileUpload/js/locale.js')}}"></script>
+                
+                {# gestion des popover #}
+                <script type="text/javascript" src="{{ asset('V2/js/popover.js') }}"></script>
+                
+                {# select custom #}
+                <script type="text/javascript" src="{{ asset('select2-3.4.5/select2.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('select2-3.4.5/select2_locale_fr.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('select2-3.4.5/select2.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('select2-3.4.5/functions.js') }}"></script>
+                
+                {# custom radio/checkbox button #}
+                <script type="text/javascript" src="{{ asset('iCheck/jquery.icheck.min.js') }}"></script>
+                
+                {# slider de la page activité par exemple achievement #}
+                <script src="{{ asset('bootstrap-slider/js/bootstrap-slider.js') }}"></script>
+                
+                {# diverses fonctions utilisées un peu partout...#}
+                <script src="{{ asset('V2/js/misc.js') }}"></script>
+                
+                {# INTRO #}
+                <script type="text/javascript" src="{{ asset('V2/js/intro.js') }}"></script>
+                
+                {# pour voter #}
+                <script type="text/javascript" src="{{ asset('V2/js/jquery.raty.js') }}"></script>
+                
+                {# pour flouter une zone #}
+                <script type="text/javascript" src="{{ asset('V2/js/jquery.foggy.min.js') }}"></script>
+                
+                {# pour télécharger un tcx #}
+                <script type="text/javascript" src="{{ asset('V2/js/download.js') }}"></script>
+                
+                {# vidéo desk #}
+                <script type="text/javascript">
+
+                    var _videodesk= _videodesk || {};
+                    _videodesk['firstname'] = '' ;
+                    _videodesk['lastname'] = '' ;
+                    _videodesk['company'] = '' ;
+                    _videodesk['email'] = '' ;
+                    _videodesk['phone'] = '' ;
+                    _videodesk['customer_lang'] = '' ;
+                    _videodesk['customer_id'] = '' ;
+                    _videodesk['customer_url'] = '' ;
+                    _videodesk['cart_id'] = '' ;
+                    _videodesk['cart_url'] = '' ;
+                    _videodesk['order_id'] = '' ;
+                    _videodesk['order_url'] = '' ;  
+                    _videodesk['uid'] = '97234b9318209498ad25786da96cd08e' ;  
+                    _videodesk['lang'] = 'fr' ;
+
+                   (function() {
+
+                        var videodesk = document.createElement('script'); videodesk.type = 'text/javascript'; videodesk.async = true;
+                        videodesk.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'module-videodesk.com/js/videodesk.js'; 
+                        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(videodesk, s);
+
+                   })();
+
+                </script>
+                
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        $('#modifPackWatch').click();
+                        smoothScroll.init({
+                            speed: 1000, // Integer. How fast to complete the scroll in milliseconds
+                            easing: 'easeInOutCubic', // Easing pattern to use
+                            offset: 0, // Integer. How far to offset the scrolling anchor location in pixels
+                        });
+                    });
+                </script>
+                
+                <script type="text/javascript">
+                    $(document).ready(function() {
+                        
+                        /*$('input').iCheck({
+                            checkboxClass: 'icheckbox_flat-blue',
+                            radioClass: 'iradio_flat-blue'
+                        });*/
+        
+                        //$("#headerV2").sticky({topSpacing:0}); FMO :  en commentaire car si modal affichée, le haut du header est coupé par le headerV2 :(
+                        
+                        $("[rel=tooltip]").tooltip();
+
+                        if( $("#searchSelectTablet").size() > 0 || $("#searchSelectDesktop").size() > 0) {
+                            var translations = {
+                                "placeholder": "{{ "menu.search-placeholder"|trans }}",
+                                "no-matches-found" : "{{ "menu.no-matches-found"|trans }}",
+                                "searching" : "{{ "menu.searching"|trans }}",
+                            };
+                            initSelect2ForResearch( $("#searchSelectDesktop"), translations );
+                        }
+                    });
+                </script>
+            {% endblock %}
+	</head>
+    
+        <body id="body">
+
+            {% include '::infoModal.html.twig' %}
+            {% include '::confirmModal.html.twig' %}
+            {% include '::multipleChoicesModal.html.twig' %}
+            
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% include 'KsActivityBundle:Activity:_shareActivityModal.html.twig' %}
+                {#{% render "KsActivityBundle:SportsmenSearch:form" %}#}
+            {% endif %}
+
+            {% include '::_header_auth_V2.html.twig' %}
+            
+            {% if app.session is defined and app.session is not null and app.session.getFlashes()|length > 0 %}
+                {% for key, message in app.session.getFlashes() %}
+                    <center>
+                        <div class="container {{ key }}">
+                            {{ message|trans }}
+                        </div>
+                    </center>
+                {% endfor %}
+            {% endif %}
+            
+            {% block body %}
+            {% endblock %}
+        </body>
+        
+        {% include '::_google_analytics.html.twig' with { 'google_analytics' : true } %}  
+        
+        {% block bottomscripts %}
+        {% endblock %}
+    <div class="visible-desktop visible-tablet">
+        {% include '::_footer_V2.html.twig' %}
+    </div>
+</html>

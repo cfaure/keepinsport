@@ -1,0 +1,7 @@
+{{ sendedUsers|length }} mails ont ete envoyes
+<br/>
+<u>Liste des utilisateurs ayant recu le mail :</u>
+<br/>
+{% for username in sendedUsers %}
+    {{ username }}<br/>
+{% endfor %}

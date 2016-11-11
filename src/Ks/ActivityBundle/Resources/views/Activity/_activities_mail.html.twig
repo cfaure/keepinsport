@@ -1,0 +1,68 @@
+Tes amis sur Keepinsport ont publié les activités suivantes hier :
+<br/>
+<ul>
+{% for datas in activities %}
+    {% set activity =  datas.activity %}
+    {% set photos = datas.photos %}
+    {% set comments = datas.comments %}
+    {% set activityTeamates = datas.activityTeamates %}
+    {% set activityOpponents = datas.activityOpponents %}
+    {% set connectedActivity = datas.connectedActivity %}
+
+    {% if activity.user_firstName is not null and activity.user_lastName is not null %}
+        {% set activity_user_label = activity.username ~ " ("~ activity.user_firstName ~ " " ~ activity.user_lastName ~ ") : " %}
+    {% else %}
+        {% set activity_user_label = activity.username ~ " : " %}
+    {% endif %}
+
+    {% set path = path('ksActivity_showActivity', {"activityId" : activity.id }) %}
+
+    {% if activity.type == 'status' %}
+        {% set type = "Statut" %} 
+        {#% set message = activity.username ~ " a publié un statut." %#}
+        {% set message = type %}
+    {% elseif activity.type == 'video' %}
+        {% set type = "Vidéo" %}
+        {#% set message = activity.username ~ " a publié une vidéo." %#}
+        {% set message = type %}
+    {% elseif activity.type == 'link' %}
+        {% set type = "Lien" %} 
+        {#% set message = activity.username ~ " a publié un lien." %#}
+        {% set message = type %}
+    {% elseif activity.type == 'photo' %}
+        {% set type = "Photo" %} 
+        {#% set message = activity.username ~ " a publié une photo." %#}
+        {% set message = type %}
+    {% elseif activity.type == 'session_team_sport' or activity.type == 'session_endurance_on_earth' or activity.type == 'session_endurance_under_water' or activity.type == 'session' %}
+        {% set type = "Session de sport collectif" %}
+        {#% set message = activity.username ~ " a publié une activité de " ~ activity.sport_label ~ "." %#}
+        {% set message = ("sports." ~ activity.sport_codeSport)|trans ~ ", " ~ activity.duration|date("H:i:s") %}
+        {% if activity.earnedPoints is not null %}
+            {% set message = message ~ ", " ~ activity.earnedPoints ~ " points" %}
+    {% endif %}
+    {% elseif activity.type == 'abstract_activity' %}
+        {% if activity.notificationType_name == "edit" and connectedActivity.type == "article" %}
+            {#% set message = activity.username ~ " a collaboré à l'article " ~ connectedActivity.label ~"." %#}
+            {% set message = "Collaboration à l'article " ~ connectedActivity.label %}
+        {% else %}
+            {% set type = "Partage d'activité" %}{#{ connectedActivity }#}
+            {#% set message = activity.username ~ " a partagé une actualité." %#}
+            {% set message = "Partage d'une actualité." %}
+        {% endif %}
+    {% elseif activity.type == 'article' %}
+        {% set type = "Article" %}  
+        {% set path = path('ksArticle_show', {"articleId" : activity.id }) %}
+        {#% set message = activity.username ~ " a collaboré à l'article " ~ activity.label ~"." %#}
+        {% set message = "Collaboration à l'article " ~ activity.label %}
+    {% elseif activity.type == 'photo_album' %}
+        {% set type = "Album photo" %}  
+        {#% set message = activity.username ~ " a publié un album photo." %#}
+        {% set message = type %}
+    {% else %}
+        {% set type = "Statut" %}  
+        {#% set message = activity.username ~ " a publié un statut." %#}
+        {% set message = type %}
+    {% endif %}
+    <li><b>{{ activity_user_label }}</b>{{ message }} <a href="{{ host }}{{ path }}">Plus de détails</a></li>
+{% endfor %}    
+</ul>

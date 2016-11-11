@@ -1,0 +1,5 @@
+<center><h3 class="title">{{ 'coaching.users-training-plan'|trans }} ({{ users|length }})</h3></center>
+<br>
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    {% include 'KsAgendaBundle:Agenda:_userUseTrainingPlanLink.html.twig' %}
+{% endif %}

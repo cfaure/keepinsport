@@ -1,0 +1,23 @@
+{% extends is_granted("ROLE_USER") 
+    ? "::layout_3_9.html.twig"
+    : "::noauth.html.twig"
+%}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block body %}
+    
+
+    {% for key, message in app.session.getFlashes() %}
+        <div class="{{ key }}">
+            {{ message|trans|raw }}
+        </div>
+    {% endfor %}
+
+    {% block content %}
+    {% endblock %}
+
+    {% include 'KsActivityBundle:Activity:_shareActivityModal.html.twig' %}
+{% endblock %}

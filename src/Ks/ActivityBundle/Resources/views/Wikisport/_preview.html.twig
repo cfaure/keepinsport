@@ -1,0 +1,14 @@
+<div class="statut">
+    <center>
+        <b>{{ activity.label|raw|nl2br|upper}}</b>
+    </center>
+    <div class="trunc" style="height:60px;white-space:normal;text-align:justify">
+        {{ activity.description|raw }}
+    </div>
+    <br/>
+    {#<center>
+        <span>
+            <a class="suite" href="{{ path('ksWikisport_show', { 'id' : activity.id }) }}"><i class="glyphicon glyphicon-chevron-right"></i> Voir plus</a>
+        </span>
+    </center>#}
+</div>

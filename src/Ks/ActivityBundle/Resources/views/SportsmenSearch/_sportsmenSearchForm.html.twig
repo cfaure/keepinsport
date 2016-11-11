@@ -1,0 +1,217 @@
+<div id="publishSportsmenSearchFormModal" class='modal hide fade'>
+    <div class='modal-header'>
+        <a class='close' data-dismiss='modal'>&times;</a>
+        <h3 class="friends">{{ "menu.look-for-partners"|trans }}</h3>
+    </div>
+    <div class='modal-body'>
+        <div class="messages"></div>
+        <form action="{{ path('ksSportsmenSearch_publishSportsmenSearch') }}"  method="post" {{ form_enctype(form) }} novalidate="novalidate">
+            
+            {{ form_widget(form.sport) }}
+            {% if form.club is defined %}
+                {{ form_widget(form.club) }}
+            {% endif%}
+            <br clear="all"/>
+            <div class="row-fluid">
+                <div class="thumbnail ksBloc span6">
+                    <h4 class="friends">Date</h4>
+                    <div class="blocHeaderSeparator"></div>
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+                        {{ form_widget(form.scheduledAt.date, { attr: { class:"datepicker input-small"} }) }}
+                    </div>
+
+                    <div class="input-prepend bootstrap-timepicker" style="">
+                        <span class="add-on"><i class="icon-time"></i></span>
+                        {{ form_widget(form.scheduledAt.time, { attr: { class:"timepicker input-mini" } }) }}
+                    </div>
+                </div>
+                <div class="thumbnail ksBloc span6">  
+                    <h4 class="friends">Lieu</h4>
+                    <div class="blocHeaderSeparator"></div>
+                    {{ form_widget(form.programmedPlace) }}
+                </div>
+            </div> 
+            <span clear="all"></span>
+            
+            {{ form_widget(form.description, { attr: {value: "", style: "height: 56px; resize: none;"} }) }}
+            
+            <i class="muted" style="font-size:0.8em">*En sélectionnant un club, la recherche de partenaire sera aussi publiée sur le fil d'actualité du club</i>
+            
+            {{ form_rest(form) }}
+            <br/>
+        </form>          
+    </div>
+    <div class='modal-footer'>
+        <img class="loader pull-left" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+        <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+        <a href='#' class='publish btn btn-friends'>Publier la recherche</a>
+    </div>
+</div>
+
+<script type="text/javascript">
+    /*var display = document.body.clientWidth < 963 ? 'bottom' : 'inline';
+    var theme = $.browser.safari && display == 'bottom' ? 'ios' : ( $.browser.chrome && display == 'bottom' ? 'android-ics' : 'android-ics light' );
+
+    var datetimeScroller = $("input.scheduledAt").scroller({ 
+            preset: 'datetime',
+            theme: theme,
+            display: display,
+            lang : 'fr',
+            height : display == 'bottom' ? 30 : 35,
+            rows : display == 'bottom' ? 3 : 5,
+            showLabel : 'true'
+    });*/
+    
+    function attachPublishSportsmenSearchEvent(elt) {
+    
+        var $publishSportsmenSearchFormModal = $("#publishSportsmenSearchFormModal");
+        
+        //Le corp de la fenêtre
+        var $modalBody              = $publishSportsmenSearchFormModal.find("div.modal-body");
+        var $messagesBloc           = $modalBody.find('.messages');
+        var $loader                 = $modalBody.find('.loader');
+        var $sportsmenSearchForm    = $modalBody.find("form");
+        var $descriptionTextarea    = $sportsmenSearchForm.find(".description");
+        var $timepicker             = $sportsmenSearchForm.find(".timepicker");
+        var $datepicker             = $sportsmenSearchForm.find(".datepicker");
+        var $scheduledAt            = $sportsmenSearchForm.find(".scheduledAt");
+        var $intputDate             = $scheduledAt.find("input[name*=date]")
+        
+        //Le pied de la fenêtre
+        var $modalFooter            = $publishSportsmenSearchFormModal.find("div.modal-footer");
+        var $publishButton          = $modalFooter.find('a.publish');
+        var $cancelButton           = $modalFooter.find('a.cancel');
+        var $loader                 = $modalFooter.find('img.loader');
+        
+        //Autres variables
+        var initialValue = "";
+        $loader.hide();
+        
+        var nowTemp = new Date();
+        var day = nowTemp.getDate();
+        day = day < 10 ? "0" + day : day;
+
+        var month = nowTemp.getMonth();
+        month = month < 10 ? "0" + (month + 1) : month + 1;
+
+        var year = nowTemp.getFullYear();
+
+        var date = day+"/"+month+"/"+year;
+
+        var now = new Date(nowTemp.getFullYear(), nowTemp.getMonth(), nowTemp.getDate(), 0, 0, 0, 0);
+
+        //On met la date du jour dans le champ de texte
+        $datepicker.val(date);
+
+        $datepicker.datepicker({
+            dateFormat: "dd/mm/yy",
+            firstDay: 1,
+            onRender: function(date) {
+                return date.valueOf() < now.valueOf() ? 'disabled' : '';
+            },
+            changeDate: function(ev) {
+            }
+        });
+
+        $timepicker.timepicker({
+            showSeconds: false,
+            showMeridian: false
+        });
+        
+        var closeModal = function() {
+            $publishSportsmenSearchFormModal.modal('hide');
+            $descriptionTextarea.val(initialValue);
+            $descriptionTextarea.html(initialValue);
+            $sportsmenSearchForm.show();
+            $messagesBloc.hide();
+            $cancelButton.html("Annuler");
+            $publishButton.show();
+        }
+            
+        var publishSportsmenSearch = function() {
+            if( ! $publishButton.hasClass("disabled") ) {
+                $publishButton.addClass("disabled");
+                $messagesBloc.hide().removeClass("alert").removeClass("alert-error").removeClass("alert-info");
+                $messagesBloc.html("");
+                $loader.show();
+                $.post(
+                    $sportsmenSearchForm.attr('action'), 
+                    $sportsmenSearchForm.serialize(),
+                    function(response) {
+                        if (response.response == 1) {
+                            if ( $('#activitiesBlockList').size() > 0 ) {
+                                $('#activitiesBlockList').prepend(response.html);
+
+                                {# On incrémente l'offset des activités, vu qu'on vient d'en ajouter une au flux #}
+                                activitiesOffset = $('#activitiesBlockList').attr('data-offset');
+                                $('#activitiesBlockList').attr('data-offset', parseInt(activitiesOffset) + 1);
+                            }
+
+                            $descriptionTextarea.html(initialValue);
+                            $descriptionTextarea.val(initialValue);
+
+                            $sportsmenSearchForm.hide();
+
+                            $messagesBloc.html("La recherche de partenaires a bien été publiée");
+                            $messagesBloc.addClass("alert alert-info").show();
+                            $publishButton.hide();
+                            $cancelButton.html("Fermer");
+
+                            setTimeout(closeModal,2000);
+                        } else {
+                            $messagesBloc.addClass("alert alert-error");
+                            $messagesBloc.html(response.errorMessage);
+                            
+                            $.each(response.errors, function (fieldName, errors) {
+                                $messagesBloc.append("<br/><u>" + fieldName +" :</u>");
+                                var ul = "<ul>";
+                                $.each(errors, function (key, error) {
+                                    ul = ul + "<li>" + error + "</li>";
+                                });
+                                ul = ul + "</ul>";
+                                $messagesBloc.append(ul);
+
+                            });
+                            $messagesBloc.show();
+                        }
+                        $publishButton.removeClass("disabled");
+                        $loader.hide();
+                    }
+                ).fail(function(jqXHR, textStatus) {
+                    console.log("error " + textStatus);
+                });
+             }
+        };
+        
+        $publishButton.on('click', publishSportsmenSearch);
+        
+        $publishSportsmenSearchFormModal.on('shown', function() {
+            $loader.hide();
+            $messagesBloc.hide();
+            $sportsmenSearchForm.show();                
+            $descriptionTextarea.val(initialValue);
+            $descriptionTextarea.html(initialValue);
+            $descriptionTextarea.focus();
+
+        });
+        
+        $publishSportsmenSearchFormModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+            e.stopPropagation();
+        });
+        
+        elt.on('click', function(e) {
+            
+            //On efface toutes les infobulles et bulles
+            $("div.popover.in").removeClass("in");
+
+            $publishSportsmenSearchFormModal.modal('show');
+            
+            return false;
+        });
+    }
+    
+    $(document).ready(function() {
+        attachPublishSportsmenSearchEvent( $(".sportsmanSearchBtn") );
+    });
+</script>

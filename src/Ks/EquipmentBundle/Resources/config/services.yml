@@ -1,0 +1,7 @@
+services: 
+    ks_equipment.twig.extension:
+        class: Ks\EquipmentBundle\Twig\Extensions\KsEquipmentExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - "@service_container"

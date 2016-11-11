@@ -1,0 +1,9 @@
+{% block content %}
+
+    {% set redirectUri = url('ksSetServiceStrava') %}
+    <a class="btn btn-primary"
+        href="{{ stravaRegisterUrl(redirectUri) }}">
+        {{ 'ks.connect_your_strava_profile'|trans }}
+    </a>
+    
+{% endblock %}

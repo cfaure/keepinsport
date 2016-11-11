@@ -1,0 +1,62 @@
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class='modal-header'>
+                <a class='close' data-dismiss='modal'>&times;</a>
+                <h3 id="context" class="sportif">Confirmation</h3>
+            </div>
+            <div class='modal-body'></div>
+            <div class='modal-footer'>
+                <a href='#' class='cancel btn' data-dismiss='modal'>Non</a>
+                <a href='#' class='confirm btn btn-danger'>Oui</a>
+            </div>
+        </div>
+    </div>
+</div>        
+
+<script type="text/javascript">    
+    function askConfirmation(message, $context, callbackYes, callbackNo) {
+        
+        var confirmModal = $("#confirmModal");
+        var modalBody = confirmModal.find('.modal-body');
+        var cancelButton = confirmModal.find('a.cancel');
+        var confirmButton = confirmModal.find('a.confirm');
+        
+        if ($context != null) {
+            $('#context').removeClass('sportif');
+            $('#context').addClass($context);
+        }
+        
+        modalBody.html(message);
+
+        /*confirmModal.on('shown', function() {
+            
+        });*/
+        
+        var closeModal = function() {
+            confirmModal.modal('hide'); 
+            modalBody.html("");
+        }
+
+        /*confirmModal.on('hide', function() {
+           closeModal();
+        });*/
+        
+        confirmButton.unbind();
+        confirmButton.click(function() {
+            callbackYes();
+            closeModal();
+        });
+        
+        cancelButton.unbind();
+        cancelButton.click(function() {
+            callbackNo();
+            closeModal();
+        });
+
+        confirmModal.modal('show');
+        confirmModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+            e.stopPropagation();
+        });
+    }
+</script>

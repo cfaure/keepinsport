@@ -1,0 +1,115 @@
+{% extends "::layout_V2_simple.html.twig" %}
+
+{% block title %}
+	Keepinsport - Agenda
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+        
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#body").addClass("printWeek"); //pour activer le css correspondant
+            });
+        </script>
+{% endblock %}
+
+{% block body %}       
+<div class="wrapper">
+    <div class="bloc">
+        <div class="container">
+            <br>
+            <center>
+                <img src="{{ asset('V2/images/logo.png') }}"/>
+            </center>
+            <br>
+            <center>
+                <h2> Planning {{ planLabel }} </h2>
+                <div class="bleu">{{ app.user }}</div>
+                <br>
+                <h4> Semaine S{{ weekNumber }} du {{ startOnDate }} au {{ endOnDate }}</h4>
+            </center>
+            <br>            
+            <section id="">
+                <table id="sessionsTable" class="table table-bordered table-stripped sessionsTable">
+                    <thead>
+                        <tr id="stepFlatView">
+                            <th class="col-md-6"><span class="glyphicon glyphicon-ok"></span> Planifié</th>
+                            <th class="col-md-6">Commentaires</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for session in sessions %}
+                            {% set tdColor = 'green'%}
+                            {% if session.sessionTitle != null %}
+                                {% if session.difficulty_id == 1 %} 
+                                    {% set tdColor = 'green'%}
+                                {% elseif session.difficulty_id == 2 %}
+                                    {% set tdColor = 'orange'%}
+                                {% elseif session.difficulty_id == 3 %}
+                                    {% set tdColor = 'red'%}
+                                {% endif %}
+                            {% endif %}
+
+                            {% if session.eventCompetition is not null %}
+                                {% set tdColor = 'red'%}
+                            {% endif %}
+                            <tr>
+                                <td class="col-md-6 {{ tdColor }}">
+                                    <span style="color:#fff!important"> 
+                                        <b>{{ ("coaching." ~ session.start|date("D"))|trans }} {{ session.start|date("d/m/y") }}</b>
+                                    </span>
+                                    <span class='pull-right'>
+                                        {% if session.sport_code != null %}
+                                            {% set sportLabel = 'sports.' ~ session.sport_label %}
+                                            {% if session.coachingPlan_id is defined and session.coachingPlan_id is not null %}
+                                                <img src="{{ asset('V2/images/sports/') ~ session.sport_code ~ '.png' }}"/> <span style="color:#fff!important">{{ sportLabel | trans }}</span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </span>
+                                    <br/>
+                                    <br/>
+                                    <center>
+                                        {% if session.category != null %}
+                                            <b>{{ session.category|upper }}</b> : 
+                                        {% endif %}
+                                        {% if session.eventCompetitionLabel is not null %}
+                                            <u> {{ session.eventCompetitionLabel }} </u>
+                                        {% else %}    
+                                            {% if session.sessionTitle != null %}
+                                                <u>{{ session.sessionTitle }}</u>
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        {% endif %}
+                                    </center>
+                                    <br/>
+                                    {% if session.content != null %}
+                                        <span class="sessionDetail">{{ session.content|raw|nl2br }}</span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                    {#<br/><br/>
+                                    <b>{{ 'coaching.data-scheduled'|trans }} :</b>
+                                    <center> 
+                                        <span rel='tooltip' title='{{ "coaching.duration"|trans }}'>{% if session.eventDuration != null %} {{ session.eventDuration }} {% endif %}</span><br/>
+                                        <span rel='tooltip' title='{{ "coaching.distance"|trans }}'>{% if session.eventDistance != null %} {{ session.eventDistance }} {{ 'coaching.distance-mesure'|trans }} {% endif %}</span><br/>
+                                        <span rel='tooltip' title='{{ "coaching.elevationGain"|trans }}'>{% if session.eventElevationGain != null %} +{{ session.eventElevationGain }} {{ 'coaching.elevation-mesure'|trans }}{% endif %}</span><br/>
+                                        <span rel='tooltip' title='{{ "coaching.elevationLost"|trans }}'>{% if session.eventElevationLost != null %} -{{ session.eventElevationLost }} {{ 'coaching.distelevationance-mesure'|trans }}{% endif %}</span><br/>
+                                    </center>#}
+                                </td>
+                                <td class="col-md-6">
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock body %}

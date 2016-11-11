@@ -1,0 +1,140 @@
+<script type="text/javascript">
+    var shareActivity{{ activity.id }}OnFb = function(context, type) {
+        {% set name = "" %}
+        {% if activity.type == "article" %}
+            {% set name = activity.label %}
+        {% else %}
+            {% if activity.description is not null and activity.description != ""%}
+                {% set name = "\"" ~ activity.description ~ "\"" %}
+            {% else %}
+                {% if activity.user_id is not null %}
+                    {% if app.user.id is defined and activity.user_id == app.user.id and isShared is not defined %}
+                        {% set name = name ~ 'fb.i-have'|trans %}
+                    {% else %} 
+                        {% set name = name ~ activity.username ~ ' ' ~ 'fb.has'|trans %}
+                    {% endif %}
+                {% elseif activity.club_id is not null %}
+                    {% set name = name ~ activity.club_name ~ ' ' ~ 'fb.has'|trans %}
+                {% else %}  
+                    {% set name = name ~ ' ' ~ 'fb.somebody-has'|trans %}
+                {% endif %}
+                {% set name = name ~ ' ' ~ 'fb.posted-one-activity-of'|trans ~ " '" ~ ("sports." ~ activity.sport_codeSport)|trans ~ "'" %}
+            {% endif %}
+        {% endif %}
+        
+        {% set title = ("sports." ~ activity.sport_codeSport)|trans %}
+        
+        {% if name != "" %}
+            {% set caption = "" %}
+        {% else %}
+            {% set caption = "" %}
+        {% endif %}
+        
+        {#% set caption = caption ~ "Le " ~ activity.issuedAt|date('d/m/Y') ~ ", " %#}
+        {% if activity.place_id is not null %}  
+            {% if activity.place_town_label is not null and activity.place_town_label != "" %}
+                {% set caption = caption ~ 'fb.close-to'|trans ~ ' ' ~ activity.place_town_label %}
+            {% elseif activity.place_region_label is not null and activity.place_region_label != "" %}
+                {% set caption = caption ~ 'fb.close-to'|trans ~ ' ' ~ activity.place_region_label %}
+                {% if activity.place_country_code is not null and activity.place_country_code != "" %}
+                    {% set caption = caption ~ " (" ~ activity.place_country_code ~ ")" %}
+                {% endif %}
+            {% elseif activity.place_fullAdress is not null and activity.place_fullAdress != "" %}
+                {% set caption = caption ~ 'fb.close-to'|trans ~ ' ' ~ activity.place_fullAdress %}
+            {% endif %}
+        {% endif %}
+        {% set points = "" %}
+        {% if activity.earnedPoints is not null %}
+            {% set points = points ~ "  Points : +" ~ activity.earnedPoints %}
+        {% endif %}
+            
+        {% set duration = "" %}
+        {% if activity.duration is not null %}
+            {% set duration = duration ~ " " ~ activity.duration|date('H:i:s') %}
+        {% endif %}    
+        {% set distance = "" %}
+        {% if activity.distance is not null %}
+            {% set distance = distance ~ " " ~ activity.distance ~ " Km" %}
+        {% endif %}
+        {% set elevationGain = "" %}
+        {% if activity.elevationGain is not null %}
+            {% set elevationGain = elevationGain ~ " +" ~ activity.elevationGain ~ " m" %}
+        {% endif %}
+        {% set elevationLost = "" %}
+        {% if activity.elevationLost is not null %}
+            {% set elevationLost = elevationLost ~ " -" ~ activity.elevationLost ~ " m" %}
+        {% endif %}
+        {% set scores = "" %}
+        {% if activityScores is defined and activityScores|length > 0 %}
+            {% set scores = scores ~ "  Scores :" %}
+            {% for scores in activityScores %}
+                {% if scores.score1 > scores.score2 %}
+                    {% set scores = scores ~ " " ~ scores.score1 ~ "/" ~ scores.score2 %}
+                {% elseif scores.score2 > scores.score1 %}
+                   {% set scores = scores ~ " " ~ scores.score1 ~ "/" ~ scores.score2 ~ "" %}
+                {% else %}
+                    {% set scores = scores ~ " " ~ scores.score1 ~ "/" ~ scores.score2 %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {#
+        picture: "{{ path_web }}{{ asset('V2/images/sports/' ~ activity.sport_codeSport ~ '.png') }}", 
+        link: "{{ path_web }}/img/activities/{{ activity.id }}/{{ activity.id }}_.png",
+        
+        {# console.log("{{ name|addslashes|raw }} {{ caption|addslashes|raw }} : {{ scores|addslashes|raw }}\n{{ points|addslashes|raw }}\n{{ distance|addslashes|raw }}\n{{ duration|addslashes|raw }}\n{{ elevationGain|addslashes|raw }}\n{{ elevationLost|addslashes|raw }}\n{{ 'fb.show-more'|trans }} : {{ path_web }}{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}");
+        
+        FMO :  
+        description était utilisé pour FB.ui avec method feed, plus nécessaire car déjà précisé sur le canvas
+        #}
+
+        //resizeCanvas({{ activity.id }});
+        
+        {% if activity.trackingDatas is not null %}
+            var img = new Image();
+            img.setAttribute('crossOrigin', 'anonymous');
+            img.src = $("#{{ activity.id }}").attr('src');
+            //console.log("image !");
+            img.onload = function() {
+                var canvas = document.createElement("canvas");
+                canvas.width = this.width;
+                canvas.height = this.height;
+
+                var ctx = canvas.getContext("2d");
+                ctx.drawImage(this, 0, 0);
+                var dataURL = canvas.toDataURL("image/png");
+                //console.log(dataURL);
+
+                $.ajax({
+                    url: Routing.generate('ksActivity_saveCanevas', {'activityId' : {{ activity.id }}} ),
+                    type: "POST",
+                    data: {dataURL: dataURL},
+                    success: function (data) {
+                        //console.log(data.file);
+                        closeShareModal();
+                        publishOnFacebook({{ activity.id }},                                                                                                                                 //activityId
+                                          context,                                                                                                                                           //issetGPX
+                                          "{{ path_web }}/img/activities/{{ activity.id }}/{{ activity.id }}.png",                                                                           //picture
+                                          "{{ path_web }}{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}",                                                             //url
+                                          "{{ title|addslashes|raw }}", //title
+                                          "{{ caption|addslashes|raw }} : {{ scores|addslashes|raw }}\n{{ distance|addslashes|raw }}\n{{ duration|addslashes|raw }}\n{{ elevationGain|addslashes|raw }}\n{{ elevationLost|addslashes|raw }}\n{{ points|addslashes|raw }}",  //description
+                                          "{{ name|addslashes|raw }}", //caption
+                                          type);                                                                                                                                       //type
+
+                    }
+                });
+            }
+        {% else %}
+            closeShareModal();
+            publishOnFacebook({{ activity.id }},                                                                                                                               //activityId
+                              context,                                                                                                                                           //issetGPX
+                              "{{ path_web }}/V2/images/sports/{{ activity.sport_codeSport }}.png",                                                                         //picture
+                              "{{ path_web }}{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}",                                                                      //url
+                              "{{ title|addslashes|raw }}", //title
+                              "{{ caption|addslashes|raw }} : {{ path_web }}{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}\n{{ scores|addslashes|raw }}\n{{ distance|addslashes|raw }}\n{{ duration|addslashes|raw }}\n{{ elevationGain|addslashes|raw }}\n{{ elevationLost|addslashes|raw }}\n{{ points|addslashes|raw }}",  //description
+                              "{{ name|addslashes|raw }}", //caption
+                              type);                                                                                                                                       //type
+        {% endif %}
+        
+    };
+</script>

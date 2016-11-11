@@ -1,0 +1,94 @@
+{% extends "::layout_V2.html.twig" %}
+
+{% block body %}
+
+<!--WRAPPER-->
+<div class="wrapper">
+    <!--bloc1-->
+    <div class="bloc1">
+        <div class="container">
+            <h1 class="title {% if app.user.isAllowedPackElite %}elite{% elseif app.user.isAllowedPackPremium %}premium{% else %}defis{% endif %}">Publier une activité sportive</h1>
+            <div class="bloc-subtitle">
+                <span class="subtitle">{{ serviceName|upper }} : {{ 'sync.message'|trans( { '%parameter%' : parameter} ) }} <span class="glyphicon glyphicon-question-sign" rel="tooltip" title="{{ "sync.help"|trans }}"></span></span>
+                <ul class="nav nav-pills infos">
+                    
+                </ul>
+            </div>
+            <div class="bloc1-nav">
+                <!--Navleft-->
+                <ul class="nav nav-pills infos">
+                    <li><a id="btnSearch" class="glyphicon glyphicon-search" rel="tooltip" title="{{ 'sync.search'|trans }}"></a></li>
+                    <li><a id="btnService" class="glyphicon glyphicon-cog" rel="tooltip" title="{{ 'sync.change-service'|trans }}"></a></li>
+                    <li class="dropdown-date-debut">{{ 'coaching.starting-date'|trans }} <input type="text" id="start" class="datepicker date-debut"></li>
+                    <li><a id="btnImportAsync" href="#" class="glyphicon glyphicon-upload" rel="tooltip" title="{{ 'sync.import-from-date'|trans }}"></a></li>
+                    
+                </ul>
+                <!--NavRight-->
+                <div class="navbar-right">
+                    <button id="addActivityButton" type="button" class="btn btn-success"><span class="glyphicon glyphicon-upload"></span> AJOUTER MANUELLEMENT</button> 	 
+                </div>
+            </div>
+
+        </div><!--/.container-->
+    </div><!--/bloc1-->
+</div>
+
+<!--bloc2-->
+<div class="bloc2">
+    <div class="container">
+        <br clear="all">
+        <img id="searchLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none;">
+
+        <form id="syncParameters" method="post" action="{{ path('ksActivity_getActivitiesToSync') }}" class="form-horizontal">
+        </form>
+
+        <div id="syncActivities"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#body").addClass("activite"); //pour activer le css correspondant
+        
+        $('#start').datepicker({
+            dateFormat: "yy-mm-dd",
+            firstDay: 1
+        });
+
+        $('#start').datepicker( $.datepicker.regional[ "fr" ] );
+        
+        $("#btnSearch").click(function(e) {
+            $("#syncActivities").html("");
+            $("#btnSearch").addClass( "disabled" );
+            $("#searchLoader").css('visibility', 'visible');
+            $("#searchLoader").show();
+
+            $.post($('#syncParameters').attr('action'), $("#syncParameters").serialize(), function(response) {
+                $("#btnSearch").removeClass( "disabled" );
+                $("#searchLoader").hide();
+                $("#syncActivities").prepend(response);
+            });
+        });
+        $("#btnSearch").click();
+        
+        $("#btnService").click(function(e) {
+            $("#btnService").addClass( "disabled" );
+            $("#btnSearch").addClass( "disabled" );
+            $("#btnSave").addClass( "disabled" );
+            $("#searchLoader").css('visibility', 'visible');
+            $("#searchLoader").show();
+            document.location.href = Routing.generate('ks_set_services');
+        });
+        
+        $("#btnImportAsync").click(function(e) {
+            showInformation("Disponible sur abonnement au pack Premium ou Pack Elite !");
+        });
+        
+        $("#addActivityButton").click(function(e) {
+            $("#addActivityButton").addClass( "disabled" );
+            document.location.href = Routing.generate('ksSport_activitySessionForm', {'activityId' : 'forceNew'});
+        });
+        
+    });
+</script>
+{% endblock %}

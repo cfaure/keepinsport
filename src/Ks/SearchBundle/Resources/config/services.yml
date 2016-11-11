@@ -1,0 +1,6 @@
+services:
+    ks_searchService:
+        class: Ks\SearchBundle\Service\SearchService
+        arguments:
+          - @doctrine
+          - @ks_notification.notificationService

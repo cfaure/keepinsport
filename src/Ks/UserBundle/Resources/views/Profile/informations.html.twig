@@ -1,0 +1,229 @@
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "KsUserBundle::layout_full.html.twig" %}
+{% else %}
+    {% set extends = "KsUserBundle::layout_3_9.html.twig" %}    
+{% endif %}
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}        
+
+{% block title %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+    
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        {% include 'KsUserBundle:Profile:_breadcrumb.html.twig' with {'step': 1, 'creationOrEdition' : creationOrEdition} %}
+        {% set submitButtonText = "Etape suivante" %}
+    {% else %}
+        <h1 class="sportif">{{ 'menu.my-profile'|trans }}</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ks_user_public_profile', {'username' : app.user.username}) }}">
+                    <span class="avatarBloc">
+                        {% set user_imageName = null %}
+                        {% if app.user.userDetail is not null %}
+                            {% set user_imageName = app.user.userDetail.imageName %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                 {% include 'KsUserBundle:Profile:_buttons.html.twig' with{'creationOrEdition' : creationOrEdition } %}
+            </div>
+        </div>
+        <br/>
+        {% set submitButtonText = "Enregistrer" %}
+    {% endif %}
+        
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="sportif">Mes informations</h3>
+        <div class="blocHeaderSeparator"></div>
+        
+        <form id="fInformationsForm" class="form-horizontal" action="{{ path('ksProfile_informations', {'creationOrEdition' : creationOrEdition}) }}" method="post" {{ form_enctype(form) }}>
+            <div class="control-group {% if post %}{% if errors.username is defined and errors.username is not null %}error{% else %} success{% endif %}{% endif %}">
+                <label class="control-label" for="username">Nom d'utilisateur*</label>
+                <div class="controls">
+                   <input type="text" name="username" value="{{ app.user.username }}" id="username" placeholder="Nom d'utilisateur"/>
+                   <span class="help-inline">{% if errors.username is defined and errors.username is not null %}{{ errors.username }}{% endif %}</span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.userDetail.firstname is defined and errors.userDetail.firstname is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.userDetail.firstname, 'users.profil_firstname', {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.userDetail.firstname) }}
+                    <span class="help-inline">
+                        {% if errors.userDetail.firstname is defined and errors.userDetail.firstname is not null %}
+                            {% for key, error in errors.userDetail.firstname %}
+                                {{ error }}
+                                {% if key < errors.userDetail.firstname|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.userDetail.lastname is defined and errors.userDetail.lastname is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.userDetail.lastname, 'users.profil_lastname', {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.userDetail.lastname) }}
+                    <span class="help-inline">
+                        {% if errors.userDetail.lastname is defined and errors.userDetail.lastname is not null %}
+                            {% for key, error in errors.userDetail.lastname %}
+                                {{ error }}
+                                {% if key < errors.userDetail.lastname|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.email is defined and errors.email is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.email, 'Email*' , {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.email) }}
+                    <span class="help-inline">
+                        {% if errors.email is defined and errors.email is not null %}
+                            {% for key, error in errors.email %}
+                                {{ error }}
+                                {% if key < errors.email|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.userDetail.bornedAt is defined and errors.userDetail.bornedAt is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.userDetail.bornedAt, 'users.profil_borned_at', {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.userDetail.bornedAt, { attr: { class:"datepicker input-small"} }) }}    
+                    <span class="help-inline">
+                        {% if errors.userDetail.bornedAt is defined and errors.userDetail.bornedAt is not null %}
+                            {% for key, error in errors.userDetail.bornedAt %}
+                                {{ error }}
+                                {% if key < errors.userDetail.bornedAt|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.userDetail.weight is defined and errors.userDetail.weight is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.userDetail.weight, 'users.profil_weight', {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.userDetail.weight) }}
+                    <span class="help-inline">
+                        {% if errors.userDetail.weight is defined and errors.userDetail.weight is not null %}
+                            {% for key, error in errors.userDetail.weight %}
+                                {{ error }}
+                                {% if key < errors.userDetail.weight|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.userDetail.height is defined and errors.userDetail.height is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.userDetail.height, 'users.profil_height' , {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.userDetail.height) }}
+                    <span class="help-inline">
+                        {% if errors.userDetail.height is defined and errors.userDetail.height is not null %}
+                            {% for key, error in errors.userDetail.height %}
+                                {{ error }}
+                                {% if key < errors.userDetail.height|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.userDetail.sexe is defined and errors.userDetail.sexe is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.userDetail.sexe, 'users.profil_sexe' , {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.userDetail.sexe) }}
+                    <span class="help-inline">
+                        {% if errors.userDetail.sexe is defined and errors.userDetail.sexe is not null %}
+                            {% for key, error in errors.userDetail.sexe %}
+                                {{ error }}
+                                {% if key < errors.userDetail.sexe|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            {% if form.godFather %}
+            <div class="control-group {% if post %}{% if errors.godFather is defined and errors.godFather is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.godFather, 'Parrain' , {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.godFather) }}
+                    <span class="help-inline">
+                        {% if errors.godFather is defined and errors.godFather is not null %}
+                            {% for key, error in errors.godFather %}
+                                {{ error }}
+                                {% if key < errors.godFather|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            {% endif %}
+            <br/>
+            * : obligatoire
+            <br/>
+            ** : recommandé pour le calcul automatique des points</a>
+            {{ form_rest(form) }}
+            
+            {% if creationOrEdition is defined and creationOrEdition == "edition" %}
+            <br/>
+            <br/>
+            <h3 class="sportif">Changement de mot de passe</h3>
+            <div class="blocHeaderSeparator"></div>
+            
+            <div class="control-group {% if post %}{% if errors.oldPassword is defined and errors.oldPassword is not null %}error{% else %} success{% endif %}{% endif %}">
+                <label class="control-label" for="oldPassword">Ancien</label>
+                <div class="controls">
+                   <input type="text" name="oldPassword" id="oldPassword" />
+                   <span class="help-inline">{% if errors.oldPassword is defined and errors.oldPassword is not null %}{{ errors.oldPassword }}{% endif %}</span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.newPassword is defined and errors.newPassword is not null %}error{% else %} success{% endif %}{% endif %}">
+                <label class="control-label" for="newPassword">Nouveau</label>
+                <div class="controls">
+                   <input type="text" name="newPassword" value="" id="newPassword" />
+                   <span class="help-inline">{% if errors.newPassword is defined and errors.newPassword is not null %}{{ errors.newPassword }}{% endif %}</span>
+                </div>
+            </div>
+            <div class="control-group {% if post %}{% if errors.newPasswordRepeat is defined and errors.newPasswordRepeat is not null %}error{% else %} success{% endif %}{% endif %}">
+                <label class="control-label" for="newPasswordRepeat">Répéter</label>
+                <div class="controls">
+                   <input type="text" name="newPasswordRepeat" value="" id="newPasswordRepeat"/>
+                   <span class="help-inline">{% if errors.newPasswordRepeat is defined and errors.newPasswordRepeat is not null %}{{ errors.newPasswordRepeat }}{% endif %}</span>
+                </div>
+            </div>
+            {% endif %}
+
+            <input type="submit" class=" btn btn-sportif pull-right" value="{{ submitButtonText }}"/>
+            <br clear="all"/>
+        </form>
+    </div> 
+
+    <script>
+        var $form = $("#fInformationsForm");
+        var $datepicker = $form.find(".datepicker");
+        $datepicker.css("z-index", "0");
+        $datepicker.datepicker({
+            dateFormat: "dd/mm/yy",
+            firstDay: 1,
+        });
+    </script> 
+
+{% endblock %}
+
+        

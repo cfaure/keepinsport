@@ -1,0 +1,387 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<ks_trophies_list xml:lang="fr">
+    <ks_trophy>
+        <categorie>Course à pied</categorie>
+        <label>J'ai terminé un 5km</label>
+        <code>cap_5</code>
+        <points>500</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Course à pied</categorie>
+        <label>J'ai terminé un 10km</label>
+        <code>cap_10</code>
+        <points>1000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Course à pied</categorie>
+        <label>J'ai terminé un semi-marathon</label>
+        <code>cap_semi</code>
+        <points>2000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Course à pied</categorie>
+        <label>J'ai terminé un marathon</label>
+        <code>cap_marathon</code>
+        <points>5000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Course à pied</categorie>
+        <label>J'ai terminé un trail de 20km et 40km</label>
+        <code>cap_trail_20_40</code>
+        <points>1000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Course à pied</categorie>
+        <label>J'ai terminé un trail entre 40km et 70km</label>
+        <code>cap_trail_40_70</code>
+        <points>2000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Course à pied</categorie>
+        <label>J'ai terminé un trail entre 70km et 120km</label>
+        <code>cap_trail_70_120</code>
+        <points>5000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Course à pied</categorie>
+        <label>J'ai terminé un trail supérieur à 120km</label>
+        <code>cap_trail_120+</code>
+        <points>10000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Timing</categorie>
+        <label>J'ai fait 10 activités avant 7am</label>
+        <code>tim_10before7</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Timing</categorie>
+        <label>J'ai fait 10 activités après 9pm</label>
+        <code>tim_10after21</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Timing</categorie>
+        <label>J'ai fait 10 activités entre midi et 2pm</label>
+        <code>tim_10between12_14</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Timing</categorie>
+        <label>J'ai fait une activité le jour de mon anniversaire</label>
+        <code>tim_birthday</code>
+        <points>1000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Sport individuel</categorie>
+        <label>Je suis monté de 1 classement en un an</label>
+        <code></code>
+        <points>1000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Sport individuel</categorie>
+        <label>Je suis monté de 2 classements en un an</label>
+        <code></code>
+        <points>2000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Sport individuel</categorie>
+        <label>J'ai gagné 3 matchs consécutifs</label>
+        <code>ind_3_games</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>3</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Sport individuel</categorie>
+        <label>J'ai gagné 5 matchs consécutifs</label>
+        <code>ind_5_games</code>
+        <points>2000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>5</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Sport individuel</categorie>
+        <label>J'ai gagné 10 matchs consécutifs</label>
+        <code>ind_10_games</code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Sport collectif</categorie>
+        <label>Mon équipe a gagné 3 matchs consécutifs (ou matchs nuls)</label>
+        <code>col_3_games</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>3</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Sport collectif</categorie>
+        <label>Mon équipe a gagné 5 matchs consécutifs (ou matchs nuls)</label>
+        <code>col_5_games</code>
+        <points>2000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>5</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Sport collectif</categorie>
+        <label>Mon équipe a gagné 10 matchs consécutifs (ou matchs nuls)</label>
+        <code>col_10_games</code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Séries</categorie>
+        <label>J'ai fait 2 activités sportives en une semaine</label>
+        <code>series_2_activities</code>
+        <points>500</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>2</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Séries</categorie>
+        <label>J'ai fait 3 activités sportives en une semaine</label>
+        <code>series_3_activities</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>3</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Séries</categorie>
+        <label>J'ai fait 4 activités sportives en une semaine</label>
+        <code>series_4_activities</code>
+        <points>2000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>4</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Séries</categorie>
+        <label>J'ai fait 5 activités sportives en une semaine</label>
+        <code>series_5_activities</code>
+        <points>3000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>5</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Séries</categorie>
+        <label>J'ai fait 6 activités sportives en une semaine</label>
+        <code>series_6_activities</code>
+        <points>4000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>6</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Séries</categorie>
+        <label>J'ai fait 7 activités sportives ou plus en une semaine</label>
+        <code>series_7_activities</code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>7</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Durée</categorie>
+        <label>J'ai fait 5H de sport en une semaine</label>
+        <code>duration_5_hour_in_week</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Durée</categorie>
+        <label>J'ai fait 10H de sport en une semaine</label>
+        <code>duration_10_hour_in_week</code>
+        <points>2000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Durée</categorie>
+        <label>J'ai fait 20H de sport en une semaine</label>
+        <code>duration_20_hour_in_week</code>
+        <points>5000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Geek</categorie>
+        <label>Je me suis connecté au site au moins une fois par jour pendant une semaine</label>
+        <code>geek_1_connection_during_1_week</code>
+        <points>1000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Geek</categorie>
+        <label>Je me suis connecté au site au moins une fois par jour pendant deux semaines</label>
+        <code>geek_1_connection_during_2_weeks</code>
+        <points>2000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Geek</categorie>
+        <label>Je me suis connecté au site au moins une fois par jour pendant un mois</label>
+        <code>geek_1_connection_during_1_month</code>
+        <points>5000</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Parrainage</categorie>
+        <label>J'ai parrainé 3 sportifs</label>
+        <code></code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>3</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Parrainage</categorie>
+        <label>J'ai parrainé 5 sportifs</label>
+        <code></code>
+        <points>2000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>5</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Parrainage</categorie>
+        <label>J'ai parrainé 10 sportifs</label>
+        <code></code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Collaboratif</categorie>
+        <label>J'ai participé à 1 articles</label>
+        <code>collab_1_article</code>
+        <points>500</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>1</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Collaboratif</categorie>
+        <label>J'ai participé à 3 articles</label>
+        <code>collab_3_articles</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>3</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Collaboratif</categorie>
+        <label>J'ai participé à 5 articles</label>
+        <code>collab_5_articles</code>
+        <points>2000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>5</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Collaboratif</categorie>
+        <label>J'ai participé à 10 articles</label>
+        <code>collab_10_articles</code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Collaboratif</categorie>
+        <label>J'ai participé à 30 articles</label>
+        <code>collab_30_articles</code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>30</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Collaboratif</categorie>
+        <label>J'ai participé à 50 articles</label>
+        <code>collab_50_articles</code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>50</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Achat</categorie>
+        <label>J'ai réalisé 3 achats sur le site</label>
+        <code></code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>3</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Achat</categorie>
+        <label>J'ai réalisé 5 achats sur le site</label>
+        <code></code>
+        <points>2000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>5</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Achat</categorie>
+        <label>J'ai réalisé 10 achats sur le site</label>
+        <code></code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Communauté</categorie>
+        <label>J'ai 5 amis</label>
+        <code>friends_5</code>
+        <points>500</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>5</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Communauté</categorie>
+        <label>J'ai 10 amis</label>
+        <code>friends_10</code>
+        <points>500</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>10</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Communauté</categorie>
+        <label>J'ai 20 amis</label>
+        <code>friends_20</code>
+        <points>1000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>20</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Communauté</categorie>
+        <label>J'ai 50 amis</label>
+        <code>friends_50</code>
+        <points>2000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>50</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Communauté</categorie>
+        <label>J'ai 100 amis ou plus</label>
+        <code>friends_100</code>
+        <points>5000</points>
+        <inSeveralTimes>1</inSeveralTimes>
+        <timesToComplete>100</timesToComplete>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Première</categorie>
+        <label>Première connexion</label>
+        <code>prem_connexion</code>
+        <points>0</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Première</categorie>
+        <label>Première activité sportive individuelle</label>
+        <code>prem_acti_indi</code>
+        <points>0</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Première</categorie>
+        <label>Première activité sportive collective</label>
+        <code>prem_acti_coll</code>
+        <points>0</points>
+    </ks_trophy>
+    <ks_trophy>
+        <categorie>Première</categorie>
+        <label>J'ai créé un article</label>
+        <code>prem_article</code>
+        <points>0</points>
+    </ks_trophy>
+</ks_trophies_list>

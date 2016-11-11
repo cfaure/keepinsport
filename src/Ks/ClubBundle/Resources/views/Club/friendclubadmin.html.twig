@@ -1,0 +1,71 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Club'|trans }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>{{ 'user.friend_list_title'|trans }}  </h1>
+    
+    <table id="userList" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{{ 'users.username'|trans }}</th>
+                <th>{{ 'users.email'|trans }}</th>
+                <th>{{ 'users.last_login'|trans }}</th>
+                <th>{{ 'users.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for key, user in users %}
+              {% if user.user.id == connectedUserId %}
+                    {% set user = user.friend  %}
+              {% else %}
+                    {% set user = user.user  %}
+              {% endif %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.lastLogin|date('d/m/Y H:i:s') }}</td>
+                <td>
+                    <ul>
+                        {% if not aUsers[key]['SuperAdmin'] %}
+                            {% if aUsers[key]['ManageClub'] %}
+                                    <li>                 
+                                        <a class="toggleConfirm" title="{{ 'modal.revoke_friend_club_admin'|trans }} {{ club.name }}" confirm_message="{{ 'revoke.name_friend_club_admin_confirmation_message'|trans }} {{ user.username }}" href="{{ path('revoke_user_club_admin', { 'userId': user.id , 'idClub': club.id }) }}">
+                                            {{ 'user.revoke_admin_club'|trans }} :  {{ club.name }}
+                                        </a>
+                                    </li>
+                            {% else %}
+                                    <li>                 
+                                        <a class="toggleConfirm" title="{{ 'modal.name_friend_club_admin'|trans }} {{ club.name }}" confirm_message="{{ 'modal.name_friend_club_admin_confirmation_message'|trans }} {{ user.username }}" href="{{ path('name_user_club_admin', { 'userId': user.id , 'idClub': club.id }) }}">
+                                            {{ 'user.name_admin_club'|trans }} :  {{ club.name }}
+                                        </a>
+                                    </li>
+                            {% endif %}
+                        {% else %} 
+                              <ul>       
+                                 <li> 
+                                      {{ 'user.this_user_is_a_club_super_admin'|trans }} 
+                                 </li> 
+                              </ul>       
+                        {% endif %}
+                    </ul>
+                </td>
+            </tr>
+           
+        {% endfor %}
+        </tbody>
+    </table>
+     <div class="pagination">
+    	<ul>
+    		{# On utilise la fonction range(a, b) qui crée un tableau de valeurs entre a et b #}
+    		{% for p in range(1, nb_pages) %}
+    			<li{% if p == page %} class="active"{% endif %}>
+    				<a href="{{ path('ks_user_UsersList', {'numPage': p}) }}">{{ p }}</a>
+    			</li>
+    		{% endfor %}
+    	</ul>
+    </div>
+{% endblock %}

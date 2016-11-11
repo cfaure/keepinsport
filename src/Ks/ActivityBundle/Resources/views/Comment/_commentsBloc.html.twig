@@ -1,0 +1,14 @@
+{% if activity is defined %}
+    {% set id = activity.id %}
+{% endif %}
+<div class="">
+    <div class="comments-bloc" rel="commentContainer-{{ id }}" style="{% if comments|length == 0 %}display:none{% endif %}">
+        {% for key, comment in comments %}
+            {% if key > 0 %}
+                <hr />
+            {% endif %}
+            {% include 'KsActivityBundle:Comment:_comment.html.twig' %}
+        {% endfor %}
+    </div>
+    <div class="newCommentFormContainer"></div>
+</div>

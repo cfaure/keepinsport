@@ -1,0 +1,11 @@
+{#% if user.userDetail.firstname is defined and user.userDetail.firstname is not null and user.userDetail.lastname is defined and user.userDetail.lastname is not null %}
+   {% set name = user.username ~ " (" ~ user.userDetail.firstname ~ " " ~ user.userDetail.lastname ~")" %}
+{% else %}
+    {% set name = user.username %}
+{% endif %#}
+{{ club.name }} {{ 'coaching.mail-agenda-update-1'|trans }}
+<br/>
+<br/>
+<br/>
+{{ 'coaching.mail-agenda-update-2'|trans }} : <a href="{{ host }}{{ path('ksAgenda_index', {'id' : user.id}) }}"> {{ 'coaching.mail-agenda-update-3'|trans }}</a> {#, {{ 'coaching.mail-agenda-update-4'|trans }} <a href="{{ host }}{{ path('ksClub_public_profile', {'clubId' : club.id}) }}"> {{ 'coaching.mail-agenda-update-5'|trans}} {{ club.name }}</a>#}
+<br/>

@@ -1,0 +1,12 @@
+{% for user in users %}
+    <div class="userBloc" style="display:inline-block;margin: 0 5px 0 5px">
+        {% include 'KsUserBundle:User:_userImage_league_medium.html.twig' with { 
+            'user_id' : user.id, 
+            'user_username' : user.username, 
+            'user_imageName': user.imageName, 
+            'user_league_category' : user.leagueCategoryLabel, 
+            'user_league_stars' : user.leagueLevelStarNumber,
+            'with_legend_overlay' : true
+        } %}
+    </div>
+{% endfor %}

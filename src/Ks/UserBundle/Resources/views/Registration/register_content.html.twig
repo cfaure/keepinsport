@@ -1,0 +1,146 @@
+<div class="row-fluid" style="color:white">
+    <div class="visible-desktop visible-tablet" style="float:left;width:30px"></div>
+    <div class=" span2" style="height:110px;">
+        <center><h4>{{ 'titles.do-sport'|trans|raw }}</h4></center>
+        <div class="blocHeaderSeparator"></div>
+        <center>
+            <span class="icon-user icon-4x"></span>
+        </center>
+    </div>
+    <div class="span1">
+        <center style="padding-top:20px">
+            <span class="icon-arrow-right icon-4x"></span>
+        </center>
+    </div>
+
+    <div class=" span2" style="height:110px;">
+        <center><h4>{{ 'titles.cumul-points'|trans|raw }}</h4></center>
+        <div class="blocHeaderSeparator"></div>
+        <center >
+            <span class="icon-signal icon-4x"></span>
+        </center>
+    </div>
+    <div class="span1">
+        <center style="padding-top:20px">
+            <span class="icon-arrow-right icon-4x"></span>
+        </center>
+    </div>
+
+    <div class=" span2" style="height:110px;">
+        <center><h4>{{ 'titles.reach-gold-league'|trans|raw }}</h4></center>
+        <div class="blocHeaderSeparator"></div>
+        <center>
+            <span class="icon-star icon-4x"></span>
+        </center>
+    </div>
+    <div class="span1">
+        <center style="padding-top:20px">
+            <span class="icon-arrow-right icon-4x" style="margin-top:10px"></span>
+        </center>
+    </div>
+
+    <div class=" span2" style="height:110px;color:white">
+        <center><h4>{{ 'titles.win-price'|trans|raw }}</h4></center>
+        <div class="blocHeaderSeparator"></div>
+        <center >
+            <span class="icon-money icon-4x"></span>
+        </center>
+    </div>
+</div>
+<br/>    
+
+<div class="row-fluid">
+    <div class="span3 visible-desktop visible-tablet">
+    </div>
+    <div class="span6">
+        <div class="row-fluid visible-desktop visible-tablet">
+            </br>
+            </br>
+            </br>
+            </br>
+            </br>
+        </div>
+            <div class="ksBloc ksBlocOnBlue thumbnail">
+                <div style="border:1px solid #999999;">
+                    <div>
+                    <center>
+                        <img style="max-height:75px" src="{{ asset('img/ks_typo_logo.png') }}" />
+                    </center>
+                    <div class="blocHeaderSeparator"></div><form id="registrationForm" action="{{ path('fos_user_registration_register', app.request.query.all) }}" {{ form_enctype(form) }} method="POST" class="login form-horizontal" style="margin:0;padding:0 5px 0 5px;">
+
+
+                        <div class="control-group">
+                            <label class="control-label">Nom d'utilisateur*</label>
+                            <div class="controls">
+                                {{ form_widget(form.username, {attr : {class: " input-block-level", placeholder : "Nom d'utilisateur"} }) }}
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Adresse e-mail</label>
+                            <div class="controls">
+                                {{ form_widget(form.email, {attr : {class: " input-block-level", placeholder : "Adresse e-mail"} }) }}
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Mot de passe</label>
+                            <div class="controls">
+                                {{ form_widget(form.plainPassword.first, {attr : {class: " input-block-level", placeholder : "Mot de passe"} }) }}
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Vérification</label>
+                            <div class="controls">
+                                {{ form_widget(form.plainPassword.second, {attr : {class: " input-block-level", placeholder : "Vérification"} }) }}
+                            </div>
+                        </div>
+
+                        {#% set getParameters = app.request.query.all %}
+                        {% if getParameters.userId is defined and getParameters.userId is not null %}
+                            <input name="userInvitingId" type="hidden" val="{{ getParameters.userId }}" />
+                        {% endif %#}
+
+                        {% if form.username.vars.errors|length > 0 or form.email.vars.errors|length > 0 or form.plainPassword.vars.errors|length > 0 %}
+                        <div class="alert alert-error">
+                            {{ form_errors(form) }}
+                            {{ form_errors(form.username) }}
+                            {{ form_errors(form.email) }}
+                            {{ form_errors(form.plainPassword) }}
+                        </div>
+                        {% endif %}
+                        {{ form_rest(form) }}
+                        <i style="font-size:0.7em">* : caractères alphanumériques seulement</i>
+                        <div style="padding:8px 0 10px;margin:auto;text-align:right">
+
+                            <span id="subscribeButton" class="btn btn-sportif" onClick="this.form.submit()">
+                                Inscription
+                            </span>
+                            <span class="btn btn-sportif" onClick="javascript: testLogin()">
+                                Inscription avec <span class="facebook-icon">facebook</span>
+                            </span>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="blocHeaderSeparator"></div>
+                <p>
+                    <center><em>Déjà inscrit ?</em> <a href="{{ path('fos_user_security_login') }}">Se connecter</a></center>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="span3 visible-desktop visible-tablet">
+    </div>
+    {#<div class="span5 visible-desktop visible-tablet">
+        </br>
+        <center>
+            <img src="{{ asset('img/perso_sports_droite.png') }}" />
+        </center> 
+    </div>#}
+</div>
+</br>
+</br>
+</br>
+</br>
+</br>
+

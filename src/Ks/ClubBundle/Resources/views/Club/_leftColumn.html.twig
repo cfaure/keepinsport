@@ -1,0 +1,221 @@
+{% include 'KsClubBundle:Club:menu.html.twig' with {'isManager' : isManager, 'club' : club} %}
+    
+{% if membersAwaitingNb > 0 and isManager %}
+    <div class="rightColumnBloc thumbnail">
+        <h3 class="clubs">
+            {{ 'menu.membership-in-progress'|trans }} ({{ membersAwaitingNb}} )
+            <a class="btn btn-clubs btn-mini pull-right"href="{{ path('KsClub_members', { 'clubId': club.id }) }}"><i class="icon-search icon-white"></i></a>
+        </h3>
+        <div class="blocHeaderSeparator"></div>
+
+
+        {% for key, user in membersAwaiting %}
+
+            {% if user.firstname is not null and user.lastname is not null %}
+                {% set titleTooltip = user.username ~ " - " ~  user.firstname ~ " " ~ user.lastname %}
+            {% else %}
+                {% set titleTooltip = user.username %}
+            {% endif %}
+            {% if user.friendWithMe %}
+                {% set friendWithMe = 1 %}
+            {% else %}
+                {% set friendWithMe = 0 %}
+            {% endif %}
+            {% if user.mustGiveRequestFriendResponse %}
+                {% set mustGiveRequestFriendResponse = 1 %}
+            {% else %}
+                {% set mustGiveRequestFriendResponse = 0 %}
+            {% endif %}
+            {% if user.isAwaitingRequestFriendResponse %}
+                {% set isAwaitingRequestFriendResponse = 1 %}
+            {% else %}
+                {% set isAwaitingRequestFriendResponse = 0 %}
+            {% endif %}
+
+            <center> 
+                <a class="imageLink" rel="tooltip" title="{{ titleTooltip }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                    {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : user.id, 'user_imageName' : user.imageName } %} 
+                </a>
+                {% if user.membershipAskInProgress %}
+                    <a class="btn btn-clubs btn-mini" href="{{ path('ksClubAdmin_acceptAnAskForMembershipInProgress', { 'clubId' : club.id, 'userId' : user.id }) }}">Accepter</a>
+                    <a class="btn btn-clubs btn-mini" href="{{ path('ksClubAdmin_refuseAnAskForMembershipInProgress', { 'clubId' : club.id, 'userId' : user.id }) }}">Refuser</a>
+                {% endif %}
+            </center>
+
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="rightColumnBloc thumbnail">
+    <h3 class="clubs">
+        {{ 'menu.management'|trans }} ({{ managersNb}} )
+        <a class="btn btn-clubs btn-mini pull-right"href="{{ path('KsClub_members', { 'clubId': club.id }) }}"><i class="icon-search icon-white"></i></a>
+    </h3>
+    <div class="blocHeaderSeparator"></div>
+
+
+    {% for key, user in managers %}
+
+        {% if user.firstname is not null and user.lastname is not null %}
+            {% set titleTooltip = user.username ~ " - " ~  user.firstname ~ " " ~ user.lastname %}
+        {% else %}
+            {% set titleTooltip = user.username %}
+        {% endif %}
+        {% if user.friendWithMe %}
+            {% set friendWithMe = 1 %}
+        {% else %}
+            {% set friendWithMe = 0 %}
+        {% endif %}
+        {% if user.mustGiveRequestFriendResponse %}
+            {% set mustGiveRequestFriendResponse = 1 %}
+        {% else %}
+            {% set mustGiveRequestFriendResponse = 0 %}
+        {% endif %}
+        {% if user.isAwaitingRequestFriendResponse %}
+            {% set isAwaitingRequestFriendResponse = 1 %}
+        {% else %}
+            {% set isAwaitingRequestFriendResponse = 0 %}
+        {% endif %}
+        
+        <div style="display:inline-block">
+            <center>
+                <a class="imageLink" rel="tooltip" title="{{ titleTooltip }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                    {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : user.id, 'user_imageName' : user.imageName} %}
+                </a>
+                {% if user.function is defined and user.function is not null %}
+                    <a {% if user.id != app.user.id and user.friendWithMe %} 
+                           rel="tooltip" title="{{ 'coaching.send-email'|trans }}" href="{{ path('ksMessage_new', { 'userId' : user.id }) }}" 
+                       {% elseif user.id != app.user.id and user.friendWithMe == 0 %}
+                           rel="tooltip" title="{{ 'coaching.send-friendShip-first'|trans }}"
+                       {% endif %} style="font-size: 0.8em;font-style: italic;"> 
+                        </br>
+                        {{ user.function }}
+                        </br>
+                        <span class="icon-envelope icon-large"></span>
+                    </a>
+                {% endif %}
+        </center>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="rightColumnBloc thumbnail">
+    <h3 class="clubs">
+        {{ 'menu.athletes'|trans }} ({{ membersNb}} )
+        <a class="btn btn-clubs btn-mini pull-right"href="{{ path('KsClub_members', { 'clubId': club.id }) }}"><i class="icon-search icon-white"></i></a>
+    </h3>
+    <div class="blocHeaderSeparator"></div>
+
+
+    {% for key, user in members %}
+
+        {% if user.firstname is not null and user.lastname is not null %}
+            {% set titleTooltip = user.username ~ " - " ~  user.firstname ~ " " ~ user.lastname %}
+        {% else %}
+            {% set titleTooltip = user.username %}
+        {% endif %}
+        {% if user.friendWithMe %}
+            {% set friendWithMe = 1 %}
+        {% else %}
+            {% set friendWithMe = 0 %}
+        {% endif %}
+        {% if user.mustGiveRequestFriendResponse %}
+            {% set mustGiveRequestFriendResponse = 1 %}
+        {% else %}
+            {% set mustGiveRequestFriendResponse = 0 %}
+        {% endif %}
+        {% if user.isAwaitingRequestFriendResponse %}
+            {% set isAwaitingRequestFriendResponse = 1 %}
+        {% else %}
+            {% set isAwaitingRequestFriendResponse = 0 %}
+        {% endif %}
+        
+        <a class="imageLink" rel="tooltip" title="{{ titleTooltip }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+            {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : user.id, 'user_imageName' : user.imageName } %} 
+        </a>
+    {% endfor %}
+</div>
+
+{#<div class="ksBloc thumbnail">
+    <h3 class="clubs">{{ 'titles.last-activities'|trans }}</h3>
+    <div class="blocHeaderSeparator"></div>
+    {% render "KsClubBundle:Club:lastActivities" with { 'clubId' : club.id, 'nbActivities' : 3 } %}
+</div>
+#}
+<div class="ksBloc thumbnail">
+    <a class="btn btn-clubs btn-mini pull-right" href="{{ path('ksAgendaClub_index', {'id' : app.user.id, 'fullscreen' : false}) }}">
+        <i class="icon-search icon-white"></i>
+    </a>
+    <h3 class="clubs">{{ 'titles.next-events'|trans }}</h3>
+    <div class="blocHeaderSeparator"></div>
+    {% render "KsEventBundle:EventClub:nextEvents" with { 'clubId' : club.id, 'nbEvents' : 3 } %}
+</div>
+
+{#<div class="rightColumnBloc thumbnail">
+    <h3 class="clubs">
+        {{ 'club.teams.list'|trans }}
+        <a class="btn btn-clubs btn-mini pull-right"href="{{ path('KsClub_teams', {'clubId' : club.id}) }}"><i class="icon-search icon-white"></i></a>
+    </h3>
+    <div class="blocHeaderSeparator"></div>
+    {% for team in teams %}
+        <div class="thumbnail">
+            <center>
+                <a href="{{ path("ksTeam_show", {"teamId" : team.id}) }}">
+                    {{ team.label }}
+                </a>
+            </center>
+            <div class="blocHeaderSeparator"></div>
+            <div >
+                <b><u>Membres :</u></b>
+                <br/>
+                {% for user in team.users %}
+                    {% if user.firstname is not null and user.lastname is not null %}
+                        {% set titleTooltip = user.username ~ " - " ~  user.firstname ~ " " ~ user.lastname %}
+                    {% else %}
+                        {% set titleTooltip = user.username %}
+                    {% endif %}
+                    <a class="imageLink" rel="tooltip" title="{{ titleTooltip }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : user.id, 'user_imageName' :  user.imageName } %} 
+                    </a>
+
+                {% endfor %} 
+            </div>
+            <div>
+                <b><u>Activités :</u></b>
+                <br/>
+                <ul>
+                {% for teamComposition in team.teamCompositions %}
+                    <li>
+                    <a href="{{ path('ksTeamComposition_show', { 'teamCompositionId': teamComposition.id }) }}">
+                        {{ teamComposition.name }} 
+                    </a>
+                    <br/>
+                    {{ teamComposition.date|date("d/m/Y H:i") }}
+                    </li>
+
+                    {#
+                    <br>
+                    <ul>
+                    {% for user in teamComposition.users %}
+                        {% if user.firstname is not null and user.lastname is not null %}
+                            {% set titleTooltip = user.username ~ " - " ~  user.firstname ~ " " ~ user.lastname %}
+                        {% else %}
+                            {% set titleTooltip = user.username %}
+                        {% endif %}
+                        <li>
+                            <a rel="tooltip" title="{{ titleTooltip }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                                {{ user.username}}
+                            </a>
+                        </li>
+                    {% endfor %} 
+                    </ul>
+                {% endfor %}
+                </ul>
+             </div>
+        </div>
+        <br/>
+    {% endfor %}  
+
+    <div id="teamsCarousel_pagination"></div>
+    <div id="blocTeamDetails"></div>
+</div>#}

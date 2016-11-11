@@ -1,0 +1,77 @@
+<div>
+    <canvas id='canvas_activity_{{ activityId }}' activityId="{{ activityId }}" style="width:auto"></canvas>
+</div>
+
+<script type="text/javascript">
+    var accessories{{ activityId }} = null;
+    var timerCanvas{{ activityId }} = null;
+    
+    var reDraw{{ activityId }} = function(){
+        var activityId = "{{ activityId }}";
+        var c = document.getElementById('canvas_activity_'+{{ activityId }});
+        
+        var paramsBoard = {};
+        var params = {};
+        
+        {% if activity is defined and activity is not null %}
+            {% if activity.type is not null %}
+                var activityType = "{{ activity.type }}";
+            {% else %}
+                var activityType = "{{ activity.type }}";
+            {% endif %}
+                params.activityType = activityType;
+                
+            {% if activity.distance is not null and activity.distance != 0 %}
+                paramsBoard.distance = "{{ activity.distance }}";
+            {% endif %}
+                
+            {% if activity.denPos is defined and activity.denPos is not null and activity.denPos != 0 %}
+                paramsBoard.denPos = "{{ activity.denPos }}";
+            {% endif %}
+            
+            {% if activity.timeMoving is not null and activity.timeMoving != "" %}
+                paramsBoard.duration = secondsToTime("{{ activity.timeMoving }}");
+            {% else %}
+                {% if activity.duration is not null and activity.duration != "" %}
+                    paramsBoard.duration = "{{ activity.duration }}";
+                {% endif %}
+            {% endif %}
+                
+            {% if scores is not null and scores|length > 0 %}
+                paramsBoard.scores = new Array();
+                {% for score in scores %}
+                   paramsBoard.scores.push({
+                       'me'  : "{{ score.score1 }}",
+                       'opponent' : "{{ score.score2 }}"
+                   });
+                {% endfor %}
+                //console.log(paramsBoard.scores);
+            {% endif %}
+                
+             params.paramsBoard = paramsBoard;
+                
+        {% endif %}
+            
+        //console.log(paramsLandscape)
+        accessories{{ activityId }}.draw( params );
+        
+    } 
+
+    c = document.getElementById('canvas_activity_{{ activityId }}');     
+    //c.height = 210;  
+    
+    ctx = c.getContext('2d');
+    
+    var imagesPath = "{{ asset('bundles/kscanvasdrawing/images/') }}";
+    
+    //Initialisation des éléments
+    accessories{{ activityId }} = new Accessory(c, imagesPath);
+    
+    //Si la feneêtre est redimentionné, on adapte le canvas
+    window.addEventListener('resize', function() { resizeCanvas("{{ activityId }}", document.getElementById('canvas_activity_{{ activityId }}'), document.getElementById('canvas_background_{{ activityId }}')); }, false);
+
+    resizeCanvas("{{ activityId }}", document.getElementById('canvas_activity_{{ activityId }}'), document.getElementById('canvas_background_{{ activityId }}'));
+    
+    //reDraw{{ activityId }}();
+    
+</script>

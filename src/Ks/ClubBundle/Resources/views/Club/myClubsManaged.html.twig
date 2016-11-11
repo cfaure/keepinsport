@@ -1,0 +1,84 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Club'|trans }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>{{ 'users.club_list_label'|trans }}</h1>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>{{ 'users.club_name'|trans }}</th>
+            <th>{{ 'users.club_town'|trans }}</th>
+            <th>{{ 'users.club_adresse_label'|trans }}</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for club in myClubsManaged %}
+            <tr>
+                <td>{{ club.name }}</td>
+                <td>{{ club.town }}</td>
+                <td>{{ club.adressname }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="#">{{ 'crud.view'|trans }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('ksClub_edit', { 'id': club.id }) }}">{{ 'crud.edit'|trans }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('ksClub_public_profile', { 'clubId': club.id }) }}">Profil public</a>
+                        </li>
+                        
+                        <li>
+                            <a href="{{ path('ks_member', { 'idClub': club.id }) }}">Liste des utilisateurs</a>
+                        </li>
+                        {#<li>
+                            <a href="{{ path('ks_member_new', { 'idClub': club.id }) }}">{{ 'users.club_add_a_member'|trans }}</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('ks_member', { 'idClub': club.id }) }}">{{ 'users.club_list_member'|trans }}</a>
+                        </li>#}
+
+                        <li>
+                            <a href="{{ path('KsClub_newTeam', { 'clubId': club.id }) }}">{{ 'users.club_create_team'|trans }}</a>
+                        </li>
+
+                        <li>
+                            <a href="{{ path('KsClub_teams', { 'clubId': club.id }) }}">{{ 'users.club_list_team'|trans }}</a>
+                        </li>
+
+                        <li>
+                            <a href="{{ path('club_friend_admin', { 'idClub': club.id , 'numPage': 1}) }}">{{ 'users.club_friend_name_admin'|trans }}</a>
+                        </li>
+
+                        <li>
+                            <a href="{{ path('event_new', { 'idClub': club.id }) }}">{{ 'users.club_add_event'|trans }}</a>
+                        </li>
+                            <li>
+                            <a href="{{ path('event', { 'idClub': club.id }) }}">{{ 'users.club_list_event'|trans }}</a>
+                        </li>
+
+
+
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        <a href="{{ path('admin_club_new') }}">
+            {{ 'users.club_create'|trans }}
+        </a>
+    </li>
+</ul>
+
+{% endblock %}

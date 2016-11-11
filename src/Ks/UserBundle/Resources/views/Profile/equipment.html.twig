@@ -1,0 +1,252 @@
+{% form_theme form 'KsUserBundle:Profile:collection_equipment_layout.html.twig' %}
+{#% extends 'KsUserBundle:Profile:equipment_type.html.twig' %#}
+        
+{% set extends = "KsUserBundle::layout_full.html.twig" %}
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('plugins/spectrum/spectrum.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('plugins/spectrum/spectrum.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {  
+            var stringToBoolean = function(string){
+                switch(string.toLowerCase()){
+                        case "true": case "yes": case "1": return true;
+                        case "false": case "no": case "0": case null: return false;
+                        default: return Boolean(string);
+                }
+            }
+            var initializeNewColorPickers = function() {
+                var paramsSpectrum = {
+                    preferredFormat: "hex6",
+                };
+                $('#equipments-table').find("input.primaryColor:visible").spectrum( paramsSpectrum );
+                $('#equipments-table').find("input.secondaryColor:visible").spectrum( paramsSpectrum );
+                $("select.equipment_type").change();
+            }
+            var initializeNewCustomSelectSports = function() {
+                $.each($('#equipments-table').find("select.customSelectSports"), function() {
+                    var $selectSports = $( this ).parent().parent().find(".sports");
+                    var $customSelectSports = $( this ).select2({
+                        placeholder: "{{ 'actions.select-sport'|trans }}",
+                        //width : 250,
+                        //allowClear: true,
+                        //multiple: true,
+                        containerCssClass : "input-block-level",
+                        formatResult: function(state) {
+                            var codeSport = state.element[0].getAttribute("codeSport");
+                            if (!codeSport) return state.text; 
+                            return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+                        },
+                    });
+                    
+                    $customSelectSports.select2("val", $selectSports.val());
+
+                    $customSelectSports.change(function() { 
+                        $selectSports.val($( this ).val());
+                    });
+                });
+            }
+            
+            var initializeNewCustomSelectEquipmentsTypes = function() {
+                $.each($('#equipments-table').find("select.customSelectEquipmentType"), function() {
+                    var $selectTypes = $( this ).parent().parent().find(".equipment_type");
+                    var $customEquipmentType = $( this ).select2({
+                        placeholder: "{{ 'actions.select-equipment-type'|trans }}",
+                        containerCssClass : "input-block-level",
+                    });
+                    
+                    $customEquipmentType.select2("val", $selectTypes.val());
+
+                    $customEquipmentType.change(function() { 
+                        $selectTypes.val($( this ).val());
+                        $selectTypes.change();
+                    });
+                });
+            }
+            
+            var equipmentsNb = '{{ form.equipments | length }}';
+            $('#add-equipment').click(function() {
+
+                var $equipmentsTable = $('#equipments-table');
+                var newWidget = $equipmentsTable.attr('data-prototype');
+                alert($equipmentsTable.attr('data-prototype'));
+                newWidget = newWidget.replace(/\$\$name\$\$/g, equipmentsNb);
+                
+                $equipmentsTable.append(newWidget);
+                initializeNewColorPickers();
+                initializeNewCustomSelectSports();
+                initializeNewCustomSelectEquipmentsTypes();
+                
+                /*var equipmentsBloc = $('#equipmentsBloc');
+                var newWidget = equipmentsBloc.attr('data-prototype');
+                newWidget = newWidget.replace(/\$\$name\$\$/g, equipmentsNb);
+                
+                //newWidget = newWidget.replace('/\<div\>/g', '<td>');
+                //newWidget = newWidget.replace('/\<\/div\>/g', '</td>');
+
+                // create a new list element and add it to our list
+                //var newTr = $('<div></div>').html(newWidget);
+                equipmentsBloc.append(newWidget);*/
+        
+                equipmentsNb++;
+            });
+            $('#remove-last-equipment').click(function() {
+                var $equipmentsTable = $('#equipments-table');
+                $equipmentsTable.find("tbody").find("tr").last().remove();
+                /*var equipmentsBloc = $('#equipmentsBloc');
+                equipmentsBloc.children().last().remove();*/
+                equipmentsNb--;
+            });
+            
+            $(".btn-remove-equipment").live('click', function() {
+                $( this ).parent().parent().remove();
+            });
+            
+            $("select.equipment_type").live('change', function() {
+                {% for equipmentType in equipmentsTypes %}
+                    if ( "{{ equipmentType.id }}" == $( this ).val().toString() ) {
+                        var isPrimaryColorEnabled = stringToBoolean("{{ equipmentType.isPrimaryColorEnabled }}");
+                        var isSecondaryColorEnabled = stringToBoolean("{{ equipmentType.isSecondaryColorEnabled }}");
+                        var isWeightEnabled = stringToBoolean("{{ equipmentType.isWeightEnabled }}");
+                        
+                        var $tr = $( this ).parent().parent();
+                        if( isPrimaryColorEnabled ) {
+                            $tr.find( ".primaryColor" ).spectrum("enable");
+                            $tr.find( ".primaryColor" ).spectrum("show");
+                        } else {
+                            $tr.find( ".primaryColor" ).spectrum("disable");
+                            $tr.find( ".primaryColor" ).spectrum("hide");
+                        }
+                        
+                        if( isSecondaryColorEnabled ) {
+                            $tr.find( ".secondaryColor" ).spectrum("enable");
+                            $tr.find( ".secondaryColor" ).spectrum("show");
+                        } else {
+                            $tr.find( ".secondaryColor" ).spectrum("disable");
+                            $tr.find( ".secondaryColor" ).spectrum("hide");
+                        }
+                        
+                        if( isWeightEnabled ) {
+                            $tr.find( ".weight" ).removeAttr('disabled');
+                        } else {
+                            $tr.find( ".weight" ).attr('disabled', 'disabled');
+                        }
+                        
+                    }
+                {% endfor %}
+            });
+            
+            initializeNewColorPickers();
+            initializeNewCustomSelectSports();
+            initializeNewCustomSelectEquipmentsTypes();
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %} 
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        {% include 'KsUserBundle:Profile:_breadcrumb.html.twig' with {'step': 7, 'creationOrEdition' : creationOrEdition} %}
+        {% set submitButtonText = "Etape suivante" %}
+    {% else %}
+        <h1 class="sportif">Edition</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ks_user_public_profile', {'username' : app.user.username}) }}">
+                    <span class="avatarBloc">
+                        {% set user_imageName = null %}
+                        {% if app.user.userDetail is not null %}
+                            {% set user_imageName = app.user.userDetail.imageName %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                 {% include 'KsUserBundle:Profile:_buttons.html.twig' with{'creationOrEdition' : creationOrEdition } %}
+            </div>
+        </div>
+        <br/>
+        
+    <br/>
+
+        {% set submitButtonText = "Enregistrer" %}
+    {% endif %}
+        
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="sportif">{{ 'equipment.my-equipment'|trans }}</h3>
+        <div class="blocHeaderSeparator"></div>
+        <form action="{{ path('ksProfile_equipment', {'creationOrEdition' : creationOrEdition}) }}" method="post" {{ form_enctype(form) }}>
+            {{ form_label(form.equipments, "") }}
+            <table id="equipments-table" data-prototype="{{ form_widget(form.equipments.vars.prototype) | e }}" class="table table-bordered">
+                <thead>
+                    <tr>
+                        {# <td>{{ 'equipment.photo'|trans }}</td> #}
+                        <td>{{ 'equipment.main-data'|trans }}</td>
+                        <td>{{ 'equipment.secondary-data'|trans }}</td>
+                        <td>{{ 'equipment.delete'|trans }}</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% if form.equipments|length > 0 %}
+                    {% for numField, equipmentField in form.equipments %}
+                        <tr {{ block('widget_container_attributes') }}>
+                            {#<td> {{ form_widget(equipmentField.photo) }} </td>#}
+                            <td>
+                                {{ form_widget(equipmentField.sports) }}
+                                {% render "KsActivityBundle:Sport:customSelectSports" with {"multiple": "0"} %}
+                                {{ form_widget(equipmentField.type) }} 
+                                {% render "KsUserBundle:Equipment:customSelectEquipmentType" %}
+                                {{ form_widget(equipmentField.label) }}
+                            <td>
+                                {{ form_widget(equipmentField.weight) }}
+                                {{ form_widget(equipmentField.primaryColor) }}
+                                {{ form_widget(equipmentField.secondaryColor) }}
+                            </td>
+                            <td>
+                                <span class="btn btn-mini btn-danger btn-remove-equipment">
+                                    <span class="icon-remove"></span>
+                                </span>
+                                {{ form_rest(equipmentField) }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+            </table>
+            <span style="display:none">
+                {{ form_row(form.equipments) }}
+            </span>
+            {#<div id="equipmentsBloc" data-prototype="{{ form_widget(form.equipments.vars.prototype) | e }}">
+                {% for numField, equipmentField in form.equipments %}
+                    {{ form_widget(equipmentField) }}
+                {% endfor %}
+            </div>#}
+            <span class="btn btn-sportif" id="add-equipment">
+                <span class="glyphicon glyphicon-plus"></span>
+                {{ 'equipment.add-new'|trans }}
+            </span>
+            {#<span class="btn btn-sportif btn-mini" id="remove-last-equipment">Enlever le dernier équipement</span>#}
+                        
+            {{ form_rest(form) }}
+            <br clear="all"/>
+            <input type="submit" class=" btn btn-sportif pull-right" value="{{ submitButtonText }}"/>
+            <br clear="all"/>
+        </form>
+        <br clear="all"/>
+        <div class="alert alert-info">{{'users.message_page_edition_equipement'|trans}} </div>
+    </div> 
+
+{% endblock %}

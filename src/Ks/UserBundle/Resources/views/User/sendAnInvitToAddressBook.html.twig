@@ -1,0 +1,107 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/check_all_checkboxes.js') }}"></script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block content %}
+
+<h1 class="friends">{{ 'users.send_an_invit_to_friend_by_address_book'|trans }}</h1>
+<div class="blocHeaderSeparator"></div>
+
+<form action="{{ path('send_email_to_google_adress_book_chosen') }}" method="post">
+    
+     <h2>{{ 'users.ask_friend_keepinsport_users'|trans }}</h2>
+     
+     {% if aEmailRegistredUser %}      
+     <table id="userList" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{{ 'users.email'|trans }}</th>
+                <th>{{ 'users.ksFriends_invite'|trans }}</th>
+            </tr>
+        </thead>
+         <tbody>   
+            {% for key, email in aEmailRegistredUser %}
+              <tr>
+                 <td>{{ aEmailRegistredUser[key]["name"] }}</td> 
+                 <td>
+                     <ul>
+                    {% if not aEmailRegistredUser[key]['friendWithMe'] and not aEmailRegistredUser[key]['isAwaitingRequestFriendResponse']  and not aEmailRegistredUser[key]['mustGiveRequestFriendResponse'] %}
+                            <li>                 
+                                <a class="toggleConfirm" title="{{ 'modal.ask_friend_request_modal_title'|trans }}{{ aEmailRegistredUser[key]['username'] }}" confirm_message="{{ 'modal.ask_friend_request_confirmation_message'|trans }}{{ aEmailRegistredUser[key]['username'] }}" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': aEmailRegistredUser[key]['userid'] }) }}">
+                                    {{ 'users.ask_a_friend'|trans }}
+                                </a>
+                            </li>
+                    {% else %}
+                        {% if aEmailRegistredUser[key]['mustGiveRequestFriendResponse'] %}
+                            <li>
+                                <a class="toggleConfirm" title="{{ 'modal.accept_a_friend_request_modal_title'|trans }}{{ aEmailRegistredUser[key]['username'] }}" confirm_message="{{ 'modal.accept_a_friend_request_confirmation_message'|trans }}{{ aEmailRegistredUser[key]['username'] }}" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': aEmailRegistredUser[key]['userid'] }) }}">
+                                    {{ 'users.accept_a_friend_request'|trans }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="toggleConfirm" title="{{ 'modal.refuse_a_friend_request_modal_title'|trans }}{{ aEmailRegistredUser[key]['username'] }}" confirm_message="{{ 'modal.refuse_a_friend_request_confirmation_message'|trans }}{{ aEmailRegistredUser[key]['username'] }}" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': aEmailRegistredUser[key]['userid'] }) }}">
+                                    {{ 'users.refuse_a_friend_request'|trans }}
+                                </a>
+                            </li>
+                        {% elseif aEmailRegistredUser[key]['isAwaitingRequestFriendResponse'] %}
+                            {{ 'users.friend_request_awaiting'|trans }}<br/>
+                            <li>
+                                <a class="toggleConfirm" title="{{ 'modal.cancel_the_friend_request_modal_title'|trans }}{{ aEmailRegistredUser[key]['username'] }}" confirm_message="{{ 'modal.cancel_the_friend_request_confirmation_message'|trans }}{{ aEmailRegistredUser[key]['username'] }}" href="{{ path('ks_user_Cancel_the_friend_request', { 'user2Id':aEmailRegistredUser[key]['userid'] }) }}">
+                                    {{ 'users.cancel_the_friend_request'|trans }}
+                                </a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a class="toggleConfirm" title="{{ 'modal.revoke_a_friend_request_modal_title'|trans }}{{ aEmailRegistredUser[key]['username'] }}" confirm_message="{{ 'modal.revoke_a_friend_request_confirmation_message'|trans }}{{ aEmailRegistredUser[key]['username'] }}" href="{{ path('ks_user_Revoke_a_friend', { 'user2Id':  aEmailRegistredUser[key]['userid'] }) }}">
+                                    {{ 'users.revoke_a_friend'|trans }}
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    </ul>
+                  </td>
+               <tr>     
+            {% endfor %} 
+          </tbody>
+    </table>
+    {% endif %}
+    
+    <h2> {{ 'users.invit_people_to_be_keepinsport_users'|trans }} </h2>
+    
+    <table id="userList" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{{ 'users.email'|trans }}</th>
+                <th>
+                    {{ 'users.send_an_invit_to_friend_by_mail'|trans }} <br />
+                    <input type="checkbox" name="checkallbox" value="" id="checkallbox" />
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for key, email in aEmailToInvit %}
+            <tr>
+                <td>{{ aEmailToInvit[key]["name"] }}</td>
+                <td>
+                    <input type="checkbox" name="email_address_{{key}}" value="{{ aEmailToInvit[key]["name"] }}"/>
+                 
+                </td> 
+            </tr>
+        {% endfor %}
+  
+        </tbody>
+    </table> 
+   
+     <p>
+        <input type="submit" value="{{'users.send_invit_to_join_keepinsport'|trans}}">
+    </p>    
+</form>        
+{% endblock %}

@@ -1,0 +1,7 @@
+parameters:
+#    ks_contest.example.class: Ks\ContestBundle\Example
+
+services:
+#    ks_contest.example:
+#        class: %ks_contest.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

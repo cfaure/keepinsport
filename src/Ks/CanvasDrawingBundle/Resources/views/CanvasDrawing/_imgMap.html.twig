@@ -1,0 +1,64 @@
+<img src="{{ asset('bundles/kscanvasdrawing/images/empty.png') }}" usemap ="#map{{ activityId }}" style="position:absolute;top:0px;" with="400" height="210"with="400" height="210"/>
+<map name="map{{ activityId }}" id="map{{ activityId }}">
+    {% if equipments is defined and equipments|length > 0 %}
+        {% for equipment in equipments %}
+            {% if equipment.type_code == "road_bike" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="36,177,60,142,60,139,61,138,63,141,103,139,100,127,109,127,104,132,113,163,121,178,119,177,111,162,106,148,79,178,79,175,105,145,105,142,64,143,64,145,72,175,69,174,61,145,39,176,65,182,64,183,36,177" />
+            {% endif %}
+
+            {% if equipment.type_code == "mountain_bike" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="35,177,62,150,59,146,62,145,66,148,103,136,108,131,111,141,106,143,78,176,64,181,38,180,39,178,64,179,76,174,106,138,66,151,73,175,68,176,63,153,37,179" />
+            {% endif %}
+            
+            {% if equipment.type_code == "tennis_racquet" %}
+
+            {% endif %}
+    
+            {% if equipment.type_code == "armband" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="33,129,36,118,40,119,39,123,43,127,43,130,38,128,36,134,31,129" />
+            {% endif %}
+
+            {% if equipment.type_code == "watch" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="85,144,82,146,88,150,91,150,94,148,93,146,89,144,82,141" />
+            {% endif %}
+    
+            {% if equipment.type_code == "jacket" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="32,150,34,139,37,123,41,117,43,111,57,111,62,122,68,112,81,111,83,115,87,125,90,137,93,150,86,151,85,145,84,135,82,126,82,124,81,126,81,134,80,141,80,145,77,145,64,146,48,145,45,145,44,131,44,125,43,125,41,136,40,150,32,150" />
+            {% endif %}
+    
+            {% if equipment.type_code == "gloves" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="86,149,93,150,93,163,91,164,88,165,83,165,84,157,82,160,80,160,84,151" />
+    <area shape="poly" title="{{ equipment.name }}" coords="46,159,40,149,31,150,30,162,36,165,41,164,41,158,43,160"/>
+            {% endif %}
+    
+            {% if equipment.type_code == "shirt" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="73,111,81,111,88,126,81,125,80,140,80,145,68,146,53,146,44,145,43,134,44,126,36,126,43,111,51,111,54,113,57,116,66,116,69,114,73,111" />
+            {% endif %}
+    
+            {% if equipment.type_code == "short" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="48,146,53,147,58,148,65,148,70,147,78,146,77,149,77,155,77,160,78,166,77,167,69,167,70,157,70,151,54,151,55,159,55,161,56,166,45,166,48,158,48,149,47,148" />
+            {% endif %}
+    
+            {% if equipment.type_code == "shoes" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="46,194,57,194,61,204,39,204,42,198,45,194"/>
+    <area shape="poly" title="{{ equipment.name }}" coords="80,194,67,194,65,204,86,204,85,199,80,194"/>
+            {% endif %}
+    
+            {% if equipment.type_code == "bonnet" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="18,40,16,46,19,54,26,58,45,60,78,60,96,58,103,57,103,45,103,41,97,36,91,26,87,21,83,16,75,11,68,9,60,10,52,12,41,19,33,25,26,34,25,35,19,38" />
+            {% endif %}
+    
+            {% if equipment.type_code == "pants" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="44,194,46,182,47,162,48,150,47,146,52,147,62,148,74,146,78,145,78,147,77,149,77,158,80,194,67,194,69,185,69,161,70,152,55,151,55,161,56,177,56,186,57,194,44,194"  />
+            {% endif %}
+            
+            {% if equipment.type_code == "armband" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="33,129,36,118,40,119,39,123,43,127,43,130,38,128,36,134,31,129" />
+            {% endif %}
+
+            {% if equipment.type_code == "watch" %}
+    <area shape="poly" title="{{ equipment.name }}" coords="85,144,82,146,88,150,91,150,94,148,93,146,89,144,82,141" />
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+</map>

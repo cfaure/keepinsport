@@ -1,0 +1,29 @@
+<div class="alert alert-info">
+    <a class="close" data-dismiss="alert" href="#">×</a>
+    <h4 class="alert-heading">Différences</h4>
+    <div class="tabbable tabs-below">
+        <ul class="nav nav-tabs">
+            {% for granularityKey, granularityName in granularitiesNames %}
+                {% if granularityKey == 0 %} 
+                    {% set class = "active" %}
+                {% else %} 
+                    {% set class = "" %}
+                {% endif %}
+                <li class="{{ class }}"><a href="#diff_{{ granularityName }}_{{ article.id }}" data-toggle="tab">{{ granularityName|raw }}</a></li>
+            {% endfor %}
+        </ul>
+        <div class="tab-content">
+            {% for granularityKey, granularityName in granularitiesNames %}
+                {% if granularityKey == 0 %} 
+                    {% set class = "active" %}
+                {% else %} 
+                    {% set class = "" %}
+                {% endif %}
+                <div class="tab-pane {{ class }}" id="diff_{{ granularityName }}_{{ article.id }}">
+                    {% set description = differences[granularityName] %}
+                    <p id="description_granularityKey">{{ description|raw }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

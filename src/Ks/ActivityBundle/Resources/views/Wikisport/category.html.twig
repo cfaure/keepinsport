@@ -1,0 +1,72 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/wikisport.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+             $('#articlesCategoryTable').dataTable({
+                 "aoColumns": [
+                    null,
+                    { "bSortable": false }
+                ],
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });
+            
+            $("#newButton").click(function() {
+                createNewArticle("{{ category.id }}");
+            });
+        });
+    </script>
+{% endblock %}
+    
+{% block activity_content %}
+    {% render 'KsActivityBundle:Wikisport:new_modal' with { 'articleTagId' : category.id } %}
+    
+    <h1 class="wikisport">{{ category.label }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    
+    <table id="articlesCategoryTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <td>Titre</td>
+                <td>Actions</td>
+            </tr>
+        </thead>
+        <tbody>
+    {% for article in articles %}
+            <tr>
+                <td>{{ article.activity.label }}</td>
+                <td>
+                    <a class="btn btn-mini btn-wikisport" rel="tooltip" title="Voir" href="{{ path('ksWikisport_show', { 'id' : article.activity.id }) }}">
+                        <i class="icon-search icon-white"></i> 
+                    </a>
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <a class="btn btn-mini btn-wikisport" rel="tooltip" title="Editer" href="{{ path('ksWikisport_edit', { 'id' : article.activity.id }) }}">
+                        <i class="glyphicon glyphicon-pencil icon-white"></i> 
+                    </a>
+                    {% endif %}
+                </td>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <span id="newButton" class="btn btn-wikisport pull-right" rel="tooltip" title="{{ 'article.create-new'|trans }}" >
+        <i class="glyphicon glyphicon-plus"></i> {{ 'article.create-new'|trans }}
+    </span>
+    <br clear="all"/>
+    {% endif %}
+{% endblock %}

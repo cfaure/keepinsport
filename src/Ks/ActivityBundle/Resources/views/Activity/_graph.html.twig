@@ -1,0 +1,238 @@
+<div id="graphContainer"><!-- affichage du graphe --></div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var dataType = { "ELEVATION" : 0, "SPEED" : 1, "PACE" : 2, "FLAGS" : 3 };
+
+        var highchartsOptions = {};
+            highchartsOptions.chart =
+            {
+                renderTo: "graphContainer",
+                type: 'spline',
+                animation: false,
+                height : 350,
+                alignTicks: false,
+                zoomType: 'x',     
+            };
+
+            highchartsOptions.xAxis = [{
+                title: {
+                    text: null
+                },
+                dateTimeLabelFormats : {
+                    second: '%S',
+                    minute: '%S',
+                    hour: '%S',
+                    day: '%S',
+                    week: '%S',
+                    month: '%S',
+                    year: '%S'
+                },
+                labels:{
+                    formatter: function() {
+                        var kmNumber = this.value;
+                        if ( kmNumber < 0.1 ) kmNumber = 0;
+                        return kmNumber == 0 ? kmNumber : kmNumber + "Km"; 
+                    },
+                },
+                min: 0,
+                data : []
+            }];
+
+            highchartsOptions.navigator = {
+                xAxis : {
+                    dateTimeLabelFormats : {
+                        second: '%S',
+                        minute: '%S',
+                        hour: '%S',
+                        day: '%S',
+                        week: '%S',
+                        month: '%S',
+                        year: '%S'
+                    },
+                    labels:{
+                        formatter: function() {
+                            var kmNumber = this.value;
+                            if ( kmNumber < 0.1 || isNaN(kmNumber) ) kmNumber = 0;
+                            return kmNumber == 0 ? kmNumber : kmNumber + "Km"; 
+                        },
+                    }
+                },
+                yAxis :{
+                    min : 0
+                }
+            };
+
+
+            //yAxis  
+            highchartsOptions.yAxis = new Array();
+
+            highchartsOptions.yAxis[dataType.ELEVATION] = {
+                title: {
+                    text : "Elevation",
+                    offset : 30
+                },
+                height: 80,
+                top : 10,
+                lineWidth: 2,
+                offset: 0,
+                labels : {
+                    align :"right",
+                    x: -2
+                },
+                gridLineWidth:0,
+                min : 0,
+            };
+
+            highchartsOptions.yAxis[dataType.SPEED] = {
+                title: {
+                    text : "Speed",
+                    offset : 30
+                },
+                height: 80,
+                top : 100,
+                offset: 0,
+                lineWidth: 2,
+                labels : {
+                    align :"right",
+                    x: -2
+                },
+                gridLineWidth:0,
+                min : 0,
+            };
+
+            highchartsOptions.yAxis[dataType.PACE] = {
+                title: {
+                    text : "Pace",
+                    offset : 30
+                },
+                height: 80,
+                top : 190,
+                offset: 0,
+                lineWidth: 2,
+                labels : {
+                    align :"right",
+                    x: -2
+                },
+                gridLineWidth:0,
+            };
+
+            highchartsOptions.rangeSelector = {
+                enabled: false,
+                inputEnabled: false
+            };
+
+            highchartsOptions.title = {text:""};
+            highchartsOptions.credits = {enabled:false};
+
+            highchartsOptions.plotOptions = {
+                area: {
+                    pointStart: 0,
+                    marker: {
+                        enabled: true,
+                        symbol: 'circle',
+                        radius: 2,
+                        states: {
+                            hover: {
+                                enabled: true
+                            }
+                        }
+                    }
+                },
+                series: {
+                    point: {
+                        events: {
+                            mouseOver: function() {
+                                console.log(map);
+                                if( map !== undefined && locationMarker !== undefined ) {
+                                    var location = infos['latLng'][this.x];
+                                    locationMarker.setVisible(true);
+                                    locationMarker.setPosition(location);
+                                    if (!map.getBounds().contains(location)) {
+                                        map.panTo(location);
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    events: {
+                        mouseOut: function() {    
+                            if( locationMarker !== undefined ) {
+                                locationMarker.setVisible(false);
+                            }
+                        }
+                    },
+                    lineWidth: 1,
+                    marker: {
+                        enabled: true
+                    },
+                    shadow: false,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    enableMouseTracking: true
+                }
+            };
+
+            highchartsOptions.tooltip =
+            {
+                valueDecimals: 2,
+                headerFormat: "",
+            };
+
+            highchartsOptions.series = [];
+
+            highchartsOptions.series[dataType.ELEVATION] = {
+                id:   dataType.ELEVATION,
+                name: "Elevation",
+                data: [],
+                type: "areaspline",
+                fillOpacity: 0.65,
+                yAxis: 0,
+                visible: true,
+                marker: {
+                    enabled : false
+                }
+            };
+
+            highchartsOptions.series[dataType.SPEED] = {
+                id:   dataType.SPEED,
+                name: "Speed",
+                data: [],
+                type: "areaspline",
+                fillOpacity: 0.65,
+                yAxis: 1,
+                visible: true,
+                marker: {
+                    enabled : false
+                }
+            };
+
+            highchartsOptions.series[dataType.PACE] = {
+                id:   dataType.PACE,
+                name: "Pace",
+                data: [],
+                type: "areaspline",
+                fillOpacity: 0.65,
+                yAxis: 2,
+                visible: true,
+                marker: {
+                    enabled : false
+                }
+            };
+
+        $.get(
+            Routing.generate('ksActivity_getDataGraph', {'activityId' : {{ activity.id }}} ), 
+            function(response) {
+                highchartsOptions.xAxis.data                        = response.chart.distances;
+                highchartsOptions.series[dataType.ELEVATION].data   = response.chart.elevations;
+                highchartsOptions.series[dataType.SPEED].data       = response.chart.speeds;
+                highchartsOptions.series[dataType.PACE].data        = response.chart.paces;
+                //options.series[1].data = responseJson.chart.heart_rate
+                new Highcharts.Chart(highchartsOptions);
+            }
+        );
+    });
+</script>

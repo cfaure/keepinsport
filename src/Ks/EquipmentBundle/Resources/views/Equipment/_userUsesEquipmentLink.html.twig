@@ -1,0 +1,21 @@
+    {% if users|userUsesEquipment(app.user.id) %}
+    {% else %}
+        <a class="btn btn-success" rel="equipmentUsedEventTrigger-{{ equipment.activity_id }}" href="{{ path('ksEquipment_userUsesEquipment', {'activityId': equipment.activity_id}) }}">{{ 'equipment.add-equipment'| trans }}</a>
+        </br></br>
+    {% endif %}
+        
+    {% for user in users %}
+        <div class="pull-left">
+            {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                'user_id' : user.user_id, 
+                'user_username' : user.user_username, 
+                'user_imageName': user.user_imageName, 
+                'user_league_category' : user.ll_categoryLabel, 
+                'user_league_stars' : user.ll_starNumber
+            } %}
+        </div>
+    {% endfor %}
+        
+<script type="text/javascript">
+    attachEquipmentUsedEvent_Event($('a[rel="equipmentUsedEventTrigger-{{ equipment.activity_id }}"]'));
+</script>

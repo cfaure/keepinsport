@@ -1,0 +1,29 @@
+services: 
+    ks_activity.activityService:
+        class: Ks\ActivityBundle\Service\ActivityService
+        tags:
+            -  { name: twig.extension }
+        arguments:
+            - "@doctrine"
+            - "@service_container"
+          
+    ks_activity.ffaService:
+        class: Ks\ActivityBundle\Service\FfaService
+        arguments:
+          - "@doctrine"
+          
+    ks_activity.importActivityService:
+        class: Ks\ActivityBundle\Service\ImportActivityService
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          - "@service_container"
+          - "@ks_activity.activityService"
+          
+    ks_activity.twig.extension:
+        class: Ks\ActivityBundle\Twig\Extensions\KsActivityExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - "@service_container"

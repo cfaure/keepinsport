@@ -1,0 +1,17 @@
+{% for shop in shops %}
+    <div class="shopBloc" style="display:inline-block;margin: 5px 5px 5px 5px;{%if shop.conditions|length >0 %} border : 3px solid #e8b419; {% endif %}">
+        {% include 'KsShopBundle:Shop:_shopImage_medium.html.twig' with { 
+            'userId' : userId,
+            'shop_Id' : shop.id,
+            'shop_imageName' : shop.avatar,
+            'with_legend_overlay' : true
+        } %}
+        <div style="text-align:center">
+            {% if shop.status %} 
+                {{ 'shops.reference-KS'|trans }}
+            {% else %}
+                <div> {% include 'KsShopBundle:Shop:_voteLink.html.twig' %} </div> 
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}

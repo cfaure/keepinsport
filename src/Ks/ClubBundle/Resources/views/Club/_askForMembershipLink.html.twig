@@ -1,0 +1,20 @@
+{% if not club_id|isInClub(app.user) and not club_id|askForMembershipIsInProgress( app.user ) %}
+    <a class="btn {% if small is defined and small %}btn-small {% else %}btn-mini{% endif %} btn-link link-clubs" rel="askForMembershipTrigger-{{ club_id }}" title="Adhérer" href="{{ path('ksClub_askForMembership', {'clubId': club_id}) }}">{{ 'menu.join'|trans }}</a>
+{% else %}
+    {% if club_id|askForMembershipIsInProgress( app.user ) %}
+        <a class="btn {% if small is defined and small %}btn-small {% else %}btn-mini{% endif %} btn-link link-clubs"rel="removeAskForMembershipTrigger-{{ club_id }}" title="Retirer ma demande d'adhésion" href="{{ path('ksClub_removeAskForMembership', {'clubId': club_id}) }}"><s>{{ 'menu.unjoin'|trans }}</s></a>
+    {% elseif club_id|isInClub(app.user)%}
+        
+    {% endif %}
+{% endif %}
+{#
+{% if votesNumber is not defined %}
+    {% set votesNumber = activity.voters|length %}
+{% endif %}
+    
+{{ 'activity.votesNumber'|trans( {'%votes%' : votesNumber } ) }} - #}
+    
+<script type="text/javascript">
+    attachAskForMembershipEvent($('a[rel="askForMembershipTrigger-{{ club_id }}"]'));
+    attachRemoveAskForMembershipEvent($('a[rel="removeAskForMembershipTrigger-{{ club_id }}"]'));
+</script>

@@ -1,0 +1,585 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	Keepinsport - Tournois
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+    
+    <style> 
+            /* tournoi */
+            .tournament {
+				vertical-align: top;
+				clear: both;
+			}
+            
+            .tournament.tournament2 > div.round {
+				width: 49%;
+			}
+			.tournament.tournament3 > div.round {
+				width: 32.7%;
+			}
+			.tournament.tournament4 > div.round {
+				width: 24.5%;
+			}
+			.tournament.tournament5 > div.round {
+				width: 19.6%;
+			}
+			.tournament.tournament6 > div.round {
+				width: 16.3%;
+			}
+            
+            /* rounds */
+			.tournament > .round {
+				float: left;
+				height: 100%;
+			}
+            
+            .tournament > .round > .roundTitle {
+                text-align: center;
+            }
+            
+            /* matches */
+			.tournament > .round > .match {
+                margin: 50px 0;
+				position: relative;
+				width: 100%; height: 100%;
+				border-top: 1px solid #555;
+				border-right: 1px solid #555;
+				border-bottom: 1px solid #555;
+			}
+            
+            .tournament > .round > .match:hover {
+                background-color: #fbf47c;
+            }
+            
+            .tournament > .round > .match > .tournament_editMatchButton {
+                position:absolute;
+                margin-left:5px;
+                display:none;
+                bottom:40%;
+                right:10px
+            }
+            
+            .tournament > .round1 > div.match {
+				height: 60px;
+			}
+			.tournament > .round2 > div.match {
+				margin: 80px 0 110px 0;
+				height: 110px;
+			}
+			.tournament > .round3 > div.match {
+				margin: 135px 0 220px 0;
+				height: 220px;
+			}
+			.tournament > .round4 > div.match {
+				margin: 250px 0 445px 0;
+				height: 445px;
+			}
+			.tournament > .round5 > div.match {
+				margin: 460px 0 0 0;
+				height: 900px;
+			}
+			.tournament > .round6 > div.match {
+				margin: 900px 0 0 0;
+			}
+            
+            /* score */
+			.tournament > .round > .match > span.tournament_score {
+				position: relative;
+				top: 50%;
+				/*left: 25%;*/
+				font-size: 0.8em;
+                margin-right: 2px;
+			}
+
+            /* user */
+            .tournament > .round > .match > .user {
+                font-size: 0.85em;
+                /*width : 90%;
+                height:50px;
+                background-color: blue;
+                color :yellow;
+                position:relative;
+                top : -50px;*/
+            }
+            
+            
+            
+            .tournament > .round > .match > .userSelected {
+                color : blue;
+                font-weight: bold;
+            }
+            
+            .tournament > .round > .match > .user > .tournament_userImage {
+                width:30px;
+                display:inline-block;
+            }
+            
+            .tournament > .round > .match > .user > span.tournament_username.userWinner {
+                font-weight: bold;
+            }
+            
+            /* userTop */
+			.tournament > .round > .match > .userTop {
+				top: -20px;
+			}
+            
+           .tournament > .round > .match > .userTop > span.tournament_username {
+                top: -20px;
+            }
+            
+            .tournament > .round > .match > .userTop > div.tournament_userImage {
+                top: -25px;
+            }   
+            
+            /* userBottom */
+            .tournament > .round > .match > .userBottom {
+				bottom: -20px;
+			}
+            
+            .tournament > .round > .match > .userBottom > span.tournament_username {
+                bottom: -1px;
+            }
+            
+            .tournament > .round > .match > .userBottom > div.tournament_userImage {
+                bottom: -25px;
+            }
+            
+            /* userMiddle */
+            .tournament > .round > .match > .userMiddle {
+				bottom: 20px;
+			}
+            
+            .tournament > .round > .match > .userMiddle > span.tournament_username {
+                bottom: -20px;
+            }
+            
+            .tournament > .round > .match > .userMiddle > div.tournament_userImage {
+                bottom: -25px;
+            }
+            
+            /* userSecond */
+            .tournament > .round > .match > .userSecond {
+				bottom: 20px;
+			}
+            
+            .tournament > .round > .match > .userSecond > span.tournament_username {
+                bottom: -55px;
+            }
+            
+            .tournament > .round > .match > .userSecond > div.tournament_userImage {
+                bottom: -80px;
+            }
+            
+            /* userThird */
+            .tournament > .round > .match > .userThird {
+				bottom: 20px;
+			}
+            
+            .tournament > .round > .match > .userThird > span.tournament_username {
+                bottom: -111px;
+            }
+            
+            .tournament > .round > .match > .userThird > div.tournament_userImage {
+                bottom: -136px;
+            }
+            
+            /* Tout users */
+            .tournament > .round > .match > .userTop > span.tournament_username, 
+            .tournament > .round > .match > .userBottom > span.tournament_username, 
+            .tournament > .round > .match > .userMiddle > span.tournament_username,
+            .tournament > .round > .match > .userSecond > span.tournament_username,
+            .tournament > .round > .match > .userThird > span.tournament_username{
+                left: 37px;
+                padding-right: 20px;
+                position: absolute;
+            }
+            
+            .tournament > .round > .match > .userTop > div.tournament_userImage,
+            .tournament > .round > .match > .userBottom > div.tournament_userImage, 
+            .tournament > .round > .match > .userMiddle > div.tournament_userImage,
+            .tournament > .round > .match > .userSecond > div.tournament_userImage,
+            .tournament > .round > .match > .userThird > div.tournament_userImage {
+                left: 5px;
+                position: absolute;
+            }
+            
+            .tournament > .round > .match > .userTop > span.tournament_username > .tournament_editUserButton, 
+            .tournament > .round > .match > .userBottom > span.tournament_username > .tournament_editUserButton,
+            .tournament > .round > .match > .userMiddle > span.tournament_username > .tournament_editUserButton {
+                position:absolute;
+                margin-left:5px;
+                display:none;
+                bottom:2px;
+            }
+			
+            /* winner */
+            .tournament > .round > .match.winner {
+				margin-bottom: 0;
+                border-right: 0px;
+				border-bottom:0px;  
+                height:0;
+			}
+            .tournament > .round3 > div.winner {
+
+			}
+			.tournament > .round4 > div.winner {
+				margin-top: 250px;
+			}
+			.tournament > .round5 > div.winner {
+                
+			}
+			.tournament > .round > div.match:last-of-type {
+				margin-bottom: 0px;
+			}
+            
+            .tournament > .round > .match.winner > .tournament_editPodiumButton {
+                position:absolute;
+                right:5px;
+                display:none;
+                bottom:2px;
+                margin-right:1px;
+            }
+            
+    </style>
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+            var editMatch = function( matchId ) {
+                
+                var $tournamentUserModal = $("#tournamentUserModal");
+                 //Le corp de la fenêtre
+                var $modalBody              = $tournamentUserModal.find("div.modal-body");
+                var $messagesBloc           = $modalBody.find('.messages');
+                var $loaderBody             = $modalBody.find('.loader');
+                var $formContainer          = $modalBody.find(".form-container");
+                var $form                   = $formContainer.find("form");
+
+                //Le pied de la fenêtre
+                var $modalFooter            = $tournamentUserModal.find("div.modal-footer");
+                var $editButton             = $modalFooter.find('a.edit');
+                var $cancelButton           = $modalFooter.find('a.cancel');
+                var $loaderFooter           = $modalFooter.find('img.loader');
+                
+                var closeModal = function() {
+                    $tournamentUserModal.modal('hide');
+                }
+                 
+                if( ! $editButton.hasClass("disabled") ) {
+                    $editButton.addClass("disabled");
+                    $messagesBloc.hide().removeClass("alert").removeClass("alert-error").removeClass("alert-info");
+                    $messagesBloc.html("");
+                    $loaderFooter.show();
+                    $.post(
+                        $form.attr("action"), 
+                        $form.serialize(),
+                        function(response) {
+                            if (response.code == 1) {
+                                $formContainer.html("")
+                                $formContainer.hide();
+                                
+                                //On ramplace le match dans l'affichage
+                                $("div.match[data-id=" + matchId + "]").html(response.html);
+
+                                $messagesBloc.addClass("alert alert-info").html("Le match a bien été édité");
+                                $messagesBloc.show();
+                                $editButton.hide();
+                                $cancelButton.html("Fermer");
+
+                                setTimeout(closeModal,2000);
+                            } else {
+                                $messagesBloc.addClass("alert alert-error");
+                                $messagesBloc.html(response.errorMessage);
+
+                                $.each(response.errors, function (fieldName, errors) {
+                                    $messagesBloc.append("<br/><u>" + fieldName +" :</u>");
+                                    var ul = "<ul>";
+                                    $.each(errors, function (key, error) {
+                                        ul = ul + "<li>" + error + "</li>";
+                                    });
+                                    ul = ul + "</ul>";
+                                    $messagesBloc.append(ul);
+
+                                });
+                                $messagesBloc.show();
+                            }
+                            $editButton.removeClass("disabled");
+                            $loaderFooter.hide();
+                        }
+                    ).fail(function(jqXHR, textStatus) {
+                        console.log("error " + textStatus);
+                    });
+                }
+            };
+            
+            var editPodium = function( ) {
+                
+                var $tournamentUserModal = $("#tournamentUserModal");
+                 //Le corp de la fenêtre
+                var $modalBody              = $tournamentUserModal.find("div.modal-body");
+                var $messagesBloc           = $modalBody.find('.messages');
+                var $loaderBody             = $modalBody.find('.loader');
+                var $formContainer          = $modalBody.find(".form-container");
+                var $form                   = $formContainer.find("form");
+
+                //Le pied de la fenêtre
+                var $modalFooter            = $tournamentUserModal.find("div.modal-footer");
+                var $editButton             = $modalFooter.find('a.edit');
+                var $cancelButton           = $modalFooter.find('a.cancel');
+                var $loaderFooter           = $modalFooter.find('img.loader');
+                
+                var closeModal = function() {
+                    $tournamentUserModal.modal('hide');
+                }
+                 
+                if( ! $editButton.hasClass("disabled") ) {
+                    $editButton.addClass("disabled");
+                    $messagesBloc.hide().removeClass("alert").removeClass("alert-error").removeClass("alert-info");
+                    $messagesBloc.html("");
+                    $loaderFooter.show();
+                    $.post(
+                        $form.attr("action"), 
+                        $form.serialize(),
+                        function(response) {
+                            if (response.code == 1) {
+                                $formContainer.html("")
+                                $formContainer.hide();
+                                
+                                //On ramplace le winner dans l'affichage
+                                $("div.winner").html(response.html);
+
+                                $messagesBloc.addClass("alert alert-info").html("Le match a bien été édité");
+                                $messagesBloc.show();
+                                $editButton.hide();
+                                $cancelButton.html("Fermer");
+
+                                setTimeout(closeModal,2000);
+                            } else {
+                                $messagesBloc.addClass("alert alert-error");
+                                $messagesBloc.html(response.errorMessage);
+
+                                $.each(response.errors, function (fieldName, errors) {
+                                    $messagesBloc.append("<br/><u>" + fieldName +" :</u>");
+                                    var ul = "<ul>";
+                                    $.each(errors, function (key, error) {
+                                        ul = ul + "<li>" + error + "</li>";
+                                    });
+                                    ul = ul + "</ul>";
+                                    $messagesBloc.append(ul);
+
+                                });
+                                $messagesBloc.show();
+                            }
+                            $editButton.removeClass("disabled");
+                            $loaderFooter.hide();
+                        }
+                    ).fail(function(jqXHR, textStatus) {
+                        console.log("error " + textStatus);
+                    });
+                }
+            };
+            
+            function loadTournamentMatchForm( matchId ) {
+                var $tournamentUserModal = $("#tournamentUserModal");
+                
+                //Le corp de la fenêtre
+                var $modalBody              = $tournamentUserModal.find("div.modal-body");
+                var $messagesBloc           = $modalBody.find('.messages');
+                var $loaderBody             = $modalBody.find('.loader');
+                var $formContainer          = $modalBody.find(".form-container");
+
+                //Le pied de la fenêtre
+                var $modalFooter            = $tournamentUserModal.find("div.modal-footer");
+                var $editButton             = $modalFooter.find('a.edit');
+                var $cancelButton           = $modalFooter.find('a.cancel');
+                var $loaderFooter           = $modalFooter.find('img.loader');
+
+               //On efface toutes les popover
+                $("div.popover.in").removeClass("in");
+
+                //On affiche la fenêtre
+                $tournamentUserModal.modal('show');  
+                
+                $loaderBody.show();
+                $loaderFooter.hide();
+                $formContainer.hide();
+                $editButton.show();
+                $cancelButton.html("Fermer");
+                $messagesBloc.hide();
+
+                $.get(
+                    Routing.generate('ksTournamentMatch_getMatchForm', { 'id' : matchId }),
+                    function(response) {
+                        $loaderBody.hide();
+                        $formContainer.html(response.html);  
+                        $formContainer.show();
+  
+                        //On active le boutton
+                        $editButton.removeClass("disabled");
+                    }
+                );
+                    
+                $editButton.unbind();
+                $editButton.on("click", function() { 
+                    editMatch( matchId );
+                });
+
+                //On affiche la fenêtre
+                $tournamentUserModal.modal('show'); 
+
+                $tournamentUserModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            
+            function loadTournamentPodiumForm( ) {
+                var $tournamentUserModal = $("#tournamentUserModal");
+                
+                //Le corp de la fenêtre
+                var $modalBody              = $tournamentUserModal.find("div.modal-body");
+                var $messagesBloc           = $modalBody.find('.messages');
+                var $loaderBody             = $modalBody.find('.loader');
+                var $formContainer          = $modalBody.find(".form-container");
+
+                //Le pied de la fenêtre
+                var $modalFooter            = $tournamentUserModal.find("div.modal-footer");
+                var $editButton             = $modalFooter.find('a.edit');
+                var $cancelButton           = $modalFooter.find('a.cancel');
+                var $loaderFooter           = $modalFooter.find('img.loader');
+
+               //On efface toutes les popover
+                $("div.popover.in").removeClass("in");
+
+                //On affiche la fenêtre
+                $tournamentUserModal.modal('show');  
+                
+                $loaderBody.show();
+                $loaderFooter.hide();
+                $formContainer.hide();
+                $editButton.show();
+                $cancelButton.html("Fermer");
+                $messagesBloc.hide();
+
+                $.get(
+                    Routing.generate('ksTournament_getPodiumForm', { 'id' : "{{ tournament.id }}" }),
+                    function(response) {
+                        $loaderBody.hide();
+                        $formContainer.html(response.html);  
+                        $formContainer.show();
+  
+                        //On active le boutton
+                        $editButton.removeClass("disabled");
+                    }
+                );
+                    
+                $editButton.unbind();
+                $editButton.on("click", editPodium );
+
+                //On affiche la fenêtre
+                $tournamentUserModal.modal('show'); 
+
+                $tournamentUserModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            
+            $(".tournament > .round > .match").live({
+                mouseenter: function() {
+                    $(this).find(".tournament_editMatchButton").show();
+                },
+                mouseleave: function() {
+                    $(this).find(".tournament_editMatchButton").hide();
+                }
+            });
+            
+            
+            
+            $(".tournament_editMatchButton").live("click", function() {
+                $match = $( this ).parent();
+                $round = $match.parent();
+
+                loadTournamentMatchForm( $match.data("id") );
+            });
+            
+            $(".lastRound").hover(
+                function () {
+                    $(this).find(".tournament_editPodiumButton").show();
+                },
+                function () {
+                    $(this).find(".tournament_editPodiumButton").hide();
+                }
+            );
+            
+            $(".tournament_editPodiumButton").live("click", loadTournamentPodiumForm );
+            
+            $(".tournament > .round > .match > .user").live({
+                mouseenter: function() {
+                    var userId = $( this ).data('id');
+                    var username = $( this ).data('username');
+                    
+                    if( userId != '' ) {
+                        $(".tournament > .round > .match > .user[data-id=" + userId + "]").addClass("userSelected");
+                    }
+                    if( username != '' ) {
+                        $(".tournament > .round > .match > .user[data-username=" + username + "]").addClass("userSelected");
+                    }
+                },
+                mouseleave: function() {
+                    var userId = $( this ).data('id');
+                    var username = $( this ).data('username');
+                    
+                    if( userId != '' ) {
+                        $(".tournament > .round > .match > .user[data-id=" + userId + "]").removeClass("userSelected")
+                    }
+                    if( username != '' ) {
+                        $(".tournament > .round > .match > .user[data-username=" + username + "]").removeClass("userSelected")
+                    }
+                }
+            });
+            
+        });
+    </script>
+{% endblock %}
+    
+{% block content %}
+    <h1 class="clubs">Tournoi {{ tournament.title }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    
+    <div id="tournamentUserModal" class='modal hide fade'>
+        <div class='modal-header'>
+            <a class='close' data-dismiss='modal'>&times;</a>
+            <h3 class="clubs">Edition d'un match</h3>
+        </div>
+        <div class='modal-body'>
+            <center class="loader">
+                <img  src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+            </center>
+            <div class="messages"></div>
+            <div class="form-container"></div>
+        </div>
+        <div class='modal-footer'>
+            <img class="loader pull-left" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+            <a href='#' class='cancel btn' data-dismiss='modal' >Annuler</a>
+            <a href='#' class='edit btn btn-clubs'>Editer</a>
+        </div>
+    </div>
+        
+    {% include 'KsTournamentBundle:Tournament:_tournament.html.twig' with { 'tournament' : tournament } %}
+    <br clear="all"/><br/>
+    
+    {% if tournament.club_id is defined and tournament.club_id is not null %}
+    <a class="btn" href="{{ path('ksClub_public_profile', {'clubId' : tournament.club_id}) }}">
+        <i class="icon-backward"></i> Retour
+    </a>
+    {% endif %}
+    <a class="btn btn-sportif" href="{{ path('ksTournamentActivity_activitySessionForm', {'id' : tournament.id}) }}">
+        <i class="glyphicon glyphicon-plus"></i> Publier une activité en rapport avec le tournoi
+    </a>
+
+{% endblock content %}

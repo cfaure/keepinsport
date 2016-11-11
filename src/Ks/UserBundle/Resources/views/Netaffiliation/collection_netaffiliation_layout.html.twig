@@ -1,0 +1,45 @@
+{% block field_rows %}
+{% spaceless %}
+    {{ form_errors(form) }}
+   {% if form|length > 0 %}
+        {% for name, child in form %}
+            {% if name != "user" %}
+        <td>
+            {{ form_widget(child) }}{{ form_rest(child) }}
+            {% if name == "sports" %}
+                {% render "KsActivityBundle:Sport:customSelectSports" with {"multiple": "1"} %}
+            {% endif %}
+        </td>
+            {% endif %}
+        {% endfor %}
+        <td>
+            <span class="btn btn-mini btn-danger btn-remove-netaffiliation">
+                <span class="icon-remove"></span>
+            </span>
+            <span style="display:none">
+                {{ form_rest(form) }}
+            </span>
+        </td>
+    {% endif %}
+{% endspaceless %}
+{% endblock field_rows %}
+
+{% block form_widget %}
+{% spaceless %}
+    <tr {{ block('widget_container_attributes') }}>
+        {{ block('field_rows') }}
+        {{ form_rest(form) }}
+    </tr>
+{% endspaceless %}
+{% endblock form_widget %}
+    
+
+{% block collection_widget %}
+{% spaceless %}
+    {% if prototype is defined %}
+        {% set attr = attr|merge({'data-prototype': form_row(prototype) }) %}
+    {% endif %}
+    {{ block('form_widget') }}
+{% endspaceless %}
+{% endblock collection_widget %}
+    

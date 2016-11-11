@@ -1,0 +1,24 @@
+<span class="user userTop" data-id="{{ tournament.firstUser is defined ? tournament.firstUser.id : '' }}" data-username="{{ tournament.firstUsername }}" >
+    {% include 'KsTournamentBundle:Tournament:_user.html.twig' with {
+        'user'      : tournament.firstUser is defined ? tournament.firstUser : null,
+        'username'  : tournament.firstUsername,
+        'winner'    : true
+    } %}
+</span>
+<span class="tournament_editPodiumButton btn btn-mini btn-clubs">
+    <span class="glyphicon glyphicon-pencil"></span>
+</span>
+<span class="user userSecond" data-id="{{ tournament.secondUser is defined ? tournament.secondUser.id : '' }}" data-username="{{ tournament.secondUsername }}" >
+    {% include 'KsTournamentBundle:Tournament:_user.html.twig' with {
+        'user'      : tournament.secondUser is defined ? tournament.secondUser : null,
+        'username'  : tournament.secondUsername,
+        'winner'    : false
+    } %}
+</span>
+<span class="user userThird" data-id="{{ tournament.thirdUser is defined ? tournament.thirdUser.id : '' }}" data-username="{{ tournament.thirdUsername }}" >
+    {% include 'KsTournamentBundle:Tournament:_user.html.twig' with {
+        'user'      : tournament.thirdUser is defined ? tournament.thirdUser : null,
+        'username'  : tournament.thirdUsername,
+        'winner'    : false
+    } %}
+</span>

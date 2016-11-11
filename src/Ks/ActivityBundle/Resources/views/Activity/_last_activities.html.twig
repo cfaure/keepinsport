@@ -1,0 +1,88 @@
+{% if activities|length %}
+    <div id ="lastActivities">
+        {% for datas in activities %}
+            <div class="info">
+                {% include 'KsActivityBundle:Activity:_activity.html.twig' with {
+                    'context': 'newsFeed',
+                    'activity':  datas.activity,
+                    'photos': datas.photos,
+                    'comments': datas.comments,
+                    'activityTeamates': datas.activityTeamates,
+                    'activityOpponents': datas.activityOpponents,
+                    'connectedActivity': datas.connectedActivity,
+                    'activityScores': datas.activityScores,
+                    'clubManagers': datas.clubManagers
+                } %}
+            </div>
+        {% endfor %}
+    </div>
+    {# FMO : permet d'afficher une minimap si utilisation d'un GPS sur l'activité #}
+    <script type="text/javascript">
+        {{ waypointsActivities|raw }}
+        
+        $.each(waypointsActivities, function(key, waypoints) {
+            $map = new google.maps.Map(document.getElementById("gmap_" + waypoints.id), {mapTypeId: google.maps.MapTypeId.TERRAIN});
+            $points= new Array();
+            $mapPoints = new Array();
+            //console.log(waypoints.id);
+            if (Object.keys(waypoints.points).length != 0) {
+                $firstPoint = Object.keys(waypoints.points)[0];
+                $lastPoint = Object.keys(waypoints.points)[Object.keys(waypoints.points).length - 1];
+
+                $lat_min = waypoints.points[$firstPoint].lat;
+                $lat_max = waypoints.points[$firstPoint].lat;
+                $lon_min = waypoints.points[$firstPoint].lon;
+                $lon_max = waypoints.points[$firstPoint].lon;
+                
+                $i=0;
+                $j=0;
+                $iStep = Math.ceil(Object.keys(waypoints.points).length / 500);
+                if ($iStep == 0) $iStep = 1;
+                $.each(waypoints.points, function(key2, waypoint) {
+                    //console.log(key2+'lat/lon='+waypoint.lat+'/'+waypoint.lon);
+                    if ($i % $iStep == 0) { // FMO: on ne prend qu'1 relevé sur $iStep sinon l'appel à l'API google plante sur des gros tracés (GPX par exemple)
+                        $mapPoints.push(
+                            new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+                        );
+                        if ( waypoint.lat < $lat_min ) $lat_min = waypoint.lat;
+                        if ( waypoint.lat > $lat_max ) $lat_max = waypoint.lat;
+                        if ( waypoint.lon < $lon_min ) $lon_min = waypoint.lon;
+                        if ( waypoint.lon > $lon_max ) $lon_max = waypoint.lon;
+
+                        $points[$j] = [waypoint.lat,  waypoint.lon];
+                        $j++;
+                    }
+                    $i++;
+                });
+            
+                //On trace le parcours 
+                $traceRoute = new google.maps.Polyline({
+                    path: $mapPoints,
+                    strokeColor: "#2581BA",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 3
+                });
+
+                $map.setCenter(new google.maps.LatLng(
+                    (($lat_max + $lat_min) / 2.0),
+                    (($lon_max + $lon_min) / 2.0)
+                ));
+
+                //$map.fitBounds($traceRoute.Bounds()); en commentaire sinon ça plante ?!
+                $traceRoute.setMap($map);
+
+                //$zoom = $map.getZoom();
+                //console.log($zoom);
+
+                $encoded = createEncodings($points);
+                $path = "weight:3%7Ccolor:0x0000ff%7Cenc:"+ $encoded;//.replace("\\\\", "\\");
+
+                $html = '<img id="' + waypoints.id + '" crossorigin="anonymous" border="0" src="//maps.googleapis.com/maps/api/staticmap?center=' + (($lat_max + $lat_min) / 2.0) + ',' + (($lon_max + $lon_min) / 2.0);
+                //$html += '&zoom=' + $zoom;
+                $html += '&size=300x200&maptype='+google.maps.MapTypeId.TERRAIN+'&path='+$path+'"</img>';
+                //console.log($html);
+                $("#minimap_"+waypoints.id).html($html);
+            }
+        });
+    </script>
+{% endif %}

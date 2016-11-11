@@ -1,0 +1,121 @@
+{% if showcaseUser is not defined %}
+    {% set showcaseUser = app.user %}
+{% endif %}
+{% if showcaseUser.showcase is defined and showcaseUser.showcase is not null %}
+<div class="rightColumnBloc thumbnail">
+        <h3 class="{% if showcaseUser == app.user %}sportif {% else %}friends{% endif %}">Vitrine
+            <a class="btn btn-small pull-right {% if showcaseUser == app.user %}btn-sportif {% else %}btn-friends{% endif %}" href="{{ path('ks_activity_trophiesList', {'userId' : showcaseUser.id}) }}">
+                <i class="icon-search icon-white"></i>
+            </a>
+        </h3>
+        <div class="blocHeaderSeparator"></div>
+    {#<h3>
+        Vitrine
+        <a class="btn btn-primary btn-small" style="float:right;margin-top:5px;margin-right: 18px" href="{{ path('ks_activity_trophiesList', {'userId' : showcaseUser.id}) }}">
+            <i class="icon-search icon-white"></i>
+        </a>
+    </h3> 
+    <div class="downArrow"></div>#}
+    <table class="showcase">
+        <tbody>
+            {% if mini is defined and mini %}
+                <tr>
+                    {% for key, trophyInShowcase in showcaseUser.showcase.trophies %}
+                        <td class="colShowcase colWithTrophy-mini" style="vertical-align: middle;text-align: center;">
+                            {% set expodedSince = 'showcase.exposedSince'|trans({ '%date%': trophyInShowcase.exposedSince|date('d/m/Y') }) %}
+                            {% if asset('bundles/kstrophy/images/trophies/' ~ trophyInShowcase.trophy.code ~ '.png')|issetImg %}
+                                <img class="imgTrophy" id="imgTrophy{{ trophyInShowcase.trophy.id }}" data-original-title="{{ expodedSince }}" data-content="{{ trophyInShowcase.trophy.label }}" src="{{ asset('bundles/kstrophy/images/trophies/' ~ trophyInShowcase.trophy.code ~ '.png') }}"/>
+                            {% else %}
+                                {#<img class="imgTrophy" id="imgTrophy{{ trophyInShowcase.trophy.id }}" data-original-title="{{ expodedSince }}" data-content="{{ trophyInShowcase.trophy.label }}" src="{{ asset('bundles/ksactivity/images/trophy-mini.png') }}"/>#}
+                                <img class="imgTrophy" id="imgTrophy{{ trophyInShowcase.trophy.id }}" data-original-title="{{ expodedSince }}" data-content="{{ trophyInShowcase.trophy.label }}" src="{{ asset('bundles/kstrophy/images/trophies/trophy.png') }}"/>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+
+                    {% if 5 - showcaseUser.showcase.trophies|length > 0 %}
+                        {% for i in range(1, (5 - showcaseUser.showcase.trophies|length )) %}
+                            {#<td class="colShowcase colWithoutTrophy-mini" style="vertical-align: middle;text-align: center;">Aucun</td>#}
+                            <td class="colShowcase colWithTrophy-mini" style="vertical-align: middle;text-align: center;">
+                                <img class="imgTrophy"   src="{{ asset('bundles/kstrophy/images/trophies/trophyWithOpacity.png') }}"/>
+                            </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% else %}
+                <tr>
+                    {% for key, trophyInShowcase in showcaseUser.showcase.trophies %}
+                        <td class="colShowcase colWithTrophy" style="vertical-align: middle;text-align: center;">
+                            {% set expodedSince = 'showcase.exposedSince'|trans({ '%date%': trophyInShowcase.exposedSince|date('d/m/Y') }) %}
+                            {% if asset('bundles/kstrophy/images/trophies/' ~ trophyInShowcase.trophy.code ~ '.png')|issetImg %}
+                                <img class="imgTrophy" id="imgTrophy{{ trophyInShowcase.trophy.id }}" data-original-title="{{ expodedSince }}" data-content="{{ trophyInShowcase.trophy.label }}" src="{{ asset('bundles/kstrophy/images/trophies/' ~ trophyInShowcase.trophy.code ~ '.png') }}"/>
+                            {% else %}
+                                <img class="imgTrophy" id="imgTrophy{{ trophyInShowcase.trophy.id }}" data-original-title="{{ expodedSince }}" data-content="{{ trophyInShowcase.trophy.label }}" src="{{ asset('bundles/kstrophy/images/trophies/trophy.png') }}"/>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+
+                    {% if 5 - showcaseUser.showcase.trophies|length > 0 %} 
+                        {% for i in range(1, (5 - showcaseUser.showcase.trophies|length )) %}
+                            {#<td class="colShowcase colWithoutTrophy" style="vertical-align: middle;text-align: center;">{{ 'showcase.can_expose_a_trophy_here'|trans }}</td>#}
+                            <td class="colShowcase colWithTrophy" style="vertical-align: middle;text-align: center;">
+                                <img class="imgTrophy"   src="{{ asset('bundles/kstrophy/images/trophies/trophyWithOpacity.png') }}"/>
+                            </td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+<style>
+    .colShowcase {
+       /*width:130px;*/
+       
+    }
+    .colWithTrophy img.imgTrophy{
+        max-width:95px;
+        max-height:95px;
+    }
+    .colWithoutTrophy img.imgTrophy{
+        max-width:95px;
+        max-height:95px;
+    }
+    .colWithoutTrophy { 
+        font-size:1.5em; 
+        background-image: url({{ asset('bundles/kstrophy/images/trophies/trophy.png') }}); 
+        background-repeat:no-repeat; 
+        background-position: center center;
+        moz-opacity:0.5;
+        opacity: 0.5; 
+        filter:alpha(opacity=50);
+    }
+    
+    .colWithoutTrophy-mini { 
+        font-size:0.8em; 
+        background-image: url({{ asset('bundles/ksactivity/images/trophy-mini.png') }}); 
+        background-repeat:no-repeat; 
+        background-position: center center;
+        moz-opacity:0.5;
+        opacity: 0.5; 
+        filter:alpha(opacity=50);
+    }
+    
+    .colWithTrophy-mini img.imgTrophy{
+        max-width:32px;
+        max-heght:32px;
+    }
+    .colWithoutTrophy-mini img.imgTrophy{
+        max-width:32px;
+        max-heght:32px;
+    }
+    
+    table.showcase td, table.showcase td:hover{
+        padding:0px;
+        background-color: white;
+    }
+</style>
+
+<script type="text/javascript">
+    $(".imgTrophy").popover();   //background-color:trophyInShowcase.trophy.category.color;
+</script>

@@ -1,0 +1,319 @@
+{% extends "KsUserBundle::layout_full.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        #localisationsMap img{
+            max-width:none
+        }
+        .select2-container-multi.light .select2-choices, .select2-container-multi.light .select2-choices .select2-search-choice {
+            background: none;
+            border:1px solid white;
+            padding: 5px 18px 0px 0px;
+            font-size:11px;
+            box-shadow:none;
+        }
+        .select2-container-multi.light .select2-search-choice-close {
+            left : auto;
+            top:5px;
+            right: 0;
+        }
+        .select2-container-multi.light.select2-container-active .select2-choices {
+            border: 1px solid #5897FB;
+            box-shadow:none;
+            outline: none;
+        }
+    </style>
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/bootstrap-multiselect.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/infobox.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/markerclusterer.js') }}"></script>
+    <script type="text/javascript">
+
+        var map;
+        var markers = [];
+        var infoBoxes = [];
+        var markerCluster = null;
+        var infoBox = null;
+        var infoBoxOpened = -1;
+        var ajax = null;
+        
+        $(document).ready(function() {      
+            $(".customSelectSports").select2({
+                placeholder: "{{ 'actions.select-sport'|trans }}",
+                width : 250,
+                allowClear: true,
+                formatResult: function(state) {
+                    var codeSport = state.element[0].getAttribute("codeSport");
+                    if (!codeSport) return state.text; 
+                    return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+                },
+                'containerCssClass' : 'light',
+            });
+            
+            $(".customSelectSports").on("change", function(e) {
+                searchSportingActivities();
+            });
+                    
+            $("#searchInput").keyup( function () {
+                $("#usersBloc").html('');
+                searchSportingActivities( );
+            });
+            
+            $("#fromUsersSelect").multiselect({
+                includeSelectAllOption: true,
+                buttonClass: 'btn btn-mini btn-link',
+                buttonText: function(options) {
+                    if (options.length == 0) {
+                        return '{{ "news-feed.perimeter"|trans }} <b class="caret"></b>';
+                    }else {
+                        var selected = '{{ "news-feed.perimeter"|trans }} : ';
+                        options.each(function() {
+                            selected += $(this).text() + ', ';
+                        });
+                        return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                    }
+                },
+                onChange:function(element, checked){
+                    searchSportingActivities();
+                }
+            });       
+        });
+        
+        /*google.maps.event.addListener(marker, "click", function()  
+        {  
+            // Make an AJAX request to get the data  
+            // The return will be put into the InfoWindow  
+            $.ajax({  
+                url: 'ajax/get_infowindow_content.php',  
+                success: function(data) {  
+                        iw.setContent(data);  
+                    iw.open(map, marker);  
+                }  
+            });  
+        });  */
+
+        var searchSportingActivities = function( ) {
+            if ( infoBox ) {
+                infoBox.close();
+                infoBox = null;
+            }
+                    
+            searchTerms     = $("#searchInput").val();
+            activitiesFrom  = $("#fromUsersSelect").val();
+            sportIdSelect   = $(".customSelectSports").select2("val");
+
+            if( ajax != null ) ajax.abort();
+            
+            $("#searchLoader").show();
+
+            ajax = $.post(
+                Routing.generate('ksSportingActivities_search'), 
+                {
+                    'terms'             : searchTerms,
+                    "activitiesFrom"    : activitiesFrom,
+                    "sportId"           : sportIdSelect
+                },
+                function(response) {
+                    if( response.code == 1 ) {
+                        clearMarkers();
+                        console.log(response.activities.length + " activities");
+                        $.each( response.activities, function( key, activity ) {
+                            //setTimeout(function(){
+                                addMarker( activity.id,  new google.maps.LatLng(activity.place_latitude, activity.place_longitude) );
+                            //}, 500);
+                                
+                            
+                            /*var markerOptions = {  
+                                map: map,  
+                                position: new google.maps.LatLng(activity.place_latitude, activity.place_longitude)       
+                            };  
+                            marker = new google.maps.Marker(markerOptions);  */
+
+                            
+                        });
+                        markerCluster = new MarkerClusterer(map, markers, {
+                            maxZoom: 20,
+                            gridSize: 50,
+                            //styles: styles[style]
+                        });
+                        
+                        $("#searchLoader").hide();
+                    }
+                }
+            );
+        };
+        
+        function clearMarkers() {
+            if( markerCluster ) {
+                markerCluster.clearMarkers();
+            }
+            if ($.isArray(markers)) {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(null);
+                }
+                markers = [];
+            }
+             if ($.isArray(infoBoxes)) {
+                 infoBoxes = [];
+             }
+        }
+  
+        function addMarker(activityId, location) {
+            marker = new google.maps.Marker({
+              position: location,
+              map: map,
+              title: activityId,
+              animation: google.maps.Animation.DROP
+            });
+            markers.push(marker);
+            infoBoxes.push(null);
+            
+            var i = markers.length - 1;
+
+            google.maps.event.addListener(marker, "click", function() {
+                //infoWindow.setContent("This is an infowindow");  
+                //console.log(key)
+                var markerFound = false;
+                var markerKey = -1;
+                for (var i = 0; i < markers.length; i++) {
+                    if( markers[i].getTitle() == activityId ) {
+                        markerFound = true;
+                        markerKey = i;
+                        break;
+                    }
+                }
+                
+                if( markerFound && infoBoxes[i] != null) {
+                    if ( infoBox ) {
+                        infoBox.close();
+                        infoBox = null;
+                    }
+                    infoBox = infoBoxes[markerKey];
+                    infoBox.open(map, this);
+                } else {
+                    var infoBoxOptions = {
+                        content: "<center><img src='{{ asset('img/loader_ks_57.gif') }}'></center>",
+                        //alignBottom : true,
+                        position: markers[markerKey].getPosition(),
+                        boxStyle: { 
+                          background    : "white",
+                          width         : "300px",
+                          height        : "150px",
+                        }
+                        /*,disableAutoPan: false
+                        ,maxWidth: 0
+                        ,pixelOffset: new google.maps.Size(-140, 0)
+                        ,isHidden: false
+                ,pane: "floatPane"
+                ,enableEventPropagation: false*/
+
+
+                    };
+
+                    if ( infoBox ) {
+                        infoBox.close();
+                        infoBox = null;
+                    }
+                    infoBox = new InfoBox(infoBoxOptions);
+                    
+                    //Quand on ferme l'infoBox, on arrête la requête ajax
+                    google.maps.event.addListener(infoBox, 'closeclick', function(){
+                        infoBox = null;
+                        if( ajax != null ) ajax.abort();
+                    });
+                    
+                    //Ouverture
+                    infoBox.open(map, this);
+                    
+                    if( ajax != null ) ajax.abort();
+
+                    ajax = $.post(Routing.generate('ksSportingActivities_loadGoogleMapBubbleContent', {'activityId' : activityId}), 
+                    {},
+                    function(response) {                        
+                        //changement du contenu
+                        infoBox.setContent( response.html );
+                        
+                        //Stockage de l'infobow
+                        infoBoxes[markerKey] = infoBox;
+                    });
+                }
+            });  
+        }
+
+        function initializeMap() {
+            var center = new google.maps.LatLng(18, 10);
+            var mapOptions = {
+                zoom: 2,
+                center: center,
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                mapTypeControl: true,
+                /*mapTypeControlOptions: {
+                    style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                    position: google.maps.ControlPosition.BOTTOM_CENTER
+                },*/
+                navigationControl: true,
+                navigationControlOptions: {
+                    style: google.maps.NavigationControlStyle.SMALL,
+                    position: google.maps.ControlPosition.TOP_RIGHT
+                },
+                panControl: true,
+                zoomControl: true,
+                /*zoomControlOptions: {
+                    style: google.maps.ZoomControlStyle.LARGE,
+                    position: google.maps.ControlPosition.LEFT_CENTER
+                },*/
+                scaleControl: true,
+                streetViewControl: false,
+                overviewMapControl: true
+            };
+            
+            map = new google.maps.Map(document.getElementById('localisationsMap'), mapOptions);
+    
+            searchSportingActivities();
+        }
+
+        google.maps.event.addDomListener(window, 'load', initializeMap);
+           
+    </script>
+{% endblock %}
+    
+{% block content %}
+    <h1 class="friends">{{ "menu.localisations"|trans }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    
+    <div class="input-prepend pull-left" style="display:none">
+        <span class="add-on"><span class="icon-search"></span></span>
+        <input id="searchInput" type="text"/>
+    </div>
+    
+    <div class="pull-left">
+        {% render "KsActivityBundle:Sport:customSelectSports" with {"multiple": "0"} %}
+    </div>
+    
+    <span class="pull-left" style="margin-top:3px;{% if not is_granted("ROLE_USER") %}display:none;{% endif %}">
+        <select id="fromUsersSelect" multiple="multiple" >
+            {% if is_granted("ROLE_USER") %}
+            <option value="me" selected="selected">Moi</option>
+            <option value="my_friends" selected="selected" >Mes amis sportifs</option>
+            {#<option value="my_clubs" selected="selected" >Mes Clubs</option>#}
+            {% endif %}
+            <option value="public" {% if not is_granted("ROLE_USER") %}selected="selected" {% endif %}>Communauté keepinsport</option>
+        </select>
+    </span>
+    
+    <img id="searchLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" class="pull-left" style="margin:4px;display:none">
+
+    <br clear="all"/><br/>
+    <div class="blocHeaderSeparator"></div>
+    <div id="localisationsMap" style="height:600px;border: 2px solid grey;border-radius: 4px 4px 4px 4px;"></div>
+    </br>
+    <div class="alert alert-info">{{'sportsmen.message_click'|trans}} </div>
+{% endblock %}        

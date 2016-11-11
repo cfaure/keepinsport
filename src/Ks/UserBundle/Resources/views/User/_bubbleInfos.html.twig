@@ -1,0 +1,193 @@
+<div class="row">
+    <h4 class="col-md-6">
+        {{ user.username }}
+    </h4>
+    
+    <span class="pull-right">
+        <a class="btn btn btn-xs" rel="tooltip" title="{{ 'users.bubble-profil'|trans }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}"><i class="icon-user icon-white"></i></a>
+        {#<a class="btn btn btn-xs" rel="tooltip" title="{{ 'users.bubble-stats-sport'|trans }}" href="{{ path('ksDashboard_statistics', {'id': user.id }) }}"><i class="icon-bar-chart icon-white"></i></a>#}
+        {% if app.user is defined and app.user is not null and user.id != app.user.id and user.id != '1' %}
+            {% if not user.areFriends and not user.isAwaitingRequestFriendResponse and not user.mustGiveRequestFriendResponse %}
+                <a class="btn btn-xs" rel="tooltip" title="Rentrer en relation avec {{ user.username }}" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': user.id }) }}"><i class="icon-plus icon-white"></i></a>
+            {% elseif user.mustGiveRequestFriendResponse %} 
+                <a class="btn btn-xs" rel="tooltip" title="Accepter la mise en relation avec {{ user.username }}" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': user.id }) }}"><i class="icon-ok icon-white"></i></a>
+                <a class="btn btn-xs" rel="tooltip" title="Refuser la mise en relation avec {{ user.username }}" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': user.id }) }}"><i class="icon-minus icon-white"></i></a>
+            {% elseif user.isAwaitingRequestFriendResponse %}
+                <a class="btn btn-xs" rel="tooltip" title="Annuler la demande de mise en relation avec {{ user.username }}" href="{{ path('ks_user_Cancel_the_friend_request', { 'user2Id': user.id }) }}"><i class="icon-stop icon-white"></i></a>
+            {% else %}
+                <a class="btn btn-xs" rel="tooltip" title="Supprimer la relation avec {{ user.username }}" href="{{ path('ks_user_Revoke_a_friend', { 'user2Id': user.id }) }}"><i class="icon-minus icon-white"></i></a>
+            {% endif %} 
+        {% endif %} 
+    </span>
+</div>
+<center>{% if user.firstName is not null and user.lastName is not null %} {{ user.firstName }} {{ user.lastName }}{% endif %}</center>
+{% if user.isCoach is defined and user.isCoach and user.id != 7 %}
+    <center><span class="label label-primary"><b>COACH</b></span></center>
+{% else %}
+    {% if user.pack_id is defined and user.isActive is defined and user.isActive == 1%} 
+        <center>
+            {% if user.pack_id == 1 %}
+                <span class="label label-elite"><b>ELITE</b></span>
+            {% elseif user.pack_id == 2 %}
+                <span class="label label-premium"><b>PREMIUM</b></span>
+            {% endif %}
+        </center>
+    {% endif %}
+{% endif %}        
+<hr style="margin:0;"/>
+{#
+
+<p>
+    <u>Ville</u> : {{ user.town }}
+</p>
+<p>
+    <u>Sports</u> :
+    {% if user.sports|length > 0 %}
+        {{ user.sports|join(', ') }}
+    {% else %}
+        -
+    {% endif %}
+</p>
+<p>        
+    <u>Clubs</u> : 
+        {% set clubs = user.clubs|split('|') %}
+        {% if clubs|length > 0 and clubs[0] != '' %}
+            {{ clubs|join(', ') }}
+        {% for key, clubLabel in clubs %}
+            <a href="{{ path('ksClub_public_profile', {'clubId' : ???? }) }}" title="{{ clubLabel }}">{{ clubLabel }}</a>
+            {% if key < clubs|length %}, {% endif %}
+        {% endfor %}
+        {% else %}
+            -
+        {% endif %}
+</p>
+#}
+
+{% if rankData is defined %}
+    {% set label = '' %}
+    {% if rankData.league == 3 %} {% set label = "bronze" %} {% endif %}
+    {% if rankData.league == 2 %} {% set label = "silver" %} {% endif %}
+    {% if rankData.league == 1 %} {% set label = "gold" %} {% endif %}
+{% endif %}
+<center>
+    <p>
+        <div style="">
+            <center> {{ 'titles.direct-ranking'|trans }} : <b>{{ month }}</b> </center>
+        </div>
+        <div class="pull-left">
+            <u>{{ 'menu.ranking'|trans }}</u> :
+        </div>
+        <div class="pull-right">
+            {% if rankData is defined %}
+                <span class="label label-{{ label }}">{{ rankData.rank }} / {{ rankData.total }}</span>
+            {% else %}
+                <span class="label label-danger">NC</span>
+            {% endif %}
+        </div>
+        </br>
+        <div class="pull-left">
+            <u>{{ 'titles.activities-number'|trans }}</u> :
+        </div>
+        <div class="pull-right">
+            {% if godFatherData.activitiesNumber is defined %}
+                <span class="label label-{{ label }}">{{ godFatherData.activitiesNumber }}</span>
+            {% else %}
+                <span class="label label-danger">0</span>
+            {% endif %}
+        </div>
+        </br>
+        <div class="pull-left">
+            <u>{{ 'users.own-points'|trans }}</u> :
+        </div>
+        <div class="pull-right">
+            {% if godFatherData.points is defined %}
+                <span class="label label-{{ label }}">{{ (godFatherData.points - godFatherData.godsonsPoints - godFatherData.littlesGodsonsPoints)|number_format(0, '.', ' ') }}</span>
+            {% else %}
+                <span class="label label-danger">0</span>
+            {% endif %}
+        </div>
+    </p>
+    </br>
+    <p>
+        {#<div class="pull-left">
+            <u>{{ 'users.godSons'|trans }}</u> :
+        </div>
+        <div class="pull-right">
+            {% if godFatherData.godsonsNumber is defined %}
+                {% if godFatherData.godsonsNumber > 0 %}
+                    <span class="label label">{{ godFatherData.godsonsNumber }}</span>
+                {% else %}
+                    <span class="label label-danger">0</span>
+                {% endif %}
+            {% else %}
+                <span class="label label-danger">0</span>
+            {% endif %}
+        </div>
+        </br>#}
+        {#<div class="pull-left">
+            <u>{{ 'users.godSons-points'|trans }}</u> :
+        </div>
+        <div class="pull-right">
+            {% if godFatherData.godsonsPoints is defined %}
+                {% if godFatherData.godsonsPoints > 0 %}
+                    <span class="label label">{{ godFatherData.godsonsPoints }}</span>
+                {% else %}
+                    <span class="label label-danger">0</span>
+                {% endif %}
+            {% else %}
+                <span class="label label-danger">0</span>
+            {% endif %}
+        </div>
+        </br>
+        <div class="pull-left">
+            <u>{{ 'users.littleGodSons-points'|trans }}</u> :
+        </div>
+        <div class="pull-right">
+            {% if godFatherData.littlesGodsonsPoints is defined %}
+                {% if godFatherData.littlesGodsonsPoints > 0 %}
+                    <span class="label label">{{ godFatherData.littlesGodsonsPoints }}</span>
+                {% else %}
+                    <span class="label label-danger">0</span>
+                {% endif %}
+            {% else %}
+                <span class="label label-danger">0</span>
+            {% endif %}
+        </div>
+        </br>
+        #}
+        <div class="pull-left">
+            <u>{{ 'users.total-godSons-points'|trans }}</u> :
+        </div>
+        
+        <div class="pull-right">
+            {% if godFatherData.godsonsPoints is defined and godFatherData.littlesGodsonsPoints is defined %}
+                {% if (godFatherData.godsonsPoints + godFatherData.littlesGodsonsPoints) > 0 %}
+                    <span class="label label-success">{{ (godFatherData.godsonsPoints + godFatherData.littlesGodsonsPoints)|number_format(0, '.', ' ') }}</span>
+                {% else %}
+                    <span class="label label-danger">0</span>
+                {% endif %}
+            {% else %}
+                <span class="label label-danger">0</span>
+            {% endif %}
+        </div>
+    </p>
+    </br>
+    {#<p>
+        <div class="pull-left">
+            <u>{{ 'users.total-contest-points'|trans }}</u> :
+        </div>
+        <div class="pull-right">
+            {% if godFatherData.points is defined %}
+                {% if godFatherData.points > 0 %}
+                    <span class="label label" style="font-size: 1.5em;">{{ godFatherData.points }}</span>
+                {% else %}
+                    <span class="label label-danger">0</span>
+                {% endif %}
+            {% else %}
+                <span class="label label-danger">0</span>
+            {% endif %}
+        </div>
+    </p>
+    </br>
+    #}
+</center>

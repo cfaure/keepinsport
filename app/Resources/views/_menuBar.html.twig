@@ -1,0 +1,434 @@
+{% set pageType = app.session.get('pageType') %}
+{% set clubIdSelected = app.session.get('clubIdSelected') %}
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    {% set userId = app.user.id %}
+{% else %}
+    {% set userId = 0 %}
+{% endif %}
+{% set tooltipOnOptionsIfNotAllow = '{% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ tooltipOnOptionsIfNotAllow }}{% endif %}' %}
+
+<div id="navbar" class="navbar navbar-inverse">
+    <div class="navbar-inner" >
+        <div class="container">
+            <button data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar" type="button">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="visible-phone visible-tablet ksLogoLink" style=" float:left;padding-top:7px;" href="{{ path('ksActivity_activitiesList') }}">
+                <img src="{{ asset('img/ks_typo_logo_white_mini.png') }}" style="width:100px"/>
+                <span class="betaLogo">beta</span>
+            </a>
+            <div class="nav-collapse collapse" >
+                <ul class="nav" >                         
+                    <li class="sportif {% if pageType != null and pageType == "sportif" %}select{% endif %}">
+                        <!--a href="{{ path('ksActivity_activitiesList') }}"-->
+                        <a>
+                            {% if is_granted("ROLE_USER") %}
+                                <span style="border-bottom: solid 3px #1787c7;">
+                                    {% if app.user.username|length < 11 %}
+                                        {{ app.user.username }}
+                                    {% else %}
+                                        {{ app.user.username[0:11] }}{{ "..." }}
+                                    {% endif %}
+                                </span>
+                            {% else %}
+                                <span style="border-bottom: solid 3px #1787c7;">{{ "menu.me"|trans }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    
+                    <li class="friends {% if pageType != null and pageType == "friends" %}select{% endif %}">
+                        <!--a href="{{ path('ks_sportifs_all') }}"-->
+                        <a>
+                            <span style="border-bottom: solid 3px #12a24a;margin-left:10px;margin-right:10px;">{{ "menu.sportsmen"|trans }}</span>
+                        </a>
+                    </li>
+
+                    <li class="clubs {% if pageType != null and pageType == "clubs" %}select{% endif %}">
+                        <!--a href="{{ path('ksClub_myClubs') }}"-->
+                        <a>
+                            <span style="border-bottom: solid 3px #F8C70B;margin-left:10px;margin-right:10px;">{{ "menu.clubs"|trans }}</span>
+                        </a>
+                    </li>
+
+                    <li class="wikisport {% if pageType != null and pageType == "wikisport" %}select{% endif %}">
+                        <!--a href="{{ path('ksWikisport_index') }}"-->
+                        <a>
+                            <span style="border-bottom: solid 3px #db2033;margin-left:10px;margin-right:10px;">{{ "menu.wikisport"|trans }}</span>
+                        </a>
+                    </li>  
+                    
+                    <li class="shops {% if pageType != null and pageType == "shops" %}select{% endif %}">
+                        <a>
+                            <span style="border-bottom: solid 3px #FFFFFF;margin-left:10px;margin-right:10px;">{{ "menu.shops"|trans }}</span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="nav pull-right">
+                    <li id="servicesSynchronizationMenuItem" rel="tooltip" title="Activités en cours de synchronisation" style="display:none;margin-right:5px">
+                        <span style="color:white;line-height:46px">
+                            <i class="icon-refresh icon-spin "></i> 
+                        </span>
+                    </li>
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    {% if app.user.id == 1 or app.user.username == "keepinsport" %}
+                    <li class="other">
+                       <a class="icon" href="{{ path('ksUser_netaffiliation_728x90_form') }}">
+                           <span class="icon-cog"></span>
+                       </a>
+                    </li>
+                    {% endif %}
+                    <li id="lastNotificationsMenu" class="dropdown visible-desktop visible-tablet">
+                        {% render "KsNotificationBundle:Notification:notificationsBlocList" %}
+                    </li>
+                    <li class="other">
+                        <a rel="tooltip" title="{{ 'menu.mails'|trans }}" class="icon" href="{{ path('ksMessage_box', {'numPage' : 1}) }}">
+                            <span class="icon-envelope icon-large"></span>
+                        </a>
+                    </li>
+                    
+                    <li class="other">
+                        <a rel="tooltip" title="{{ 'menu.agenda'|trans }}" class="icon" href="{{ path('ksAgenda_index', {'id' : app.user.id }) }}">
+                            <span class="icon-calendar icon-large"></span>
+                        </a>
+                    </li>
+                    <li class="divider-vertical"></li>
+                    <li>
+                        <a rel="tooltip" title="{{ 'menu.disconnect'|trans }}" href="{{ path('fos_user_security_logout') }}">
+                            <span class="icon-off"></span>
+                        </a>
+                    </li>
+                    
+                    </li>
+                {% else %}
+                    <li class="other">
+                        <a href="{{ path('fos_user_security_login') }}">
+                            <span class="icon-off"></span> {{ "menu.connect"|trans }}
+                        </a>
+                    </li>
+                    <li class="other">
+                        <a href="{{ path('fos_user_registration_register') }}">
+                            <span class="icon-signin"></span> {{ "menu.register"|trans }}
+                        </a>
+                    </li>
+                {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="visible-desktop">
+    <div id="navbar-sportif" class="navbar navbar-second {% if pageType != null and pageType == "sportif" %}navbar-default{% endif %}">
+        <div class="navbar-inner" >
+            <div class="container">
+                <div class="nav-collapse collapse" >
+                    <ul class="nav" >     
+                        <li class="sportif">
+                            <a href="{{ path('ksActivity_activitiesList') }}">
+                                <span class="icon-list-alt"></span> {{ "menu.news-feed"|trans }}
+                            </a>
+                        </li>
+                        
+                        <li class="sportif" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ tooltipOnOptionsIfNotAllow }}{% endif %}>
+                            <a href="{{ path("ksSport_activitySessionForm", {"activityId" : "new"}) }}">
+                                <span class="icon-user"></span> {{ "menu.publish-activity"|trans }}
+                            </a>
+                        </li>
+                        
+                        {% if is_granted("ROLE_USER") %}
+                            <li class="sportif">
+                                <a href="{{ path('ks_user_public_profile', { 'username' : app.user.username }) }}">
+                                    <span class="icon-list-alt"></span> {{ "menu.profile"|trans }}
+                                </a>
+                            </li>
+                        {% endif %}
+                            
+                        {% if is_granted("ROLE_USER") %}
+                            <li class="sportif">
+                                <a href="{{ path('ksProfile_equipment', {"creationOrEdition" : "edition"}) }}">
+                                    <span class="icon-list-alt"></span> {{ "menu.equipment"|trans }}
+                                </a>
+                            </li>
+                        {% endif %}
+                        
+                        <li class="sportif">
+                            <a href="{{ path('ksDashboard_statistics', { "id" : userId }) }}">
+                                <span class="icon-bar-chart"></span> {{ "menu.statistics"|trans }}
+                            </a>
+                        </li>
+
+                        <li class="sportif">
+                            <a href="{{ path('ksDashboard_comparison', { "id" : userId }) }}">
+                                <span class="icon-bar-chart"></span> {{ "menu.comparison"|trans }}
+                            </a>
+                        </li>
+
+                        <li class="sportif">
+                            <a href="{{ path("ksLeague_ranking") }}">
+                                <span class="icon-list-ol"></span> {{ "menu.ranking"|trans }}
+                            </a>
+                        </li>
+                        
+                        <li class="sportif" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ tooltipOnOptionsIfNotAllow }}{% endif %}>
+                            <a href="{{ path("ks_set_services") }}">
+                                <span class="icon-cog"></span> {{ "menu.configure-services"|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="navbar-friends" class="navbar navbar-second {% if pageType != null and pageType == "friends" %}navbar-default{% endif %}">
+        <div class="navbar-inner" >
+            <div class="container">
+                <div class="nav-collapse collapse" >
+                    <ul class="nav" >     
+                        <li class="friends">
+                            <a href="{{ path('ks_sportifs_all') }}">
+                                <span class="icon-list"></span> {{ "menu.all-sportsmen"|trans }}
+                            </a>
+                        </li>
+                        
+                        <li class="friends">
+                            <a href="{{ path('ksSportingActivities_localisations') }}">
+                                <span class="icon-map-marker"></span> {{ "menu.localisations"|trans }}
+                            </a>
+                        </li>
+
+                        <li class="friends" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ tooltipOnOptionsIfNotAllow }}{% endif %}>
+                            <a href="{{ path('ksFriends_invite') }}">
+                                <span class="icon-envelope"></span><span class="icon-facebook"></span><span class="icon-google-plus"></span> {{ "menu.invite"|trans }}
+                            </a>
+                        </li>
+                        <li class="friends" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ tooltipOnOptionsIfNotAllow }}{% endif %}>
+                            <a class="sportsmanSearchBtn" style="cursor: pointer">
+                                <span class="icon-group"></span> {{ "menu.look-for-partners"|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="navbar-clubs" class="navbar navbar-second {% if pageType != null and pageType == "clubs" %}navbar-default{% endif %}">
+        <div class="navbar-inner" >
+            <div class="container">
+                <div class="nav-collapse collapse" >
+                    <ul class="nav" >
+                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                            {% for clubHasUser in app.user.clubs %}
+                                <li class="clubs {% if pageType == "clubs" and clubIdSelected ==  clubHasUser.club.id  %}select{% endif %}">
+                                    <a href="{{ path('ksClub_public_profile', {'clubId' : clubHasUser.club.id }) }}">
+                                        {{ clubHasUser.club.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                        <li class="clubs" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ tooltipOnOptionsIfNotAllow }}{% endif %}>
+                            <a href="{{ path('ksClub_all') }}">
+                                <span class="icon-search"></span> {{ "menu.look-for-club"|trans }}
+                            </a>
+                        </li>
+                        
+                        <li class="clubs" {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ tooltipOnOptionsIfNotAllow }}{% endif %}>
+                            <a href="{{ path('ksProfileClub_informations', {'clubId' : 'new', 'creationOrEdition' : 'creation'}) }}">
+                                <span class="icon-plus"></span> {{ "menu.create-club"|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="navbar-wikisport" class="navbar navbar-second {% if pageType != null and pageType == "wikisport" %}navbar-default{% endif %}">
+        <div class="navbar-inner" >
+            <div class="container">
+                <div class="nav-collapse collapse" >
+                    {% render 'KsActivityBundle:Wikisport:nav' %}
+                    <ul class="nav" >  
+                        <li class="wikisport">
+                            <a href="{{ path('ksContest_coach') }}">
+                                <span class="icon-trophy"></span> {{ "menu.contest"|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="navbar-shops" class="navbar navbar-second {% if pageType != null and pageType == "shops" %}navbar-default{% endif %}">
+        <div class="navbar-inner" >
+            <div class="container">
+                <div class="nav-collapse collapse" >
+                    <ul class="nav" >  
+                        <li class="shops">
+                            <a href="{{ path('ksShop_list') }}">
+                                <span class="icon-search"></span> {{ "menu.search-shops"|trans }}
+                            </a>
+                        </li>
+                        {#<li class="shops">
+                            <a href="{{ path('ksCreate_shop') }}">
+                                <span class="icon-plus"></span> {{ "menu.create-shop"|trans }}
+                            </a>
+                        </li>#}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if pageType != null and pageType == "clubs" and clubIdSelected is not null %}
+    {% render 'KsClubBundle:Club:actions' with { 'id': clubIdSelected } %}
+{% endif %}
+
+<div style="margin-top:20px"></div>
+
+<script type="text/javascript" src="{{ asset('bundles/ksactivity/js/wikisport.js') }}"></script>
+
+<script type="text/javascript">           
+    $(document).ready(function() {
+        $( ".navbar.navbar-default" ).show();
+
+        $("#navbar li.sportif").click (function() {
+            $( ".navbar-second" ).hide();
+            $( "#navbar-sportif" ).show();
+            $("#navbar li").removeClass("select");
+            $( this ).addClass("select");
+        });
+
+        $("#navbar li.friends").click (function() {
+            $( ".navbar-second" ).hide();
+            $( "#navbar-friends" ).show();
+            $("#navbar li").removeClass("select");
+            $( this ).addClass("select");
+        });
+
+        $("#navbar li.clubs").click (function() {
+            $( ".navbar-second" ).hide();
+            $( "#navbar-clubs" ).show();
+            $("#navbar li").removeClass("select");
+            $( this ).addClass("select");
+        });
+
+        $("#navbar li.wikisport").click (function() {
+            $( ".navbar-second" ).hide();
+            $( "#navbar-wikisport" ).show();
+            $("#navbar li").removeClass("select");
+            $( this ).addClass("select");
+        });
+        
+        $("#navbar li.shops").click (function() {
+            $( ".navbar-second" ).hide();
+            $( "#navbar-shops" ).show();
+            $("#navbar li").removeClass("select");
+            $( this ).addClass("select");
+        });
+
+        /*$("#navbar li.other").mouseenter (function() {
+            $( ".navbar-second" ).hide();
+        });*/
+
+        /*$("#navbar li.sportif, #navbar li.friends, #navbar li.clubs, #navbar li.wikisport").mouseleave(
+            function() {
+                $( ".navbar-second" ).hide();
+                $( ".navbar.displayed" ).show();
+            }
+        );*/
+
+        /*$("#navbar-sportif").on('show', function() {
+            $("#navbar li.sportif").hover();
+        });*/
+        /*$("#navbar-friends").hover( function() {
+            //$("#navbar li.friends").hover();
+            $("#navbar li.friends").addClass("select");
+            console.log("hover")
+            //console.log("ici");
+        },function() {console.log("nothover")
+            $("#navbar li.friends").removeClass("select");
+        });*/
+
+        /*$("#navbar-friends").on({
+            mouseenter: function() {alert("entre")
+                $("#navbar li.friends").addClass("select");
+            },
+            mouseleave: function() {alert("sort");
+                $("#navbar li.friends").removeClass("select");
+            }
+        }, ".hover");
+
+        $("#navbar-friends").on('mouseenter', '.hover',  function(){
+                alert('you hovered the button!');$("#navbar li.friends").addClass("select");
+       }).on('mouseleave', '.hover', function() {
+               alert('you removed the hover from button!');$("#navbar li.friends").removeClass("select");
+       });*/
+
+       {% if pageType != null %}
+        /*
+        $("#navbar-sportif, #navbar-friends, #navbar-clubs, #navbar-wikisport").mouseleave(
+            function() {
+                $( ".navbar-second" ).hide();
+                $( ".navbar.navbar-default" ).show();
+                $("#navbar li").removeClass("select");
+                $("#navbar li.{{ pageType }}").addClass("select");
+            }
+        );
+        
+        $("header").mouseenter(
+            function() {
+                $( ".navbar-second" ).hide();
+                $( ".navbar.navbar-default" ).show();
+                $("#navbar li").removeClass("select");
+                $("#navbar li.{{ pageType }}").addClass("select");
+            }
+        );
+        */
+        {% endif %}
+
+        $.each($(".navbar-second .nav > li > a, .navbar-third .nav > li > a"), function(key, a) {
+            var href = $( a ).attr("href");
+            if( href !== undefined && window.document.URL.search( href ) != -1 ) {
+                $( this ).parent().addClass( "select" );
+            }
+
+        });
+        
+        $("li[rel=tooltip]").tooltip();
+        
+        
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and ( checkServicesSync is not defined or ( checkServicesSync is defined and checkServicesSync == "1" ) ) %}
+        //Test si activités en cours de synchronisation
+        var checkServicesSynchronization = function() {
+            $.post(
+                Routing.generate('ksActivity_checkSynchronisationInProgress'), 
+                {},
+                function(response) {
+                    if( response.servicesAreBeingSynchronized ) {
+                        $("#servicesSynchronizationMenuItem").show();
+                        
+                        //On re vérifiera dans 30 secondes
+                        window.setTimeout(checkServicesSynchronization, 30000);
+                    } else {
+                        $("#servicesSynchronizationMenuItem").hide();
+                        
+                        if( response.activitiesSynchronizedNb > 0 ) {
+                            $("#showSynchronizedActivitiesBloc").show();
+                        }
+                    }
+                }
+            );
+        }
+        
+        checkServicesSynchronization();
+        {% endif %}
+    });
+
+</script>

@@ -1,0 +1,30 @@
+<ul class="nav" > 
+    {#% for category in articleCategories %#}
+    {#<li class="wikisport">#}
+        {#<a href="{{ path('ksWikisport_category', {'tagId' : category.id }) }}">{{ category.label }}</a>#}
+    {#</li>#}
+    {#{% endfor %}#}
+    
+    {% render 'KsActivityBundle:Wikisport:new_modal' with { 'articleTagId' : '-1' } %}
+        
+    <li class="wikisport">
+        <a href="{{ path('ksWikisport_index') }}">
+            <span class="icon-search"></span> {{ "menu.search-shops"|trans }}
+        </a>
+    </li>
+    <li class="wikisport">
+        <a onclick="createNewArticle('-1'); //Création d'un article sans type sélectionné, l'utilisateur le choisi après dans la modal">
+            <span class="glyphicon glyphicon-plus newArticleButton"></span> {{ "menu.create-article"|trans }}
+        </a>
+    </li>
+    <li class="wikisport">
+        <a target="_blank" href="{{ path('ksUser_consultBlog') }}">
+            Blog
+        </a>
+    </li>
+    <li class="wikisport">
+        <a href="{{ path('KsEvolution_list') }}">
+            {{'evolutions.evolutions_site'|trans}}
+        </a>
+    </li>
+</ul>

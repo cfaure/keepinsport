@@ -1,0 +1,154 @@
+{% if article.event is defined and article.event is not null %}
+
+    <span id="basicInfosEventBloc">
+        {% include 'KsEventBundle:Event:_basicInfos.html.twig' with {'event': article.event } %}
+    </span>
+
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        <span id="eventMiniIcon" class="glyphicon glyphicon-calendar"></span>
+        <br/>
+        {# faire un render pour récupérer participations #}
+        {#% include 'KsEventBundle:Event:_userParticipatesEventLink.html.twig' with {'event': article.event, 'participations' : null  } %#}
+    {% endif %}
+    <div>    
+        <b>Participants : </b>
+        <br/>
+        {% for userParticipatesEvent in article.event.usersParticipations %}
+             {% if userParticipatesEvent.user.userDetail is not null and userParticipatesEvent.user.userDetail.firstname is not null and userParticipatesEvent.user.userDetail.lastname is not null %}
+                 {% set titleTooltip = userParticipatesEvent.user.username ~ " - " ~  userParticipatesEvent.user.userDetail.firstname ~ " " ~ userParticipatesEvent.user.userDetail.lastname %}
+             {% else %}
+                 {% set titleTooltip = userParticipatesEvent.user.username %}
+             {% endif %}
+             <a rel="tooltip" title="{{ titleTooltip }}" href="{{ path('ks_user_public_profile', { 'username' : userParticipatesEvent.user.username }) }}">
+                 {% if userParticipatesEvent.user.userDetail is defined and userParticipatesEvent.user.userDetail is not null %}
+                     {% include 'KsUserBundle:User:_userImage.html.twig' with { 'uter_id' : userParticipatesEvent.user.id, 'user_imageName' : userParticipatesEvent.user.userDetail.imageName } %}
+                 {% else %}
+                     {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_imageName' : null } %}
+                 {% endif %}  
+             </a>
+        {% endfor %}
+    </div>
+    
+    <div id="editEventModal" class='modal hide fade'>
+        <div class='modal-header'>
+            <a class='close' data-dismiss='modal'>&times;</a>
+            <h3>Edition de l'événement : {{ article.event.name }}</h3>
+        </div>
+        <div class='modal-body'>
+            <div class="eventEditFormContainer"></div>
+            <div class="loader" align="center"><img src="{{ asset('bundles/ksactivity/images/load.gif') }}" alt="Loading" /></div>
+            <div class="messages"></div>     
+        </div>
+        <div class='modal-footer'>
+            <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+            <a href='#' class='edit btn btn-primary'>Editer</a>
+        </div>
+    </div>
+{% endif %}
+<style>
+    #eventMiniIcon:hover{
+        cursor: pointer;
+    }
+</style>
+    
+<script type="text/javascript">
+    {% if article.event is defined and article.event is not null and is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        attachEditEvent($("#eventMiniIcon"));
+
+        function attachEditEvent(elt) {
+            var editEventModal = $("#editEventModal");
+            //var modalHeader = editEventModal.find(".modal-header");
+            //var modalTitle = modalHeader.find("h3");
+            var eventEditFormContainer = editEventModal.find('.eventEditFormContainer');
+            var loader = editEventModal.find('.loader');
+            var messagesBloc = editEventModal.find('.messages');
+            var editButton = editEventModal.find('a.edit');
+            var cancelButton = editEventModal.find('a.cancel');
+            var initialValue = "";
+            
+            var editEvent = function() {
+                if( ! editButton.hasClass("disabled") ) {
+                    var eventEditForm = eventEditFormContainer.find("form.eventEditForm");
+                    eventEditForm.find(".control-group").removeClass("error");
+                    messagesBloc.html("");
+                    messagesBloc.hide();
+                     messagesBloc.removeClass("alert alert-error");
+                    editButton.addClass("disabled")
+
+                    $.post(
+                    eventEditForm.attr('action'), 
+                    eventEditForm.serialize(), 
+                    function(response) {
+                        if ( response.editResponse == 1 ) {  
+                            eventEditFormContainer.hide();
+                            messagesBloc.html("L'événement a bien été édité.");
+                            messagesBloc.show();
+                            editButton.hide();
+                            cancelButton.html("Fermer");
+
+                            $("#basicInfosEventBloc").html(response.basicInfoHtml);  
+                        } else {
+                            errorMessage = "";
+                            $.each(response.errors,function(fieldName, error){
+                                errorMessage += "<u>"+fieldName+" :</u><br/>";
+                                $.each(error,function(i, text){
+                                    errorMessage += text+"<br/>";
+                                });
+                                eventEditForm.find(".control-group." + fieldName).addClass("error");
+                                messagesBloc.html(errorMessage);
+                                messagesBloc.addClass("alert alert-error");
+                                messagesBloc.show();
+                            });
+                        }
+                        editButton.removeClass("disabled")
+
+                    }).complete(function() {
+                        //descriptionTextarea.val(initialValue);
+                        //activityToBeSharedBloc.html(loader);
+                        //shareActivityModal.modal('hide');
+                    });
+                }
+
+            };       
+
+            editButton.click(editEvent);
+
+            elt.click(function(e) {
+            
+                eventEditFormContainer.hide();
+                loader.show();
+                    
+                $request = $.get(
+                    Routing.generate('ksEvent_getEventEditForm', {'eventId' : "{{ article.event.id }}"}),
+                    function(response) {
+                        eventEditFormContainer.html(response);
+                        loader.hide();
+                        eventEditFormContainer.show();
+                        editButton.removeClass("disabled");
+                    }
+                );
+
+                editEventModal.on('shown', function() {
+                    messagesBloc.hide();
+                    editButton.show();
+                    editButton.addClass("disabled");
+                    cancelButton.html("Annuler");
+                });
+
+                editEventModal.on('hide', function() {
+                    eventEditFormContainer.html("");
+                    eventEditFormContainer.hide();
+                    messagesBloc.hide();
+                    editEventModal.modal('hide');
+                    $request.abort();
+                });
+
+                editEventModal.modal('show');
+                editEventModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+                return false;
+            });
+        }
+    {% endif %}
+</script>

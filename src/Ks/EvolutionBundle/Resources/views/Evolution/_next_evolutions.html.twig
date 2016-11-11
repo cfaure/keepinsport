@@ -1,0 +1,32 @@
+<div class="floatLeft nextev">
+    {#<div id="nextEvolutions"> FMO : pour permettre le déroulement du bloc #}
+    <div class="nextevolutions"> 
+        {% set i = 0 %}
+        {% for evolution in evolutions %}
+            {% set i = i + 1 %}
+            {% if i == 1 %}
+                {% set color = '#da2032' %}
+                {% set size = '13px' %}
+            {% elseif i == 2 %}
+                {% set color = '#f3a704' %}
+                {% set size = '13px' %}
+            {% elseif i == 3 %}
+                {% set color = '#13a149' %}
+                {% set size = '13px' %}
+            {% else %}
+                {% set color = '' %}
+                {% set size = '12px' %}
+            {% endif %}
+            <a style="color:{{ color}}!important;font-size:{{ size }} " href="{{ path('KsEvolution_list') }}">
+                <b>{{ evolution.descriptionShort}}</b> ({{ evolution.numVotes }}) 
+            </a>
+            </br>
+        {% endfor %}
+    </div>
+</div>
+<div class="floatLeft">
+    <div id="sliderFrame">
+        <div id="slider">
+        </div>
+    </div>
+</div>     

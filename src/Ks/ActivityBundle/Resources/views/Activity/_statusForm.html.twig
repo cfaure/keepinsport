@@ -1,0 +1,51 @@
+{% if club is defined %}
+    {% if activity is not defined %}
+        {% set action = path('ksClub_publishStatus', {'clubId' : club.id }) %}
+    {% else %}
+        {% set action = path('ksClub_updateStatus', {"activityId" : activity.id, 'clubId' : club.id }) %}
+    {% endif %}
+{% else %}
+    {% if activity is not defined %}
+        {% set action = path('ksActivity_publishStatus') %}
+    {% else %}
+        {% set action = path('ksActivity_updateStatus', {"activityId" : activity.id }) %}
+    {% endif %}
+{% endif %}
+
+<div class="modal fade" id="publishStatusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class='modal-header'>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Fermer</span></button>
+                <h4 class="modal-title" id="myModalLabel">{{ 'publish_a_status'|trans }}</h4>
+            </div>
+            <div class='modal-body'>
+                <div class="messages"></div>   
+                <form id="statusForm" action="{{ action }}"  method="post" {{ form_enctype(form) }} novalidate="novalidate">
+                    {{ form_widget(form.description, { attr: {rows: 3, class: "status input-block-level", value: "", style: "height: 56px; resize: none;"} }) }}
+
+                    {% if (club is defined and club|is_manager( app.user.id )) or app.user.username == "keepinsport" %}
+                        <br/>
+                        <div class="input-prepend input-append">
+                            <span class="add-on">Important</span>
+                            <button class="isImportantYes btn" type="button">Oui</button>
+                            <button class="isImportantNo btn active" type="button">Non</button>
+                        </div>
+                        <input type="checkbox" name="isImportant" style="display:none"/>
+                    {% endif %}
+                    {{ form_rest(form) }}
+                    <br/>
+                </form>        
+            </div>
+            <div class='modal-footer'>
+                <img class="loader pull-left" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+                <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+                <a href='#' class='publish btn btn-sportif'>{{ 'activities.publishStatus'|trans }}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    
+</script>

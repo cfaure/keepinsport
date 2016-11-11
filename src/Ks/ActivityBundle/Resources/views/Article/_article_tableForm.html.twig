@@ -1,0 +1,58 @@
+<div class="input-prepend input-append">
+    <input type="number" step="1" min="1" max="30" value="1" id="nbRow" class="input-mini" style="margin-bottom:0">
+    <span class="add-on">x</span>
+    <input type="number" step="1" min="1" max="30" value="1" id="nbColumn" class="input-mini" style="margin-bottom:0">
+    <button id="bAddTable" class="btn btn-primary"><i class="glyphicon glyphicon-plus icon-white"></i>Ajouter un tableau</button>
+</div>
+
+<script type="text/javascript">
+    $("#bAddTable").click(function() {
+        
+        var nbRow                   = $("#nbRow").val();
+        var nbColumn                = $("#nbColumn").val();
+
+        constructionTable(nbRow, nbColumn);                              
+    });
+
+    
+    function constructionTable(nbRow, nbColumn) {
+        
+        var $articlesElements   = $("#article_elements");
+        var $table       = $("<table>", {id: "$table", width:"100%"}).addClass("table table-bordered");
+        var iRow, numSession     = 0;
+        
+        $tbody = $("<tbody>");
+        
+        for(iRow = 1; iRow <= nbRow; iRow++) {
+            
+           $row = $("<tr>");
+           
+            for(iColumn = 1; iColumn <= nbColumn; iColumn++) {
+                $column = $("<td>");
+                
+                $textarea = $("<textarea>", { class: "description", width: "98%" })
+                        .css("resize", "none")
+                        .val("");
+                        
+                $column.append( $textarea );
+                
+                $row.append( $column );
+            }
+
+            $tbody.append( $row );
+            
+        }
+        $table.append( $tbody );
+        
+        //On ajoute la barre de formatage de texte sur tout les textarea
+        /*$.each($table.find("textarea"), function (key, textarea) {
+            $( textarea ).wysihtml5();
+        });*/
+        
+
+  
+        $articlesElements.append( $table ); 
+    }
+    
+ 
+</script>

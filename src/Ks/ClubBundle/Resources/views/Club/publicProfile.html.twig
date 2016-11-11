@@ -1,0 +1,194 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }} - {{ club.name }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksactivity/css/style.css') }}" /> 
+    {# zoom sur photos #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('swipebox/source/swipebox.css') }}" />
+    
+    {#jqueryFileUpload #}
+    <link rel="stylesheet" href="{{asset('jQueryFileUpload/css/jquery.fileupload-ui.css')}}">
+    
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}"  />
+    
+<style type="text/css">
+        /*.carousel {
+            
+            }
+         .carousel a {
+             display: block; float:left; margin-right:10px;
+             /*width:48px;
+             height:48px;
+        }*/
+        
+        .carousel2 {
+            padding: 15px 0 15px 40px;
+            height: 100px;
+        }
+        /*.carousel img {
+
+            padding: 9px;
+            margin: 7px;
+            display: block;
+            float: left;
+        }*/
+        
+
+.carousel2 ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: block;
+}
+.carousel2 a {
+	/*font-size: 30px;
+	color: #666;
+	text-align: center;
+	background-color: #f0f0f0;
+	border: 5px solid #ccc;
+	width: 50px;
+	height: 50px;
+	padding: 0;
+	margin: 6px;*/
+	display: block;
+	float: left;
+}
+
+a.prev, a.next {
+	/*background: url(../images/miscellaneous_sprite.png) no-repeat transparent;*/
+	width: 45px;
+	height: 50px;
+	display: block;
+	position: absolute;
+	top: 85px;
+}
+a.prev {			left: -22px;
+					background-position: 0 0; }
+a.prev:hover {		background-position: 0 -50px; }
+a.next {			right: -22px;
+					background-position: -50px 0; }
+a.next:hover {		background-position: -50px -50px; }
+
+a.prev span, a.next span {
+	display: none;
+}
+        
+    </style>
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/scripts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksclub/js/scripts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/jquery.carouFredSel.js') }}"></script>
+    
+    {# zoom sur photos #}
+    <script src="{{ asset('swipebox/source/jquery.swipebox.min.js') }}"></script>
+    
+    {#jqueryFileUpload #}
+    {#<script src="{{asset('jQueryFileUpload/js/vendor/jquery.ui.widget.js')}}"></script>#}
+    <script src="{{asset('jQueryFileUpload/js/tmpl.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.iframe-transport.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload-ui.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/locale.js')}}"></script>
+    
+    {# textarea extensibles #}
+    <script src="{{ asset('js/jquery.elastic.source.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ asset('bundles/ksevent/js/scripts.js') }}"></script>
+    
+    {# zoom sur photos #}
+    <script src="{{ asset('swipebox/source/jquery.swipebox.min.js') }}"></script>
+    
+    {# Précharger les ressources #}
+    <script src="{{ asset('plugins/canvasquery.min.js') }}"></script>
+    <script src="{{ asset('plugins/simploader.js') }}"></script>
+    <script src="{{ asset('plugins/PreloadJS-release_v0.3.1/lib/preloadjs-0.3.1.min.js') }}"></script>
+    
+    {# canvas #}
+    <script src="{{ asset('bundles/kscanvasdrawing/js/functions.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/accessory.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/perso.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/sky.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/cloud.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/landscape.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/equipments.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/clothing.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/initialize.js') }}"></script>
+    
+    <script type="text/javascript">
+        if( !isCanvasSupported ) {
+            alert( "Met ton naviguateur internet à jour pour profiter de toutes les fonctionalités du sites" );
+        } 
+        
+        $(document).ready(function() {            
+            var handleComplete = function() {
+                activitiesTypes = getActivityTypesSelect();
+                //loadClubActivities("{{ club.id }}", 0, activitiesTypes );
+            }
+                    
+            var queue = new createjs.LoadQueue(false);
+            queue.addEventListener("complete", handleComplete);
+            
+            queue.loadManifest([
+                "{{ asset('bundles/kscanvasdrawing/images/sun.png') }}", 
+                "{{ asset('bundles/kscanvasdrawing/images/moon.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/wood_pannel.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/timer.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/road.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/mountain.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/mountains.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/campaign.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/beach.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/city.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/mountains.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/road.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/track.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/normal.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/clay.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/hard.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/musculation/room.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/swimming/pool_indoor_short.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/football/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/basketball/field.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/skate/ramp.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/ski/ski_station.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/golf/field.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/combat/ring.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/bike/road_bike/without_frame.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/bike/mountain_bike/without_frame.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/tennis/racquet.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/clothing/zip.png') }}"
+            ]);
+        });
+        
+        
+    </script>
+{% endblock %}
+    
+{% block left_column %}
+    {% render "KsClubBundle:Club:leftColumn" with { 'clubId' : club.id } %}
+{% endblock %}
+    
+{% block body %}
+
+    {#% include 'KsClubBundle:Activity:_activitiesFilter.html.twig' with {'club' : club, 'activitiesType' : true, 'sort' : true} %#}
+
+    <div class="ksBloc thumbnail">
+        <h3 class="clubs">{{ 'titles.last-activities'|trans }}</h3>
+        <div class="blocHeaderSeparator"></div>
+        {% render "KsClubBundle:Club:lastActivities" with { 
+            'clubId' : club.id, 'nbActivities' : 20 } %}
+    </div>
+{% endblock %}
+
+    

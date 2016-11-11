@@ -1,0 +1,185 @@
+{% block subject %}
+    {% autoescape false %}
+
+    {% endautoescape %}
+{% endblock %}
+{% block body_text %}
+    {% autoescape false %}
+
+    {% endautoescape %}
+{% endblock %}
+
+<body yahoo="fix" alink="#000000" link="#000000" text="#545556" bgcolor="#f3f3f3" style="width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0 auto; padding:0; background:#f3f3f3; min-height:1000px;">
+    <div id="mail">
+        <!-- HEADER -->
+        <table width="582" border="0" align="center" cellpadding="0" cellspacing="0"  style="margin:0 auto; padding:0;">
+            <tr>
+                <td style="background:#f3f3f3;">
+                    <a href="#"> 
+                        <img src="{{ pathWeb ~ asset('V2/images/header.png') }}" alt="KeepinSport" width="582" height="110" border="0"  style="max-width:100%; height:auto; display:block;"  /> 
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+        <table class="content" align="center" width="582" cellspacing="0" cellpadding="0" border="0" bgcolor="#f3f3f3" style="margin:0 auto; padding:0;">    
+            <tr>
+                <td align="center" valign="top" class="wrapper" width="582">
+
+                    <!-- UNE -->
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                        <tr>
+                            <!-- A la Une -->
+                            <td width="100%">
+                                <table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" style="margin:0 auto;padding:0; background:#ffffff;">
+
+                                    <tr height="15">
+                                        <td><img src="{{ pathWeb ~ asset('V2/images/fix.png') }}" width="1" height="15" style="display:block;" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><table width="375" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td width="15"><img src="{{ pathWeb ~ asset('V2/images/fix.png') }}" width="15" height="1" style="display:block"/></td>
+                                                    <td width="360">
+                                                        <h2 style="color:#000000; font-family:Helvetica,Arial,sans-serif; font-style:normal; font-weight:100; font-size:18px;letter-spacing:normal;text-align:left; margin:0 !important;line-height:100%;">
+                                                            {% if user.username != 'keepinsport' %}
+                                                                {{ 'mails.hi'|trans }} {{ user.username }},
+                                                            {% else %}
+                                                                {{ 'mails.hi'|trans }},
+                                                            {% endif %} 
+                                                        </h2>
+                                                    </td>
+                                                </tr>
+                                            </table></td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="bottom" height="18">&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td width="3%"><img src="{{ pathWeb ~ asset('V2/images/fix.png') }}" width="15" height="1" style="display:block"/></td>
+                                                    <td width="93%" valign="top">
+                                                        <div style="color:#000000; font-family:Helvetica,Arial,sans-serif; font-style:normal; font-weight:100; font-size:18px;letter-spacing:normal;text-align:left; margin:0 !important;line-height:100%;text-decoration:none">
+                                                            {{ content|raw }}
+                                                            <br/>__
+                                                            <p>{{ 'mails.enjoy-sport'|trans }}</p>
+                                                            <p>{{ 'mails.ks-team'|trans }}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td width="4%" valign="top"><img src="{{ pathWeb ~ asset('V2/images/fix.png') }}" width="15" height="1" style="display:block"/></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    {#<tr>
+                                        <td align="right"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td width="89%" align="right"><a href="#" style="color:#000000; font-family:Helvetica,Arial,sans-serif; font-style:normal; font-weight:100; font-size:14px;letter-spacing:normal;text-align:left; margin:0 !important;line-height:100%;">Plus d'informations</a></td>
+                                                    <td width="11%"><a href="http://162.13.180.186/comparateur-credit-immobilier"><img src="{{ pathWeb ~ asset('V2/images/lire-la-suite.png') }}" alt="Lire la suite" width="40" height="30" border="0" style="display:inline-block" /></a></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>#}
+                                </table>
+                            </td>
+                            <!-- Divider -->
+
+                            <!-- Contact -->
+
+                        </tr>
+                    </table>
+                <tr style="margin:0 auto;padding:0">
+                        <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            <tr>
+                                                <td colspan="8"><a href="#"><img src="{{ pathWeb ~ asset('V2/images/footer_01.png') }}" alt="KeepinSport" width="582" height="50" border="0"  style="max-width:100%; height:auto; display:block;"  /></a></td>
+                                            </tr>
+                                            <tr bgcolor="#1887c7">
+                                                <td width="40%">&nbsp;</td>
+
+                                                <td width="11%"><a href="#"><img src="{{ pathWeb ~ asset('V2/images/footer_04.png') }}" alt="KeepinSport" border="0"  style="max-width:100%; height:auto; display:block;"  /></a></td>
+
+                                                <td width="11%"><a href="#"><img src="{{ pathWeb ~ asset('V2/images/footer_06.png') }}" alt="KeepinSport" border="0"  style="max-width:100%; height:auto; display:block;"  /></a></td>
+
+                                                <td width="38%">&nbsp;</td>
+                                            </tr>
+                                        </table></td>
+                                </tr>
+                            </table></td>
+                    </tr>
+                    {#<tr height="19" >
+                        <!-- Divider -->
+                        <td align="center" valign="top">
+                            <table width="100%" bgcolor="#000000" border="0" align="center" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center"><br/>
+                                        <p>
+                                            <a href="conditions-generales-dutilisation" style="color:#FFF; font-family:Helvetica,Arial,sans-serif; font-style:normal; font-weight:100; font-size:12px;letter-spacing:normal;margin:0 !important;line-height:110%;text-decoration:none;">
+                                                Voir les conditions générales d'utilisation
+                                            </a>
+                                            <br/>
+                                            <span style="color:#FFF; font-family:Helvetica,Arial,sans-serif; font-style:normal; font-weight:100; font-size:12px;letter-spacing:normal;margin:0 !important;line-height:110%;text-decoration:none;">
+                                                Se désabonner
+                                            </span>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>#}
+                    <tr height="19" >
+                        <!-- Divider -->
+                        <td align="center" valign="top"><p style="color:#545556; font-family:Helvetica,Arial,sans-serif; font-style:normal; font-weight:100; font-size:12px;letter-spacing:normal;text-align:center; margin:0 !important;line-height:110%;">Copyright © KeepinSport 2014</p>
+                            <img src="{{ pathWeb ~ asset('V2/images/fix.png') }}" width="1" height="5" /></td>
+                    </tr>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+{# {% block body_html %}
+    {% set background = pathWeb ~ '/' ~ pathWeb ~ '/' ~ asset('img/texture/hexellence.png') %}
+    
+    <div id="mail">
+        <div class="row-fluid" style="/*background-image: url('{{ background }}');*/width:100%;*zoom: 1;display: block;min-height: 30px;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;float: left;margin-left: 2.127659574468085%;*margin-left: 2.074468085106383%;">
+            <div class="span3" style="width: 270px;">
+            </div>
+            <div class="span6" style="width: 570px;">
+                <div class="thumbnail ksBloc" style="display: block;padding: 4px;line-height: 1;border: 1px solid #ddd;-webkit-border-radius: 4px;-moz-border-radius: 4px;border-radius: 4px;-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);margin-bottom: 20px;word-wrap: break-word;background-color: #FFFFFF;box-shadow: none;border: 2px solid #DDDDDD;border-radius: 10px;">
+                    <h3 style="padding: 0 0 0 5px;margin: 0 0 5px 3px;font-size: 16px;background:none;border-radius: 0;color: #272727;line-height: 25px;text-shadow: none;font-variant: small-caps;">
+                        <img src="{{ pathWeb ~ pathWeb ~ '/' ~ asset('img/ks_typo_logo_mini.png') }}"/>
+                    </h3>
+                    <div class="blocHeaderSeparator" style="border-top: 1px solid #ddd;font-size: 0;line-height: 0;margin-top: 5px;margin-bottom: 5px;height: 1px;"></div>
+                    <div id="mailBody" style="padding-top:5px;">
+                        <div>
+                            {% if user.username != 'keepinsport' %}
+                                {{ 'mails.hi'|trans }} {{ user.username }},
+                            {% else %}
+                                {{ 'mails.hi'|trans }},
+                            {% endif %}
+                            <br/><br/>
+                            {{ content|raw }}
+                        </div>
+                        <div>
+                            <br/>__
+                            <p>{{ 'mails.enjoy-sport'|trans }}</p>
+                            <p>{{ 'mails.ks-team'|trans }}</p>
+                        </div>
+                    </div>
+                    <div id="mailBottom" style="color:grey;text-align:center;">
+                        <div class="blocHeaderSeparator" style="border-top: 1px solid #ddd;font-size: 0;line-height: 0;margin-top: 5px;margin-bottom: 5px;height: 1px;"></div>
+                        <p>{{ 'mails.send-by-ks'|trans }}</p>
+                        <p>
+                            {{ 'mails.access-to'|trans }} <a href="{{ host }}{{ path('ksProfile_mails', {'creationOrEdition' : 'edition'}) }}">{{ 'mails.notification-management'|trans }}</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="span3" style="width: 270px;">
+            </div>
+        </div>
+    </div>
+{% endblock %} #}

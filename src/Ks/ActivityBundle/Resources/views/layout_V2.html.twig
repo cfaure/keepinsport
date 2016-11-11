@@ -1,0 +1,27 @@
+{% extends "::layout_V2.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block title %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    {#{% if app.session is defined and app.session is not null and app.session.getFlashes()|length > 0 %}
+        {% for key, message in app.session.getFlashes() %}
+            <div class="{{ key }}">
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+    {% endif %}#}
+
+    {% block activity_content %}
+    {% endblock %}
+
+{% endblock %}

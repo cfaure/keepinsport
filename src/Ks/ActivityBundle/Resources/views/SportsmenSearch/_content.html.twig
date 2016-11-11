@@ -1,0 +1,23 @@
+<p>
+    <i class="icon-time"></i> {{ activity.scheduledAt|date('d/m/Y H:i') }}
+</p>
+{% if activity.programmedPlace_id is not null %}
+    {% if activity.programmedPlace_town_label is not null or activity.programmedPlace_region_label is not null or activity.programmedPlace_country_code is not null or activity.programmedPlace_fullAdress is not null %}
+        <p>
+            <i class="icon-map-marker"></i>
+            {% if activity.programmedPlace_town_label is not null %}
+                Près de {{ activity.programmedPlace_town_label }}
+            {% elseif activity.programmedPlace_region_label is not null %}
+                en {{ activity.programmedPlace_region_label }}
+                {% if activity.programmedPlace_country_code is not null %}
+                    ({{ activity.programmedPlace_country_code }})
+                {% endif %}
+            {% else %}
+                Près de {{ activity.programmedPlace_fullAdress }}
+            {% endif %}
+        </p>
+    {% endif %}
+{% endif %}
+{% if activity.description|length > 0 %} 
+    <p>{{ activity.description|raw|nl2br }}</p>
+{% endif %}

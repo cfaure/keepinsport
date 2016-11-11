@@ -1,0 +1,13 @@
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.login input{
+    display:block;         
+}
+
+#remember_me{
+    float:left;
+    margin-right:5px; 
+}

@@ -1,0 +1,123 @@
+{% block notifications_list %}
+    <a data-toggle="dropdown" href="#" class="feed-comments">
+        <i class="glyphicon glyphicon-comment"></i>
+        <span id="newNotifsNumber_{{ context }}" class="comment">
+            {{ new_notifications_number }}
+        </span>
+    </a>
+    <ul id="lastNotificationsBlock_{{ context }}" class="notificationBloc dropdown-menu" role="menu" aria-labelledby="dLabel">
+        <div style="max-height:400px;overflow: auto;">
+            {% for key, notification in notifications %}
+                {% include 'KsNotificationBundle:Notification:_notification.html.twig' with {'notification' : notification } %}              
+            {% endfor %}
+        </div>
+        <li>
+            <div class="menu-header">
+                <a class="btn btn-primary btn-xs" href="{{ path('ksNotification_notificationsList', { 'numPage': 1 }) }}"><i class="glyphicon glyphicon-search"></i> {{ 'notifications.more'|trans }}</a>
+            </div>
+        </li>
+    </ul>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+            {% for key, notification in notifications %}
+                {% if notification.type == "coaching" and notification.activity is defined and notification.activity is not null %}
+                    $("#linkCoaching_{{ notification.id }}").click(function() {
+                        $.ajax({
+                            url: Routing.generate('ksNotification_read'),
+                            type: "POST",
+                            data : {newNotifs : {{ notification.id }}},
+                            success : function(response) {
+                                if ( response.nb_update == 1 ) {
+                                    document.location.href = Routing.generate('ksActivity_showActivity', {"activityId" : {{ notification.activity.id}} });
+                                }
+                            }
+                        });
+                    });
+                {% endif %}
+            {% endfor %}
+
+            $("button.editAndValidateActivity").click(function() {
+                var activityId      = $( this ).attr('activityId');
+                var notificationId  = $( this ).attr('notificationId');
+                editAndValidateActivity("validate", activityId, notificationId);
+            });
+
+            $(".validateActivity").click(function() {
+                var activityId      = $( this ).attr('activityId');
+                var notificationId  = $( this ).attr('notificationId');
+                validateActivity(activityId, notificationId, context);
+            });
+
+            $(".linkAndEditEvent").click(function() {
+                var eventId      = $( this ).attr('eventId');
+                var notificationId  = $( this ).attr('notificationId');
+                linkAndEditEvent("linkAndEdit", eventId, notificationId);
+            });
+
+
+            //attachPublishSportSessionEvent($("button.createActivityAndLinkEvent"));
+
+            /*$("button.createActivityAndLinkEvent").click(function() {
+                var eventId      = $( this ).attr('eventId');
+                //var elt = $("button.createActivityAndLinkEvent");
+
+                //var notificationId  = $( this ).attr('notificationId');
+                attachPublishSportSessionEvent( $( this ) , sportId ,eventId );
+            });*/
+
+            
+            $('#lastNotificationsMenu_{{ context }}').not(".open").click(
+                function() {
+                    var arrayNewNotifs = new Array();
+
+                    $.each( $('#lastNotificationsBlock_{{ context }} > div > li.new.isNotMerged') , function(k, notif){
+                        if ($(notif).attr("notif-type") != "coaching") arrayNewNotifs.push($( notif ).attr("idNotif"));
+                    });
+
+                    $.each( $('#lastNotificationsBlock_{{ context }} > div > li.new.isMerged') , function(k, mergedNotif){
+                        mergedNotificationsIdString = $( mergedNotif ).attr("mergedNotificationsIdString");
+                        mergedNotificationsId = mergedNotificationsIdString.split('|')
+
+                        $.each( mergedNotificationsId , function(k, notifId ){
+                            arrayNewNotifs.push( notifId );
+                        });
+                    });
+
+                    //Si certaines notifications n'étaient pas lues jusqu'à présent
+                    if (arrayNewNotifs.length > 0) {
+                        var request = $.ajax({
+                            url: Routing.generate('ksNotification_read'),
+                            type: "POST",
+                            data : {
+                                newNotifs : arrayNewNotifs
+                            }, 
+                            dataType: "json"
+                        });
+
+                        request.done(function(msg) {
+                            var oldNotifsNumber = parseInt($("#newNotifsNumber_{{ context }}").html());
+
+                            //Toutes les notifications non lues ont bien été mises à lues en bdd
+                            if ( msg.nb_update == arrayNewNotifs.length ) {
+                                $("li.new").delay(3000).switchClass( "new", "old", "normal" );
+                                var newNotifsNumber = newNotifsNumber - msg.nb_update;
+                                if( newNotifsNumber > 0 ) {
+                                    $("#newNotifsNumber_{{ context }}").html(newNotifsNumber - 1);
+                                } else {
+                                    //$("#newNotifsNumber").html("").removeClass("badge").removeClass("badge-info");
+                                    //$("#newNotifsNumber_{{ context }}").html("0");
+                                }
+                            }
+                        });
+
+                        request.fail(function(jqXHR, textStatus) {
+                            console.log("Request failed : " + textStatus);
+                        });
+                    }
+
+                }
+            );
+        });
+    </script>
+{% endblock %}

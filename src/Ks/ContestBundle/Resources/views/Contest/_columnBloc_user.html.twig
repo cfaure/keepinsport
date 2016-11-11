@@ -1,0 +1,23 @@
+<div class="row-fluid" style="margin-bottom:3px;">
+    <div class="span2">
+        {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+            'user_id' : user.id, 
+            'user_username' : user.username, 
+            'user_imageName': user.imageName, 
+            'user_league_category' : user.leagueCategoryLabel, 
+            'user_league_stars' : user.leagueLevelStarNumber
+        } %}
+    </div>
+    <div class="span10">
+        <div class="activityBloc contentBloc">
+            <div style="margin:3px 0 3px 15px;font-size:1em">    
+                <div><img src="{{ asset('bundles/ksactivity/images/podium.png') }}" alt="podium" /> #{{ user.rank }}</div>
+                <div>
+                    <span class="label label-info" syle="font-size:0.8em">
+                        {{ user.points|number_format(0, '.', ' ') }}  points
+                    </span>
+                </div>  
+            </div>
+        </div>
+    </div>
+</div>

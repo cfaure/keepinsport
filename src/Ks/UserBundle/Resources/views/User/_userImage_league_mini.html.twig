@@ -1,0 +1,48 @@
+{% if user_league_category is defined and user_league_category is not null %}
+    {% set leagueClass = user_league_category %}
+{% else %}
+    {% set leagueClass = "other" %}
+{% endif %}
+
+{% if context is defined and context is not null %}
+    {% set href = path('ksProfile_V2') %}
+{% elseif user is defined and user is not null %}
+    {% set href = path('ksAgenda_index', {"id" : user.id }) %}
+{% else %}
+    {% set href = "#" %}
+{% endif %}
+
+<div class="userAvatarMiniBloc {{ leagueClass }}">
+    {#<span class="userBubble">#}
+        <a class="" rel="tooltip" data-placement="bottom" title="{{ user_username }}" userId="{{ user_id }}" href="{{ href }}">
+            <div style="border:1px solid white">
+                {% include 'KsUserBundle:User:_userImage_mini.html.twig' with { 'user_id' : user_id, 'user_imageName': user_imageName, 'user_league' : user_league_category } %}
+            </div>
+        </a>
+        {#<span class="bubble bubbleInLeagueBloc">
+        {% if is_granted("ROLE_USER") %}
+            {% render "KsUserBundle:User:bubbleInfos" with { 'userId' : user_id } %} 
+        {% endif %}    
+        </span>
+    </span>#}
+    {% if user_league_stars is defined and user_id != "1" %} 
+        {% if leagueClass != "other" %}
+            <span style="">
+            {% if user_league_stars is defined %} 
+                {% if user_league_stars == 1 %} 
+                    <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i>
+                {% elseif user_league_stars == 2 %} 
+                    <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star-empty"></i>
+                {% elseif user_league_stars == 3 %} 
+                    <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+                {% else %}
+                    <i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i>
+                {% endif %}
+            {% endif %}
+            </span>
+        {% else %}
+             {#<img src="{{ asset('bundles/ksleague/img/nutella.png') }}" alt="Chocolate" rel="tooltip" title="Ligue nutella" data-placement="right" width="20" />#}
+        {% endif %}
+    {% endif %}
+</div>
+            

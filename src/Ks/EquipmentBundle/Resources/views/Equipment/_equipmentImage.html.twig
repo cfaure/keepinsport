@@ -1,0 +1,9 @@
+{% if equipment_imageName is defined and equipment_imageName is not null %}
+    {% if equipment_id is defined and equipment_id is not null and asset('img/equipments/' ~ equipment_id ~ '/resize_48x48/' ~ equipment_imageName)|issetImg %}
+        <img class="equipmentImage" src="{{ asset('img/equipments/' ~ equipment_id ~ '/resize_48x48/' ~ equipment_imageName) }}" alt="Avatar equipment" />
+    {% else %}
+        <img class="equipmentImage" src="{{ asset('bundles/ksequipment/images/no_avatar_ks_48x48.png') }}" alt="Pas d'avatar" />
+    {% endif %}
+{% else %}
+    {# <img class="equipmentImage" src="{{ asset('bundles/ksequipment/images/equipment_128x128.jpg') }}" alt="Pas d'avatar" /> #}
+{% endif %}

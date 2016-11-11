@@ -1,0 +1,55 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("home"); //pour activer le css correspondant
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper">
+        <div class="bloc1" id="bloc1">
+            <div class="container">
+                <h1 class="title bleu">{{ 'titles.resetting-password'|trans }}</h1>
+                <br>
+                <center>
+                    <div class="alert alert-info">
+                        <strong>*</strong> Les deux champs doivent être identiques
+                    </div>
+                    <form action="{{ path('fos_user_resetting_reset', {'token': token}) }}" {{ form_enctype(form) }} method="POST" class="fos_user_resetting_reset form-horizontal ">
+                        <div class="control-group">
+                            <label class="control-label" >Mot de passe*</label>
+                            <div class="controls">
+                                {{ form_widget(form.new.first) }}
+                                {{ form_errors(form.new.first) }}
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label" >Confirmation*</label>
+                            <div class="controls">
+                                {{ form_widget(form.new.second) }}
+                                {{ form_errors(form.new.second) }}
+                            </div>
+                        </div>
+                        {{ form_errors(form) }}
+                        {{ form_rest(form) }}
+                        <br>
+                        <div class="control-group">
+                            <div class="controls">
+                              <input class="btn btn-success" type="submit" value="{{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}" />
+                            </div>
+                        </div>
+                    </form>
+                </center>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

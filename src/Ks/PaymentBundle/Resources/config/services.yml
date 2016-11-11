@@ -1,0 +1,10 @@
+services:
+    ks_payment.provider:
+        class: Ks\PaymentBundle\Service\Provider
+        arguments:
+            - "%ks_payment.site%"
+            - "%ks_payment.rang%"
+            - "%ks_payment.identifiant%"
+            - "%ks_payment.hmac%"
+            - "%ks_payment.server%"
+            - "%ks_payment.repondre_a%"

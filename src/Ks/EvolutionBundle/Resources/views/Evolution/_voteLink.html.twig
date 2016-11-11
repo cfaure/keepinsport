@@ -1,0 +1,19 @@
+{% if isLight is not defined or not isLight %}
+    {% set isLightStr = "" %}
+{% else %}
+    {% set isLightStr = "-light" %}
+{% endif %}
+{% if evolution.userHasVoted == true %}
+    <a class="btn btn-mini btn-link link-sportif" rel="tooltip" title="Clique pour enlever ton vote sur cette évolution !" rel2="removeVoteOnEvolutionTrigger-{{ evolution.id }}{{ isLightStr }}" href="{{ path('ksEvolution_removeVoteOnEvolution', {'evolutionId': evolution.id}) }}">
+        <s><i class="glyphicon glyphicon-thumbs-up"></i> {{ "actions.vote"|trans }} ({{ evolution.numVotes}})</s>
+    </a>
+{% else %}
+     <a class="btn btn-mini btn-link link-sportif" rel="tooltip" title="Clique pour voter sur cette évolution !" rel2="voteOnEvolutionTrigger-{{ evolution.id }}{{ isLightStr }}" href="{{ path('ksEvolution_voteOnEvolution', {'evolutionId': evolution.id}) }}">
+         <i class="glyphicon glyphicon-thumbs-up"></i> {{ "actions.vote"|trans }} ({{ evolution.numVotes }})
+     </a>
+{% endif %}
+
+<script type="text/javascript">
+    attachVoteOnEvolutionEvent($('a[rel2="voteOnEvolutionTrigger-{{ evolution.id }}{{ isLightStr }}"]'));
+    attachRemoveVoteOnEvolutionEvent($('a[rel2="removeVoteOnEvolutionTrigger-{{ evolution.id }}{{ isLightStr }}"]'));
+</script>

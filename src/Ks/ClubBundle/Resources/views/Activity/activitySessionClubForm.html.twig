@@ -1,0 +1,171 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('mobiscroll-2.2/css/mobiscroll-2.2.custom.min.css') }}" type="text/css" /> 
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('mobiscroll-2.2/js/mobiscroll-2.2.custom.min.js') }}"></script>
+    <script type="text/javascript">
+        
+        
+        $(document).ready(function() {
+            var $sportChoiceFormBloc = $("div.sportChoiceFormBloc");
+            var $selectSportChoice = $sportChoiceFormBloc.find("select.selectSports");//console.log($selectSportChoice.find("option:selected").val());
+            var $customSelectSport = $sportChoiceFormBloc.find(".customSelectSports");
+            var $sportSessionFormContainer = $sportChoiceFormBloc.find("div#sportSessionFormContainer");
+            var $messagesBloc = $("div.messagesBloc");
+            var $publishButton = $('button.publish');
+            var $contentLoader = $("#contentLoader");
+            var $publishLoader = $("#publishLoader");
+
+            var publishActivity = function() {
+                if( !$publishButton.hasClass("disabled")) {
+
+                    $('div.error_list').remove();
+
+                    var $sportSessionForm = $sportChoiceFormBloc.find(".sportSessionForm");
+                    var $fileUploadForm = $sportChoiceFormBloc.find("form.fileUploadForm");
+                    //Création de champs contenant les photos téléchargées
+                    $("input.uploaded_photo").remove();
+                    $.each($fileUploadForm.find("tr.template-download"), function(key, templateDownload) {
+                        $sportSessionForm.append(
+                            $("<input>", { type:"hidden", name : "photosToAdd[]"})
+                                .addClass("uploaded_photo")
+                                .val( $( this ).attr("imgName") )
+                        );
+                    });                
+
+                    $publishButton.addClass("disabled");
+                    $publishLoader.show();
+                    $.post($sportSessionForm.attr('action'), $sportSessionForm.serialize(), function(response) {
+                        if ( response.publishResponse == 1 ) {
+                            $("#sportSessionFormContainer").html("");
+
+                            if ( $('#activitiesBlockList').size() > 0 ) {
+                                $('#activitiesBlockList').prepend(response.html);
+
+
+                                activitiesOffset = $('#activitiesBlockList').attr('data-offset');
+                                $('#activitiesBlockList').attr('data-offset', parseInt(activitiesOffset) + 1)
+                            }
+
+                            //sportChoiceFormBloc.hide();
+                            $messagesBloc.html("L'activité sportive a bien été publiée");
+                            $messagesBloc.show();
+                            document.location.href = Routing.generate('ksActivity_activitiesList', {})
+
+                        } else {
+                            $.each(response.errors, function (fieldName, errors) {
+                                var labelValue = $("label[for*='" + fieldName + "']").html();
+                                var div = $("<div>").addClass("error_list");
+                                var p = $("<p>", {css: {"text-decoration":"underline"}}).html("Erreurs sur le champ " + labelValue + ":");
+                                var ul = $("<ul>");
+                                $.each(errors, function (key, error) {
+                                    var li = $("<li>").html(error);
+                                    ul.append(li);
+                                });
+                                var br = $("<br>", {clear:"all"});
+
+                                div.append(p);
+                                div.append(ul);
+                                div.append(br);
+                                $('[name*="' + fieldName + '"]').parent().append(div);
+                            });
+
+                            $publishButton.removeClass("disabled");
+                        }
+                        $publishLoader.hide();
+                    }).error(function(xqr, error) {
+                        console.log("error " + error);
+                    });
+                }
+            };  
+
+            var loadActivityForm = function() {
+                $publishButton.addClass("disabled");
+                var sportIdSelect = $selectSportChoice.val();
+
+                {% if tournament is defined and tournament is not null %}
+                    path = Routing.generate('ksActivity_getSportSessionForm', {'clubId' : "{{ club.id }}", 'sportId' : sportIdSelect, 'tournamentId' : "{{ tournament.id }}"} );    
+                {% elseif activity is defined and activity is not null %}
+                    path = Routing.generate('ksClub_activitySessionForm', {'clubId' : "{{ club.id }}", 'activityId' : "{{ activity.id }}"} );
+                {% else %}
+                    path = Routing.generate('ksActivity_getSportSessionForm', {'clubId' : "{{ club.id }}", 'sportId' : sportIdSelect} );
+                {% endif %}
+                /*if( clubId != null ) {
+                    path = Routing.generate('ksActivity_getSportSessionForm', {'sportId' : sportIdSelect, 'clubId' : clubId} )
+                } else {
+                    path = Routing.generate('ksActivity_getSportSessionForm', {'sportId' : sportIdSelect} )
+                }*/
+                $sportSessionFormContainer.html("");
+                $contentLoader.show();
+
+                $.get(
+                    path,
+                    function(response) {
+                        $('#sportSessionFormContainer').html(response);
+
+                        //On active le boutton
+                        $publishButton.removeClass("disabled");
+                        $contentLoader.hide();
+                    }
+                );
+            };
+            
+            $contentLoader.hide();
+            $publishLoader.hide();
+            
+            $publishButton.addClass("disabled");
+            
+            
+            
+            {% if tournament is defined and tournament.sport is not null %}
+                $selectSportChoice.val("{{ tournament.sport.id }}");
+                loadActivityForm();
+                $selectSportChoice.attr("disabled", "disabled");
+                $selectSportChoice.addClass("disabled");  
+                $selectSportChoice.show();
+                $customSelectSport.hide();
+            {% endif %}
+                
+            {% if activity is defined and activity is not null %}
+                $selectSportChoice.val("{{ activity.sport.id }}");
+                loadActivityForm();
+                $selectSportChoice.attr("disabled", "disabled");
+                $selectSportChoice.addClass("disabled");
+                
+            {% endif %}
+            
+            $selectSportChoice.change(loadActivityForm);  
+            $publishButton.click(publishActivity);
+        });
+    </script>
+{% endblock %}
+    
+{% block activity_content %}
+    <div id="messagesBloc"></div>
+    <div class="sportChoiceFormBloc">
+        {% include 'KsActivityBundle:Sport:_sportChoiceForm.html.twig' with { 'form' : activitySportChoiceForm } %}
+        
+        <div id="contentLoader" style="text-align:center">
+            <img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+        </div>
+        <br/>
+        <button type="button" class='publish btn btn-clubs'>
+            {% if activity is defined and activity is not null %}
+                Enregistrer les modifications
+            {% else %}
+                {{ 'activity.publishActivity'|trans }}
+            {% endif %}
+        </button>
+        <img id="publishLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+    </div>
+{% endblock %}

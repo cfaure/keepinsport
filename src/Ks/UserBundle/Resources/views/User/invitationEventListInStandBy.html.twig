@@ -1,0 +1,67 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Agenda'|trans }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>{{ 'users.invitation_event_in_stand_by'|trans }} : </h1>
+
+{% if invitationEvents %}
+    
+    <table class="table table-bordered table-striped" id="userList">
+        <thead>
+            <tr>
+                <th>{{ 'users.friend_inviting'|trans }}</th>
+                <th>{{ 'users.name_event'|trans }}</th>
+                <th>{{ 'users.date_event'|trans }}</th>
+                <th>{{ 'users.action'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for invitationEvent in invitationEvents %}
+            <tr>
+                {% if invitationEvent.userInviting.userDetail is null %}
+                     <td>{{ invitationEvent.userInviting.username }}</td>
+                {% else %}
+                     {% if invitationEvent.userInviting.userDetail.lastname is not null and invitationEvent.userInviting.userDetail.firstname is not null %}
+                        <td>{{ invitationEvent.userInviting.userDetail.firstname }} {{ invitationEvent.userInviting.userDetail.lastname }}</td> 
+                      {% else %}
+                         <td>{{ invitationEvent.userInviting.username }}</td>
+                     {% endif %}   
+                {% endif %}
+               
+                <td>{{ invitationEvent.event.name }}</td>
+                <td>{{ invitationEvent.event.startDate|date('d/m/Y H:i') }} à {{ invitationEvent.event.endDate|date('d/m/Y H:i') }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a class="toggleConfirm" title="{{ 'modal.accept_invitation'|trans }}" confirm_message="{{ 'modal.accept_invitation_and_add_to_my_calendar'|trans }} : '{{ invitationEvent.event.name }}' " href="{{ path('ks_user_accept_invitation_event' , { 'eventId': invitationEvent.event.id }) }}">
+                                {{ 'modal.accept_invitation'|trans }}
+                            </a>
+                        
+                        </li>
+                         <li>
+                            <a class="toggleConfirm" title="{{ 'modal.refuse_invitation'|trans }}" confirm_message="{{ 'modal.refuse_invitation'|trans }} : '{{ invitationEvent.event.name }}' " href="{{ path('ks_user_refuse_invitation_event' , { 'eventId': invitationEvent.event.id }) }}">
+                                {{ 'modal.refuse_invitation'|trans }}
+                            </a>
+                        
+                        </li>
+                    </ul>
+                    
+                    
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% else %}    
+    
+    <p> {{ 'users.no_invitation_event_in_stand_by_found'|trans }} </p>
+
+
+{% endif %}
+
+{% endblock %}

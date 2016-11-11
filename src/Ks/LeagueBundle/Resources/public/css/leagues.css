@@ -1,0 +1,65 @@
+thead, table caption {
+    text-align: center;
+    font-variant: small-caps;
+    font-weight: bold;
+}
+/*or*/
+table.gold {
+    border:3px solid #E8B419;
+}
+table.gold thead {
+    background-color: #E8B419;
+    color : white
+}
+table.gold caption, .goldStars {
+    color: #E8B419;
+}
+.gold {
+    color : #e8b419;
+}
+
+/*silver*/
+table.silver {
+    border:3px solid #AAAAAA;
+}
+table.silver thead {
+    background-color: #AAAAAA;
+    color : white
+}
+table.silver caption, .silverStars {
+    color: #AAAAAA;
+}
+.silver {
+    color: #AAAAAA;
+}
+
+/*bronze*/
+table.bronze {
+    border:3px solid #D16909;
+}        
+table.bronze thead {
+    background-color: #D16909;
+    color : white
+}
+table.bronze caption, .bronzeStars {
+    color: #D16909;
+}
+.bronze {
+    color: #D16909;
+}
+
+
+/*other*/
+table.nutella {
+    border:3px solid #772e01;
+}        
+table.nutella thead {
+    background-color: #772e01;
+    color : white
+}
+table.nutella caption {
+    color: #772e01;
+}
+.nutella{
+    color: #772e01;
+}

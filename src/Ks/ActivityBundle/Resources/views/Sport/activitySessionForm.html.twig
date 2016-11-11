@@ -1,0 +1,190 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <div id="jsBloc"></div>
+    
+    <script type="text/javascript">
+        
+        $(document).ready(function() {
+            $("#body").addClass("activitemanuel"); //pour activer le css correspondant
+            
+            var $sportChoiceFormBloc = $("div.sportChoiceFormBloc");
+            var $selectSportChoice = $sportChoiceFormBloc.find("select.selectSports");
+            var $customSelectSport = $sportChoiceFormBloc.find(".customSelectSports");
+            var $sportSessionFormContainer = $("#sportSessionFormContainer");
+            var $messagesBloc  = $("div.messagesBloc");
+            var $contentLoader = $("#contentLoader");
+            var $publishLoader = $("#publishLoader");
+            var $publishFB     = $("#publishFB");
+            var ajax = null;
+
+            var loadActivityForm = function(select) {
+                var sportIdSelect = select.val();
+                {% if tournament is defined and tournament is not null %}
+                    path = Routing.generate('ksActivity_getSportSessionForm', {'clubId' : "{#{ tournament.club.id }#}0", 'sportId' : sportIdSelect, 'tournamentId' : "{{ tournament.id }}"} );    
+                {% elseif activity is defined and activity is not null %}
+                    path = Routing.generate('ksActivity_getActivitySessionForm', {'activityId' : "{{ activity.id }}"} );
+                {% else %}
+                    path = Routing.generate('ksActivity_getSportSessionForm', {'sportId' : sportIdSelect} );
+                {% endif %}
+                /*if( clubId != null ) {
+                    path = Routing.generate('ksActivity_getSportSessionForm', {'sportId' : sportIdSelect, 'clubId' : clubId} )
+                } else {
+                    path = Routing.generate('ksActivity_getSportSessionForm', {'sportId' : sportIdSelect} )
+                }*/
+                $sportSessionFormContainer.html("<div class='bloc2'><div id='contentLoader' style='text-align:center'><img src='{{ asset('img/loader_ks_57.gif') }}' alt='loader'></div></div>");
+
+                if( ajax != null ) {
+                    ajax.abort();
+                    ajax = null;
+                }
+                
+                {% if eventId == '' %}
+                    {% set eventId = -1 %}
+                {% endif %}
+                
+                ajax = $.ajax({
+                    url: path,
+                    type: "POST",
+                    data: "eventId="+ '{{ eventId }}',
+                    success : function(response) {
+                        $('#sportSessionFormContainer').html(response);
+
+                        $('#sportSessionFormContainer').find("[rel=tooltip]").tooltip();
+                        
+                        if ($sportCategoryCode == 'endurance') $(".bloc1").css('background-image', "url('{{ asset('V2/images/blue-up.jpg') }}')");
+                        else $(".bloc1").css('background-image', "url('{{ asset('V2/images/blue-up-white.jpg') }}')");
+                        
+                        //On active le boutton
+                        $publishFB.css('visibility', 'visible');
+                        $publishFB.show();
+                        $contentLoader.hide();
+                        console.log({{isDone}});
+                        {% if isDone is defined and isDone == 0 %}
+                            //FMO : cas ou le coaché précise qu'il n'a pas réalisé sa séance prévue dans son agenda, seul la partie description est affichée pour être alimentée
+                            //console.log({{ isDone }});
+                            $(".bloc2").hide();
+                            $(".bloc1").css('background-image', "url('{{ asset('V2/images/blue-up-white.jpg') }}')");
+                            $("#gpxImportBloc").hide();
+                            $("#canvasActivity").hide();
+                            $("#activityDetailBlocHeader").hide();
+                            $("#activityDetailBlocDescription").removeClass("col-md-4");
+                            $("#activityDetailBlocDescription").addClass("col-md-12");
+                            $("#activityDetailBlocDetails").hide();
+                            $("#ksActivity_activitySessionType_duration").val("0:00:00");
+                            $("#ksActivity_activitySessionType_achievement").val(0);
+                            $("#redStateOfHealth").click();
+                            $("#activityPhotoBloc").hide();
+                            $("#frequencyForm").hide();
+                        {% endif %}
+                        
+                        ajax = null;
+                    }
+                });
+            };
+            
+            $contentLoader.hide();
+            $publishLoader.css('visibility', 'hidden');
+            
+            {% if tournament is defined and tournament.sport is not null %}
+                $selectSportChoice.val("{{ tournament.sport.id }}");
+                loadActivityForm($selectSportChoice);
+                $selectSportChoice.attr("disabled", "disabled");
+                $selectSportChoice.addClass("disabled");  
+                $selectSportChoice.show();
+                $customSelectSport.hide();
+            {% endif %}
+            
+            {% if activity is defined and activity is not null %}
+                $selectSportChoice.val("{{ activity.sport.id }}");
+                loadActivityForm($selectSportChoice);
+                $selectSportChoice.attr("disabled", "disabled");
+                $selectSportChoice.addClass("disabled");
+                //$selectSportChoice.select2("destroy");
+                //$selectSportChoice.show();
+                //$customSelectSport.hide();
+                $selectSportChoice.select2("enable", false);
+            {% endif %}
+            
+            {% set activityId = app.request.attributes.get('activityId') %}
+            {% if activityId == "new" or activityId == "forceNew" %}
+                $selectSportChoice.change(function() {
+                    loadActivityForm($selectSportChoice);
+                    $publishFB.css('visibility', 'visible');
+                    $publishFB.show();
+                    //FMO$publishButton.css('visibility', 'visible');
+                    //FMO$publishButton.show();
+                });
+            {% endif %}
+                
+            {% set sportId = app.request.attributes.get('sportId') %}
+            {% set eventId = app.request.attributes.get('eventId') %}
+            {% set isDone = app.request.attributes.get('isDone') %}
+            {% if sportId is not null and eventId is not null %}
+                //FMO : cas de la publication d'une activité à partir d'une séance de son agenda
+                $selectSportChoice.val("{{ sportId }}");
+                loadActivityForm($selectSportChoice);
+                /*FMO : juste pour Fred qui souhaite pouvoir changer le sport :p
+                $selectSportChoice.attr("disabled", "disabled");
+                $selectSportChoice.addClass("disabled");
+                $selectSportChoice.select2("enable", false);
+                $("#selectSport").hide();*/
+                $("#customSelectSports").select2("val", {{ sportId }});
+                $("#selectService").hide();
+            {% endif %}
+                
+            $('input[type=checkbox][name=checkboxSRTM]').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+            });
+            
+            //$('input[type=checkbox][name=checkboxSRTM]').iCheck('check');
+            checkboxSRTM = false;
+            
+            $('input[type=checkbox][name=checkboxSRTM]').on('ifChecked', function (event) {
+                checkboxSRTM = true;
+            });
+            $('input[type=checkbox][name=checkboxSRTM]').on('ifUnchecked', function (event) {
+                checkboxSRTM = false;
+            });
+            
+            $("#syncButton").click(function(e) {
+                $("#syncButton").addClass( "disabled" );
+                document.location.href = Routing.generate('ksActivity_syncFromList');
+            });
+        });
+    </script>
+{% endblock %}
+    
+{% block activity_content %}
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <!--bloc1-->
+        <div class="bloc1">
+            <div class="container">
+                <div id="messagesBloc"></div>
+                <div class="sportChoiceFormBloc" id="sportChoiceFormBloc">
+                    {% set eventId = app.request.attributes.get('eventId') %}
+                    {% include 'KsActivityBundle:Sport:_sportChoiceForm.html.twig' with { 'form' : activitySportChoiceForm, 'eventId' : eventId } %}
+                </div>
+            </div><!--/.container-->
+        </div><!--/bloc1-->
+        
+        <div id="sportSessionFormContainer">
+            <div class="bloc2">
+                <div id="contentLoader" style="text-align:center">
+                    <img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+                </div>
+            </div>
+        </div>
+           
+    </div>
+{% endblock %}

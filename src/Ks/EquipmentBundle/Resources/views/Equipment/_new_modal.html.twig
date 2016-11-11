@@ -1,0 +1,71 @@
+<div class="modal fade" id="newEquipment_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class='close' data-dismiss='modal'>&times;</a>
+                <h3 class="equipments">{{ 'equipment.create-update-equipment'|trans }} </h3>
+            </div>
+    
+            <div class='modal-body'>
+                <div class="errorsBloc"></div>
+                <div class="messagesBloc"></div>
+                <form  method="post" {{ form_enctype(form) }}>
+                    <div class="row-fluid">
+                        <div class="media span7" style="margin : 0 0 10px 0">
+                            {{ form_label(form.brand, "equipment.brand"|trans) }}
+                            {{ form_widget(form.brand, { attr: { class:"brand input-block-level"} }) }}
+                        </div>
+                        <div class="media span5" style="margin : 0 0 10px 0">
+                            {{ form_label(form.name, "equipment.name"|trans) }}
+                            {{ form_widget(form.name, { attr: { class:"name input-block-level"} }) }}
+                        </div>
+                    </div>
+                    {{ form_label(form.type, "equipment.type"|trans) }}
+                    {{ form_widget(form.type) }}
+                    </br></br>
+                    <div class="row-fluid">
+                        <div class="media span6" style="margin : 0 0 10px 0">
+                            {{ form_label(form.weight, "equipment.weight"|trans) }}
+                            {{ form_widget(form.weight, { attr: { class:"weight input-block-level"} }) }}
+                        </div>
+                        {#<div id="primaryColor" class="media span3" style="margin : 0 0 10px 0">
+                            {{ form_label(form.primaryColor, "equipment.primary-color"|trans) }}
+                            {{ form_widget(form.primaryColor) }}
+                        </div>
+                        <div id="secondaryColor" class="media span3" style="margin : 0 0 10px 0">    
+                            {{ form_label(form.secondaryColor, "equipment.secondary-color"|trans) }}
+                            {{ form_widget(form.secondaryColor) }}
+                        </div>#}
+                    </div>
+                    <div class="row-fluid">
+                        <div class="media span7" style="margin : 0 0 10px 0">
+                            {{ form_label(sportChoiceForm.sport, "titles.sports"|trans) }}
+                            {{ form_widget(sportChoiceForm.sport) }}
+                        </div>
+                        <div class="media span5" style="margin : 0 0 10px 0">
+                            {{ "equipment.by-default"|trans }} {{ form_widget(form.isByDefault, { attr: { class:"isByDefault input-block-level", id:"isByDefault"} }) }}
+                        </div>
+                    </div>
+                    <div class="blocHeaderSeparator"></div>                   
+                    <INPUT type="hidden" value="test" name="selectedSports" id="selectedSports">
+
+                    <INPUT type="hidden" value="test" name="selectedType" id="selectedType">
+
+                    {{ form_rest(form) }}  
+                </form>
+            </div>
+
+            <div class="jqueryFileUpload" style="margin-left:10px">
+                {% include 'KsEquipmentBundle:Equipment:avatar.html.twig' with {'uploadDirName' : 'equipments'} %}
+            </div>
+
+            <input name="equipmentId" type="hidden" id="equipmentId" value="" />
+
+            <div class='modal-footer'>
+                <img id="changeAvatarLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none">
+                <a href='#' class='cancel btn' data-dismiss='modal'>{{ 'actions.cancel'|trans }}</a>
+                <a id="saveButton" href='#' class='create btn btn-success'>{{ 'actions.save'|trans }}</a>
+            </div>
+        </div>
+    </div>
+</div>

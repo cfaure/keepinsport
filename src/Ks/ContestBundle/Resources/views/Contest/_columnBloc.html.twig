@@ -1,0 +1,42 @@
+<div class="ksBloc thumbnail">
+    
+    {% if "now"|date("Y-m-d") < "2013-04-15" %}
+        <a class="btn link-sportif btn-link pull-right" target="_blank" href="http://blog.keepinsport.com/concours-qui-sera-le-meilleur-coach/">
+            <i class="icon-search icon-white"></i>
+        </a>
+    {% else %}
+        <a class="btn link-sportif btn-link pull-right" href="{{ path('ksContest_coach') }}">
+            <i class="icon-search icon-white"></i>
+        </a>
+    {% endif %}    
+    <h3 class="sportif">Concours coach</h3>
+    <div class="blocHeaderSeparator"></div>
+    
+    {% if "now"|date("Y-m-d") < "2013-04-15" %}
+        Qui sera le meilleur Coach ? <br/>
+        <i>A partir du 15 Avril</i><br/>
+    {% else %}
+        {% if users.first is defined %}
+            {% include 'KsContestBundle:Contest:_columnBloc_user.html.twig' with { 'user' : users.first } %}
+            <center>...</center>
+        {% endif %}
+            
+        {#% if users.beforeMe is defined %}
+            {% include 'KsContestBundle:Contest:_columnBloc_user.html.twig' with { 'user' : users.beforeMe } %}
+        {% endif %#}
+
+        {% if users.me is defined %}
+            {% include 'KsContestBundle:Contest:_columnBloc_user.html.twig' with { 'user' : users.me } %}
+        {% endif %}
+
+        {#% if users.afterMe is defined %}
+            {% include 'KsContestBundle:Contest:_columnBloc_user.html.twig' with { 'user' : users.afterMe } %}
+        {% endif %}
+        
+        {% if users.last is defined %}
+            <center>...</center>
+            {% include 'KsContestBundle:Contest:_columnBloc_user.html.twig' with { 'user' : users.last } %}
+        {% endif %#}
+    {% endif %}
+    
+</div>

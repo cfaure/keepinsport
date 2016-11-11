@@ -1,0 +1,106 @@
+.centered-block-outer { 
+   overflow: hidden;
+   position: relative;/* ie7 needs position:relative here*/
+ }
+.centered-block-middle {
+  float: left;
+  position:relative;
+  left:50%;
+}
+.centered-block-inner {
+  position:relative;
+  left:-50%;
+}
+
+#remmber_me_label{
+  display:inline-block;  
+}
+
+.spacer{
+  clear:both;
+} 
+
+.userImage {
+    /*max-width:48px;*/
+    /*border: 1px solid white;*/
+    /*border-radius: 4px 4px 4px 4px;*/
+}
+
+.userImage_mini {
+    /*max-width:25px;*/
+    /*border: 1px solid #000000;*/
+}
+
+.userAvatarBloc {
+    border-radius: 4px 4px 4px 4px;
+    text-align:center;
+    max-width: 48px;
+}
+.userAvatarBloc.gold, .userAvatarMiniBloc.gold {
+    border : 3px solid #e8b419;
+    color : #e8b419;
+    background-color: white;
+}
+.userAvatarBloc.silver, .userAvatarMiniBloc.silver {
+    border : 3px solid #aaaaaa;
+    color : #aaaaaa;
+    background-color: white;
+}
+.userAvatarBloc.bronze, .userAvatarMiniBloc.bronze {
+    border : 3px solid #d16909;
+    color : #d16909;
+    background-color: white;
+}
+
+.userAvatarBloc.other, .userAvatarMiniBloc.other {
+    border : 3px solid white;
+    color : #333333;
+    background-color: white;
+}
+
+/*avatars plus petit */
+.userAvatarMiniBloc {
+    border-radius: 4px 4px 4px 4px;
+    text-align:center;
+    max-width: 32px;
+}
+/*avatars medium */
+.userAvatarMediumBloc {
+    font-size: 1.5em;
+    max-width: 100px;
+}
+
+/*avatars medium */
+.shopAvatarMediumBloc {
+    font-size: 1.5em;
+    max-width: 100px;
+}
+
+/*avatars plus gros */
+.userAvatarBigBloc {
+    border-radius: 4px 4px 4px 4px;
+    text-align:center;
+    font-size: 3em;
+}
+.userAvatarBigBloc.gold {
+    border : 5px solid #e8b419;
+    color : #e8b419;
+    background-color: white;
+}
+.userAvatarBigBloc.silver {
+    border : 5px solid #aaaaaa;
+    color : #aaaaaa;
+    background-color: white;
+}
+.userAvatarBigBloc.bronze {
+    border : 5px solid #d16909;
+    color : #d16909;
+    background-color: white;
+}
+
+.userAvatarBigBloc.other {
+    border : 5px solid white;
+    color : #333333;
+    background-color: white;
+}
+

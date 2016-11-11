@@ -1,0 +1,106 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }} - Clubs
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <style>
+        div.row {
+            margin-left: 0;
+        }
+    </style>
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+             $('#tableClubs').dataTable( {
+               "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+                "sPaginationType": "bootstrap",
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            } ); 
+        });
+           
+    </script>
+{% endblock %}
+    
+{% block content %}
+
+    <h1 class="clubs">Clubs / Associations / Groupes</h1>
+    <div class="blocHeaderSeparator"></div>
+    <a class="btn btn-clubs pull-right" href="{{ path('ksProfileClub_informations', {'clubId' : 'new', 'creationOrEdition' : 'creation'}) }}">Créer un club</a>
+    <br clear="all"/>
+    <br/>
+     <table id="tableClubs" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Nombre de membres</th>
+                <th>Ville</th>
+                <th>Sports</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for club in clubs %}
+            <tr>
+                <td>
+                    {% include 'KsClubBundle:Club:_clubImage_mini.html.twig' with { 'club_id' : club.id, 'club_name' : club.name, 'club_avatar' : club.avatar }%}
+                    {{ club.name }}
+                </td>
+                <td>{{ club.users|length }}</td>
+                <td>
+                    {% if club.town is not null %}
+                        {{ club.town }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if club.sports|length > 0 %}
+                        <ul>
+                    {% for sport in club.sports %}
+                            <li>{{ sport.label }}</li>
+                        {#<span rel="tooltip" title="{{ codeSport }}" class="pull-left">
+                            {% if asset('img/sports/' ~ codeSport ~ '.png')|issetImg %}
+                                <img width="25px" src="{{ asset('img/sports/' ~ codeSport ~ '.png') }}"/>
+                            {% else %}
+                                <img width="25px" src="{{ asset('img/sports/running.png') }}"/>
+                            {% endif %}
+                        </span>#}
+                    {% endfor %}
+                        </ul>
+                    {% else %}
+                        -
+                    {% endif %}
+                    {#% for sport in club.sports %}
+                        <span rel="tooltip" title="{{ sport.label }}" class="pull-left">
+                            {% if asset('img/sports/' ~ sport.codeSport ~ '.png')|issetImg %}
+                                <img width="25px" src="{{ asset('img/sports/' ~ sport.codeSport ~ '.png') }}"/>
+                            {% else %}
+                                <img width="25px" src="{{ asset('img/sports/running.png') }}"/>
+                            {% endif %}
+                        </span>
+                    {% endfor %#} 
+                </td>
+                <td>
+                    <a class="btn btn-clubs btn-small" href="{{ path('ksClub_public_profile', { "clubId" : club.id }) }}">
+                        <i class="icon-search icon-white"></i>
+                    </a>
+                    <div>
+                        {% include 'KsClubBundle:Club:_askForMembershipLink.html.twig' with { 'club_id' : club.id }%}
+                    </div>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

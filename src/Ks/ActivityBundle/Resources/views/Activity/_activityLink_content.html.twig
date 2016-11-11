@@ -1,0 +1,94 @@
+<p>{{ activity.description|nl2br }}</p>
+
+<br />
+{% if activity.link is not null %}
+    <div class="linkContent_{{ activity.id }}">  
+        <div class="externLinkContent thumbnail">
+            <div class="preview">
+                <br clear="all">
+                <div class="atc_images_bloc">
+                    <div class="atc_images">
+                        {% if activity.viewLink is not null %}
+                        <span onclick="addUserAction('clic on {{ activity.id }}', 'video link', 'OK');" id="iconPlay_{{ activity.id }}" class="icon-play-circle" style="margin:3px 0 0 25px;position:absolute;font-size:3.5em;color:rgba(255, 255, 255, 0.5){##2581BA#};cursor: pointer;{#text-shadow: -1px 0 black, 0 1px white,1px 0 black, 0 -1px black#}"></span>
+                        {% endif %}
+                        <img id="imageLink_{{ activity.id }}" width="100" src="{{ activity.photo }}" />
+                    </div>
+                </div>
+
+                <div class="atc_info">
+                    <a onclick="addUserAction('clic on {{ activity.id }}', 'video link', 'OK'); window.open(this.href); return false;" href="{{ activity.link }}" id="atc_title">{{ activity.label }}</a>
+
+                    <div class="atc_desc">{{ activity.linkDescription }}</div>
+
+                </div>
+            </div>
+            {% if activity.viewLink is not null %}
+                <div class="view" style="display:none">
+                    <iframe width="560" height="315"  src="{{ activity.viewLink }}" frameborder="0" allowfullscreen></iframe>
+                </div>
+            {% endif %}
+            <br clear="all" />
+            
+        </div>
+    </div>
+{% endif %}
+    
+<style>
+	
+	.attach_content{border:1px solid #ccc;padding:10px;margin-top:10px;}
+	.atc_images {width:100px;height:120px;overflow:hidden;float:left;}
+	.atc_info {text-align:left; /*float:left;*/}
+	.atc_title {font-size:1.2em;display:block;}
+	.atc_url {font-size:0.8em;display:block;}
+	.atc_desc {font-size:0.8em; padding-top:10px}
+	.atc_total_image_nav{float:left;padding-bottom:4px;font-size:0.7em;}
+	.atc_total_images_info{float:left;padding:4px 10px;font-size:0.7em;}
+    .atc_no_images_input {float:left;padding-left:120px}
+    .atc_no_images_label {float:left;padding:4px 10px;font-size:0.7em;}
+    .atc_images_bloc {float:left;width:100px;margin-right:5px}
+</style>
+    
+<br clear="all" />
+<script type="text/javascript">
+    {% if activity.viewLink is not null %}
+        $("#imageLink_{{ activity.id }}").hover(
+            function () {
+                $(this).css("cursor", "pointer");
+            }, 
+            function () {
+                $(this).css("cursor", "default");
+            }
+        );
+
+        $("#imageLink_{{ activity.id }}, #iconPlay_{{ activity.id }}").click(function() {
+            var linkContent = $( this ).parent().parent().parent().parent().parent();
+            var externLinkContent = linkContent.find(".externLinkContent");
+            var externLinkContent_paddingLeft = externLinkContent.css("padding-left").replace("px", "")
+            var externLinkContent_paddingRight = externLinkContent.css("padding-right").replace("px", "")
+            var externLinkContent_width = externLinkContent.width() - externLinkContent_paddingLeft - externLinkContent_paddingRight;
+            var externLinkContent_height = externLinkContent_width * 9 / 16;
+            var hrefVid = $( this ).attr("href");
+
+            var previewBloc = externLinkContent.find(".preview");
+            var viewBloc    = externLinkContent.find(".view");
+            var iframeVid   = viewBloc.find("iframe");
+            iframeVid.width(externLinkContent_width);
+            iframeVid.height(externLinkContent_height);
+
+            previewBloc.hide();
+            viewBloc.show();
+            /*var iframeVid = $("<iframe>", { 
+                width : externLinkContent_width, 
+                height : externLinkContent_height, 
+                src : hrefVid,
+                frameborder : 0,
+                allowfullscreen : 1
+            })
+
+            externLinkContent.html("");
+            externLinkContent.append(iframeVid);*/
+
+            return false;
+        });
+    {% endif %}
+</script>

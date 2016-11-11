@@ -1,0 +1,59 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block left_column %}
+    {% render "KsClubBundle:Club:leftColumn" with { 'clubId' : club.id } %}
+{% endblock %}
+
+{% block content %}
+
+<h1 class="clubs">{{ 'event.listEventsClub'|trans }} {{ club.name }}</h1>
+<div class="blocHeaderSeparator"></div>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    {% for event in events %}
+        <tr>
+            <td>{{ event.name }}</td>
+            <td>{{ event.content }}</td>
+            <td>{% if event.startDate %}{{ event.startDate|date('Y-m-d H:i:s') }}{% endif%}</td>
+            <td>{% if event.endDate %}{{ event.endDate|date('Y-m-d H:i:s') }}{% endif%}</td>
+            <td>
+                <a class="btn btn-clubs btn-mini" href="{{ path('ksEventClub_show', { 'id': event.id }) }}"><i class="icon-search icon-white"></i></a>
+                
+                {% if club|is_manager( app.user.id ) %}
+                    <a class="btn btn-clubs btn-mini"  href="{{ path('ksEventClub_edit', { 'id': event.id}) }}"><i class="glyphicon glyphicon-pencil icon-white"></i></a>
+                    <a class="btn btn-danger btn-mini"  href="{{ path('ksEventClub_delete', { 'id': event.id}) }}"><i class="icon-remove icon-white"></i></a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+         
+    </tbody>
+</table>
+
+<a class="btn" href="{{ path('ksClub_public_profile', {'clubId' : club.id}) }}">
+    <i class="icon-backward"></i> Retour
+</a>
+
+{% if club|is_manager( app.user.id ) %}
+    <a class="btn btn-clubs" href="{{ path('ksEventClub_new', { 'id': club.id }) }}">
+        <i class="glyphicon glyphicon-plus icon-white"></i> 
+        {{ 'users.club_add_event'|trans }}
+    </a>
+{% endif %}
+
+{% endblock %}
+

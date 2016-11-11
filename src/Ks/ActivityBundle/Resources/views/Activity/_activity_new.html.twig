@@ -1,0 +1,8 @@
+<div class="row-fluid" style="margin-bottom: 10px">
+    <div id="activityBloc-{{ activity.id }}" class="span12">
+        <div id="avatarBloc-{{ activity.id }}" class="span2 visible-desktop visible-tablet" style="padding:0px 2px 0px 0px">
+            {% include 'KsActivityBundle:Activity:_activityPublisherAvatar.html.twig' with { 'display_points' : true } %}
+        </div>
+        {% include 'KsActivityBundle:Activity:_activityBloc_new.html.twig' %}
+    </div>
+</div>

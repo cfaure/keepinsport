@@ -1,0 +1,9 @@
+<span rel="tooltip" title="Partager sur Facebook" id="shareFbButton-{{ activity.id }}" class="btn btn-primary btn-small btn-link link-sportif">
+    <span class="icon-facebook"></span>
+</span> | 
+{% include 'KsActivityBundle:Activity:_shareFacebookJs.html.twig' with { 'activity': activity } %}
+<script type="text/javascript">
+    $("#shareFbButton-{{ activity.id }}").click(function() {
+        shareActivity{{ activity.id }}OnFb();
+    });
+</script>

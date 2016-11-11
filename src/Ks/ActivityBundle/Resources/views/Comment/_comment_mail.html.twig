@@ -1,0 +1,16 @@
+<div class="row-fluid">
+    <div class="span1">
+        {{ comment.user.username }}
+    </div>
+    <div class="span11 commentBloc">
+        <p>{{ comment.comment|nl2br }}</p>
+
+        <div style="text-align:right;width:100%;font-size: 0.8em;font-style:italic;">
+            {{ comment.user.username ~ ' il y a ' ~ comment.commentedAt|created_ago['time'] ~ ' ' ~ ('time.' ~ comment.commentedAt|created_ago['unit'])|trans }} 
+        </div>
+        
+        {#<span class="timesAgo">{{ 'activity.publishAgo'|trans({'%time%': comment.commentedAt|created_ago['time'], '%unit%': ('time.' ~ comment.commentedAt|created_ago['unit'])|trans }) }}</span>#}
+        <!--<a href="#">Voter</a>-->
+    </div>
+    <hr/>
+</div>

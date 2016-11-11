@@ -1,0 +1,5 @@
+<select class="customSelectEquipmentType" tabindex="-1" >
+    {% for key, equipmentType in equipmentsTypes %}
+        <option value="{{ equipmentType.id }}" data-code="{{ equipmentType.code }}">{{ ("equipmentsTypes." ~ equipmentType.code)|trans }}</option>
+    {% endfor %}
+</select>

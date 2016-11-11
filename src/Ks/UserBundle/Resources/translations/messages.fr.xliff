@@ -1,0 +1,1188 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="fr" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>users.label</source>
+                <target>Sportifs</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>users.username</source>
+                <target>Pseudonyme</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>users.email</source>
+                <target>Email</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>users.last_login</source>
+                <target>Date de dernière connexion</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>users.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>users.add</source>
+                <target>Ajouter</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>users.ask_a_friend</source>
+                <target>Demander en ami</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>users.listUsers</source>
+                <target>Voici la liste des utilisateurs</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>user.flash.ask_a_friend.error</source>
+                <target>La demande d'ami est déjà en attente</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>user.flash.ask_a_friend.successss</source>
+                <target>La demande d'ami a bien été envoyée.</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>users.revoke_a_friend</source>
+                <target>Retirer de ma liste d'ami</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>users.listUsersSearch</source>
+                <target>Les utilisateurs pour :</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>users.accept_a_friend_request</source>
+                <target>Accepter la demande d'ami</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>users.search_nostring</source>
+                <target>Vous devez saisir une chaine de caractère lors de votre recherche </target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>users.search_nousers</source>
+                <target>Désolé nous n'avons pas trouvé d'utilisateurs pour cette recherche</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>users.friend_request_awaiting</source>
+                <target>Demande d'ami en attente</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>users.cancel_the_friend_request</source>
+                <target>Annuler la demande d'ami</target>
+            </trans-unit> 
+            <trans-unit id="18">
+                <source>users.refuse_a_friend_request</source>
+                <target>Refuser la demande d'ami</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>users.profil_country_code</source>
+                <target>Code Pays</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>users.profil_firstname</source>
+                <target>Prénom</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>users.profil_lastname</source>
+                <target>Nom</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>users.profil_description</source>
+                <target>Je me présente en quelques lignes </target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>users.profil_avatar</source>
+                <target>Charger un avatar</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>users.profil_country_area</source>
+                <target>Zone Pays</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>users.profil_town</source>
+                <target>Ville</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>users.profil_longitude</source>
+                <target>Longitute</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>users.profil_latitude</source>
+                <target>Latitude</target>
+            </trans-unit>
+             <trans-unit id="28">
+                <source>users.profil_creation_titre</source>
+                <target>Création de mon profil</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>users.profil_creation_success</source>
+                <target>Profil créé ou modifié avec succès</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>registration.flash.user_created</source>
+                <target>Ton compte a bien été créé</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>registration.flash.user_confirmed</source>
+                <target>Félicitations ton compte est maintenant activé.</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>users.profil_create_label</source>
+                <target>Créer</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>users.profil_adresse_label</source>
+                <target>Saisissez votre adresse </target>
+            </trans-unit>
+             <trans-unit id="34">
+                <source>security.login.error.badcredantials</source>
+                <target>Pseudo ou mot de passe incorrect</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>users.adresse_uses</source>
+                <target>Nous utiliserons ton adresse afin de t'aider à trouver des sportifs et des clubs près de chez toi</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>users.profil_weight</source>
+                <target>Poids en kg</target>
+            </trans-unit>
+           <trans-unit id="37">
+                <source>users.profil_sexe</source>
+                <target>Sexe</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>users.profil_sport</source>
+                <target>Sports pratiqués</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>users.profil_height</source>
+                <target>Taille en cm</target>
+            </trans-unit> 
+            <trans-unit id="40">
+                <source>users.profil_edit_titre</source>
+                <target>Modification de mon profil</target>
+            </trans-unit>
+             <trans-unit id="41">
+                <source>users.profil_avatar_profil</source>
+                <target>Image de profil</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>users.profil_link_title</source>
+                <target>Mon compte</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>users.profil_update_success</source>
+                <target>Ton profil a été modifié avec succès</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>resetting.flash.success</source>
+                <target>Votre mot de passe a été réinitialisé avec succès !</target>
+            </trans-unit>
+             <trans-unit id="45">
+                <source>users.invite_a_friend</source>
+                <target>Inviter un ami par mail</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>users.send_an_invit_to_friend_by_mail</source>
+                <target>Envoyer une invitation par email</target>
+            </trans-unit>
+             <trans-unit id="47">
+                <source>users.send_an_invit_to_friend_by_address_book</source>
+                <target>Envoyer une invitation via mon carnet d'adresse Google</target>
+            </trans-unit>
+             <trans-unit id="48">
+                <source>users.send_invite</source>
+                <target>Envoyer une invitation</target>
+            </trans-unit>
+            <trans-unit id="49">
+                <source>users.send_invitation_ok</source>
+                <target>Ton invitation a été envoyée avec succès</target>
+            </trans-unit>
+            <trans-unit id="50">
+                <source>users.email_already_invited_or_user</source>
+                <target>Cette adresse email a déja reçu une invitation ou est utilisée par un utilisateur KeepInSport</target>
+            </trans-unit>
+            <trans-unit id="51">
+                <source>users.email_invit_user</source>
+                <target>Adresse e-mail</target>
+            </trans-unit>
+            <trans-unit id="52">
+                <source>users.profil_proximite_km</source>
+                <target>Proximité en km</target>
+            </trans-unit>
+            <trans-unit id="53">
+                <source>users.my_account</source>
+                <target>Mon Compte</target>
+            </trans-unit>
+            <trans-unit id="54">
+                <source>users.search</source>
+                <target>Rechercher</target>
+            </trans-unit>
+            <trans-unit id="55">
+                <source>modal.close</source>
+                <target>Fermer</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>modal.confirm</source>
+                <target>Confirmer</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>modal.ask_friend_request_confirmation_message</source>
+                <target>Vous êtes sur le point de demander en ami l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="58">
+                <source>modal.ask_friend_request_modal_title</source>
+                <target>Demander en ami l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="59">
+                <source>modal.accept_a_friend_request_confirmation_message</source>
+                <target>Vous êtes sur le point d'accepter en ami l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="60">
+                <source>modal.accept_a_friend_request_modal_title</source>
+                <target>Accepter en ami l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="61">
+                <source>modal.refuse_a_friend_request_confirmation_message</source>
+                <target>Vous êtes sur le point de refuser en ami l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="62">
+                <source>modal.refuse_a_friend_request_modal_title</source>
+                <target>Refuser en ami l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="63">
+                <source>modal.cancel_the_friend_request_confirmation_message</source>
+                <target>Vous êtes sur le point d'annuler la demande d'ami envoyé à l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="64">
+                <source>modal.cancel_the_friend_request_modal_title</source>
+                <target>Annuler la demander d'ami envoyé à l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="65">
+                <source>modal.revoke_a_friend_request_confirmation_message</source>
+                <target>Vous êtes sur le point de retirer de votre liste d'ami l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="66">
+                <source>modal.revoke_a_friend_request_modal_title</source>
+                <target>Retirer de ma liste d'ami l'utilisateur %user%</target>
+            </trans-unit>
+            <trans-unit id="67">
+                <source>users.profil_reinit_fail</source>
+                <target>Impossible de ré-initialiser votre mot de passe car vous avez déjà effectué cette action</target>
+            </trans-unit>
+             <trans-unit id="68">
+                <source>users.profil_reinit_info</source>
+                <target>Si vous voulez toujours ré-initialiser votre mot de passe veuillez réitérer l'opération en saisissant votre adresse mail ou votre nom d'utilisateur dans le champs ci-dessous </target>
+            </trans-unit>
+             <trans-unit id="69">
+                <source>users.profil_confirm_fail</source>
+                <target>Impossible de confirmer votre inscription car vous avez déjà effectué cette action</target>
+            </trans-unit>
+             <trans-unit id="70">
+                <source>users.profil_confirm_info</source>
+                <target>Si vous voulez avez oublié votre mot de passe, veuillez saisir votre adresse mail ou votre nom d'utilisateur dans le champs ci-dessous </target>
+            </trans-unit>
+            <trans-unit id="71">
+                <source>user.flash.ask_a_friend.success</source>
+                <target>La demande d'ami a bien été envoyée</target>
+            </trans-unit>
+            <trans-unit id="72">
+                <source>user.flash.cancel_a_friend_request.success</source>
+                <target>La demande d'ami a bien été annulée</target>
+            </trans-unit>
+            <trans-unit id="73">
+                <source>user.flash.refuse_a_friend_request.success</source>
+                <target>La demande d'ami a bien été refusée</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>user.flash.cancel_a_friend_request.error.is_not_awaiting_friend_request_response</source>
+                <target>La demande d'ami n'est plus d'actualité.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>user.flash.accept_a_friend.success</source>
+                <target>La demande d'ami a été accepté avec succès.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>user.flash.revoke_a_friend.success</source>
+                <target>Vous avez bien retiré cet ami de votre liste.</target>
+            </trans-unit>
+            
+            <trans-unit id="77">
+                <source>ks.welcome_to_the_home_page</source>
+                <target>Bienvenue sur la page d'accueil</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>ks.connect_your_runkeeper_profile</source>
+                <target>Connectez votre profil runkeeper</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>ks.choose_language</source>
+                <target>Choisir la langue</target>
+            </trans-unit>
+            
+            <trans-unit id="80">
+                <source>user.rankingOfMyCommunity</source>
+                <target>Classement</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>user.username</source>
+                <target>Pseudonyme</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>user.points</source>
+                <target>Points</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>user.leagueLevel</source>
+                <target>Ligue</target>
+            </trans-unit>           
+            <trans-unit id="84">
+                <source>user.age.label</source>
+                <target>Age</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>user.age.value</source>
+                <target>%age% ans</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>user.location.label</source>
+                <target>Où me trouver</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>user.sports.label</source>
+                <target>Sports</target>
+            </trans-unit> 
+            <trans-unit id="88">
+                <source>user.objectives.label</source>
+                <target>Objectifs</target>
+            </trans-unit>          
+            <trans-unit id="89">
+                <source>user.saisons.actual</source>
+                <target>Saison actuelle</target>
+            </trans-unit> 
+            <trans-unit id="90">
+                <source>user.saisons.historic</source>
+                <target>Historique</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>user.activities.last_activities</source>
+                <target>Dernières activités</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>user.inscriptionDate</source>
+                <target>Date d'inscription</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>user.friend_list_title</source>
+                <target>Liste de mes amis</target>
+            </trans-unit>
+             <trans-unit id="94">
+                <source>modal.name_friend_club_admin</source>
+                <target>Nommer un ami administrateur du club </target>
+            </trans-unit>
+            <trans-unit id="95">
+                <source>modal.name_friend_club_admin_confirmation_message</source>
+                <target>Vous êtes sur le point de nommer administrateur du club </target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>user.name_admin_club</source>
+                <target>Nommer administrateur du club </target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>modal.revoke_friend_club_admin</source>
+                <target>Enlever les droits d'administrateur du club </target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>modal.name_friend_club_admin_confirmation_message</source>
+                <target>Tu es sur le point de donner les droits d'administration du club </target>
+            </trans-unit>
+            <trans-unit id="99">
+                <source>user.revoke_admin_club</source>
+                <target>Enlever les droits d'administrateur du club : </target>
+            </trans-unit>
+            <trans-unit id="100">
+                <source>users.user_revoke_admin_success</source>
+                <target>Vous avez supprimé les droits d'administrateur du club à votre ami avec succès</target>
+            </trans-unit>
+             <trans-unit id="101">
+                <source>revoke.name_friend_club_admin_confirmation_message</source>
+                <target>Tu es sur le point d'enlever les droits d'administration du club à </target>
+            </trans-unit>
+            <trans-unit id="102">
+                <source>user.this_user_is_a_club_super_admin</source>
+                <target>Cet utilisateur est le Super Administrateur de ce club</target>
+            </trans-unit>
+            <trans-unit id="103">
+                <source>users.send_invit_to_join_keepinsport</source>
+                <target>Envoyer une invitation à rejoindre Keepinsport</target>
+            </trans-unit>
+            <trans-unit id="104">
+                <source>user.friends.label</source>
+                <target>Amis</target>
+            </trans-unit>
+            <trans-unit id="105">
+                <source>user.friendsNumber</source>
+                <target>%friendsNumber% amis</target>
+            </trans-unit>
+            <trans-unit id="106">
+                <source>user.friends.show_all</source>
+                <target>Voir tous</target>
+            </trans-unit>
+             <trans-unit id="107">
+                <source>users.send_invitations_ok</source>
+                <target>Tes invitations ont été envoyées avec succès</target>
+            </trans-unit>
+            
+            <trans-unit id="108">
+                <source>user.clubs.list</source>
+                <target>Clubs</target>
+            </trans-unit>
+            <trans-unit id="109">
+                <source>user.links.list</source>
+                <target>Liste des liens</target>
+            </trans-unit>
+            <trans-unit id="110">
+                <source>user.links.show_all</source>
+                <target>Voir tous</target>
+            </trans-unit>
+            <trans-unit id="111">
+                <source>user.linksNumber</source>
+                <target>%linksNumber% liens</target>
+            </trans-unit>
+            
+            <trans-unit id="113">
+                <source>users.set_services</source>
+                <target>Mes services</target>
+            </trans-unit>
+            <trans-unit id="114">
+                <source>users.save_the_configuration</source>
+                <target>Enregistrer la configuration</target>
+            </trans-unit>
+            <trans-unit id="115">
+                <source>users.service_name</source>
+                <target>Nom du service</target>
+            </trans-unit>
+            <trans-unit id="116">
+                <source>users.service_is_active</source>
+                <target>Desactiver / Activer le service</target>
+            </trans-unit>
+             <trans-unit id="117">
+                <source>users.sync_service_to_user</source>
+                <target>Synchroniser le service avec vos données KeepInSport à chaques connexions</target>
+            </trans-unit>
+            <trans-unit id="118">
+                <source>users.notFriendWhithHim</source>
+                <target>Vous n'êtes pas en relation avec %username%</target>
+            </trans-unit>
+            <trans-unit id="119">
+                <source>users.friendWhithHim</source>
+                <target>%username% fait partie de ta communauté de sportifs</target>
+            </trans-unit>
+            <trans-unit id="120">
+                <source>user.flash.revoke_a_friend.error.are_not_friends</source>
+                <target>Vous n'êtes pas ami</target>
+            </trans-unit>
+            <trans-unit id="121">
+                <source>user.newProfil.label</source>
+                <target>Nouveau profil</target>
+            </trans-unit>
+            
+             <trans-unit id="122">
+                <source>users.ask_friend_keepinsport_users</source>
+                <target>Demander en ami des utilisateurs de keepinsport</target>
+            </trans-unit>
+            <trans-unit id="123">
+                <source>users.invit_people_to_be_keepinsport_users</source>
+                <target>Inviter des amis à devenir des utilisateurs keepinsport</target>
+            </trans-unit>
+            <trans-unit id="124">
+                <source>users.profil_edit_avatar_facebook</source>
+                <target>Avatar de Facebook</target>
+            </trans-unit>
+            <trans-unit id="125">
+                <source>users.profil_edit_avatar_keepin</source>
+                <target>Avatar de Keepinsport</target>
+            </trans-unit>
+            <trans-unit id="126">
+                <source>users.profil_full_address</source>
+                <target>Mon adresse </target>
+            </trans-unit>
+            <trans-unit id="127">
+                <source>users.my_public_profile</source>
+                <target>Mon profil public</target>
+            </trans-unit>
+             <trans-unit id="128">
+                <source>users.service_updated_with_success</source>
+                <target>Services mis a jour avec succès</target>
+            </trans-unit>
+            <trans-unit id="129">
+                <source>users.profil_borned_at</source>
+                <target>Date de naissance</target>
+            </trans-unit>
+            <trans-unit id="130">
+                <source>users.manage_agenda_keepin</source>
+                <target>Mon agenda Keepinsport</target>
+            </trans-unit>
+
+            <trans-unit id="131">
+                <source>users.synchro_with_google_agenda</source>
+                <target>Synchroniser mon agenda Keepinsport avec agenda Google</target>
+            </trans-unit>
+            <trans-unit id="132">
+                <source>users.auth_gagenda_access</source>
+                <target>Autoriser l'accès à mon application google Agenda</target>
+            </trans-unit>
+            <trans-unit id="133">
+                <source>users.event_feed_found</source>
+                <target>Liste des différents flux d'événements trouvés</target>
+            </trans-unit>
+            <trans-unit id="134">
+                <source>users.feed_title</source>
+                <target>Nom du flux</target>
+            </trans-unit>
+            <trans-unit id="135">
+                <source>users.id_feed</source>
+                <target>Identifiant du flux</target>
+            </trans-unit>
+            <trans-unit id="136">
+                <source>users.google_agenda_events</source>
+                <target>Evénements de votre agenda Google qui vont être importés </target>
+            </trans-unit>
+            <trans-unit id="137">
+                <source>users.no_google_agenda_events</source>
+                <target>Pas d'événement dans votre agenda Google trouvés</target>
+            </trans-unit>
+            <trans-unit id="138">
+                <source>users.no_feed_events</source>
+                <target>Pas de flux contenant des événement trouvés</target>
+            </trans-unit>
+            <trans-unit id="139">
+                <source>events.add_google_event_to_keepin_calendar</source>
+                <target>Ajouter ces èvènements à mon agenda KeepInSport</target>
+            </trans-unit>
+            <trans-unit id="140">
+                <source>users.update_keepin_agenda_success</source>
+                <target>Mise a jour de mon agenda Keepinsport avec succès </target>
+            </trans-unit>
+            <trans-unit id="141">
+                <source>users.event_not_added</source>
+                <target>Ces événements ont déjà été importés dans mon agenda Keepinsport </target>
+            </trans-unit>
+
+            <trans-unit id="142">
+                <source>user.my_activities.label</source>
+                <target>Mes activités</target>
+            </trans-unit>
+            <trans-unit id="143">
+                <source>user.my_profile.label</source>
+                <target>Mon profil</target>
+            </trans-unit>
+            <trans-unit id="144">
+                <source>user.show_my_public_profile</source>
+                <target>Voir mon profil public</target>
+            </trans-unit>
+            
+            <trans-unit id="145">
+                <source>users.synchro_gagenda_with_keepinagenda</source>
+                <target>Synchroniser mon agenda Google avec mon agenda Keepinsport</target>
+            </trans-unit>
+            <trans-unit id="146">
+                <source>users.keepin_agenda_events</source>
+                <target>Evénements de l'agenda KeepinSport qui vont être importés </target>
+            </trans-unit>
+             <trans-unit id="147">
+                <source>events.add_keepin_event_to_google_calendar</source>
+                <target>Ajouter les événements Keepinsport à mon agenda google</target>
+            </trans-unit>
+             <trans-unit id="148">
+                <source>users.no_keepin_agenda_events</source>
+                <target>Pas d'événement dans votre agenda Keepinsport trouvés</target>
+            </trans-unit>
+            <trans-unit id="149">
+                <source>users.update_google_agenda_success</source>
+                <target>Mise a jour de mon agenda Google avec succès :</target>
+            </trans-unit>
+             <trans-unit id="150">
+                <source>users.update_google_agenda_success</source>
+                <target>Mise a jour de mon agenda Google avec succès :</target>
+            </trans-unit>
+            <trans-unit id="151">
+                <source>users.event_not_added_google</source>
+                <target>Ces événements ont déjà été importés dans mon agenda Google</target>
+            </trans-unit>
+            <trans-unit id="152">
+                <source>modal.delete</source>
+                <target>Supprimer</target>
+            </trans-unit>
+            <trans-unit id="153">
+                <source>modal.add</source>
+                <target>Ajouter</target>
+            </trans-unit>
+             <trans-unit id="154">
+                <source>modal.edit</source>
+                <target>Modifier</target>
+            </trans-unit>
+            <trans-unit id="155">
+                <source>users.sync_user_to_service</source>
+                <target>Synchroniser les données KeepInSport avec le service à chaques connexions</target>
+            </trans-unit>
+            <trans-unit id="156">
+                <source>users.activity_sessions_in_stand_by</source>
+                <target>Vos 5 dernières activités Runkeeper</target>
+            </trans-unit>
+             <trans-unit id="157">
+                <source>users.name</source>
+                <target>Nom</target>
+            </trans-unit>
+            <trans-unit id="158">
+                <source>users.date</source>
+                <target>Date</target>
+            </trans-unit>
+            <trans-unit id="159">
+                <source>users.duration</source>
+                <target>Durée</target>
+            </trans-unit>
+            <trans-unit id="160">
+                <source>users.duration</source>
+                <target>Durée (HH:mm)</target>
+            </trans-unit>
+            <trans-unit id="161">
+                <source>users.action</source>
+                <target>Action</target>
+            </trans-unit>
+            <trans-unit id="162">
+                <source>users.validate_status</source>
+                <target>Validé</target>
+            </trans-unit>
+            <trans-unit id="163">
+                <source>users.stand_by_status</source>
+                <target>En attente de validation</target>
+            </trans-unit>
+            <trans-unit id="164">
+                <source>users.status</source>
+                <target>Statut</target>
+            </trans-unit>
+            <trans-unit id="165">
+                <source>users.validate_activity</source>
+                <target>Valider l'activité</target>
+            </trans-unit>
+            <trans-unit id="166">
+                <source>users.no_activity_in_stand_by_found</source>
+                <target>Pas d'activité en attente de validation trouvées</target>
+            </trans-unit>
+            <trans-unit id="167">
+                <source>users.dateStart</source>
+                <target>Date de début</target>
+            </trans-unit>
+            <trans-unit id="168">
+                <source>users.sportives_activities_in_stand_by</source>
+                <target>Activités sportives en attente de validation</target>
+            </trans-unit>
+            <trans-unit id="169">
+                <source>agenda.label</source>
+                <target>Agenda</target>
+            </trans-unit>
+            <trans-unit id="170">
+                <source>club.label</source>
+                <target>Clubs</target>
+            </trans-unit>
+            <trans-unit id="171">
+                <source>modal.name_event_must_be_entered</source>
+                <target>Vous devez saisir un nom d'événement</target>
+            </trans-unit>
+            <trans-unit id="172">
+                <source>modal.type_event_must_be_entered</source>
+                <target>Vous devez sélectionner un type d'événement</target>
+            </trans-unit>
+             <trans-unit id="173">
+                <source>users.invitation_event_in_stand_by</source>
+                <target>Invitations à un événement en attente</target>
+            </trans-unit>
+            <trans-unit id="174">
+                <source>users.no_invitation_event_in_stand_by_found</source>
+                <target>Pas d'invitations à un événement en attente trouvées</target>
+            </trans-unit>
+              <trans-unit id="175">
+                <source>users.accept_invitation_and_add_to_my_calendar_keepin</source>
+                <target>Accepter l'invitation et ajouter dans mon calendrier KeepInSport</target>
+            </trans-unit>
+             <trans-unit id="177">
+                <source>users.refuse_invitation</source>
+                <target>Refuser l'invitation</target>
+            </trans-unit>
+             <trans-unit id="178">
+                <source>users.friend_inviting</source>
+                <target>Ami vous invitant</target>
+            </trans-unit>
+            <trans-unit id="179">
+                <source>users.name_event</source>
+                <target>Nom de l'événement</target>
+            </trans-unit>
+            <trans-unit id="180">
+                <source>users.date_event</source>
+                <target>Date de l'événement</target>
+            </trans-unit>
+            <trans-unit id="181">
+                <source>modal.accept_invitation</source>
+                <target>Accepter l'invitation</target>
+            </trans-unit>
+            <trans-unit id="182">
+                <source>users.event_already_exist_in_your_agenda</source>
+                <target>L'événement que vous tentez d'ajouter à votre agenda existe déjà</target>
+            </trans-unit>
+             <trans-unit id="183">
+                <source>users.event_added_to_calendar_with_success</source>
+                <target>Ajout de l'èvènement à votre agenda KeepInSport avec succès</target>
+            </trans-unit>
+            <trans-unit id="184">
+                <source>modal.accept_invitation_and_add_to_my_calendar</source>
+                <target>Ajouter à mon agenda KeepInSport</target>
+            </trans-unit>
+            <trans-unit id="185">
+                <source>users.event_refuse_to_calendar_with_success</source>
+                <target>Refus de participer à l'événement effectué avec succès</target>
+            </trans-unit>
+            <trans-unit id="186">
+                <source>modal.refuse_invitation</source>
+                <target>Refuser l'invitation</target>
+            </trans-unit>
+            <trans-unit id="187">
+                <source>users.import_gpx</source>
+                <target>Importer un fichier GPX</target>
+            </trans-unit>
+            <trans-unit id="188">
+                <source>users.gpx_file</source>
+                <target>Fichier GPX</target>
+            </trans-unit>
+             <trans-unit id="189">
+                <source>users.send_gpx_file</source>
+                <target>Envoyer mon fichier gpx</target>
+            </trans-unit>
+            <trans-unit id="190">
+                <source>users.upload_gpx_with_success</source>
+                <target>Envoi du fichier gpx avec succès</target>
+            </trans-unit>
+             <trans-unit id="191">
+                <source>users.add_gpx_as_activity</source>
+                <target>Traiter le fichier GPX pour l'ajouter en tant qu'activité KeepInSport</target>
+            </trans-unit>
+             <trans-unit id="193">
+                <source>users.file_name</source>
+                <target>Nom du fichier</target>
+            </trans-unit>
+            <trans-unit id="194">
+                <source>users.file_size</source>
+                <target>Taille du fichier</target>
+            </trans-unit>
+             <trans-unit id="195">
+                <source>users.add_gpx_to_activity</source>
+                <target>Traiter le fichier et ajouter en tant qu'activité KeepInSport</target>
+            </trans-unit>
+             <trans-unit id="196">
+                <source>users.add_activity_with_success</source>
+                <target>Ajout de l'activité via le fichier GPX effectué avec succès</target>
+            </trans-unit>
+            <trans-unit id="197">
+                <source>users.no_sports_found</source>
+                <target>Veuillez sélectionner un sport</target>
+            </trans-unit>
+            <trans-unit id="198">
+                <source>users.no_gpx_found</source>
+                <target>Veuillez ajouter un fichier GPX</target>
+            </trans-unit>
+            <trans-unit id="199">
+                <source>users.name_file</source>
+                <target>Nom du fichier</target>
+            </trans-unit>
+            <trans-unit id="200">
+                <source>users.size_file</source>
+                <target>Tailler du fichier</target>
+            </trans-unit>
+             <trans-unit id="201">
+                <source>users.type_activity</source>
+                <target>Type</target>
+            </trans-unit>
+            <trans-unit id="202">
+                <source>users.date_start_activity</source>
+                <target>Date de début</target>
+            </trans-unit>
+            <trans-unit id="203">
+                <source>users.duration_activity</source>
+                <target>Durée</target>
+            </trans-unit>
+             <trans-unit id="204">
+                <source>users.duration_activity</source>
+                <target>Durée</target>
+            </trans-unit>
+             <trans-unit id="205">
+                <source>users.distance_activity</source>
+                <target>Distance</target>
+            </trans-unit>
+            <trans-unit id="206">
+                <source>users.Agenda</source>
+                <target>Agenda</target>
+            </trans-unit>
+            <trans-unit id="207">
+                <source>users.Keepinsport</source>
+                <target>Keepinsport</target>
+            </trans-unit>
+             <trans-unit id="208">
+                <source>users.Club</source>
+                <target>Club</target>
+            </trans-unit>
+            <trans-unit id="209">
+                <source>users.Club</source>
+                <target>Club</target>
+            </trans-unit>
+             <trans-unit id="210">
+                <source>users.alphanumeric-username</source>
+                <target>Le nom d'utilisateur doit être composé de caractères alphanumériques uniquement (chiffres et de lettres)</target>
+            </trans-unit>
+            <trans-unit id="211">
+                <source>users.profil_username</source>
+                <target>Nom d'utilisateur</target>
+            </trans-unit>
+             <trans-unit id="212">
+                <source>users.username_already_exist</source>
+                <target>Le nom d'utilisateur que vous avez saisit existe déjà</target>
+            </trans-unit>
+            <trans-unit id="213">
+                <source>users.profil_modifier</source>
+                <target>Modifier</target>
+            </trans-unit>
+            <trans-unit id="214">
+                <source>user.you_know_perhaps</source>
+                <target>Tu connais peut-être ?</target>
+            </trans-unit>
+            <trans-unit id="215">
+                <source>user.sports_around_you</source>
+                <target>Sportifs proches</target>
+            </trans-unit>
+            <trans-unit id="216">
+                <source>user.sports_pratice_same_sports</source>
+                <target>Sportifs qui pratiquent le même sport</target>
+            </trans-unit>
+            <trans-unit id="217">
+                <source>user.sports_has_got_same_points</source>
+                <target>Sportifs qui ont le même niveau </target>
+            </trans-unit>
+             <trans-unit id="218">
+                <source>user.sports_follow_same_articles</source>
+                <target>Sportifs qui s'interessent au même sujet</target>
+            </trans-unit>
+            <trans-unit id="219">
+                <source>users.activity_already_uploaded</source>
+                <target>Activité déjà ajoutée à Keepinsport</target>
+            </trans-unit>
+             <trans-unit id="220">
+                <source>users.enter_an_activity</source>
+                <target>Saisir une activité</target>
+            </trans-unit>
+            <trans-unit id="221">
+                <source>user.my_friends</source>
+                <target>Mes amis sportifs</target>
+            </trans-unit>
+           <trans-unit id="222">
+                <source>users.service_error_request_query_error</source>
+                <target>Erreur de la requête et du passage du jeton</target>
+           </trans-unit>
+           <trans-unit id="223">
+                <source>users.service_sync_already_inprogress</source>
+                <target>Synchronisation Runkeeper déjà en cours de traitement, veuillez patienter</target>
+           </trans-unit>
+            <trans-unit id="224">
+                <source>users.sync_runkeeper_inprogress_done_with_success</source>
+                <target>Synchronisation avec votre compte Runkeeper effectuée avec succès !</target>
+           </trans-unit>
+           <trans-unit id="225">
+                <source>configure_google-agenda_account</source>
+                <target>Configurer google Agenda</target>
+           </trans-unit>
+           <trans-unit id="226">
+                <source>users.import_sync_google_agenda</source>
+                <target>Synchroniser avec Google Agenda </target>
+           </trans-unit>
+           <trans-unit id="227">
+                <source>ks.connect_your_google_account</source>
+                <target>Se connecter à votre compte google agenda</target>
+           </trans-unit>
+           <trans-unit id="228">
+                <source>users.profil_proximite</source>
+                <target>Proximité</target>
+            </trans-unit>
+            <trans-unit id="229">
+                <source>users.import_rk_activities</source>
+                <target>Importer mes dernières activités Runkeeper</target>
+            </trans-unit>
+            <trans-unit id="230">
+                <source>users.token_already_used</source>
+                <target>Le jeton d'authentification Runkeeper est déjà utilisé par un autre compte KeepInSport</target>
+            </trans-unit> 
+            <trans-unit id="231">
+                <source>user.sports_friend_of_friend</source>
+                <target>Sportif ayant un ou plusieurs amis en commun</target>
+            </trans-unit> 
+             <trans-unit id="232">
+                <source>user.sports_friend_of_friend</source>
+                <target>Sportif ayant un ou plusieurs amis en commun</target>
+            </trans-unit>
+            <trans-unit id="233">
+                <source>modal.sport_event_must_be_entered</source>
+                <target>Le sport doit être renseigné</target>
+            </trans-unit>
+             <trans-unit id="234">
+                <source>users.service_sync_google_already_inprogress</source>
+                <target>Synchronisation Google Agenda déjà en cours de traitement veuillez patienter</target>
+           </trans-unit>
+           <trans-unit id="235">
+                <source>users.sync_googleagenda_inprogress_done_with_success</source>
+                <target>Synchronisation Google Agenda effectuée avec succès...</target>
+           </trans-unit>
+           <trans-unit id="236">
+                <source>users.delete_google_agenda_event_info</source>
+                <target>Attention la synchronisation des agendas ne se fait que dans le sens Google Agenda vers Keepinsport !</target>
+           </trans-unit>
+           <trans-unit id="237">
+                <source>users.you-must-be-invite-for-the-beta-closed</source>
+                <target>Vous devez avoir été invité pour participer à la bêta fermée de Keepinsport </target>
+           </trans-unit>
+            <trans-unit id="238">
+                <source>admin.label</source>
+                <target>Administration</target>
+           </trans-unit>
+           <trans-unit id="239">
+                <source>users.admin_beta_invite</source>
+                <target>Gérer les invitations bêta</target>
+           </trans-unit>
+           <trans-unit id="240">
+                <source>users.dont_ve_got_enough_invit_%nomber%_left</source>
+                <target>Vous ne diposez pas d'assez d'invitations : %nomber% restante(s)</target>
+           </trans-unit>
+           <trans-unit id="241">
+                <source>users.message_page_edition_adresse1</source>
+                <target>Rentre ton adresse exacte ci-dessous, si Google ne la connait pas, précise ta ville, une fois sélectionnée tu peux zoomer sur la carte et même déplacer le curseur manuellement pour être plus précis !</target>
+           </trans-unit>
+           <trans-unit id="242">
+                <source>users.message_page_edition_adresse2</source>
+                <target>Avec ton adresse nous t'aiderons à trouver des sportifs, des clubs, ou bien des magasins spécialisés près de chez toi !</target>
+           </trans-unit>
+           <trans-unit id="243">
+                <source>users.message_page_edition_avatar</source>
+                <target>Ton avatar te suivra un peu partout sur le site, n'hésite pas à le personnaliser dès maintenant !</target>
+           </trans-unit>
+           <trans-unit id="244">
+                <source>users.message_page_edition_sports</source>
+                <target>Les sports sélectionnés ici te seront proposés par défaut pour gagner du temps lorsque tu posteras des activités !</target>
+           </trans-unit>
+           <trans-unit id="245">
+                <source>users.edit</source>
+                <target>Edition</target>
+           </trans-unit>
+           <trans-unit id="246">
+                <source>users.my_sports</source>
+                <target>Mes sports</target>
+           </trans-unit>
+           <trans-unit id="247">
+                <source>users.my_sport_goals</source>
+                <target>Mes objectifs sportifs :</target>
+           </trans-unit>
+           <trans-unit id="248">
+                <source>users.save</source>
+                <target>Enregistrer</target>
+           </trans-unit>
+           <trans-unit id="249">
+                <source>users.my_favorite_sports</source>
+                <target>Mes sports préférés :</target>
+           </trans-unit>
+           <trans-unit id="250">
+                <source>users.my_daily_notifications</source>
+                <target>Paramétrage des mails quotidiens (sur activités sportives postées par tes amis)</target>
+           </trans-unit>
+           <trans-unit id="251">
+                <source>users.my_notifications</source>
+                <target>Paramétrage des notifications envoyées par mails</target>
+           </trans-unit>
+           <trans-unit id="252">
+                <source>users.yes</source>
+                <target>Oui</target>
+           </trans-unit>
+           <trans-unit id="253">
+                <source>users.no</source>
+                <target>Non</target>
+           </trans-unit>
+           <trans-unit id="254">
+                <source>users.my_informations</source>
+                <target>Mes informations</target>
+           </trans-unit>
+           <trans-unit id="255">
+                <source>users.my_address</source>
+                <target>Mon adresse</target>
+           </trans-unit>
+           <trans-unit id="256">
+                <source>users.my_avatar</source>
+                <target>Mon avatar</target>
+           </trans-unit>
+           <trans-unit id="257">
+                <source>users.my_mails</source>
+                <target>Mes notifications</target>
+           </trans-unit>
+           <trans-unit id="258">
+                <source>users.my_buddy</source>
+                <target>Mon personnage</target>
+           </trans-unit>
+           <trans-unit id="259">
+                <source>users.my_equipement</source>
+                <target>Mon équipement</target>
+           </trans-unit>
+           <trans-unit id="260">
+                <source>users.friends_confirmed</source>
+                <target>Confirmation d'ami</target>
+           </trans-unit>
+           <trans-unit id="261">
+                <source>users.friends_request</source>
+                <target>Demande d'ami</target>
+           </trans-unit>
+           <trans-unit id="262">
+                <source>users.mail_received</source>
+                <target>Message reçu</target>
+           </trans-unit>
+           <trans-unit id="263">
+                <source>users.Commentaire</source>
+                <target>Comment</target>
+           </trans-unit>
+           <trans-unit id="264">
+                <source>users.post_vote</source>
+                <target>Vote sur une publication</target>
+           </trans-unit>
+           <trans-unit id="265">
+                <source>users.share_post</source>
+                <target>Partage d'une publication</target>
+           </trans-unit>
+           <trans-unit id="266">
+                <source>users.league_changes</source>
+                <target>Changement de ligue</target>
+           </trans-unit>
+           <trans-unit id="267">
+                <source>users.activity_validated</source>
+                <target>Validation d'activité</target>
+           </trans-unit>
+           <trans-unit id="268">
+                <source>users.event_request</source>
+                <target>Invitation à un événement</target>
+           </trans-unit>
+           <trans-unit id="269">
+                <source>users.article_update</source>
+                <target>Mise à jour d'un article</target>
+           </trans-unit>
+           <trans-unit id="270">
+                <source>users.trophee</source>
+                <target>Déclenchement d'un trophée</target>
+           </trans-unit>
+           <trans-unit id="271">
+                <source>users.activity_to_validate</source>
+                <target>Activité à valider</target>
+           </trans-unit>
+           <trans-unit id="272">
+                <source>users.event_to_validate</source>
+                <target>Evénement à valider</target>
+           </trans-unit>
+           <trans-unit id="273">
+                <source>users.team_composition</source>
+                <target>Composition d'équipe</target>
+           </trans-unit>
+           <trans-unit id="274">
+                <source>users.warning</source>
+                <target>Signalement</target>
+           </trans-unit>
+           <trans-unit id="275">
+                <source>users.event_participate</source>
+                <target>Participation à un événement</target>
+           </trans-unit>
+           <trans-unit id="276">
+                <source>users.club_acceptance</source>
+                <target>Acceptation dans un club</target>
+           </trans-unit>
+           <trans-unit id="277">
+                <source>users.event_creation</source>
+                <target>Création d'événement</target>
+           </trans-unit>
+           <trans-unit id="278">
+                <source>users.tournament_creation</source>
+                <target>Gestion de tournoi</target>
+           </trans-unit>
+           <trans-unit id="279">
+                <source>users.user_update</source>
+                <target>Modification d'utilisateur</target>
+           </trans-unit>
+           <trans-unit id="280">
+                <source>users.my_friends</source>
+                <target>Mes amis</target>
+           </trans-unit>
+           <trans-unit id="281">
+                <source>users.next_step</source>
+                <target>Etape suivante</target>
+           </trans-unit>
+           <trans-unit id="282">
+                <source>evolutions.all_evolutions</source>
+                <target>Toutes les évolutions</target>
+           </trans-unit>
+           <trans-unit id="283">
+                <source>evolutions.my_evolutions</source>
+                <target>Mes encouragements</target>
+           </trans-unit>
+           <trans-unit id="284">
+                <source>evolutions.evolutions_site</source>
+                <target>Evolutions du site</target>
+           </trans-unit>
+           <trans-unit id="285">
+                <source>evolutions.max_votes_reached</source>
+                <target>Tu as atteint ton nombre maximum de votes possibles !</target>
+           </trans-unit>
+           <trans-unit id="286">
+                <source>evolutions.id</source>
+                <target>Identifiant</target>
+           </trans-unit>
+           <trans-unit id="287">
+                <source>evolutions.descriptionShort</source>
+                <target>Description</target>
+           </trans-unit>
+           <trans-unit id="288">
+                <source>evolutions.release_date</source>
+                <target>Estimation mise à disposition</target>
+           </trans-unit>
+           <trans-unit id="289">
+                <source>evolutions.creation_date</source>
+                <target>Date de création</target>
+           </trans-unit>
+           <trans-unit id="290">
+                <source>evolutions.votes</source>
+                <target>Encouragements</target>
+           </trans-unit>
+           <trans-unit id="291">
+                <source>evolutions.message_vote</source>
+                <target>Nous développerons de nouvelles évolutions en fonction de vos votes, vous pouvez en choisir 3 parmi la liste proposée ci-dessous (le nombre de votes total des sportifs est précisé entre parenthèse)</target>
+           </trans-unit>
+           <trans-unit id="292">
+                <source>evolutions.message_vote2</source>
+                <target>N'hésitez pas à proposer d'autres améliorations via le feedback en bas !</target>
+           </trans-unit>
+           <trans-unit id="293">
+                <source>users.message_page_edition_character</source>
+                <target>Ton personnage apparait sur toutes tes activités postées, soigne ton look dès maintenant :)</target>
+           </trans-unit>
+           <trans-unit id="294">
+                <source>evolutions.description</source>
+                <target>Détail</target>
+           </trans-unit>
+           <trans-unit id="295">
+               <source>ks.connect_your_strava_profile</source>
+               <target>Connectez votre profil Strava</target>
+           </trans-unit>
+           <trans-unit id="296">
+               <source>users.sync-strava</source>
+               <target>Service Strava configuré.</target>
+           </trans-unit>
+        </body>
+    </file>
+</xliff>
+

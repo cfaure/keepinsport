@@ -1,0 +1,9 @@
+services:
+    ks_league.leagueLevelService:
+        class: Ks\LeagueBundle\Service\LeagueLevelService
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          - "@ks_notification.notificationService"
+          - "@translator"

@@ -1,0 +1,85 @@
+{% if step is not defined %}
+    {% set step = 1 %}
+{% endif %}
+
+{% if creationOrEdition is not defined %}
+    {% set creationOrEdition = "creation" %}
+{% endif %}
+
+<ul class="breadcrumb">
+    {% set i = 1 %}
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_informations', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{'users.my_informations'|trans}}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. {{'users.my_informations'|trans}} <span class="divider">></span></li>
+        {% endif %}
+    </li>
+    {% set i = i + 1 %}
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_adresses', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{'users.my_address'|trans}}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. {{'users.my_address'|trans}} <span class="divider">></span></li>
+        {% endif %}  
+    </li>
+    {% set i = i + 1 %}
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_avatars', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{'users.my_avatar'|trans}}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. {{'users.my_avatar'|trans}} <span class="divider">></span></li>
+        {% endif %}
+    </li>
+    {% set i = i + 1 %}
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_sports', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{'users.my_sports'|trans}}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. {{'users.my_sports'|trans}} <span class="divider">></span></li>
+        {% endif %}
+    </li>
+    {% set i = i + 1 %}
+    {#
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_inviteFriends', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{'users.my_friends'|trans}}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. {{'users.my_friends'|trans}} <span class="divider">></span></li>
+        {% endif %}
+    </li>
+    {% set i = i + 1 %}
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_mails', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{'users.my_notifications'|trans}}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. {{'users.my_notifications'|trans}} <span class="divider">></span></li>
+        {% endif %}
+    </li>
+    {% set i = i + 1 %}
+    #}
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_character', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{'users.my_buddy'|trans}}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. {{'users.my_buddy'|trans}} <span class="divider">></span></li>
+        {% endif %}
+    </li>
+    {% set i = i + 1 %}
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_equipment', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{'users.my_equipement'|trans}}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. {{'users.my_equipement'|trans}} <span class="divider">></span></li>
+        {% endif %}
+    </li>
+    {% set i = i + 1 %}
+    <li>
+        {% if step >= i %}
+            <a href="{{ path('ksProfile_thematique', {'creationOrEdition' : creationOrEdition}) }}">{{ i }}. {{ 'checklist.good-start'| trans }}</a> <span class="divider">></span>
+        {% else %}
+            <li class="active">{{ i }}. Bien débuter <span class="divider">.</span></li>
+        {% endif %}
+    </li>
+</ul>
+       

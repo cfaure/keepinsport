@@ -1,0 +1,30 @@
+<span class="tournament_score label label-info pull-right">{{ match.score }}</span>
+<span class="user userTop" data-id="{{ match.user1 is defined ? match.user1.id : '' }}" data-username="{{ match.username1 }}">
+    {% include 'KsTournamentBundle:Tournament:_user.html.twig' with { 
+        'user'      : match.user1 is defined ? match.user1 : null, 
+        'username'  : match.username1, 
+        'winner'    : match.user1Won
+    } %}
+</span>
+<span class="user userBottom" data-id="{{ match.user2 is defined ? match.user2.id : '' }}" data-username="{{ match.username2 }}">
+    {% include 'KsTournamentBundle:Tournament:_user.html.twig' with { 
+        'user'      : match.user2 is defined ? match.user2 : null, 
+        'username'  : match.username2, 
+        'winner'    : match.user2Won
+    } %}
+</span>
+<span class="tournament_editMatchButton btn btn-mini btn-clubs">
+    <span class="glyphicon glyphicon-pencil"></span>
+</span>
+
+
+<script type="text/javascript">
+    /*$(".match[data-id={{ match.id }}]").hover(
+        function () {
+            $(this).find(".tournament_editMatchButton").show();
+        },
+        function () {
+            $(this).find(".tournament_editMatchButton").hide();
+        }
+    );*/
+</script>

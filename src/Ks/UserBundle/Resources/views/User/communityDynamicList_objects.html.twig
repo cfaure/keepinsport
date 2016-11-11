@@ -1,0 +1,359 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('js/jquery.quicksand.js') }}"></script>
+    {#<script type="text/javascript" src="http://www.google.com/jsapi"></script>#}
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"></script>
+    <script type="text/javascript">
+
+        // Custom sorting plugin
+        (function($) {
+          $.fn.sorted = function(customOptions) {
+            var options = {
+              reversed: false,
+              by: function(a) { return a.text(); }
+            };
+            $.extend(options, customOptions);
+            $data = $(this);
+            arr = $data.get();
+            arr.sort(function(a, b) {
+              var valA = options.by($(a));
+              var valB = options.by($(b));
+              if (options.reversed) {
+                return (valA < valB) ? 1 : (valA > valB) ? -1 : 0;				
+              } else {		
+                return (valA < valB) ? -1 : (valA > valB) ? 1 : 0;	
+              }
+            });
+            return $(arr);
+          };
+          
+        })(jQuery);
+        
+        function stringToDateTime(string) {
+            var maDate=new Date()
+            var tabDateTime=string.split('\/');
+
+            maDate.setDate(tabDateTime[0]);
+            maDate.setMonth(tabDateTime[1]);
+            maDate.setYear(tabDateTime[2]);
+
+            return maDate;
+       }
+        
+
+        // DOMContentLoaded
+        $(document).ready(function() {
+            /*$("#bFilterByText").click(function() {
+                console.log( $("#textForFilter").val() );
+                
+                var $applications = $('#applications');
+
+                // clone applications to get a second collection
+                var $data = $applications.clone();
+                
+                var $filteredData = $data.find('li[data-type=' + $filterActiveType.val() + '].userBloc');
+            });*/
+            
+            $("a[rel=tooltip], img[rel=tooltip], span[rel=tooltip]").tooltip();
+            
+            //On calcule la proximité de chaque utilisateur
+            {% if profileUser is defined and profileUser.userDetail is not null and profileUser.userDetail.latitude is not null and profileUser.userDetail.longitude is not null %}
+                if ( typeof google != "undefined" ) {
+                    var myCoordonate = new google.maps.LatLng({{ profileUser.userDetail.latitude }}, {{ profileUser.userDetail.longitude }});  
+                }
+            {% else %}
+                {% if app.user.userDetail is not null and app.user.userDetail.latitude is not null and app.user.userDetail.longitude is not null %}
+                    if ( typeof google != "undefined" ) {
+                        var myCoordonate = new google.maps.LatLng({{ app.user.userDetail.latitude }}, {{ app.user.userDetail.longitude }});  
+                    }
+                {% endif %}
+            {% endif %}
+            $.each($("ul.userInfoToSort"), function (i, ul) {
+                $latitude = $( ul ).find('li.latitude');
+                $longitude = $( ul ).find('li.longitude');
+                $latitude.hide();
+                $longitude.hide();
+                $proximity = $( ul ).find('li.proximity');
+                
+                if ( typeof myCoordonate != "undefined" && typeof google != "undefined" && $latitude.length == 1 || $longitude.length == 1 ) {
+                    var latitudeUser = parseFloat($latitude.html());
+                    var longitudeUser = parseFloat($longitude.html());
+                    var coordonateUser = new google.maps.LatLng(latitudeUser, longitudeUser);
+                    var distanceKm = google.maps.geometry.spherical.computeDistanceBetween(myCoordonate, coordonateUser);
+                    distanceKm = distanceKm/1000;
+                    $proximity.attr( "data-proximity", distanceKm );
+                    $proximity.html( "<u>Proximité :</u> " + parseInt( distanceKm ) + "km" );
+                } else {
+                    $proximity.attr( "data-proximity", 99999999 );
+                    $proximity.html( "<u>Proximité :</u> inconnu" );
+                }
+            });
+
+            // bind radiobuttons in the form
+            var $filterBloc       = $('#filter');
+            var $filterTypeBloc   = $filterBloc.find("div#filterTypeBloc");
+            var $filterTypes      = $filterBloc.find('button[name="type"]');
+            var $filterSorts      = $filterBloc.find('button[name="sort"]');
+
+
+            // get the first collection
+            var $applications = $('#applications');
+
+            // clone applications to get a second collection
+            var $data = $applications.clone();
+ 
+            
+            $filterTypes.add($filterSorts).click(function(e) { 
+                
+                switch ( $( this ).attr( "name" ) )
+                {
+                    case "type":
+                        var $filterActiveType = $( this );
+                        var $filterActiveSort = $filterBloc.find('button[name="sort"].active');
+                        break; 
+                        
+                     case "sort":
+                        var $filterActiveType = $filterBloc.find('button[name="type"].active');
+                        var $filterActiveSort = $( this );
+                        break;  
+                }
+
+                if ( $filterActiveType.val() == 'all') {
+                  var $filteredData = $data.find('li.userBloc');
+                } else {
+                  var $filteredData = $data.find('li[data-type=' + $filterActiveType.val() + '].userBloc');
+                }
+               
+              
+                //Sort
+                switch ( $filterActiveSort.val() )
+                {
+                    case "username":
+                        var $sortedData = $filteredData.sorted({
+                            by: function(v) {  
+                              return $(v).find('li.username').attr("data-username");
+                            }
+                        });
+                        break; 
+                        
+                    case "league":
+                        var $sortedData = $filteredData.sorted({
+                            by: function(v) {  
+                              return parseInt($(v).find('li.league').attr("data-league"));
+                            }
+                        });
+                        break; 
+                        
+                     case "points":
+                        var $sortedData = $filteredData.sorted({
+                            reversed : true,
+                            by: function(v) {
+                              return parseInt($(v).find('li.points').attr("data-points"));
+                            }
+                        });
+                        break;  
+                        
+                    case "lastConnexionDate":
+                        var $sortedData = $filteredData.sorted({
+                            reversed : true,
+                            by: function(v) {
+                              return stringToDateTime($(v).find('li.lastConnexionDate').attr("data-lastConnexionDate"));
+                            }
+                        });
+                        break;
+                        
+                   case "proximity":
+                       var $sortedData = $filteredData.sorted({
+                            by: function(v) {
+                              return parseFloat($(v).find('li.proximity').attr("data-proximity"));
+                            }
+                        });
+                       break;
+                }
+                
+                // finally, call quicksand
+                $applications.quicksand($sortedData, {
+                  duration: 800,
+                  easing: 'easeInOutQuad'
+                });
+            });
+
+            
+
+        });
+
+    </script>
+{% endblock %}
+    
+{% block content %}
+    
+    {% if profileUser is defined %}
+        <center><h3>Communauté de {{ profileUser.username }}</h3></center>
+
+        <br/>
+        <a class="btn btn-info pull-right" href="{{ path('ks_league_lastUpdate') }}"><i class="icon-list-alt"></i> Dernière mise à jour des ligues concernant ma communauté</a>
+    {% else %}
+        <center><h3>Sportifs</h3></center>
+    {% endif %}
+    <br/>
+    <br/>
+    {#<div class="input-prepend input-append control-group">
+        <input id="textForFilter" type="text" class="input-xlarge" value=""/>
+        <a id="bFilterByText" class="btn add-on" >Filtrer</a>
+    </div>#}
+    <form id="filter">
+        <div >Filtrer par : </div>
+        <div id="filterTypeBloc" class="btn-group" style="float:left" data-toggle="buttons-radio">
+            <button type="button" class="btn btn-primary active" name="type" value="all">Tous</button>
+            <button type="button" class="btn btn-primary" name="type" value="gold">Ligue Or</button>
+            <button type="button" class="btn btn-primary" name="type" value="silver">Ligue Argent</button>
+            <button type="button" class="btn btn-primary" name="type" value="bronze">Ligue Bronze</button>
+            <button type="button" class="btn btn-primary" name="type" value="other">Ligue Chocolat/ Pas de ligue</button>
+        </div>
+        <br clear="all"/>
+        <br/>
+        <div>Classer par : </div>
+        <div class="btn-group"  data-toggle="buttons-radio">
+            <button type="button" class="btn btn-primary active" name="sort" value="username">Nom</button>
+            <button type="button" class="btn btn-primary" name="sort" value="league">Ligue</button>
+            <button type="button" class="btn btn-primary" name="sort" value="points">Points</button>
+             {% if profileUser is defined and profileUser.userDetail is not null and profileUser.userDetail.latitude is not null and profileUser.userDetail.longitude is not null %}
+                <button type="button" class="btn btn-primary" name="sort" value="proximity">Proximité</button>
+             {% elseif app.user.userDetail is not null and app.user.userDetail.latitude is not null and app.user.userDetail.longitude is not null %}
+                <button type="button" class="btn btn-primary" name="sort" value="proximity">Proximité</button>
+            {% endif %}
+            <button type="button" class="btn btn-primary" name="sort" value="lastConnexionDate">Date de dernière connexion</button>
+        </div>
+        <br class="clearfix"/>
+    </form>
+
+    <ul id="applications" class="image-grid">
+    {% for key, user in users %}           
+            <li class="userBloc" data-id="{{ user.id}}" data-type="{{ user.leagueLevel.category.label }}" >
+                <center>
+                    {% if user.userDetail is defined and user.userDetail != null %}
+                        {% set user_imageName = user.userDetail.imageName %}
+                    {% else %}
+                        {% set user_imageName = null %}
+                    {% endif %}
+                    {% include 'KsUserBundle:User:_userImage.html.twig' with {' user_imageName' :  user_imageName }%}
+                </center>
+                <br/>
+                <ul class="userInfoToSort">  
+                    {#<li class="pseudo">{{ user.username }}</li>#}
+                    <li class="username" data-username="{{ user.username }}" style="margin-left:-25px"><center>{{ user.username }}</center></li>
+                    <li class="points" data-points="{{ user.myPoints|total_points }}"><u>Points :</u> {{ user.myPoints|total_points }}</li>
+                    <li class="league" data-league="{{ user.leagueLevel.rank }}">
+                        <u>Ligue :</u> <span class="categoryBloc {{ user.leagueLevel.category.label }}"></span> {{ user.leagueLevel.category.label }} 
+                    </li>
+                    <li class="star" data-star="{{ user.leagueLevel.starNumber }}">
+                        <u>Etoiles :</u> 
+                        <span>
+                            {% if user.leagueLevel.starNumber > 0 %} 
+                                {% for i in range(1, user.leagueLevel.starNumber) %} 
+                                    ★
+                                {% endfor %}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </span>
+                    </li>
+                    {% if user.userDetail is not null and ( user.userDetail.latitude is not null and user.userDetail.longitude is not null ) %}
+                    <li class="latitude" style="display:none">{{ user.userDetail.latitude }}</li>
+                    <li class="longitude" style="display:none">{{ user.userDetail.longitude }}</li>
+                    {% endif %}
+                    <li class="proximity" data-proximity=""><u>Proximité :</u> Inconnu</li>
+                    <li class="lastConnexionDate" data-lastConnexionDate="{{ user.lastLogin|date('d/m/Y') }}"><u>Dernière connexion :</u> {{ user.lastLogin|date('d/m/Y') }}</li>
+                    <li class="sports" data-sports=""><u class="pull-left">Sports :</u>
+                        {% if user.userDetail.sports is defined and user.userDetail.sports|length > 0 %}
+                            {% for sport in user.userDetail.sports %}
+                                <span rel="tooltip" title="{{ sport.label }}" class="pull-left">
+                                    {% if asset('img/sports/' ~ sport.codeSport ~ '.png')|issetImg %}
+                                        <img width="25px" src="{{ asset('img/sports/' ~ sport.codeSport ~ '.png') }}"/>
+                                    {% else %}
+                                        <img width="25px" src="{{ asset('img/sports/running.png') }}"/>
+                                    {% endif %}
+                                </span>
+                            {% endfor %}
+                            <br class="clearfix"/>
+                        {% else %}
+                            - 
+                        {% endif %}
+                    </li>
+                    <li>
+                        <br/>
+                        <a class="btn btn-small btn-info" title="{{ user.username }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                            Profil public
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+    
+   <br clear="all"/>
+
+    
+    <style>  
+
+    .image-grid > li {
+        width: 170px;
+        margin: 20px 0 0 35px;
+        float: left;
+        text-align: center;
+        font-family: "Helvetica Neue", sans-serif;
+        /*line-height: 17px;*/
+        color: #686f74;
+        height: 270px;
+        overflow: hidden;
+        border: 1px solid #DDDDDD;
+        border-radius: 4px 4px 4px 4px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+        line-height: 1;
+        padding: 4px;
+    }
+
+    .image-grid li img,
+    .image-grid li strong {
+      display: block;
+    }
+
+    .image-grid li strong {
+      color: #fff;
+    }
+    
+    li.userBloc {
+        text-align: left;
+    }
+    
+    li.userBloc ul{
+        list-style-type: none;
+    }
+    
+    span.categoryBloc {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        border: 1px solid black;
+        border-radius: 50%;
+    }
+    
+    span.categoryBloc.bronze {
+        background-color: #d16909;
+    }
+    
+    span.categoryBloc.silver {
+        background-color: #dddcd9;
+    }
+    
+    span.categoryBloc.gold {
+        background-color: #e8b419;
+    }
+    </style>
+{% endblock %}        

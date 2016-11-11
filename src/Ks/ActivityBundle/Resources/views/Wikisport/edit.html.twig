@@ -1,0 +1,372 @@
+{% extends "::layout_V2.html.twig" %}
+
+{% block title %}
+	Keepinsport - Wikisport
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('ckeditor/sample.css') }}" />
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("wikisport"); //pour activer le css correspondant
+            
+            CKEDITOR.replace( 'ckeditor' );
+            //Nouveau bouton SAVE
+            $("#btnSave").click(function() {
+                //Sauvegarde du texte de la description
+                if( ! $("#btnSave").hasClass("disabled") ) {
+                    $("#btnSave").addClass( "disabled" );
+                    $("#messagesBloc").html("").hide();
+                    /*var datas = CKEDITOR.instances.ckeditor.getData();
+                    console.log(datas);*/
+                    
+                    $.post(
+                        Routing.generate('ksWikisport_update', {'id' : "{{ article.id }}" }), 
+                        { 
+                            "description"          : CKEDITOR.instances.ckeditor.getData(),
+                        },
+                        function(response) {
+                            if( response.code == 1 ){
+                                //$("#messagesBloc").html("Les modifications ont été enregistrés avec succès").show();
+                            }
+                        }
+                   );
+                }
+                
+                //Sauvegarde du reste (titre, photos)
+                $('#Article_content{{ article.id }}_updateForm').submit();
+            });
+            
+            $("#saveLoader").hide();
+            {% if article.label is defined and article.label is not null %}
+                $("#articleTitle").val("{{ article.label|addslashes|raw }}");
+            {% endif %}
+                
+            {% if article.distance is defined and article.distance is not null %}
+                $("#distance").val("{{ article.distance }}");
+            {% endif %}
+                
+            {% if article.elevationGain is defined and article.elevationGain is not null %}
+                $("#elevationGain").val("{{ article.elevationGain }}");
+            {% endif %}
+            
+            {% if article.elevationLost is defined and article.elevationLost is not null %}
+                $("#elevationLost").val("{{ article.elevationLost }}");
+            {% endif %}
+            
+            if ({{ article.articleCategoryTag_id }} == 2) {
+                var $sportChoiceFormBloc = $("div.sport");
+                var $selectSportChoice = $sportChoiceFormBloc.find("select.selectSports");
+                $selectSportChoice.val({{ article.sport_id }});
+                $customSelect.select2("val", "{{ article.sport_id }}");
+                $("#selectedSports").val($customSelect.select2("val"));
+                /*
+                if ({{ article.sport_typeId }} != '2' && {{ article.sport_typeId }} != '3') {
+                    $('#div-endurance').css('visibility', 'hidden');
+                }
+                */
+
+                $selectSportChoice.change(function() {
+                   //alert({{ article.sport_typeId }});
+                });
+            }
+            
+            var $datepicker = $("#datepicker");
+            $datepicker.css("z-index", "0");
+            $datepicker.datepicker({
+                dateFormat: "dd/mm/yy",
+                firstDay: 1,
+                changeDate: function(ev) {
+                }
+            });
+            
+            $datepicker.datepicker("setDate", new Date("{{ article.linkedEvent_startDate }}"));
+            
+            var $timepicker = $("#timepicker");
+            $timepicker.css("z-index", "0");
+            $timepicker.timepicker({
+                showSeconds: false,
+                showMeridian: false,
+                'timeFormat': 'H:i'
+            });
+            $temp = "{{ article.linkedEvent_startDate }}".split(" ");
+            $timepicker.timepicker("setTime", $temp[1] );
+            
+            $('input[type=checkbox].isPublic').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+            });
+            
+            $isPublic = false;
+            if ({{ article.isPublic }} == 1) {
+                $('input[type=checkbox].isPublic').iCheck('check');
+                $isPublic = true;
+            }
+            $('input[type=checkbox].isPublic').on('ifChecked', function (event) {
+                $isPublic = true;
+            });
+            $('input[type=checkbox].isPublic').on('ifUnchecked', function (event) {
+                $isPublic = false;
+            });
+            
+            $('input[type=checkbox][name=checkboxSRTM]').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+            });
+            
+            //$('input[type=checkbox][name=checkboxSRTM]').iCheck('check');
+            checkboxSRTM = false;
+            
+            $('input[type=checkbox][name=checkboxSRTM]').on('ifChecked', function (event) {
+                checkboxSRTM = true;
+            });
+            $('input[type=checkbox][name=checkboxSRTM]').on('ifUnchecked', function (event) {
+                checkboxSRTM = false;
+            });
+            
+            $('.fileUploadForm').fileupload({
+                acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+            });
+            
+            //FileUpload
+            var $gpxfileUploadForm = $("#jqueryFileUpload_gpx").find("form.GPXUploadForm");
+            $gpxfileUploadForm.fileupload({
+                    acceptFileTypes : /(\.|\/)(gpx)$/i,
+                    maxNumberOfFiles : 1,
+                    maxFileSize: 11000000,
+                    autoUpload:true,
+                    progressall: function (e, data) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        $('#progress .bar').css(
+                            'width',
+                            progress + '%'
+                        );
+                    }
+            });
+            
+            $('#Article_content{{ article.id }}_updateForm').submit(function(e) {
+                $("#saveLoader").show();
+
+                form = $(this);
+
+                var articleTitle = $("#articleTitle").val();
+
+                //on récupère les photos téléchargées
+                var articleUploadedPhotos = new Array();
+                $.each($("tr.template-download"), function(key, templateDownload) {
+                    if ($( this ).attr("imgName").indexOf("gpx") == -1) {
+                        articleUploadedPhotos.push( $( this ).attr("imgName") );
+                    }
+                });
+                
+                //on récupère les photos à supprimer
+                var articlePhotosToDelete = new Array();
+                $.each($("input.photos_to_delete:checked"), function(key, photo_to_delete) {
+                    articlePhotosToDelete.push( $( this ).val() );
+                });
+
+                //Création du champ contenant le GXP téléchargé
+                var $gpxfileUploadForm = $("#jqueryFileUpload_gpx").find("form.GPXUploadForm");
+                $("input.uploaded_GPX").remove();
+                var articleGPXUploaded = new Array();
+                $.each($gpxfileUploadForm.find("tr.template-download"), function(key, templateDownload) {
+                    articleGPXUploaded.push( $( this ).attr("imgName") );
+                });  
+                
+                //console.log(articleUploadedPhotos);
+                
+                if ({{ article.articleCategoryTag_id }} == 2) {
+                    $sportId = $selectSportChoice.val();
+                }
+                else {
+                    $sportId = null;
+                }
+                
+                $.post(form.attr('action'),
+                { 
+                    "articleTitle"          : articleTitle,
+                    "articleUploadedPhotos" : articleUploadedPhotos, 
+                    "articlePhotosToDelete" : articlePhotosToDelete,
+                    "articleGPXUploaded"    : articleGPXUploaded,
+                    "eventDate"             : $("#datepicker").val(),
+                    "eventStart"            : $("#timepicker").val(),
+                    "distance"              : $("#distance").val(),
+                    "elevationGain"         : $("#elevationGain").val(),
+                    "elevationLost"         : $("#elevationLost").val(),
+                    "isPublic"              : $isPublic,
+                    "checkboxSRTM"          : checkboxSRTM,  
+                    "fullAddress"           : $('#ks_activitybundle_articleEventType_place_fullAdress').val(),
+                    "countryCode"           : $('#ks_activitybundle_articleEventType_place_countryCode').val(),
+                    "regionCode"            : $('#ks_activitybundle_articleEventType_place_regionCode').val(),
+                    "regionLabel"           : $('#ks_activitybundle_articleEventType_place_regionLabel').val(),
+                    "countyCode"            : $('#ks_activitybundle_articleEventType_place_countyCode').val(),
+                    "countyLabel"           : $('#ks_activitybundle_articleEventType_place_countyLabel').val(),
+                    "townCode"              : $('#ks_activitybundle_articleEventType_place_townCode').val(),
+                    "townLabel"             : $('#ks_activitybundle_articleEventType_place_townLabel').val(),
+                    "longitude"             : $('#ks_activitybundle_articleEventType_place_longitude').val(),
+                    "latitude"              : $('#ks_activitybundle_articleEventType_place_latitude').val(),
+                    "sportId"               : $sportId
+                },
+                function(response) {
+                    //on efface les preview des photos téléchargées
+                    //article_photos_dropbox.find("div.preview.done").remove();
+                    $("#fileuploadTable > tbody").html("");
+
+                    //On efface les photos effacées
+                    $("input.photos_to_delete:checked").remove();
+
+                    if( response.photosHtml ) {
+                        $("#article_photos").html(response.photosHtml);
+                    }
+                    
+                    if( response.code == 1 ) {
+                        showInformation("Modification(s) enregistrée(s) ! </br> </br> Redirection vers l'article en cours...", 'wikisport');
+                        document.location.href = Routing.generate('ksWikisport_show', {'id' : {{ article.id }}})
+                    } else {
+                        showInformation(response.errorMessage);
+                    }
+                }).error(function(xqr, error) {
+                    console.log("error " + error);
+                });
+                return false;
+                e.preventDefault();
+            });
+        });
+        
+        function refreshDataGPX() {
+            //pour ne pas dupliquer ou surchager uploadGPX.html.twig
+        }
+        
+    </script>
+{% endblock %}
+    
+{% block body %}
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <!--BLOC1-->
+        <div class="bloc1">
+            <div class="container">
+                <h1 class="title premium">{{ 'article.update-article' | trans }}</h1>
+                <input id="articleTitle" class="form-control" type="text" val="{{ article.label }}" placeholder="Titre"/>
+                <div id="messagesBloc" class="alert" style="display:none"></div>
+            
+                {% if article.articleCategoryTag_id == '2' %} {#Article de type événement sportif = compétition#}
+                    <br/>
+                    <br/>
+                    <h3 class="title">{{ 'users.gpx_uses'|trans }}</h3>
+                    <div class="photo">
+                        <span style="display:inline-block;" rel="tooltip" title="{{ "actions.SRTM-tooltip"|trans }}">{{ 'actions.SRTM'|trans }} :</span>
+                        <span id="checkboxSRTM" style="display:inline-block;" rel="tooltip" title="{{ "actions.SRTM-tooltip"|trans }}"><input name="checkboxSRTM" type="checkbox"> </span>
+                        <br clear="all"/>
+                        <div id="jqueryFileUpload_gpx">
+                            {% include 'KsActivityBundle:Activity:uploadGPX.html.twig' with {'uploadDirName' : 'gpx', 'context' : 'wikisport'} %}
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <br clear="all">
+                
+                <h3 class="title">{{ 'article.general' | trans }}</h3>
+                {% if article.articleCategoryTag_id == '2' %} {#Article de type événement sportif = compétition#}
+                    <div class="sport"> {{ form_widget(sportChoiceForm.sport) }} </div>
+                    <br/>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>
+                                    <input type="text" id="datepicker" class="datepicker form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <div class="input-append bootstrap-timepicker">
+                                    <input type="text" id="timepicker" class="timepicker form-control"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <div class="input-group-addon"><span class="glyphicon glyphicon-globe"></span></div>
+                                {{ form_widget(form.place) }}
+                            </div>
+                        </div>
+                    </div>
+                    {% if article.sport_typeId == '2' or article.sport_typeId == '3' %}
+                        <div id="div-endurance" class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group" rel="tooltip" title="Distance (km)">
+                                        <div class="input-group-addon"><span class="glyphicon glyphicon-road"></span></div>
+                                        <input id="distance" class="form-control" type="number" step=0.01 val="{{ article.distance }}" placeholder="Distance"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group" rel="tooltip" title="D+(mètres)">
+                                        <div class="input-group-addon"><span class="glyphicon glyphicon-arrow-up"></span></div>
+                                        <input id="elevationGain" class="form-control" type="number" step=1 val="{{ article.elevationGain }}" placeholder="D+"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group" rel="tooltip" title="D-(mètres)">
+                                        <div class="input-group-addon"><span class="glyphicon glyphicon-arrow-down"></span></div>
+                                        <input id="elevationLost" class="form-control" type="number" step=1 val="{{ article.elevationLost }}" placeholder="D-"/>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-4">
+                        {# title="{{ 'article.visibilities'|trans }}" rel="tooltip" #}
+                        <span style="display:inline-block;">{{ 'article.public-article'|trans }} </span>
+                        <span style="display:inline-block;">{{ form_widget(form.isPublic) }}</span>
+                    </div>
+                </div>
+                
+                
+                <br clear="all">
+                
+                <div class="description"><!--Description-->
+                    <h3  class="title">{{ 'article.details'|trans }} 
+                    <textarea class="ckeditor" name="ckeditor">
+                        {{ article.description|raw }}
+                    </textarea>
+                </div>
+
+                <h3 class="title">{{ 'article.add-images'|trans }}</h3>
+                <div class="alert alert-info">{{'article.add-pictures'|trans}} </div>
+                <div class="jqueryFileUpload_photos">
+                    {% include 'KsImageBundle::index.html.twig' with {'uploadDirName' : 'wiki'} %}
+                </div>
+                <form id="Article_content{{ article.id }}_updateForm" action="{{ path('ksArticle_content_update', { 'articleId' : article.id } ) }}" method="post" >    
+                    <div id="article_photos">
+                        {% include 'KsActivityBundle:Article:_article_photos_edit.html.twig'  with { 'article' : article, 'photos' : articleContent.photos } %}
+                    </div>
+                </form>
+
+                <div class="pull-right">
+                    <img id="saveLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+                    <button type="button" class="btn btn-success" id="btnSave"><span class="glyphicon glyphicon-save"></span> {{ 'actions.save'|trans }} </span></button>
+                </div>
+
+                </br>
+                </br>
+                <!--a href="{{ path('ksWikisport_show', { 'id' : article.id }) }}" class="btn btn-wikisport pull-right" >
+                    <span class="icon-search"></span> {{ 'article.show-mode'|trans }}
+                </a-->
+            </div>
+        </div>
+    </div>
+{% endblock body %}

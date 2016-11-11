@@ -1,0 +1,220 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("inscription");
+            $("#menuHeaderRegister").addClass("active");
+            $("#menuHeaderBtnRegister").attr("href", "#");
+            
+            $("#subscribeButton").click(function() {
+                if( !$("#subscribeButton").hasClass("disabled") ) {
+                    $("#subscribeButton").addClass("disabled");
+                    if (!$("#registrationForm").valid()) $("#subscribeButton").removeClass("disabled");
+                    else $("#registrationForm").submit();
+                }
+            });
+            
+            $("#subscribeFBButton").click(function() {
+                if( !$("#subscribeFBButton").hasClass("disabled") ) {
+                    $("#subscribeFBButton").addClass("disabled");
+                    testLoginFB();
+                }
+            });
+            
+            $("#registrationForm").validate({
+                rules: {
+                    'fos_user_registration_form[username]': {
+                        required: true,
+                        noSpace: true
+                    },
+                    'fos_user_registration_form[email]': {
+                        required: true,
+                        email: true
+                    },
+                    'fos_user_registration_form[plainPassword][first]': {
+                        required: true,
+                        minlength: 5
+                    },
+                    'fos_user_registration_form[plainPassword][second]': {
+                        required: true,
+                        minlength: 5,
+                        equalTo: "#fos_user_registration_form_plainPassword_first"
+                    }
+                },
+
+                // Specify the validation error messages
+                messages: {
+                    'fos_user_registration_form[username]': "Merci de choisir un pseudo sans espace",
+                    'fos_user_registration_form[plainPassword][first]': {
+                        required: "Merci de préciser un mot de passe",
+                        minlength: "Ton mot de passe doit faire au moins 5 caractères !",
+                    },
+                    'fos_user_registration_form[plainPassword][second]': {
+                        required: "Merci de préciser un mot de passe",
+                        minlength: "Ton mot de passe doit faire au moins 5 caractères !",
+                        equalTo: "Les 2 mot de passe rentrés ne sont pas les mêmes !"
+                    },
+                    'fos_user_registration_form[email]': "Merci de rentrer une adresse mail valide"
+                },
+
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+            
+            jQuery.validator.addMethod("noSpace", function(value, element) { 
+                return value.indexOf(" ") < 0 && value != ""; 
+            }, "Ton pseudo ne doit pas comporter d'espaces !");
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <div id="fb-root"></div>
+    <script>
+        var isConnectedToFB = false;
+
+        function login() {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    //console.log(response.authResponse);
+                    //console.log('... et redirect'); // connected
+                    window.location = "{{ url('_security_check_facebook') }}"; //"http://local.keepinsport.com/keepinsport/web/app_dev.php/login";
+                } else {
+                    // console.log('cancelled')
+                }
+            }, {scope: 'publish_actions,user_photos'});
+        }
+
+        function testLoginFB() {
+            //var isConnectedToFB;
+
+            if (isConnectedToFB) {
+                //console.log('redirect');
+                window.location = "{{ url('_security_check_facebook') }}";
+            } else {
+                login();
+                //console.log('login fb');
+            }
+        }
+
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '106071199501870', // App ID
+                status     : true, // check login status
+                //channelUrl : 'http://www.keepinsport.com/',
+                cookie     : true, // enable cookies to allow the server to access the session
+                xfbml      : true  // parse XFBML
+            });
+
+            // Additional initialization code here
+
+            FB.getLoginStatus(function(response) {
+                if (response.status === 'connected') {
+                    isConnectedToFB = true;
+                } else if (response.status === 'not_authorized') {
+                    //console.log('FB: not auth');
+                } else {
+                    //console.log('FB: not logged in');
+                }
+            });
+        };
+        // Load the SDK Asynchronously
+        (function(d){
+            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement('script'); js.id = id; js.async = true;
+            js.src = "//connect.facebook.net/fr_FR/all.js";
+            ref.parentNode.insertBefore(js, ref);
+            }(document));
+        //gapi.client.load('API_NAME', 'API_VERSION', CALLBACK);
+    </script>
+    
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <!--bloc1-->
+        <div class="bloc1">
+            <div class="container">
+            <h1>Sportif exigeant,<br />inscris toi à notre communauté !
+            </h1>
+            <div class="menu-inscription desktop">
+            <span class="number-menu">1</span> Mes informations<span class="selected"><span class="number-menu">2</span> Mon profil sportif</span>
+            </div>
+            <img class="accroche desktop" src="{{ asset('V2/images/accroche-bloc1-inscription.png') }}">
+            <img class="photo desktop" src="{{ asset('V2/images/training-inscription.png') }}"> 
+            <img class="fleche-inscription desktop" src="{{ asset('V2/images/inscription-en-2-clics.png') }}">
+
+            <!-- Form -->
+            <div class="container-bloc">
+                <form id="registrationForm" action="{{ path('fos_user_registration_register', app.request.query.all) }}" {{ form_enctype(form) }} method="POST" class="login form-horizontal">
+                    <div class="form-group">                       
+                        <div class="controls">
+                            {{ form_widget(form.username, {attr : {class: "form-control", placeholder : "Choisis toi un pseudo*"} }) }}
+                            <i style="font-size:0.7em"> (caractères alphanumériques seulement, sans espaces)</i>
+                        </div>
+                    </div>
+
+                     <div class="form-group">                        
+                        <div class="controls">
+                            {{ form_widget(form.email, {attr : {class: "form-control", placeholder : "Ton adresse e-mail"} }) }}
+                        </div>
+                    </div>
+                     <div class="form-group">                          
+                        <div class="controls">
+                            {{ form_widget(form.plainPassword.first, {attr : {class: "form-control", placeholder : "Ton mot de passe"} }) }}
+                        </div>
+                    </div>
+                     <div class="form-group">                        
+                        <div class="controls">
+                            {{ form_widget(form.plainPassword.second, {attr : {class: "form-control", placeholder : "Ton mot de passe, pour vérification"} }) }}
+                        </div>
+                    </div>
+                    {% if form.username.vars.errors|length > 0 or form.email.vars.errors|length > 0 or form.plainPassword.vars.errors|length > 0 %}
+                        <div class="alert alert-error">
+                            {{ form_errors(form) }}
+                        </div>
+                    {% endif %}
+                    {{ form_rest(form) }}
+                    <div class="btns">						
+                        <button id="subscribeButton" type="button" class="btn btn-primary">JE M'INSCRIS</button> 
+                        <button id="subscribeFBButton" type="button" class="btn btn-primary"><img src="{{ asset('V2/images/icon-fb.png') }}" width="25" height="23" alt="Je m'inscris avec Facebook" class="fb">JE M'INSCRIS AVEC FACEBOOK</button>
+                    </div>
+
+                </form>                       
+                <div class="se-connecter">Déjà inscrit ? <a href="#" onclick="showLoginModal();">Clique ici !</a></div>           
+
+                </div><!--/form-->
+
+            </div><!--/.container-->
+        </div><!--/bloc1-->
+
+        <!--bloc2-->
+        {% render "KsUserBundle:Registration:registerCarousel" %}
+        
+        <!--bloc3-->
+        <div class="bloc3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="images image1"><div class="content"><span>+</span> plans d’entraînement sur mesure</div></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="images image2"><div class="content">Suivis  et analyses <span>+</span></div></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="images image3"><div class="content"><span>+</span> outils performants personnalisés</div></div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="images image4"><div class="content"><span>+</span> conseils d’un coach professionnel</div></div>
+                    </div>
+                </div>
+            </div><!--/.row-->
+        </div><!--/bloc3-->
+    </div><!--END WRAPPER-->
+{% endblock body %}    

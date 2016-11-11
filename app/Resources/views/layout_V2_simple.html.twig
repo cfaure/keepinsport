@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
+	<head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>{% block title %}Keepinsport{% endblock %}</title>
+
+            {% block stylesheets %}    
+                <link rel="stylesheet" href="{{ asset('V2/css/style.css') }}">
+                <link rel="stylesheet" href="{{ asset('V2/css/bootstrap.min.css') }}">
+                <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+                <link rel="stylesheet" href='https://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+                
+                <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.3/css/jquery.dataTables.min.css" />
+                <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/responsive/1.0.2/css/dataTables.responsive.css" />
+            {% endblock %}
+
+            {% block javascripts %}
+                <script type="text/javascript" src="{{ asset('js/jquery-1.8.2.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('js/ui/jquery-ui-1.8.22.custom.min.js') }}"></script>
+                                
+                <script src="{{ asset('V2/js/bootstrap.min.js') }}"></script>
+                
+                {# tables avancées #}
+                <script type="text/javascript" src="//cdn.datatables.net/1.10.3/js/jquery.dataTables.min.js"></script>
+                <script type="text/javascript" src="//cdn.datatables.net/responsive/1.0.2/js/dataTables.responsive.js"></script>
+                
+            {% endblock %}
+	</head>
+    
+        <body id="body">
+            {% block body %}
+            {% endblock %}
+        </body>
+        
+        {% include '::_google_analytics.html.twig' with { 'google_analytics' : true } %}  
+        
+        {% block bottomscripts %}
+        {% endblock %}
+</html>

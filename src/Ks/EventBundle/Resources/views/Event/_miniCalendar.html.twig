@@ -1,0 +1,47 @@
+{% block stylesheets %} 
+    <link rel="stylesheet" href="{{asset('dp_calendar/css/dp_calendar.css')}}">
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{asset('dp_calendar/js/jquery.dp_calendar.min.js')}}"></script>
+    <script src="{{asset('dp_calendar/js/jquery.dp_calendar-fr.js')}}"></script>
+    <script src="{{asset('dp_calendar/js/date.js')}}"></script>
+{% endblock %}
+        
+<div id="calendar"></div>
+
+<script type="text/javascript">
+        
+        function modalInfo(message) {
+            $('#modalInfo .modal-body').html(message);
+            $('#modalInfo').modal('show');
+        }
+        
+        $(document).ready(function() {
+            var events_array = new Array();
+            {% for event in agendaEvents %}
+                {% set startDate = event.startDate %}
+                {% set endDate = event.endDate %}
+                {% if event.nomType == "event_competition" %}
+                    {% set priority = 3 %}
+                {% elseif event.nomType == "event_training" %}
+                    {% set priority = 2 %}
+                {% else %}
+                    {% set priority = 1 %}
+                {% endif %}
+                var event = {
+                    startDate: new Date({{ startDate|date('Y')}},{{ startDate|date('m') - 1}}, {{ startDate|date('d')}}, {{ startDate|date('h')}}, {{ startDate|date('i')}}, {{ startDate|date('s')}}),
+                    endDate: new Date({{ endDate|date('Y')}},{{ endDate|date('m') - 1}}, {{ endDate|date('d')}}, {{ endDate|date('h')}}, {{ endDate|date('i')}}, {{ endDate|date('s')}}),
+                    title: "{{ event.name }}",
+                    description: "{{ event.content }}",
+                    priority: {{ priority }}, // 1 = Low, 2 = Medium, 3 = Urgent
+                    frecuency: 1 // 1 = Daily, 2 = Weekly, 3 = Monthly, 4 = Yearly
+                };
+                events_array.push(event);
+            {% endfor %}
+        jQuery("#calendar").dp_calendar({
+            events_array: events_array,
+            show_datepicker: false,
+        }); 
+    });
+</script>

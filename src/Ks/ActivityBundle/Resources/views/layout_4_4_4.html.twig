@@ -1,0 +1,33 @@
+{% extends "::layout_V2_4_4_4.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    
+    {# textarea extensibles #}
+    {# <script src="{{ asset('js/jquery.elastic.source.js') }}"></script>#}
+            
+{% endblock %}
+    
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block left_column %}{% endblock %}
+    
+{% block center_column %}
+    {% if app.session is defined and app.session is not null and app.session.getFlashes()|length > 0 %}
+        {% for key, message in app.session.getFlashes() %}
+            <div class="{{ key }}">
+                {{ message|trans }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% block center_column_content %}{% endblock %}
+    
+{% endblock %}

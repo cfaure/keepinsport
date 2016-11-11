@@ -1,0 +1,145 @@
+<h3 class="bleu">{{ 'titles.my-rank'|trans }}</h3>
+<div class="col-md-2">
+    <ul class="nav nav-tabs {{ user.leagueCategoryLabel }}" role="tablist">
+        <li><span class="glyphicon glyphicon-star-empty"></span></li>
+        <li><span class="glyphicon glyphicon-star-empty"></span></li>
+        <li><span class="glyphicon glyphicon-star-empty"></span></li>
+    </ul>
+    {% if user.leagueLevelStarNumber == 0 %}
+        <center>
+            {% include 'KsUserBundle:User:_userImage.html.twig' with { 
+                'user_id' : user.id, 
+                'user_username' : user.username, 
+                'user_imageName': user.imageName, 
+                'user_league_category' : user.leagueCategoryLabel, 
+                'user_league_stars' : user.leagueLevelStarNumber,
+                'displayStars' : 'no'
+            } %}
+            <br>
+            {% include 'KsLeagueBundle:League:_user_points.html.twig' with { 'user_league_category' : user.leagueCategoryLabel, 'user_points' : user.points ~ " points" } %}
+        </center>
+    {% elseif stepPoints is defined %}
+        <span class="txt-saison">
+            {% if stepPoints["0*"] is defined and stepPoints["0*"] is not null %}
+                {% if user.points > stepPoints["0*"] %}
+                    {{ user.points - stepPoints["0*"] }} points d'avance
+                {% else %}
+                    {{ stepPoints["0*"] - user.points }} points de retard
+                {% endif %}
+            {% else %}
+                    -
+            {% endif %}
+        </span>
+    {% else %}
+        <span class="txt-saison">-</span>
+    {% endif %}
+</div>
+<div class="col-md-1"> <span class="glyphicon glyphicon-arrow-right"></span> </div>
+<div class="col-md-2">
+    <ul class="nav nav-tabs {{ user.leagueCategoryLabel }}" role="tablist">
+        <li><span class="glyphicon glyphicon-star"></span></li>
+        <li><span class="glyphicon glyphicon-star-empty"></span></li>
+        <li><span class="glyphicon glyphicon-star-empty"></span></li>
+    </ul>
+    {% if user.leagueLevelStarNumber == 1 %}
+        <center>
+            {% include 'KsUserBundle:User:_userImage.html.twig' with { 
+                'user_id' : user.id, 
+                'user_username' : user.username, 
+                'user_imageName': user.imageName, 
+                'user_league_category' : user.leagueCategoryLabel, 
+                'user_league_stars' : user.leagueLevelStarNumber,
+                'displayStars' : 'no'
+            } %}
+            <br>
+            {% include 'KsLeagueBundle:League:_user_points.html.twig' with { 'user_league_category' : user.leagueCategoryLabel, 'user_points' : user.points ~ " points" } %}
+        </center>
+    {% elseif stepPoints is defined %}
+        <span class="txt-saison">
+            {% if stepPoints["1*"] is defined and stepPoints["1*"] is not null %}
+                {% if user.points > stepPoints["1*"] %}
+                    {{ user.points - stepPoints["1*"] }} points d'avance
+                {% else %}
+                    {{ stepPoints["1*"] - user.points }} points de retard
+                {% endif %}
+            {% else %}
+                    -
+            {% endif %}
+        </span>
+    {% else %}
+        <span class="txt-saison">-</span>
+    {% endif %}
+</div>
+<div class="col-md-1"> <span class="glyphicon glyphicon-arrow-right"></span> </div>
+<div class="col-md-2">
+    <ul class="nav nav-tabs {{ user.leagueCategoryLabel }}" role="tablist">
+        <li><span class="glyphicon glyphicon-star"></span></li>
+        <li><span class="glyphicon glyphicon-star"></span></li>
+        <li><span class="glyphicon glyphicon-star-empty"></span></li>
+    </ul>
+    {% if user.leagueLevelStarNumber == 2 %}
+        <center>
+            {% include 'KsUserBundle:User:_userImage.html.twig' with { 
+                'user_id' : user.id, 
+                'user_username' : user.username, 
+                'user_imageName': user.imageName, 
+                'user_league_category' : user.leagueCategoryLabel, 
+                'user_league_stars' : user.leagueLevelStarNumber,
+                'displayStars' : 'no'
+            } %}
+            <br>
+            {% include 'KsLeagueBundle:League:_user_points.html.twig' with { 'user_league_category' : user.leagueCategoryLabel, 'user_points' : user.points ~ " points" } %}
+        </center>
+        {% elseif stepPoints is defined %}
+            <span class="txt-saison">
+                {% if stepPoints["2*"] is defined and stepPoints["2*"] is not null %}
+                    {% if user.points > stepPoints["2*"] %}
+                        {{ user.points - stepPoints["2*"] }} points d'avance
+                    {% else %}
+                        {{ stepPoints["2*"] - user.points }} points de retard
+                    {% endif %}
+                {% else %}
+                        -
+                {% endif %}
+            </span>
+        {% else %}
+            <span class="txt-saison">-</span>
+        {% endif %}
+    </span>
+</div>
+<div class="col-md-1"> <span class="glyphicon glyphicon-arrow-right"></span> </div>
+<div class="col-md-2">
+    <ul class="nav nav-tabs {{ user.leagueCategoryLabel }}" role="tablist">
+        <li><span class="glyphicon glyphicon-star"></span></li>
+        <li><span class="glyphicon glyphicon-star"></span></li>
+        <li><span class="glyphicon glyphicon-star"></span></li>
+    </ul>
+    {% if user.leagueLevelStarNumber == 3 %}
+        <center>
+            {% include 'KsUserBundle:User:_userImage.html.twig' with { 
+                'user_id' : user.id, 
+                'user_username' : user.username, 
+                'user_imageName': user.imageName, 
+                'user_league_category' : user.leagueCategoryLabel, 
+                'user_league_stars' : user.leagueLevelStarNumber,
+                'displayStars' : 'no'
+            } %}
+            <br>
+            {% include 'KsLeagueBundle:League:_user_points.html.twig' with { 'user_league_category' : user.leagueCategoryLabel, 'user_points' : user.points ~ " points" } %}
+        </center>
+    {% elseif stepPoints is defined %}
+        <span class="txt-saison">
+            {% if stepPoints["3*"] is defined and stepPoints["3*"] is not null %}
+                {% if user.points > stepPoints["3*"] %}
+                    {{ user.points - stepPoints["3*"] }} points d'avance
+                {% else %}
+                    {{ stepPoints["3*"] - user.points }} points de retard
+                {% endif %}
+            {% else %}
+                    -
+            {% endif %}
+        </span>
+    {% else %}
+        <span class="txt-saison">-</span>
+    {% endif %}
+</div>

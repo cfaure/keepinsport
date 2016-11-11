@@ -1,0 +1,13 @@
+<input id="bGetContentUpdateForm" class="btn btn-info" type=button" value="{{ 'article.modify'|trans }}">
+
+<script type="text/javascript">
+    $('#bGetContentUpdateForm').click(function() {
+        $.get(
+            Routing.generate('ksArticle_getContentUpdateForm', { "articleId" : {{ article.id }} }),
+            function(response) {
+                $('#blocArticle_content').html(response);
+                $('#blocButtonUpdateContent').html('');
+            }
+        )
+    }); 
+</script>

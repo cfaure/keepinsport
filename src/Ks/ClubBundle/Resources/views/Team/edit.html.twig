@@ -1,0 +1,62 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('multiselect/js/ui.multiselect.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('multiselect/js/locale/ui-multiselect-fr.js') }}"></script>  
+{% endblock %}
+    
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('multiselect/css/ui.multiselect.css') }}" type="text/css" />
+{% endblock %}
+    
+{% block content %}
+
+    <h1 class="clubs">{{ 'users.club_edit_team_title'|trans }} </h1>
+    <div class="blocHeaderSeparator"></div>
+    <form action="{{ path('ksTeam_update', { 'id': team.id }) }}" method="post" {{ form_enctype(editTeamForm) }}>
+        <div class="input-prepend">
+            <span class="add-on">
+                {{ form_label(editTeamForm.label, 'users.club_team_label' ) }}
+            </span>
+            {{ form_widget(editTeamForm.label ) }}
+        </div>
+
+        <div class="input-prepend">
+            <span class="add-on">
+                {{ form_label(editTeamForm.sport, 'users.club_team_sport') }}
+            </span>
+            {{ form_widget(editTeamForm.sport ) }}
+        </div> 
+            
+        {{ form_widget(editTeamForm.users) }}
+        {{ form_errors(editTeamForm.users) }}
+
+        
+
+        {{ form_rest(editTeamForm) }}
+            
+        <input type="hidden" name="clubId" value="{{ team.club.id }}" />
+
+        <a href="{{ path("ksTeam_show", {"teamId" : team.id}) }}" class="btn" >
+            <i class="icon-backward"></i> Retour
+        </a>
+        <input class="btn btn-clubs" type="submit" value="{{ 'crud.edit'|trans }}">
+    </form>
+    
+    <script type="text/javascript" > 
+       $(".multiselect").css("width", "500px");
+       $("select.users").find("option").removeAttr("selected");
+       {% for TeamHasUser in team.users %}
+            $("select.users").find( "option[value={{ TeamHasUser.user.id }}]" ).attr("selected", "selected")
+       {% endfor %}
+       $(".multiselect").multiselect({sortable:false});
+       $("div.ui-multiselect").find("ul.connected-list").css("height", "100px");
+    </script>
+
+{% endblock %}

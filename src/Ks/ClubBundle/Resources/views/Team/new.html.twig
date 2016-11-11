@@ -1,0 +1,63 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('multiselect/js/ui.multiselect.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('multiselect/js/locale/ui-multiselect-fr.js') }}"></script>  
+{% endblock %}
+    
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('multiselect/css/ui.multiselect.css') }}" type="text/css" />
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('multiselect/css/common.css') }}" type="text/css" />#}
+{% endblock %}
+    
+{% block content %}
+
+    <h1 class="clubs">{{ 'users.club_add_a_team'|trans }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    <form action="{{ path('ksTeam_create') }}" method="post" {{ form_enctype(newTeamForm) }}>
+        <div class="input-prepend">
+            <span class="add-on">
+                {{ form_label(newTeamForm.label, 'users.club_team_label' ) }}
+            </span>
+            {{ form_widget(newTeamForm.label ) }}
+        </div>
+
+        <div class="input-prepend">
+            <span class="add-on">
+                {{ form_label(newTeamForm.sport, 'users.club_team_sport') }}
+            </span>
+            {{ form_widget(newTeamForm.sport ) }}
+        </div>
+            
+        
+        {{ form_widget(newTeamForm.users) }}
+        {{ form_errors(newTeamForm.users) }}
+
+          
+
+        {{ form_rest(newTeamForm) }}
+            
+        <input type="hidden" name="clubId" value="{{ club.id }}" /> 
+
+        <br/>
+        <a class="btn" href="{{ path('KsClub_teams', {"clubId" : club.id}) }}">
+            <i class="icon-backward"></i> Liste des équipes du club {{ club.name }}
+        </a>
+        <input class="btn btn-clubs" type="submit" value="{{'users.profil_create_label'|trans}}">
+    </form>
+
+    
+    
+    <script type="text/javascript" > 
+       $(".multiselect").css("width", "500px");
+       $(".multiselect").multiselect({sortable:false});
+       $("div.ui-multiselect").find("ul.connected-list").css("height", "100px");
+    </script>
+
+{% endblock %}

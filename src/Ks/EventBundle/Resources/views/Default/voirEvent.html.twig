@@ -1,0 +1,17 @@
+{% extends "KsEventBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block ks_event_content %}
+
+    <div>
+        <h3>{{ event.name }}</h3>
+        <p>auteur : {{ event.author }}</p>
+        <p>date de création : {{ event.creationDate|date('d/m/Y H:i:s') }}</p>
+        <p>contenu : {{ event.content }}</p>
+        
+    </div>
+
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends "KsUserBundle::layout_V2.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/inviteFriends.js') }}"></script>
+    <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script> {#?onload=handleClientLoad#}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("message"); //pour activer le css correspondant
+            
+            $("#submitButton").click(function() {
+                if( !$("#submitButton").hasClass("disabled") ) {
+                    $("#submitButton").addClass("disabled");
+                    if (!$("#mailForm").valid()) $("#submitButton").removeClass("disabled");
+                    else $("#mailForm").submit();
+                }
+            });
+            
+            $("#mailForm").validate({
+                rules: {
+                    'ks_userbundle_invitationtype[email_guest]': {
+                        required: true,
+                        email: true
+                    }
+                },
+
+                // Specify the validation error messages
+                messages: {
+                    'ks_userbundle_invitationtype[email_guest]': "Merci de rentrer une adresse mail valide"
+                },
+
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+        });
+        
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '106071199501870', // App ID
+                status     : true, // check login status
+                //channelUrl : 'http://www.keepinsport.com/',
+                cookie     : true, // enable cookies to allow the server to access the session
+                xfbml      : true,  // parse XFBML
+                oauth      : true
+            });
+
+
+
+            // Additional initialization code here
+
+            FB.getLoginStatus(function(response) {
+                if (response.status === 'connected') {
+                    isConnectedToFB = true;
+                    console.log('FB: auth ok');
+                    $("#connectFacebookButton").addClass("disabled");
+                    $("#inviteFacebookFriendsButton").removeClass("disabled");
+
+                    accessTokenFacebook = response.authResponse.accessToken
+                    loadFacebookFriendsAndGoogleContacts();
+                } else if (response.status === 'not_authorized') {            
+                    console.log('FB: not auth');
+                } else {
+                    console.log('FB: not logged in');
+                }
+            });
+
+
+        };
+        // Load the SDK Asynchronously
+        (function(d){
+            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement('script'); js.id = id; js.async = true;
+            js.src = "//connect.facebook.net/fr_FR/all.js";
+            ref.parentNode.insertBefore(js, ref);
+            }(document));
+    </script>
+{% endblock %}   
+    
+{% block content %}
+    <div id="fb-root"></div>
+
+<script type="text/javascript">
+    
+    /*FB.getLoginStatus(function(response) {console.log("ici")
+        if (response.status === 'connected') {
+            isConnectedToFB = true;
+        } else if (response.status === 'not_authorized') {            
+            console.log('FB: not auth');
+        } else {
+            console.log('FB: not logged in');
+        }
+    });*/
+</script>
+
+<!--WRAPPER-->
+<div class="wrapper">
+    <div class="bloc1">
+        <div class="container">
+            <h1 class="title premium">{{ 'users.invite-friends'|trans }}</h1>
+            {#<div class="bloc1-nav">
+              <ul class="nav nav-pills navbar-left">
+                <li><a href="#" title=""><span class="glyphicon glyphicon-pencil"></span></a></li>
+                <li><a href="#" title=""><span class="glyphicon glyphicon-search"></span></a></li>
+                <li><a href="#" title=""><span class="glyphicon glyphicon-cog"></span></a></li>
+              </ul>
+            </div>#}
+        </div>
+    </div>
+  <!---BLOC2---->
+  <div class="bloc2">
+      <div class="container">
+          <form id="mailForm" action="{{ path('ksFriends_invite') }}" {{ form_enctype(send_form) }} method="POST" class="login form-horizontal">
+              <table class="table table-striped bloc-invitation-1"> 
+                  <tbody>
+                      <tr>
+                          <td>
+                              {{ form_widget(send_form.email_guest, { attr: {placeholder: 'users.email'|trans, class:'form-control'} }) }}
+                          </td>
+                          <td>
+                              <span class="glyphicon glyphicon-arrow-right"></span>
+                          </td>
+                          <td>
+                              <input id="submitButton" class="btn btn-success" type="button" value="{{'users.send_invite'|trans}}">
+                              {{ form_widget(send_form._token) }}
+                          </td>
+                          </tr>
+                      <tr>
+                              <td><input id="connectFacebookButton" class="btn btn-primary" type="submit" value="{{ 'users.connexion'|trans }} Facebook"></td>
+                              <td><span class="glyphicon glyphicon-arrow-right"></span></td>
+                              <td><input id="inviteFacebookFriendsButton" class="btn btn-primary" type="submit" value="{{ 'users.invite'|trans }} Facebook"></td>         
+                          </tr>
+                          <tr>
+                              <td>
+                                  <span id="connectGoogleButton" class="btn btn-default btn-google">
+                                {{ 'users.connexion'|trans }} <span class="G">G</span><span class="o1">o</span><span class="o2">o</span><span class="g">g</span><span class="l">l</span><span class="e">e</span>
+                                      </span>
+                                  </td>
+                                  <td>
+                                      <span class="glyphicon glyphicon-arrow-right"></span>
+                                  </td>
+                                  <td>
+                                      <span id="inviteGoogleContactsButton" class="btn btn-default btn-google disabled">
+                                {{ 'users.invite'|trans }} <span class="G">G</span><span class="o1">o</span><span class="o2">o</span><span class="g">g</span><span class="l">l</span><span class="e">e</span>
+                                          </span>
+                                      </td>         
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </form>
+          <h2 class="bleu">{{ 'users.invite-keepinsport'|trans }}</h2>
+            <div class="blocHeaderSeparator"></div>
+            <center>
+                <img id="contactsOnKsLoader" style="display:none" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"/>
+            </center>
+            <div id="contactsOnKsContainer"></div>
+            <span id="sendFriendRequestButton" class="btn btn-default" type="button" style="display:none">
+                <i class="glyphicon glyphicon-plus icon-white"></i> 
+                Demande de mise en relation
+            </span>
+            <br/><br/>
+            <center>
+                <img id="contactsNotOnKsLoader" style="display:none" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"/>
+            </center>
+            <div id="contactsNotOnKsContainer"></div>
+            <span id="sendInvitationsButton" class="btn btn-default" type="button" style="display:none">
+                <i class="glyphicon glyphicon-envelope"></i> 
+                Envoyer une invitation
+            </span>
+      </div>
+  </div>
+{% endblock %}

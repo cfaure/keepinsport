@@ -1,0 +1,11 @@
+#KsNotificationBundle_homepage:
+#    pattern:  /hello/{name}
+#    defaults: { _controller: KsNotificationBundle:Default:index }
+    
+#ksNotification_listerNotifications:
+#    pattern:   /
+#    defaults:  { _controller: KsNotificationBundle:Default:index, numPage: 1 }
+    
+#KsNotification_crud:
+#    resource: "routing/notification.yml"
+#    prefix:   /crud

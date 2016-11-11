@@ -1,0 +1,24 @@
+{% if notification.fromUser.userDetail is defined and notification.fromUser.userDetail != null %}
+{% set user_imageName = notification.fromUser.userDetail.imageName %}
+{% else %}
+{% set user_imageName = null %}
+{% endif %}
+{% if notification.fromUser is defined and notification.fromUser is not null %}
+{% set user_id = notification.fromUser.id %}
+{% else %}
+{% set user_id = null %}
+{% endif %} 
+{% if notification.fromUser is not null %}
+    {#% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : user_id, 'user_imageName': user_imageName } %#}
+    {% include 'KsUserBundle:User:_userImage_league_mini.html.twig' with { 
+        'user_id' : notification.fromUser.id, 
+        'user_username' : notification.fromUser.username, 
+        'user_imageName': notification.fromUser.userDetail is not null ? notification.fromUser.userDetail.imageName : null, 
+        'user_league_category' : notification.fromUser.leagueLevel.category.label, 
+        'user_league_stars' : notification.fromUser.leagueLevel.starNumber 
+    } %}
+{% elseif notification.fromClub is not null %}
+    <a href="" rel="tooltip" title="{{ notification.fromClub.name }}">
+    {% include 'KsClubBundle:Club:_clubImage.html.twig' with{ 'club_id' : notification.fromClub.id, 'club_avatar': notification.fromClub.avatar, 'club_name' : notification.fromClub.name } %}
+    </a>
+{% endif %}

@@ -1,0 +1,85 @@
+{% set href = "#" %}
+
+{% if notification.type.name == "validation_activity" %}
+    {% set href = path('ks_activity_session_list_in_stand_by') %}
+{% endif %}
+
+{% if notification.type.name == "invitation_event" %}
+    {% set href = path('ks_invitation_event_in_stand_by') %}
+{% endif %}
+
+{% if notification.type.name == "trophy" %}
+    {% set href = path('ks_activity_trophiesList', {'userId' : notification.owner.id}) %}
+{% endif %}
+
+{% if notification.type.name == "league" %}
+    {% set href = path('ksLeague_ranking') %}
+{% endif %}
+
+{% if notification.type.name == "friend_request" or notification.type.name == "ask_friend_request" %}
+    {% set href = path('ks_user_public_profile', {'username' : notification.fromUser.username} ) %}
+{% endif %}
+
+{% if notification.activity is defined and notification.activity is not null %}
+    {% set href = path('ksActivity_showActivity', {"activityId" : notification.activity.id }) %}
+{% endif %}
+
+{% if notification.type.name == "teamComposition" %}
+    {% if notification.teamComposition is defined and notification.teamComposition is not null %}
+        {% set href = path('ksTeamComposition_show', {"teamCompositionId" : notification.teamComposition.id }) %}
+    {% endif %}
+{% endif %}
+
+{% if notification.type.name == "message" %}
+    {% if notification.message is defined and notification.message is not null %}
+        {% set href = path('ksMessage_show', {"id" : notification.message.id }) %}
+    {% endif %}
+{% endif %}
+
+{% if notification.type.name == "club" or notification.type.name == 'coaching' %}
+    {% if notification.fromClub is defined and notification.fromClub is not null %}
+        {% set href = path('ksClub_public_profile', {"clubId" : notification.fromClub.id }) %}
+    {% endif %}
+{% endif %}
+
+{% if notification.type.name == "eventParticipation" %}
+    {% if notification.fromUser is defined and notification.fromUser is not null %}
+        {% set href = path('ks_user_public_profile', {"username" : notification.fromUser.username }) %}
+    {% endif %}
+{% endif %}
+
+{% if notification.type.name == "userHasSportFrequency" %}
+    {% if notification.fromUser is defined and notification.fromUser is not null %}
+        {% set href = path('ksActivity_activitiesList') %}
+    {% endif %}
+{% endif %}
+
+<p>{{ notification.text |raw|nl2br }}</p>
+<p style="text-align:justify">
+    {% if notification.type == "comment" and lastComment is defined and lastComment is not null %}
+        "{{ lastComment.comment |nl2br }}"
+        <a href="{{ host }}{{ href }}">{{ 'mails.answer'|trans }}</a>
+    {% elseif notification.type == "message" and notification.message is not null %}
+        {% if notification.message.answers|length > 0 %}
+            "{{ notification.message.answers[notification.message.answers|length - 1].content |nl2br }}"
+        {% else %}
+            "{{ notification.message.content |nl2br }}"
+        {% endif %}
+        <a href="{{ host }}{{ href }}">{{ 'mails.answer'|trans }}</a>
+    {% elseif href != "#" and notification.type.name != "league" %}
+        <a href="{{ host }}{{ href }}">{{ 'mails.more-information'|trans }}</a>
+    {% elseif href != "#" and notification.type.name == "league" %}
+        <a href="{{ host }}{{ href }}">{{ 'mails.ranking-access'|trans }}</a>
+    {% elseif href != "#" and notification.type.name == "userHasSportFrequency" %}
+        <a href="{{ host }}{{ href }}">{{ 'mails.show-my-notifications'|trans }}</a>
+    {% else %}
+        <a href="{{ host }}{{ path('ksActivity_activitiesList', {}) }}">{{ 'mails.back-to-keepinsport'|trans }}</a>
+    {% endif %}
+                
+    {# Liens vers le blog }
+    {% if notification.type.name == "league" %}
+        <br/>
+        <br/>
+        {{ 'mails.league-stars-blog'|trans }} <a href="http://blog.keepinsport.com/des-points-pour-chaque-activite-sportive/">blog</a>     
+    {% endif %#}
+</p>

@@ -1,0 +1,63 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+    <h1 class="clubs">{{ team.label }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    <a class="btn" href="{{ path('KsClub_teams', {"clubId" : team.club.id}) }}">
+        <i class="icon-backward"></i> Retour 
+    </a>
+    
+    <a class="btn btn-clubs" href="{{ path('ksTeam_edit', { 'id': team.id }) }}">
+        <i class="glyphicon glyphicon-pencil icon-white"></i>
+    </a>
+    
+    <a class="btn btn-danger" rel="tooltip" title="Supprimer" href="{{ path('ksTeam_delete', { 'id': team.id }) }}">
+        <i class="icon-remove icon-white"></i>
+    </a>
+
+    
+    <h2>Membres</h2>
+    {% for teamHasUser in team.users %}
+        <a rel="tooltip" title="{{ teamHasUser.user.username }}" href="{{ path('ks_user_public_profile', { 'username' : teamHasUser.user.username }) }}">
+            {% if teamHasUser.user.userDetail is defined and teamHasUser.user.userDetail != null %}
+                {% set user_imageName = teamHasUser.user.userDetail.imageName %}
+            {% else %}
+                {% set user_imageName = null %}
+            {% endif %}
+            {% include 'KsUserBundle:User:_userImage.html.twig' with {' user_imageName' :  user_imageName }%}
+        </a>
+        
+    {% endfor %}
+    
+    <h2>Activités</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>Nom</td>
+                <td>Date</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for teamComposition in team.teamCompositions %}
+                <tr>
+                    <td>{{ teamComposition.name }}</td>
+                    <td>{{ teamComposition.date|date('d/m/Y H:i') }}</td>
+                    <td>
+                        <a class="btn btn-clubs btn-mini" href="{{ path('ksTeamComposition_show', { 'teamCompositionId': teamComposition.id }) }}"><i class="icon-search icon-white"></i></a>
+                        <a class="btn btn-clubs btn-mini"  href="{{ path('ksTeamComposition_edit', { 'teamCompositionId': teamComposition.id }) }}"><i class="glyphicon glyphicon-pencil icon-white"></i></a>
+                        <a class="btn btn-clubs btn-mini"  href=""><i class="icon-remove icon-white"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <a class="btn btn-clubs" href="{{ path('ksTeamComposition_new', { 'teamId': team.id }) }}">
+        <i class="glyphicon glyphicon-plus icon-white"></i> Créer une activité
+    </a>
+{% endblock %}

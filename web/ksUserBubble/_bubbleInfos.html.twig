@@ -1,0 +1,79 @@
+{% if user.id == app.user.id %}
+    {% set class = "sportif" %}
+{% else %}
+    {% set class = "friends" %}
+{% endif%}
+<ul>
+    <li>
+        <h3 class="{{ class }}">
+            {{ user.username }} 
+            {% if user.firstName is not null and user.lastName is not null %}
+                - {{ user.firstName }} {{ user.lastName }}
+            {% endif %}
+        </h3>
+    </li>
+    <li class="sep">
+            <a class="btn btn-{{ class }} btn-mini" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}"><i class="icon-user icon-white"></i></a>
+            <a class="btn btn-{{ class }} btn-mini" href="{{ path('ksDashboard_statistics', {'id': user.id }) }}"><i class="icon-bar-chart icon-white"></i></a>
+            {% if user.id != app.user.id %}
+                {% if not user.areFriends and not user.isAwaitingRequestFriendResponse and not user.mustGiveRequestFriendResponse %}
+                    <a class="btn btn-mini btn-{{ class }}" rel="tooltip" title="Rentrer en relation avec {{ user.username }}" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': user.id }) }}">
+                        <i class="icon-plus icon-white"></i> 
+                    </a>
+                {% elseif user.mustGiveRequestFriendResponse %} 
+                    <a class="btn btn-mini btn-{{ class }}" rel="tooltip" title="Accepter la mise en relation avec {{ user.username }}" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': user.id }) }}">
+                        <i class="icon-ok icon-white"></i> 
+                    </a>
+                    <a class="btn btn-mini btn-{{ class }}" rel="tooltip" title="Refuser la mise en relation avec {{ user.username }}" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': user.id }) }}">
+                        <i class="icon-remove icon-white"></i> 
+                    </a>
+                {% elseif user.isAwaitingRequestFriendResponse %}
+                    <a class="btn btn-mini btn-{{ class }}" rel="tooltip" title="Annuler la demande de mise en relation avec {{ user.username }}" href="{{ path('ks_user_Cancel_the_friend_request', { 'user2Id': user.id }) }}">
+                        <i class="icon-ban-circle icon-white"></i> 
+                    </a>
+                {% else %}
+                    <a class="btn btn-mini btn-danger" rel="tooltip" title="Supprimer la relation avec {{ user.username }}" href="{{ path('ks_user_Revoke_a_friend', { 'user2Id': user.id }) }}">
+                        <i class="icon-remove icon-white"></i> 
+                    </a>
+                {% endif %} 
+            {% endif %} 
+    </li>
+
+    <li>
+            <u>Sports :</u>
+            {% set sports = user.sports|split('|') %}
+            {% if sports|length > 0 and sports[0] != '' %}
+                {{ sports|join(', ') }}
+            {% else %}
+                -
+            {% endif %}
+    </li>
+    <li>
+            <u>Clubs :</u> 
+            {% set clubs = user.clubs|split('|') %}
+            {% if clubs|length > 0 and clubs[0] != '' %}
+                {{ clubs|join(', ') }}
+            {#{% for key, clubLabel in clubs %}
+                <a href="{{ path('ksClub_public_profile', {'clubId' : ???? }) }}" title="{{ clubLabel }}">{{ clubLabel }}</a>
+                {% if key < clubs|length %}, {% endif %}
+            {% endfor %}#}
+            {% else %}
+                -
+            {% endif %}
+    </li>
+    <li class="sep" style="text-align:right">
+        {{ user.leagueCategoryLabel|trans }} 
+        {% if user.leagueLevelStarNumber > 0 %} 
+
+            {% for i in range(2, 3 - user.leagueLevelStarNumber) %} 
+                <i class="icon-star"></i>
+            {% endfor %}
+        {% endif %}
+        {% if user.leagueLevelStarNumber < 3 %} 
+            {% for i in range(1, 3 - user.leagueLevelStarNumber) %} 
+                <i class="icon-star-empty"></i>
+            {% endfor %}
+        {% endif %}
+        </span>
+    </li>
+</ul>

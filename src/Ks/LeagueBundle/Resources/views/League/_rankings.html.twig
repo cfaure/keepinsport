@@ -1,0 +1,14 @@
+<div class="row">
+    {% for leagueCategoryLabel, users in leaguesUsers %}
+        {% if context == 'contest' %} 
+            <div class="row">
+        {% else %} 
+            <div class="col-md-4 bloc-{{ leagueCategoryLabel }}">
+        {% endif %}
+        {% include 'KsLeagueBundle:League:_ranking.html.twig' with {'context' : context}%}
+        </div>
+        {% if context == 'contest' %} 
+            </br>
+        {% endif %}
+    {% endfor %}
+</div>

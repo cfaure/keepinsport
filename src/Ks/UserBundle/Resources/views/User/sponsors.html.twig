@@ -1,0 +1,31 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+    
+{% block content %}
+    <h1 class="sportif">Matériel neuf</h1>
+    <div class="blocHeaderSeparator"></div>
+
+    <div class="row-fluid">
+        {% for refSponsorForSport in refSponsors %}
+            {% for refSponsor in refSponsorForSport %}
+            <div class="span" style="width:119px;height:90px;margin:0 5px 10px 0;border:0px solid black">
+                {% include 'KsUserBundle:User:_sponsor.html.twig' with {'refSponsor' : refSponsor } %}
+            </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    <a href="{{ path('ksActivity_activitiesList', {}) }}" class="btn btn-sportif pull-right">Fil d'actualité</a>
+
+{% endblock %}        

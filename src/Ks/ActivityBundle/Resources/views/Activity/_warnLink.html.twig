@@ -1,0 +1,17 @@
+{% if activity.id|has_warned(app.user.id) %}
+     <a class="btn btn-mini" rel="tooltip" title="Ne plus signaler" rel2="removeWarnActivityLikeDisturbingTrigger-{{ activity.id }}" href="{{ path('ksActivity_removeWarnActivityLikeDisturbing', {'activityId': activity.id}) }}">
+         <s><i class="icon-warning-sign"></i> ({{ activity.numWarnings}})</s>
+     </a>
+{% else %}
+     <a class="btn btn-mini" rel="tooltip" title="Signaler" rel2="warnActivityLikeDisturbingTrigger-{{ activity.id }}" href="{{ path('ksActivity_warnActivityLikeDisturbing', {'activityId': activity.id}) }}"><i class="icon-warning-sign"></i>
+         {% if activity.numWarnings > 0 %}
+             ({{ activity.numWarnings}})
+        {% endif %}
+    </a>
+{% endif %}
+    
+<script type="text/javascript">
+    attachWarnActivitylikeDisturbingEvent($('a[rel2="warnActivityLikeDisturbingTrigger-{{ activity.id }}"]'));
+    attachRemoveWarnActivitylikeDisturbingEvent($('a[rel2="removeWarnActivityLikeDisturbingTrigger-{{ activity.id }}"]'));
+    $("a[rel2*={{ activity.id }}]").tooltip();
+</script>

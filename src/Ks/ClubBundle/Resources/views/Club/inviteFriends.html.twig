@@ -1,0 +1,23 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+{% endblock %}
+
+{% block title %}
+    {{ parent() }}
+{% endblock %}
+
+{% block left_column %}
+    {% render "KsClubBundle:Club:leftColumn" with { 'clubId' : club.id } %}
+{% endblock %}
+    
+{% block content %}
+    
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="clubs">Inviter mes amis</h3>
+        <div class="blocHeaderSeparator"></div>   
+        {% include 'KsClubBundle:Profile:_inviteFriends.html.twig' with { 'clubInfos' : clubInfos, 'friends' : friends } %} 
+    </div>
+{% endblock %}

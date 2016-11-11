@@ -1,0 +1,61 @@
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") and activity.user_id == app.user.id %}
+    {% for stateOfHealth in statesOfHealth %}
+        <img id="imgStateOfHealth_{{ stateOfHealth.code }}" rel="tooltip" class="imgStateOfHealth" title="{{ stateOfHealth.name }}" src="{{ asset('bundles/ksactivity/images/health/' ~ stateOfHealth.code ~ '_disabled.png') }}"/>
+    {% endfor %}
+{% else %}
+    {% if activity.stateOfHealth_id is not null %}
+        <img id="imgStateOfHealth_{{ activity.stateOfHealth_code }}" rel="tooltip" class="imgStateOfHealth" title="{{ activity.stateOfHealth_name }}" src="{{ asset('bundles/ksactivity/images/health/' ~ activity.stateOfHealth_code ~ '.png') }}"/>
+    {% else %}
+        <img  id="imgStateOfHealth_undefined" class="imgStateOfHealth" rel="tooltip" title="Etat de forme indéfini" src="{{ asset('bundles/ksactivity/images/health/undefined.png') }}"/>
+    {% endif %}    
+{% endif %}
+
+<script type="text/javascript">
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and activity.user_id == app.user.id %}
+        
+        {% for stateOfHealth in statesOfHealth %}            
+            {% if activity.stateOfHealth_id is null or activity.stateOfHealth_id != stateOfHealth.id %}
+                
+                $("#imgStateOfHealth_{{ stateOfHealth.code }}").hover(
+                    function () {
+                        $(this).attr("src", "{{ asset('bundles/ksactivity/images/health/' ~ stateOfHealth.code ~ '.png') }}");
+                        $(this).css("cursor", "pointer");
+                    }, 
+                    function () {
+                        $(this).attr("src", "{{ asset('bundles/ksactivity/images/health/' ~ stateOfHealth.code ~ '_disabled.png') }}");
+                        $(this).css("cursor", "default");
+                    }
+                );
+
+                $("#imgStateOfHealth_{{ stateOfHealth.code }}").click(function() {
+                    $.post(Routing.generate('ksActivity_changeStateOfHealthOnActivity', {
+                        "activityId"        : "{{ activity.id }}",
+                        "stateOfHealthId"   : "{{ stateOfHealth.id }}" }), 
+                    {}, 
+                    function(response) {
+                        if ( response.modifResponse == 1 ) {
+                            if ( $("#stateOfHealthBloc").size() > 0 ) {
+                                //les bulles restaient lors du changement de template
+                                $("div.tooltip").remove();
+
+                                $("#stateOfHealthBloc").html(response.html);
+                            }
+                        } else {
+
+                        }
+                    }).error(function(xqr, error) {
+                        console.log("error " + error);
+                    });      
+                }); 
+            {% endif %}
+        {% endfor %}
+
+        {% if activity.stateOfHealth_id is not null %}
+            $("#imgStateOfHealth_{{ activity.stateOfHealth_code }}").attr("src", "{{ asset('bundles/ksactivity/images/health/' ~ activity.stateOfHealth_code ~ '.png') }}");
+        {% endif %}
+    {% else %}
+        {% if activity.stateOfHealth_id is not null %}
+            $("#imgStateOfHealth_{{ activity.stateOfHealth_code }}").tooltip();
+        {% endif %}    
+    {% endif %}
+</script>

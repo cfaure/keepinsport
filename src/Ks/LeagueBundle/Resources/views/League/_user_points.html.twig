@@ -1,0 +1,8 @@
+{% if user_league_category is defined and user_points is not null %}
+    {% set leagueClass = user_league_category %}
+{% else %}
+    {% set leagueClass = "other" %}
+{% endif %}
+<a id="stepActivityDetailPoints" role="button" class="btn btn-{{ leagueClass }}"href="{{ path("ksLeague_ranking") }}" rel="tooltip" title="{{ 'mails.ranking-access'|trans }}">
+    {{ user_points }}
+</a>

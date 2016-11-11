@@ -1,0 +1,12 @@
+<div style="background-color:white">
+    {% include 'KsActivityBundle:Activity:_activityBloc.html.twig' with {
+        'activity':  datas.activity,
+        'photos': datas.photos,
+        'comments': datas.comments,
+        'activityTeamates': datas.activityTeamates,
+        'activityOpponents': datas.activityOpponents,
+        'connectedActivity': datas.connectedActivity,
+        'activityScores': datas.activityScores,
+        'clubManagers': datas.clubManagers
+    } %}
+</div>

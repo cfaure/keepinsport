@@ -1,0 +1,32 @@
+{{ 'articles.list.label'|trans }}
+<table id="articlesList" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>{{ 'article.description'|trans }}</th>
+            <th>Catégorie</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for key, article in articles %}
+        <tr>
+            <td><a href="{{ path('ksArticle_show', { 'articleId': article.id }) }}">{{ article.label }}</a></td>
+            <td>
+                {% set tagsId = article.modifications|last_mofified_content("tags") %}
+                {{ tagsId|length }} 
+                {% if tagsId is defined and tagsId is not null %}
+                    {% for tagId in tagsId %} 
+                        {% set findTag = articleTags|get_tag(tagId) %}
+                        {% if findTag.find and findTag.tag.isCategory %}
+                            {{ findTag.tag.label }}
+                        {% else %}
+                            aa
+                        {% endif %}
+                    {% endfor %}   
+                {% else %}
+                    bb        
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,191 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+{% block activity_content %}
+<div id="container"><!-- affichage du graphe --></div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('Highstock-1.1.6/js/highstock.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('Highcharts-2.2.5/js/highcharts.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var options = {
+                chart: {
+                     renderTo: 'container',
+                     margin: [80, 200, 60, 100],
+                     zoomType: 'x'
+                  },
+                  title: {
+                     text: '',
+                     style: {
+                        margin: '10px 0 0 0' // center it
+                     }
+                  },
+                  subtitle: {
+                     text: 'test',
+                     style: {
+                        margin: '0 0 0 0' // center it
+                     }
+                  },
+                  xAxis: [{
+                    min: 0,
+                    tickInterval: 5,
+                    data: []
+                  }],
+                  /*yAxis: [{ // Primary yAxis
+                            //min: 0,
+                    minorGridLineWidth: 0, 
+                    gridLineWidth: 0,
+                    alternateGridColor: null,
+                     labels: {
+                        formatter: function() {
+                           return this.value +'m';
+                        },
+                        style: {
+                           color: '#89A54E'
+                        }
+                     },
+                     title: {
+                        text: 'Altitude',
+                        style: {
+                           color: '#89A54E'
+                        },
+                        margin: 0
+                     }
+
+                  }, /*{ // Secondary yAxis
+                     title: {
+                        text: 'FC',
+                        margin: 70,
+                        style: {
+                           color: '#AA4643'
+                        }
+                     },
+                     labels: {
+                        formatter: function() {
+                           return this.value +' bpm';
+                        },
+                        style: {
+                           color: '#AA4643'
+                        }
+                     },
+                             min: 0,
+                             opposite: true
+                  }, { // Tertiary yAxis
+                     title: {
+                        text: 'Vitesse',
+                        margin: 80,
+                        style: {
+                           color: '#4572A7'
+                        }
+                     },
+                     labels: {
+                        formatter: function() {
+                           return this.value +' km/h';
+                        },
+                        style: {
+                           color: '#4572A7'
+                        }
+                     },
+                             min: 0,
+                     offset: 100,
+                     opposite: true
+                  }],
+                      plotOptions: {
+                            spline : {
+                                    marker: {
+                                       enabled: false,
+                                       states: {
+                                              hover: {
+                                                     enabled: true,
+                                                     symbol: 'circle',
+                                                     radius: 5,
+                                                     lineWidth: 1
+                                              }
+                                       }   
+                                    }
+                            },
+                            areaspline : {
+                                    marker: {
+                                       enabled: false,
+                                       states: {
+                                              hover: {
+                                                     enabled: true,
+                                                     symbol: 'circle',
+                                                     radius: 5,
+                                                     lineWidth: 1
+                                              }
+                                       }   
+                                    }
+                            }
+                      },
+                  tooltip: {
+                     formatter: function() {
+                        var unit = {
+                           'vitesse': 'km/h',
+                           'altitude': 'm',
+                           'fc': 'bpm'
+                        }[this.series.name];
+
+                        return ''+
+                           this.x +'km : '+ this.y +' '+ unit;
+                     }
+                  },
+                  legend: {
+                     layout: 'vertical',
+                     style: {
+                        left: '120px',
+                        bottom: 'auto',
+                        right: 'auto',
+                        top: '90px'
+                     },
+                     backgroundColor: '#FFFFFF'
+                  },*/
+                  series: [{
+                     name: 'altitude',
+                     color: '#89A54E',
+                     type: 'areaspline',
+                     data: []
+                  }, /*{
+                     name: 'fc',
+                     color: '#AA4643',
+                     type: 'spline',
+                     yAxis: 1,
+                             plotBands: [{ // zone 1
+                        from: 136,
+                        to: 146,
+                        color: 'rgba(68, 170, 213, 0.1)'
+                     }, { // zone 2
+                        from: 146,
+                        to: 166,
+                        color: 'rgba(68, 170, 213, 0.1)'
+                     }, { // zone 3
+                        from: 166,
+                        to: 186,
+                        color: 'rgba(68, 170, 213, 0.1)'
+                             }],
+                     data: []
+
+                  }, {
+                     name: 'vitesse',
+                     type: 'spline',
+                     color: '#4572A7',
+                     yAxis: 2,
+                     data: []
+
+                  }*/]
+               };
+            $.get(
+                Routing.generate('ksActivity_getTestsDataGraph'), 
+                function(responseJson) {
+                    options.xAxis.data	= responseJson.chart.distance;
+                    options.series[0].data = responseJson.chart.altitude;
+                    //options.series[1].data = responseJson.chart.heart_rate
+                    //options.series[1].data = responseJson.chart.speed
+                    new Highcharts.Chart(options);
+                    //console.log(responseJson);
+                }
+            );
+        });
+    </script>
+    
+{% endblock %}

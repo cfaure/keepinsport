@@ -1,0 +1,414 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    
+    <link rel="stylesheet" type="text/css" href="{{ asset('html5FileUpload/assets/css/styles.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('colorbox/colorbox.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.css') }}" />
+    
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('wysihtml5/css/stylesheet.css') }}" />#}
+    
+    
+    <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-wysihtml5/src/bootstrap-wysihtml5.css') }}"></link>
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-wysihtml5/css/bootstrap.min.css') }}"></link>#}
+    
+    <link rel="stylesheet" type="text/css" href="{{ asset('isocraTableDnD/tablednd.css') }}"></link>
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('trentrichardsonTimepicker/jquery-ui-timepicker-addon.css') }}"></link>#}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksagenda/css/fullcalendar.css') }}" type="text/css" />
+    
+    <link rel="stylesheet" href="{{asset('jQueryFileUpload/css/jquery.fileupload-ui.css')}}">
+    <link rel="stylesheet" href="{{asset('bundles/ksactivity/css/articles.css')}}">
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    
+    <!-- Including the HTML5 Uploader plugin -->
+    <script src="{{ asset('html5FileUpload/assets/js/jquery.filedrop.js') }}"></script>
+    <script src="{{ asset('colorbox/jquery.colorbox.js') }}"></script>
+		
+    <!-- The main script file -->
+    {#<script src="{{ asset('html5FileUpload/assets/js/script.js') }}"></script>#}
+    <script src="{{ asset('bundles/ksactivity/js/dndPhotos.js') }}"></script>
+    
+    
+    
+    <script src="{{ asset('chosen/chosen-ced.jquery.js') }}"></script>
+    {#<script src="{{ asset('js/jquery.ddslick.js') }}"></script>#}
+    <script src="{{ asset('js/jquery.elastic.source.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ asset('bundles/ksagenda/js/fullcalendar_ced.js') }}"></script>
+    
+    
+    {#   ajout dynamiques de blocs   #}
+    <script type="text/javascript" src="{{ asset('js/jquery.sheepItPlugin-1.1.1-ced.js') }}"></script>
+    {#<script type="text/javascript" src="{{ asset('js/jquery.sheepItPlugin-1.1.1.js') }}"></script>#}
+    
+    <!-- wysihtml5 parser rules -->
+    {#<script src="{{ asset('wysihtml5/parser_rules/advanced.js') }}"></script>#}
+    <!-- Library -->
+    {#<script src="{{ asset('wysihtml5/dist/wysihtml5-0.3.0.js') }}"></script>#}
+    
+    <script src="{{ asset('bootstrap-wysihtml5/lib/js/wysihtml5-ced.js') }}"></script>
+    {#<script src="{{ asset('bootstrap-wysihtml5/s/jquery-1.7.2.min.js') }}"></script>
+    <script src="{{ asset('bootstrap-wysihtml5js/bootstrap.min.js') }}"></script>#}
+    <script src="{{ asset('bootstrap-wysihtml5/src/bootstrap-wysihtml5.js') }}"></script>
+    {#<script src="{{ asset('mliebelt-jquery-autocomplete/lib/javascripts/application.js') }}"></script>#}
+    {#<script src="{{ asset('js/jquery.autocompleteTextarea.js') }}"></script>#}
+    
+    <script src="{{ asset('isocraTableDnD/js/jquery.tablednd.js') }}"></script>
+    
+    {#<script type='text/javascript' src='http://getfirebug.com/releases/lite/1.2/firebug-lite-compressed.js'></script>#}
+    {#<script type="text/javascript" src="{{ asset('js/jquery-1.5.2.min.js') }}"></script>#}
+    
+        {#jqueryFileUpload #}
+    {#<script src="{{asset('jQueryFileUpload/js/vendor/jquery.ui.widget.js')}}"></script>#}
+    <script src="{{asset('jQueryFileUpload/js/tmpl.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.iframe-transport.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload-ui.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/locale.js')}}"></script>
+    
+    <script type="text/javascript">
+        //$("#backdrop_loader").show();
+        $(document).ready(function() {
+            //$("#backdrop_loader").hide();
+            $(window).bind('beforeunload', function(e) {
+                $('#modalWait').modal({
+                    "backdrop" : "static",
+                    "keyboard" : false
+                });
+                var request = $.ajax({
+                    url: Routing.generate('ksArticle_anymoreBeingEdited', { "articleId" : {{ article.id }} }),
+                    async: false
+                });
+
+            });
+               
+            //On cache les élément de l'événement qui ne doivent pas être modifiés
+            $(".eventForm").find(".name").hide();
+            $(".eventForm").find(".content").hide();
+            $(".eventForm").find(".isPublic").parent().hide();
+            
+            $("#saveLoader").hide();
+            {% if articleContent.title is defined and articleContent.title is not null %}
+                $("#articleTitle").val("{{ articleContent.title|addslashes|raw }}");
+            {% else %}
+                $("#articleTitle").val("{{ article.label|addslashes|raw }}");
+            {% endif %}
+
+            $('.fileUploadForm').fileupload({
+                acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+
+            });
+
+            $("#bModifyArticle").click(function(e){
+                $('#Article_content{{ article.id }}_updateForm').submit();
+                e.preventDefault();
+            });
+
+            //On prépare la zone de drag and drop pour les photos
+            /*var article_photos_dropbox = $('#article_photos_dropbox');
+            var maxfiles = 5;
+            var maxfilesize = 2;
+            var erase = false;
+            var imgPreviewWidth = 100;
+            var imgWidthHeight = 100;
+            attachDndEvent(article_photos_dropbox, "wiki", maxfiles, maxfilesize, erase, imgPreviewWidth, imgWidthHeight);*/
+            var articlesList = [
+            {% for article in articles %}
+                {
+                    "label" : "{{ article.label|capitalize}}",
+                    "link"  : Routing.generate('ksArticle_show', { "articleId" : {{ article.id }} })
+                },
+            {% endfor %}
+            ];
+
+            //la description de l'article
+            var textareaDescription = $("#textarea_description_{{ article.id }}");        
+            textareaDescription.val("{{ articleContent.description|addslashes|raw }}");
+            textareaDescription.elastic();
+            textareaDescription.wysihtml5({
+                articlesList    : articlesList,
+                idListePropositions : "liste_description_{{ article.id }}"
+            });
+
+            $('#Article_content{{ article.id }}_updateForm').submit(function(e) {
+                
+                if( ! $("#bModifyArticle").hasClass("disabled") ) {
+                    $("#bModifyArticle").addClass("disabled");
+                    $("#saveLoader").show();
+                    
+                    
+                    form = $(this);
+
+                    var articleTitle = $("#articleTitle").val();
+
+                    var articleElements = {};
+
+                    // On récupère les éléments de textes
+                    nbSections = 0;
+                    $.each($("div[id*='article_elements_template']"), function(key, element_template) {
+                        id = $( this ).attr('id');
+                        numTemplate = id.substring(id.length - 1);
+
+                        element_title = $("#article_elements_" + numTemplate + "_title").val();
+
+                        arrayParagraphs_Tables = new Array();
+                        $.each($("div[id*='article_elements_" + numTemplate +"_paragraphs_template'], div[id*='article_elements_" + numTemplate +"_tables_template']"), function(key, div_template) {
+                            //On recherche si c'est un tableau ou un paragraphe
+                            if( $( this ).attr( "id" ).search( "tables" ) > -1 ) {
+                                var type = "table";
+                                var content = {
+                                    "head" : {},
+                                    "body" : {}
+                                };
+
+                                var $table = $( div_template ).find("table[id$=table]");
+                                var $thead = $table.find("thead");
+                                var $tbody = $table.find("tbody");
+
+                                //On récupère la ligne d'entête
+                                $.each($thead.find( "tr" ), function (iRow, tr) {
+                                    content["head"][iRow]= {};
+                                    $.each( $( tr ).find( "td" ), function (iColumn, td) {
+                                        content["head"][iRow][iColumn] = $( td ).find( "input" ).val();
+                                    });
+                                });
+
+                                //On récupère le corps du tableau
+                                $.each($tbody.find( "tr" ), function (iRow, tr) {
+                                    content["body"][iRow]= {};
+                                    $.each( $( tr ).find( "td" ), function (iColumn, td) {
+                                        content["body"][iRow][iColumn] = $( td ).find( "input" ).val();
+                                    });
+                                });
+
+                            } else {
+                                var type = "paragraph";
+                                var paragraph = $( this ).find("textarea[id$=paragraph]");
+                                var content = paragraph.val();
+                            }
+                            subtitleTemplate = $( this ).find("div[id$=subtitle_template]");
+                            subtitle = $( this ).find("input[id$=subtitle]");
+
+                            if ( subtitleTemplate.is(":hidden")) {
+                                subtitleVal = "";
+                            } else {
+                                subtitleVal = subtitle.val();
+                            }                
+
+                            arrayParagraphs_Tables.push({
+                                "type"         : type,
+                                "subtitle"     : subtitleVal,
+                                "content"      : content
+                            }); 
+                        });
+
+                        articleElements[nbSections] = {
+                            "title"      : element_title,
+                            "content"    : arrayParagraphs_Tables
+                        };
+
+                        nbSections = nbSections + 1;
+                    });            
+
+                    //on récupère les photos téléchargées
+                    var articleUploadedPhotos = new Array();
+
+                    $.each($("tr.template-download"), function(key, templateDownload) {
+                        articleUploadedPhotos.push( $( this ).attr("imgName") );
+                    });
+
+                    //on récupère les photos à supprimer
+                    var articlePhotosToDelete = new Array();
+                    $.each($("input.photos_to_delete:checked"), function(key, photo_to_delete) {
+                        articlePhotosToDelete.push( $( this ).val() );
+                    });
+
+                    //on récupère les tags de l'article
+                    var articleTagsId = new Array();
+                    $("#selectTags option:selected").each(function () {
+                        articleTagsId.push( $(this).val() );
+                    });
+
+
+                    //On récupère le programme d'entrainement
+                    /*if( $("#trainingPlanTable").size() > 0 ) {
+                        var articleTrainingPlan = getTrainingPlanInfos($("#trainingPlanTable"));
+                    } else {
+                        var articleTrainingPlan = {};
+                    }*/
+
+                    var articleDescription = $("#textarea_description_{{ article.id }}").val();
+
+                   
+                    $.post(form.attr('action'), 
+                    { 
+                        "articleTitle"          : articleTitle,
+                        "articleElements"       : articleElements, 
+                        "articleUploadedPhotos" : articleUploadedPhotos, 
+                        "articleTagsId"         : articleTagsId,
+                        "articlePhotosToDelete" : articlePhotosToDelete,
+                        "articleDescription"    : articleDescription,
+                    },
+                    function(response) {
+
+                        //on efface les preview des photos téléchargées
+                        //article_photos_dropbox.find("div.preview.done").remove();
+                        $("#fileuploadTable > tbody").html("");
+
+                        //On efface les photos effacées
+                        $("input.photos_to_delete:checked").remove();
+
+                        if( response.photosHtml ) {
+                            $("#article_photos").html(response.photosHtml);
+                        }
+                        
+                        {% if article.event is not null %}
+                        if( $(".eventForm").size() > 0 ) {
+                            var eventId = "{{ article.event.id }}";
+                            
+                            $(".eventForm").find(".name").val(articleTitle);
+                            $(".eventForm").find(".content").val(articleDescription);
+                            
+                            articleTitle
+                            $.post(
+                                Routing.generate('ksAgenda_editEvent', {'id' : eventId }), 
+                                $(".eventForm").serialize(),
+                                function(response2) {
+                                    //L'artice et l'événement ont été modifiés
+                                    if( response.code == 1 && response2.code == 1 ) {
+                                        showInformation("Modification enregistrée");
+                                    } 
+                                    //Seul l'événement est modifié
+                                    else if ( response.code == -2 && response2.code == 1 ) {
+                                        showInformation("Modification enregistrée");
+                                    } else {
+                                        showInformation(response.errorMessage);
+                                    }
+                                    $("#bModifyArticle").removeClass("disabled");
+                                    $("#saveLoader").hide();
+                                }
+                            );
+                        }
+                        {% else %}
+                        if( response.code == 1 ) {
+                            showInformation("Modification enregistrée");
+                        } else {
+                            showInformation(response.errorMessage);
+                        }
+                        $("#bModifyArticle").removeClass("disabled");
+                        $("#saveLoader").hide();
+                        {% endif %}
+
+                        
+                    }).error(function(xqr, error) {
+                        console.log("error " + error);
+                    });
+    
+                    return false;
+                }
+                e.preventDefault();
+            });   
+        });
+    </script>
+{% endblock %}
+    
+{% block activity_content %}   
+    <div class="modal hide" id="modalWait">
+        <div class="modal-header">
+            <h3 class="wikisport" id="title_modal">Merci de patienter</h3>
+        </div>
+        <div class="modal-body">
+            <p>Nous libérons l'article.</p>
+            <p>Tu vas être redirigé automatiquement</p>
+        </div>
+    </div>
+    
+    {% if articleContent.title is defined and articleContent.title is not null %}
+        {% set articleTitle = articleContent.title|addslashes|raw %}
+    {% else %}
+        {% set articleTitle = article.label|addslashes|raw %}
+    {% endif %}
+    
+    <div class="thumbnail ksBloc">
+        <h3 class="wikisport">Titre</h3>
+        <div class="blocHeaderSeparator"></div>
+        <input id="articleTitle" class="input-block-level" type="text" val="{{ articleTitle }}" placeholder="Titre"/>
+    </div>
+
+    <div class="thumbnail ksBloc">
+        <h3 class="wikisport">Mots-clé</h3>
+        <div class="blocHeaderSeparator"></div>
+    {% include 'KsActivityBundle:Article:_article_tagsForm.html.twig'  with {'tags' : tags, 'articleTags' : articleContent.tags} %}
+    </div>
+
+    <div class="thumbnail ksBloc">
+        <h3 class="wikisport">Résumé</h3>
+        <div class="blocHeaderSeparator"></div>
+        <textarea id="textarea_description_{{ article.id }}" class="input-block-level"></textarea>
+        <div id="liste_description_{{ article.id }}"></div>
+    </div>
+    {% if tags|is_a_sport_event(articleContent.tags) %}
+        <div class="thumbnail ksBloc">
+            <h3 class="wikisport">Evénement</h3>
+            <div class="blocHeaderSeparator"></div>
+            {% render 'KsEventBundle:Event:eventForm' with {'id': article.event.id } %}
+        </div>
+    {% endif %} 
+    
+    <form id="Article_content{{ article.id }}_updateForm" action="{{ path('ksArticle_content_update', { 'articleId' : article.id } ) }}" method="post" {#{ form_enctype(contentUpdateForm) }#}>    
+    
+        <div class="thumbnail ksBloc">
+            <h3 class="wikisport">Contenu</h3>
+            <div class="blocHeaderSeparator"></div>
+            {#% if tags|is_a_training_plan(articleContent.tags) %}
+                {% include 'KsActivityBundle:Article:_article_trainingPlanForm.html.twig'  with {'article' : article, 'articleTrainingPlan' : articleContent.trainingPlan} %}
+            {% else %#}   
+                {% include 'KsActivityBundle:Article:_article_dynamicTextsForm.html.twig'  with {'article' : article, 'articleContent' : articleContent} %}
+            {#% endif %#}
+        </div>
+        
+        <div class="thumbnail ksBloc">
+            <h3 class="wikisport">Images existantes</h3>
+            <div class="blocHeaderSeparator"></div>
+            <div id="article_photos">{% include 'KsActivityBundle:Article:_article_photos_edit.html.twig'  with { 'article' : article, 'photos' : articleContent.photos } %}</div>
+        </div>
+    </form>
+
+    <div class="thumbnail ksBloc">
+            <h3 class="wikisport">Ajout d'images (sélection ou drag & drop)</h3>
+            <div class="blocHeaderSeparator"></div>
+        {#<img width="75" src="{{ asset('bundles/ksactivity/images/images.png') }}"/>#}
+
+        <div class="jqueryFileUpload">
+            {% include 'KsImageBundle::index.html.twig' with {'uploadDirName' : 'wiki'} %}
+        </div>  
+
+    </div>
+
+
+    <a class="btn" href="{{ path('ksArticle_show', { 'articleId' : article.id }) }}">
+        <i class="icon-repeat"></i>
+        <span>Revenir à la visualisation de l'article</span>
+    </a>
+    <a class="btn btn-warning" href="{{ path('ksArticle_show', { 'articleId' : article.id }) }}">
+        <i class="icon-ban-circle icon-white"></i>
+        <span>Annuler</span>
+    </a>
+    <span id="bModifyArticle" class="btn btn-primary">
+        <i class="icon-ok icon-white"></i>
+        <span>{{ 'article.saveModifs.label'|trans }}</span>
+    </span>
+    <div class="pull-right">
+        <img id="saveLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+    </div>
+    {#% include 'KsActivityBundle:Article:_article_contentUpdateForm.html.twig'  with {'articles' : articles, 'article' : article, 'articleContent': articleContent, 'trainingPlanForm' : trainingPlanForm} %#}
+{% endblock %}

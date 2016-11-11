@@ -1,0 +1,513 @@
+sports:
+    other-sports:     bann lot lèspor
+    my-sports:        mon bann lèspor
+    football:         football
+    tennis:           tennis
+    judo:             jüdo
+    handball:         handball
+    basketball:       basketball
+    running:          kours a pié
+    rugby:            rugby
+    canoe-kayak:      Kanoë Kayak
+    petanque:         Pétank
+    windsurfing:      voil
+    swimming:         natasyon
+    scuba-diving:     plonjé
+    karate:           karaté
+    tennis-table:     ping-pong
+    badminton:        Badminton
+    ski:              ski
+    cycling:          vélo la rout
+    waterPolo:        water polo
+    volley:           volley
+    hiking:           Randoné
+    mountain-biking:  Vétété
+    rowing:           Zaviron
+    walking:          Bat karé
+    musculation:      Müskülasyon
+    peloteBasque:     Pelote basque
+    golf:             golf
+    yoga:             yoga
+    elliptical:       velo elliptique
+    squash:           squash
+    other:            lézot léspor
+    crossCountrySkiing: ski de fond
+    snowboard:        Snowboard
+    step-counter:     kontèr d'pa
+    cross-training:   ron d'lantrèneman
+    climbing-stairs:  monté d'leskalié
+    baby-foot:        Baby foot
+    billard:          biyar
+    skateboard:       skateboard
+    ice_skate:        patin a glas
+    surf:             surf
+    downhill-skiing:  ski alpin
+    spinning:         vélo lapartman
+    aquabike:         aquabike
+    zumba:            zumba
+    rower:            ramèr
+    climbing:         èskalad
+    archery:          Tir lark
+    boxing:           boxe
+    tree_climbing:    Accrobranche
+    triathlon:        triatlon
+    aquagym:          aquagym
+    boxeThai:         Boxe Thaïlandaise
+    aikido:           Aïkido
+    salsa:            Salsa
+    bmx:              BMX
+    jujitsu:          Jujitsu
+    mma:              MMA
+    horse_riding:     Ekitasyon
+    referee:          Larbit
+    video_games:      e-lèspor
+    touringSki:       Ski de randonnée
+    paragliding:      Parapente
+    empty:            Repos
+    
+login:
+    one-community:    Toute kalité sportif, toute klëb, nou toute ansanm
+    welcome:          Oté zot toute!
+    applications:     Bann zaplikasyon konèkté
+    free:             100% gratuit !
+    
+    #carousel
+    plan-import-follow: Mèt an lord, import, suiv out bann zaktivité
+    progress-compare:   Alé progrésé, kompar aou ek out bann dalon
+    advices:            Ou néna bézoin konsey? Ou vë partaj out lekspérians?
+    communicate-clubs:  Alé koz ek domoune out klëb
+     
+menu:
+    me:                 Amoin
+    sportsmen:          Bann sportif
+    clubs:              Bann klèb
+    wikisport:          Wikisport
+    shops:              Bann boutik
+    sync-pending:       Sinkronizasyon bann zaktivité ou lé pou fé
+    sync-button:        Sinkro fé par ou minm
+    connect:            Konèkt aou
+    register:           Inskriv aou
+    disconnect:         Se déconnecter
+    mails:              Mes mails
+    agenda:             Mon agenda
+    notifications:      Mes notifications
+    evolutions:         Evolutions du site
+    gifts:              Cadeaux
+    
+    #Sous menu sportif
+    news-feed:          Ansuiv laktüalité					  
+    profile:            Bann profil
+    ranking:            Bann klasman
+    statistics:         Bann lèstatistik
+    comparison:         Bann Konparatif
+    configure-services: Bann lé services
+    my-friends:         Bann dalon
+    publish-activity:   Pïbliyé in laktivité
+    update-activity:    Modification in laktivité
+    
+    #Sous menu friends
+    
+    all-sportsmen:      List bann lèsportif
+    invite:             Invité dalon
+    look-for-partners:  Rodé bann partnèr
+    localisations:      Bann landroi banna i lé
+    
+    #Sous menu friends
+    look-for-club:      Rod in klëb
+    create-club:        Fé out klëb				
+     
+    #Sous menu wikisport
+    contest:            Konkour « coach »				
+    
+    #Sous menu Magasins
+    search-shops:       Rod in boutik
+    create-shop:        Rouv in nouvo boutik
+        
+    #barre de recherche
+    search-placeholder: rod in nafèr (in moune,in klëb,in lartik)
+    no-matches-found: na poin ryin
+    searching:  rod aou...
+    
+    #nouveau menu
+    advanced-functions: Fonctions avancées
+    expert-mode:        Passer en mode avancé
+    noob-mode:          Passer en mode simplifié
+    show:               Consulter
+    my-profil:          Mon profil
+    my-equipment:       Mon equipment
+    my-home-page:       Ma page principale (bientôt)
+    my-profile-page:    Ma page profile (bientôt)
+    my-services:        Mes services
+    expert-menu:        Menu (mode expert)
+    noob-menu:          Menu (mode débutant)
+    last-activities-sync : Tes dernières activités sportives ont été synchronisées avec succès !
+    
+    #clubs
+    club-profile:       Profil du club
+    club-home-page:     Page d'accueil du club (bientôt)
+    club-profile-page:  Page publique du club (bientôt)
+    members:            Membres
+    teams:              Equipes
+    events:             Evénements
+    tournaments:        Tournois
+    membership-in-progress: Demande d'adhésion
+    send-invit:         Inviter un sportif
+    club-agenda:        Agenda du club
+    user-mode:          Passer en mode utilisateur
+    
+footer:
+    remarks-suggestion: out komantèr
+    stay-connected:     rès la minm
+    
+activity:
+    status:   out kalité
+    sport-activity: "{1} kèl lèspor|]1,Inf[ kèl lèspor"
+    photos:   bann foto
+    link:     "{1} gatür|]1,Inf[ gatür"						
+    video:    "{1} bann video|]1,Inf[ bann video"						
+    tuto:     Tutoriels
+    all:      Tout
+    partners:  bann dalon
+    others:  lézot
+    from:   apartir
+    a-gpx-file: fishié gpx
+    near: koté									
+    in: dan
+    
+    duration: konbyin d'tan
+    distance: distans
+    scores:   score
+    team-mates: bann kolékipié
+    opponents:  bann zadversèr
+    from-a-service: apartir servis-la
+    semi-auto: démi-otomatik
+    manually: fé par ou minm (ke néna gpx ou ke na poin)
+    splits: bann « split »
+    resume: bann zinfo prinsipal
+    graphs: bann grafik
+    message-graphs:  Kart-la lé sinkronizé ek lo bann grafik; alé bouj souri-la!
+    message-graphs2: ou vë dot'? Séleksysone in karo dan bann grafik épisa zoum ali
+    my-league:  Ma ligue
+    my-clubs:   Mes clubs
+    my-friends: Mes amis sportifs
+    me:         Moi
+    ks-network: Communauté Keepinsport
+    ks-user:    L'équipe Keepinsport
+    garmin-account-required: Nécessite un compte GARMIN
+    endomondo-account-required: Nécessite un compte ENDOMONDO
+    runkeeper-account-required: Nécessite un compte RUNKEEPER
+    nike+-account-required: Nécessite un compte NIKE+
+    ffa-activities: Activités de la Fédération Française d'Athlétisme
+    
+actions:
+    info:         Information
+    show:         armontré bann détaye
+    comment:      komanté
+    share:        Partajé
+    subscribe:    mi abone amoin
+    unsubscribe:  mi larg zaboneman-la
+    vote:         ankourazé
+    publish:      pübliyé								
+    publish-activity: pübliyé in laktivité
+    save-updates: anrojis bann modifikasyon
+    edit:         édité
+    delete:       largé
+    save:         anrojistré
+    add-image:    Ajouter une image
+    start:        Komansé
+    cancel:       déviré
+    publish-fb:   pübliyé direk sï fb
+    select-sport: shoizi in léspor
+    send:         anvoye
+    edit-profil:  édite in profil
+    write-message: ékrir in nouvo mesaj
+    go-top:       artourn anlèr
+    create:       Créer
+    SRTM:         Traitement altitude SRTM
+
+news-feed:
+    filter:             Type
+    perimeter:          Périmèt
+    sports:             Sport
+    order:              komandman
+    modification-date:  kèl jour ou la modifyé
+    creation-date:      kèl jour ou la kréé
+    all-people:         toute domoun
+    more-news:          mèt ankor zaktüalité
+    pull-up:            armont plï o
+    no-more-news:       lé bon na pi zaktüalité pou sharjé
+    
+headline:
+    you:  aou
+    someone: in moune
+    the: lo
+    
+    participate-to: "{1} partisip |{2} partisip |{3} partisip "
+    have: "{1} néna|{2} néna|{3} néna"
+    will-do: "{1} |{2} féra|{3} féra"
+    created: "{1} moin la kréé|{2} aou la kréé|{3} ali la kréé"
+    look-for-partners-to: rod bann partnèr pou in laktivité 
+    published-status: pübliyé in nouvo estatü
+    published-photos: pübliyé in lalbome foto
+    published-photo: pübliyé in foto
+    published-video: pübliyé in vidéo
+    published-link: pübliyé in gatür
+    shared-news: partajé in laktüalité
+    practised: fé in laktivité
+    taked-part-article: la mèt son grin d'sel dan lartik-la
+    created-tournament: kréé tournoi-la
+    the-event: zévéneman
+    one-activity-of: in laktivité
+    
+titles:
+    #Fil d'actualité
+    sponsors: nout partnèr préféré							
+    nearby-users: Dowa ou koné?
+    nearby-clubs: lo bann klëb koté ou
+    last-articles: bann zartik résan
+    last-activities: bann zaktivité résan
+    next-evolutions: bann zévolüsyon site-la
+    next-events: Bann proshin zévéneman
+    rss-flux: lékip
+    facebook: artrouv anou sï fb
+    twitter: suiv anou sï Twitter
+    
+    #Classement
+    direct-ranking: klasman
+    general-ranking: Détail
+    working: Fonksioneman
+    my-rank: Mon klasman
+    my-ranks: Mon klasman par sport
+    do-sport: alé fé<br/>spor
+    cumul-points: ramass <br/>bann poin
+    reach-gold-league: pass an <br/>lig or
+    win-trophies: anporte <br/>trofé
+    my-rankings: Mes klasman
+    
+    #Concours
+    contest: konkour
+    coach-contest: kèl i lé meyèr coach?
+    rules: règloman
+    sponsor-godsons: parènn bann lèsportif
+    coach-godsons:  coach out fiyèl
+    win-price:  ginye <br/>bann pri !
+    my-godfather: mon parin
+    my-godsons: mon bann fiyèl
+    no-godsons: zéro fiyèl zordi
+    rank: plas
+    
+    #profil-public
+    all-godsons: bann fiyèl ek ti-fiyèl
+    season-evolution: évolüsyon sézon par sézon
+    my-clubs: mon klëb
+    
+    #agenda
+    agenda-of: ajinda %username%
+    
+    #messages
+    subject:  in moune
+    participants: bann partisipan
+    last-message: dernié mesaj
+    
+    #others
+    sportman: bann lésportif
+    points:   bann poin
+    firstname: out prénon
+    lastname: out non d'famiy
+    town: out vil/ kartié
+    sports: bann léspor
+    clubs: bann klëb
+    actions: bann zaksyon
+    activities-number: konbyin d'zaktivité
+    friends-number: konbyin d'zami
+    godsons-number: konbyin d'fiyèl
+    sportsmen-number: konbyin d'lésportif
+    sportman-points: bann poin lésportif
+    godsons-points: bann poin fiyèl
+    littles-godsons-points: bann poin ti-fiyèl
+    total-points: bann poin total
+    title:  tit
+    resetting-password: ré-inisialize out mo d'pass
+    check-email:      alé vey out mèl
+    
+    #club
+    package: Forfait(s)
+
+leagues:
+    gold:   lor			
+    silver: larjan
+    bronze: lo bronz
+    other:  in not
+    nutella: nutella
+    stars-number: "{0,1} zétoil|]1,Inf[ zétoil"
+  
+events:
+    competitions: konpétisyon
+    trainings:    lantrènemean
+    meals:        bann ropa	
+    coaching:     Coaching
+    goals:        Objectifs
+    others:       lézot
+    public:       püblik
+    training:     lantrènemean
+    participations: Participants
+    max-participations: Nombre maximum
+    types:        Types
+    sports:       Sports
+    filters:      Filtres
+    availability: Disponibilité
+    full:         complet uniquement
+    available:    disponible uniquement
+    all:          tous
+    event_coaching : Plan d'entrainement
+    
+months:
+    January:    janvié
+    February:   févrié
+    March:      mars
+    April:      avril
+    May:        mé
+    June:       jüin
+    July:       jülié
+    August:     out
+    September:  sektanm
+    October:    oktob
+    November:   novanm
+    December:   désanm
+    
+words: 
+    or: oubyin
+    
+intensity:
+    label:  intansité
+    label* -:  "- intansité* -"
+    low:  faye intansité
+    medium: intansité normal
+    high: bèl intansité
+    
+stateOfHealth:
+    tired:  fay
+    so_so:  normal
+    great:  gayar
+    
+wasOfficial:
+    training: lantrèneman
+    competition: kours
+    
+result:
+    victory : viktoir
+    draw:     matsh nül
+    defeat:   défèt
+    
+equipmentsTypes:
+    tennis_racquet: rakèt
+    armband:        brasar
+    watch:          montr
+    shirt:          tishèrt
+    short:          short
+    shoes:          souyé
+    road_bike:      vélo-la-rout
+    mountain_bike:  vétété
+    gloves:         Gants
+    bonnet:         Bonnet
+    pants:          Pantalon
+    jacket:         Veste
+    footballSocks:  Chaussettes de foot
+    back_pack:      Sac à dos
+    earpiece:       Ecouteurs
+    ski:            Ski
+    snowboard:      Snowboard
+
+dashboard:
+    title:                  Statistiques de
+    evolution:              Evolution par saison
+    message_detail:         Bann grafic-la lé dinamik, pou fé aparèt oubyinsa disparèt lo bann zitèm, klik desï vignèt lé jüst anlèr
+
+    message_items:          Tu peux faire disparaitre et ré-apparaitre des items en cliquant sur les vignettes ci-dessus !
+    message_sport:          Tu peux faire disparaitre et ré-apparaitre des sports en cliquant sur les vignettes ci-dessus !
+    match_friends:          konparatif
+    perimeter:              périmèt
+    top5from:               Top 5 méyèr anparmi...
+    my:                     mon
+    his:                    son
+    community:              komünoté
+    top5all:                Top 5 méyèr lésportif 
+    select_sportsmen:       séleksyone détroi sportif
+    select_season:          séleksyone lo périod ou vë
+    last_year:              12 dernyé moi  
+    all_sports:             TOUTE BANN LESPOR
+    message_no_activities:  Ou la pa réaliz ryin dan so laktivité !
+    
+sportsmen:
+    message_click:          si ou vë konèt bann zaktivité korèspondan alé klik desï bann ropèr kart-la !
+    list:                   bann lèsportif la komünoté
+
+users:
+    import_GPX:             importé in fishié gpx
+    send_GPX_file:          intégrasyon gpx
+    message_GPX_processed:  bann bèl-fishié(>10Mo) i amüz in bon pë, jüska 10mns, pou sharjé
+    import_runkeeper:       importe out doné
+    gpx_uses:               Utilizasyon in fishié gpx
+    facebook-invit:         Invitations Facebook
+    google-invit:           Invitations Google
+    connexion:              Connection
+    invite:                 Inviter depuis
+    invite-friends:         Invite tes amis à te rejoindre !
+    invite-by-mail:         Invitation par mail
+    invite-keepinsport:     Ajoute sur Keepinsport tes amis Facebook ou Google déjà inscrits sur le site
+    email:                  Adresse email
+    password:               Mot de passe
+    connect:                Activer
+    disconnect:             Désactiver
+    import-FFA:             Import Fédération Française d'Athlétisme
+    search-FFA:             Recherche FFA
+    sync-rk-OK:             Synchronisation avec votre compte RUNKEEPER effectuée avec succès !
+    sync-suunto-OK:         Synchronisation avec votre compte SUUNTO effectuée avec succès !
+    sync-suunto:            Synchroniser votre compte SUUNTO
+    sync-rk:                Synchroniser votre compte RUNKEEPER
+    setup:                  Configurer
+    
+shops:
+    search-shops:           ou rod bann magazin èspésializé
+    id:                     num
+    name:                   out non d'famiy
+    address:                out ladrès
+    town:                   out vil
+    sports:                 out bann lèspor
+    actions:                zaksyon posib
+    status:                 kalité
+    reference-KS:           référansé !
+    waiting-for-approval:   latant boutik
+    url:                    url/ sit internet
+    email:                  zordilèt (*)
+    telNumber:              téléfone (*)
+    details:                kontak
+    message-1:              Estatu référansé = Posib giny bann bondasha dann boutik-la
+    message-2:              Estatu référansé = i fo ou vote si ou vë négosyé lo bann bondasha dann boutik-la!
+    votes:                  Votes
+    proposal:               Propozé in nouvo boutik !
+    new-shop:               nouvo boutik
+    create-update-shop:     kréasyon/ modifikasyon in boutik
+    avatar-change:          choizi in limaj
+    search-by:              Non d'famiy, vil, peï
+    my-shops:               mon bann boutik
+    shops-with-conditions:  Magasins avec cadeaux
+    web-shops:              Magasins internet
+    web-shop:               Magasin internet
+    misc:                   Divers
+    contact:                Contact
+    more-shops:             Voir plus de magasins
+    all-shops-loaded:       Tous les magasins ont été chargés !
+    no-match:               Aucun magasin correspondant !
+    missing:                restants
+    conditions:             Remise / bon d'achat
+    
+checklist:
+    good-start:             Bien débuter
+    message:                Nous avons listé ici les actions les plus simples à réaliser sur le site, à gauche celles non réalisées à ce jour, à droite celles que tu as déjà réalisées !
+    actions-done:           Actions déjà réalisées...
+    actions-todo:           A essayer ?
+
+frequency:
+    title:                  Fréquence
+    help:                   Pour vous faire gagner du temps, il est possible de générer automatiquement des activités selon vos habitudes. Il suffit de cocher les jours ou vous pratiquez votre sport et d'indiquer une heure de notification par mail.

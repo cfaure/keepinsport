@@ -1,0 +1,116 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('js/timeline/timeline.css') }}" />#}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-wysihtml5/src/bootstrap-wysihtml5.css') }}"></link>
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksactivity/css/articles.css') }}" />
+    
+    {# zoom sur photos #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('swipebox/source/swipebox.css') }}" />
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    {# textarea extensibles #}
+    <script src="{{ asset('js/jquery.elastic.source.js') }}"></script>
+    <script src="{{ asset('bundles/ksevent/js/scripts.js') }}"></script>
+    
+    {# zoom sur photos #}
+    <script src="{{ asset('swipebox/source/jquery.swipebox.min.js') }}"></script>
+    
+    <script type="text/javascript"> 
+        $(document).ready(function() {
+
+        });
+    </script>
+{% endblock %}
+    
+{% block activity_content %}
+
+<a class="btn btn-wikisport pull-right" rel="tooltip" title="Editer" href="{{ path('ksArticle_edit', {"articleId" : article.id }) }}">
+    <i class="icon-pencil icon-white"></i> Editer
+</a> 
+<h2 class="wikisport">
+    {% if articleContent.title is defined and articleContent.title is not null %}
+        {{ articleContent.title }}
+    {% else %}
+        {{ article.label }}
+    {% endif %}
+</h2>
+<div class="blocHeaderSeparator"></div>
+
+
+<div id="blocArticle_tags" class="thumbnail ksBloc">
+    <h3 class="wikisport">Mots-clé</h3>
+    <div class="blocHeaderSeparator"></div>
+    {% include 'KsActivityBundle:Article:_article_tags.html.twig'  with { 'tags' : tags, 'articleTagsId' : articleContent.tags } %}
+</div>
+
+{% if articleContent.description is defined %}
+    <div class="thumbnail ksBloc">
+        <h3 class="wikisport">Résumé</h3>
+        <div class="blocHeaderSeparator"></div>
+        <p>{{ articleContent.description|raw }}</p>
+    </div>
+{% endif %}
+
+{% if tags|is_a_sport_event(articleContent.tags) %}
+    <div class="thumbnail ksBloc">
+        <h3 class="wikisport">Evénement</h3>
+        <div class="blocHeaderSeparator"></div>
+        {% render 'KsEventBundle:Event:eventInfos' with {'id': article.event.id } %}
+    </div>
+{% endif %} 
+
+<div id="blocArticle_content">
+    {% include 'KsActivityBundle:Article:_article_content.html.twig'  with { 'articleContent' : articleContent } %}
+</div>
+
+<div id="article_photos" class="thumbnail ksBloc">
+    <h3 class="wikisport">Photos</h3>
+    <div class="blocHeaderSeparator"></div>
+    {% include 'KsActivityBundle:Article:_article_photos.html.twig'  with { 'articleId' : article.id, 'photos' : articleContent.photos } %}
+</div>
+{#<div id="blocButtonUpdateContent">
+    {% include 'KsActivityBundle:Article:_article_bouttonUpdateContent.html.twig'  with { 'article' : article } %}
+</div>#}
+
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <button id="bModificationsHistoric" class="btn btn-wikisport btn-mini">Historique des modifications</button>
+    <br/>
+    
+    <div id="blocArticle_historicModifications" >
+        {% include 'KsActivityBundle:Article:_article_historicModifications.html.twig'  with {
+            'article'               : article, 
+            'historicModifications' : historicModifications,
+            'articleContent'        : articleContent,
+            'tags'                  : tags
+        } %}
+    </div>
+    
+    <br/>
+
+    {% include 'KsActivityBundle:Comment:_commentsBloc.html.twig' with {'activity': article } %}
+    
+    <br/>
+    <a class="btn btn-mini" href="{{ path('ksArticle_list', {}) }}"><i class="icon-backward"></i> {{ 'articles.list.label'|trans }}</a>
+{% endif %}
+    <script type="text/javascript">
+        $("#blocArticle_historicModifications").hide();
+        $("#bModificationsHistoric").toggle(function() {
+            $("#blocArticle_historicModifications").show();
+        }, function() {
+            $("#blocArticle_historicModifications").hide();
+        });
+    </script>
+    
+
+{% endblock %}
+

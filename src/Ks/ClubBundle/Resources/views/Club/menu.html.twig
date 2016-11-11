@@ -1,0 +1,336 @@
+{% include 'KsActivityBundle:Activity:_statusForm.html.twig' with {'form': statusForm} %}
+{% include 'KsActivityBundle:Activity:_photoForm.html.twig' with {'form': photoForm} %}
+{% include 'KsActivityBundle:Activity:_linkForm.html.twig' with {'form': linkForm} %}
+
+{% if isManager %}
+    {# Menu CLUB #}
+    <div class="ksBloc thumbnail">
+        <h1 class="clubs"> 
+            <img src="{{ asset('img/clubs/' ~ club.id ~ '/original/' ~ club.avatar) }}" {# club.name #}>
+            <div id="loaderManager" style="display:none" class="pull-right"><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+        </h1>
+        <div class="blocHeaderSeparator"></div>
+        <div id="content">
+            <ul class="menuClub">
+                <li class="subitem"><a class="subitem" href="#">{{ 'actions.publish'|trans }}<span class="glyphicon glyphicon-pencil"></span></a>
+                    <ul class="subitem">
+                        <li class="subitem">
+                            <span class="statusBtn btn btn-small btn-link link-clubs">
+                                <span class="glyphicon glyphicon-pencil"></span> {{ "activity.status"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="photosBtn btn btn-small btn-link link-clubs">
+                                <span class="icon-camera"></span> {{ "activity.photos"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="linkBtn btn btn-small btn-link link-clubs">
+                                <span class="icon-paper-clip"></span> {{ "activity.link"|transchoice(1) }}
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="subitem"><a class="subitem" href="#">{{ "menu.show"|trans }}<span class="icon-search"></span></a>
+                    <ul class="subitem">
+                        <li class="subitem">
+                            <span class="agendaBtn btn-small btn-link link-clubs">
+                                <span class="icon-calendar icon-large"></span> {{ "menu.club-agenda"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="newsFeedBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt icon-large"></span> {{ "menu.news-feed"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="clubProfileBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.club-profile"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="membersBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.members"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="teamsBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.teams"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="eventsBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.events"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="tournamentsBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.tournaments"|trans }}
+                            </span>
+                        </li>
+                        {# FMO : le lien ne fonctionne pas à étudier si besoin !
+                        <li class="subitem">
+                            <span class="membershipBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.membership-in-progress"|trans }}
+                            </span>
+                        </li>#}
+                        <li class="subitem">
+                            <span class="invitFriendsBtn btn-small btn-link link-clubs">
+                                <span class="icon-envelope-alt"></span> {{ "menu.send-invit"|trans }}
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="subitem"><a class="subitem" href="#">{{ 'menu.set-up'|trans }} <span class="icon-cog"></span></a>
+                    <ul class="subitem">
+                        <li class="subitem">
+                            <span class="clubEditionBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.club-profile"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <i>
+                                <span class="clubHomePageBtn btn-small ">
+                                    <span class="icon-cog"></span> {{ "menu.club-home-page"|trans }}
+                                </span>
+                            </i>
+                        </li>
+                        <li class="subitem">
+                            <i>
+                                <span class="clubProfilePageBtn btn-small ">
+                                    <span class="icon-cog"></span> {{ "menu.club-profile-page"|trans }}
+                                </span>
+                            </i>
+                        </li>
+                        <li class="subitem">
+                            <span class="userBtn btn-small btn-link link-sportif">
+                                <span class="icon-cog"></span> {{ "menu.user-mode"|trans }}
+                            </span>
+                        </li>
+                        <div class="blocHeaderSeparator"></div>
+                        <li class="subitem">
+                            <span style="text-indent: 3.75em">
+                                <a class="link-clubs" href="{{ path('fos_user_security_logout') }}" onclick="showLoader();">
+                                    <span class="icon-off"></span> {{ 'menu.disconnect'|trans }}
+                                </a>
+                            </span>
+                        </li>
+                        <div class="blocHeaderSeparator"></div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% else %}
+    {#User is not a manager #}
+    <div class="ksBloc thumbnail">
+        <h1 class="clubs"> 
+            <img src="{{ asset('img/clubs/' ~ club.id ~ '/original/' ~ club.avatar) }}" {# club.name #}>
+            <div id="loaderMember" style="display:none" class="pull-right"><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+        </h1>
+        <div class="blocHeaderSeparator"></div>
+        <center>{% include 'KsClubBundle:Club:_askForMembershipLink.html.twig' with {'club_id': club.id } %}</center>
+        <div id="content">
+            <ul class="menuClub">
+                <li class="subitem"><a class="subitem" href="#">{{ "menu.show"|trans }}<span class="icon-search"></span></a>
+                    <ul class="subitem">
+                        <li class="subitem">
+                            <span class="agendaBtn btn-small btn-link link-clubs">
+                                <span class="icon-calendar icon-large"></span> {{ "menu.club-agenda"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="clubProfileBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.club-profile"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="membersBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.members"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="teamsBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.teams"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="eventsBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.events"|trans }}
+                            </span>
+                        </li>
+                        <li class="subitem">
+                            <span class="tournamentsBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.tournaments"|trans }}
+                            </span>
+                        </li>
+                        {# FMO : le lien ne fonctionne pas à étudier si besoin !
+                        <li class="subitem">
+                            <span class="membershipBtn btn-small btn-link link-clubs">
+                                <span class="icon-list-alt"></span> {{ "menu.membership-in-progress"|trans }}
+                            </span>
+                        </li>#}
+                        <li class="subitem">
+                            <span class="invitFriendsBtn btn-small btn-link link-clubs">
+                                <span class="icon-envelope-alt"></span> {{ "menu.send-invit"|trans }}
+                            </span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="subitem"><a class="subitem" href="#">{{ 'menu.set-up'|trans }} <span class="icon-cog"></span></a>
+                    <ul class="subitem">
+                        <li class="subitem">
+                            <span class="userBtn btn-small btn-link link-sportif">
+                                <span class="icon-cog"></span> {{ "menu.user-mode"|trans }}
+                            </span>
+                        </li>
+                        <div class="blocHeaderSeparator"></div>
+                        <li class="subitem">
+                            <span style="text-indent: 3.75em">
+                                <a class="link-clubs" href="{{ path('fos_user_security_logout') }}" onclick="showLoader();">
+                                    <span class="icon-off"></span> {{ 'menu.disconnect'|trans }}
+                                </a>
+                            </span>
+                        </li>
+                        <div class="blocHeaderSeparator"></div>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endif %}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        attachPublishStatusEvent($(".statusBtn"));
+        attachPublishLinkEvent($(".linkBtn"));
+        attachPublishPhotoEvent($(".photosBtn"));
+        attachAgendaEvent($(".agendaBtn"));
+
+        attachNewsFeedEvent($(".newsFeedBtn"));
+        attachClubProfileEvent($(".clubProfileBtn"));
+        attachMembersEvent($(".membersBtn"));
+        attachTeamsEvent($(".teamsBtn"));
+        attachEventsEvent($(".eventsBtn"));
+        attachTournamentsEvent($(".tournamentsBtn"));
+        attachMembershipEvent($(".membershipBtn"));
+        attachInvitFriendsEvent($(".invitFriendsBtn"));
+        attachUserEvent($(".userBtn"));
+
+        attachClubEditionEvent($(".clubEditionBtn"));
+
+        attachLogoutEvent($(".logoutBtn"));
+
+        function attachNewsFeedEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksClub_public_profile', {'clubId' : {{ club.id }} });
+            });
+        }
+        
+        function attachAgendaEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksAgendaClub_index', {'id' : {{ club.id }}, 'fullscreen' : false });
+            });
+        }
+
+        function attachClubProfileEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('KsClub_informations', {'clubId' : {{ club.id }} });
+            });
+        }
+
+        function attachMembersEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('KsClub_members', {'clubId' : {{ club.id }} });
+            });
+        }
+
+        function attachTeamsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('KsClub_teams', {'clubId' : {{ club.id }} });
+            });
+        }
+
+        function attachEventsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksClub_events', {'clubId' : {{ club.id }} });
+            });
+        }
+
+        function attachTournamentsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('KsClub_tournaments', {'clubId' : {{ club.id }} });
+            });
+        }
+
+        function attachMembershipEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksClub_askForMembership', {'clubId' : {{ club.id }} });
+            });
+        }
+
+        function attachInvitFriendsEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksClub_inviteFriends', {'clubId' : {{ club.id }} });
+            });
+        }
+
+        function attachUserEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksActivity_activitiesList');
+            });
+        }
+
+        function attachClubEditionEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('ksProfileClub_informations', {'clubId' : {{ club.id }}, 'creationOrEdition' : 'edition'});
+            });
+        }
+
+
+        function attachLogoutEvent(elt) {
+            elt.click(function(e) {
+                showLoader();
+                document.location.href = Routing.generate('fos_user_security_logout');
+            });
+        }
+        
+        $(function() {
+            var menu_ul = $('.menuClub > li > ul'),
+            menu_a  = $('.menuClub > li > a');
+            menu_ul.hide();
+            menu_a.click(function(e) {
+                //e.preventDefault(); sinon le href ne se fait pas !
+                if(!$(this).hasClass('active')) {
+                    menu_a.removeClass('active');
+                    menu_ul.filter(':visible').slideUp('normal');
+                    $(this).addClass('active').next().stop(true,true).slideDown('normal');
+                } else {
+                    $(this).removeClass('active');
+                    $(this).next().stop(true,true).slideUp('normal');
+                }
+            });
+        });
+
+        function showLoader() {
+            {% if isManager %}
+                var $loader = $("#loaderManager");
+            {% else %}
+                var $loader = $("#loaderMember");
+            {% endif %}
+            $loader.css('visibility', 'visible');
+            $loader.show();
+        }        
+    });
+</script>            

@@ -1,0 +1,295 @@
+{# cas particulier pour certaines actualités abstraites #}
+{% if activity.type == 'abstract_activity' and activity.linkedEvent_name is not null %}
+    {% if activity.user_id is not null %}
+        {% if app.user.id is defined and activity.user_id == app.user.id and isShared is not defined %}
+            <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ "headline.you"|trans }}</a> {{ "headline.participate-to"|transchoice(2) }} 
+        {% else %} 
+            <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ activity.username }}</a> {{ "headline.participate-to"|transchoice(3) }} 
+        {% endif %}
+    {% elseif activity.club_id is not null %}
+        <a href="{{ path('ksClub_public_profile', { 'clubId' : activity.club_id }) }}">{{ activity.club_name }}</a> {% if activity.notificationType_name == "eventParticipation" %}{{ "headline.participate-to"|transchoice(3) }} {% else %}{{ "headline.created"|transchoice(3) }} {% endif%}
+    {% else %}  
+        {{ "headline.someone"|trans }} {{ "headline.participate-to"|transchoice(3) }} 
+    {% endif %}
+    {# on cherche le lien du l'événement (evt club ou non) #}
+    {% if activity.linkedEvent_club_id is not null %}
+        {% set pathEvent = path('ksEventClub_show', { 'id' : activity.linkedEvent_id }) %}
+    {% else %}
+        {% set pathEvent = path('ksEvent_show', { 'id' : activity.linkedEvent_id }) %}
+    {% endif %}
+     {{ "headline.the-event"|trans }}  <a href="{{ pathEvent }}">{{ activity.linkedEvent_name }}</a>
+    <span class="pull-right">
+        {{ "headline.the"|trans }} {{ activity.linkedEvent_startDate|date("d/m/Y")  }} <span class="glyphicon glyphicon-calendar"></span>
+    </span>
+{% elseif activity.type == 'sportsmen_search' %}
+    <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ activity.username }}</a> {{ "headline.look-for-partners-to"|trans }} 
+    {#<a href="{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}">
+        <b>{{ ("sports." ~ activity.sport_codeSport)|trans }}</b>
+        <i class="icon-chevron-right"></i>
+    </a>#}
+{% else %}
+    {# On détermine l'intitulé de la personne qui a fait l'activité #}
+    {#On regarde si l'activité est dans le futur ou le passé #}
+    {# cas particulier pour les activité qui peuvent être programmées dans le futur #}
+    {% if context == 'details' %} 
+        <h1>
+    {% else %}
+        <div class="subtitle">
+    {% endif %}
+        {% if 1 ==0 and activity.issuedAt|date("Y-m-d H:i") > "now"|date("Y-m-d H:i") and ( activity.type == "session_endurance_under_water" or activity.type == "session_endurance_on_earth" or activity.type == "session_team_sport" or activity.type == "session" ) %} 
+        {# à cause du soucis de décalage de 2H et aussi parce que c'est pas possible finalement de publier des choses sur le fil d'actu qui se dérouleront dans le futur #}        
+            {% if activity.user_id is not null %}
+                {% if app.user.id is defined and activity.user_id == app.user.id and isShared is not defined %}
+                    <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ "headline.you"|trans }}</a> {{ "headline.will-do"|transchoice(2) }} 
+                {% else %} 
+                    <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ activity.username }}</a> {{ "headline.will-do"|transchoice(3) }} 
+                {% endif %}
+            {% elseif activity.club_id is not null %}
+                <a href="{{ path('ksClub_public_profile', { 'clubId' : activity.club_id }) }}">{{ activity.club_name }}</a> {{ "headline.will-do"|transchoice(3) }} 
+            {% else %}  
+                    {{ "headline.someone"|trans }} {{ "headline.will-do"|transchoice(3) }} 
+            {% endif %}
+            {{ 'headline.one-activity-of'|trans }} 
+            {{ ("sports." ~ activity.sport_codeSport)|trans }}
+            {% if context is not defined %}
+                {#<a href="{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}" class="btn btn-small pull-right {{ class }}" rel="tooltip" title="{{ "actions.show"|trans }}">
+                    <!--i class="btn btn-link link-sportif icon-search icon-white"></i-->
+                    <i class="icon-search icon-white "></i>
+                </a>#}
+            {% endif %}
+        {% else %}
+            {% if activity.user_id is not null %}
+                {% if context != 'details' %}
+                    <div class="row">
+                        {% if context == 'shareToFB' %} <center> {% endif %}
+                            <div class="col-md-3">
+                                {% if display_points is not defined %}
+                                    {% set display_points = false %}
+                                {% endif %}
+                                {% include 'KsUserBundle:User:_userImage_league.html.twig' with {
+                                    'withBubble' : true,
+                                    'user_id' : activity.user_id, 
+                                    'user_username' : activity.username, 
+                                    'user_imageName': activity.user_imageName, 
+                                    'user_league_category' : activity.ll_categoryLabel, 
+                                    'user_league_stars' : activity.ll_starNumber,
+                                    'pack_id' : activity.pack_id,
+                                    'isActive' : activity.isActive,
+                                } %}
+                                {% if activity.userPoints > 0 and display_points %}
+                                    {% include 'KsLeagueBundle:League:_user_points.html.twig' with { 'user_league_category' : activity.ll_categoryLabel, 'user_points' : activity.userPoints } %}
+                                {% endif %}
+                            </div>
+                        {% if context == 'shareToFB' %} </center> {% endif %}
+                        <div class="col-md-9">
+                {% endif %}
+                {#{% if app.user.id is defined and activity.user_id == app.user.id and isShared is not defined %}#}
+                {% if app.user.id is defined and activity.user_id == app.user.id and isShared is not defined %}
+                    <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ "headline.you"|trans }}</a> {{ "headline.have"|transchoice(2) }} 
+                {% else %} 
+                    <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ activity.username }}</a> {{ "headline.have"|transchoice(3) }} 
+                {% endif %}
+            {% elseif activity.club_id is not null %}
+                <a href="{{ path('ksClub_public_profile', { 'clubId' : activity.club_id }) }}">{{ activity.club_name }}</a> {{ "headline.have"|transchoice(3) }}
+            {% else %}
+                {{ "headline.someone"|trans }} {{ "headline.have"|transchoice(3) }}
+            {% endif %}
+            {# On détermine l'intitulé de l'action réalisée : faire une activité, partager un lien, etc. #}
+
+            {% if activity.type == "status" %}
+                {{ "headline.published-status"|trans }}
+            {% elseif activity.type == "session_endurance_under_water" or activity.type == "session_endurance_on_earth" or activity.type == "session_team_sport" or activity.type == "session" %}
+                {{ "headline.practised"|trans }}
+                {{ ("sports." ~ activity.sport_codeSport)|trans }}
+                {% if context == 'details' %} 
+                    {% if activity.earnedPoints is not null %}
+                        {% include 'KsLeagueBundle:League:_user_points.html.twig' with { 'user_league_category' : activity.ll_categoryLabel, 'user_points' : '+' ~ activity.earnedPoints ~" points" } %}
+                    {% endif %}
+                    <span class="subtitle">
+                        {% if activity.description|length > 0 %}
+                            <span class="guillemet">“</span>{{ activity.description|nl2br }}<span class="guillemet">”</span>
+                        {% endif %}
+                    </span>
+                {% endif %}
+                {% if context is not defined %}
+                    {#<a href="{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}" class="btn btn-small pull-right {{ class }}" rel="tooltip" title="{{ "actions.show"|trans }}">
+                        <i class="icon-search icon-white "></i>
+                    </a>#}
+                {% endif %}
+            {% elseif activity.type == "photo_album"  %}
+                {{ "headline.published-photos"|trans }}
+            {% elseif activity.type == 'video' or activity.type == 'link' %}
+                {% if activity.viewLink is not null %}
+                    {{ "headline.published-video"|trans }}
+                {% else %}
+                    {{ "headline.published-link"|trans }}
+                {% endif %}
+            {% elseif activity.type == 'photo' %}
+                {{ "headline.published-photo"|trans }} 
+            {% elseif activity.type == 'article' %}
+                {{ "headline.taked-part-article"|trans }}
+            {% elseif activity.type == 'abstract_activity' and connectedActivity is not null and connectedActivity.type != 'article' %}
+                {{ "headline.shared-news"|trans }}
+            {% elseif activity.type == 'abstract_activity' and connectedActivity is not null and connectedActivity.type == 'article' %}
+                {{ "headline.taked-part-article"|trans }}
+                {#<a href="{{ path('ksWikisport_show', { 'id' : connectedActivity.id }) }}">
+                    <b>{{ connectedActivity.label }}</b>
+                    {% if connectedActivity.articleCategoryTag_label is not null %}
+                        ({{ connectedActivity.articleCategoryTag_label }})
+                    {% endif %}
+                    <i class="icon-chevron-right"></i>
+                </a>#}
+            {% elseif activity.type == 'abstract_activity' and activity.tournament_id is not null %}
+                {{ "headline.created-tournament"|trans }} 
+                <a href="{{ path('ksTournament_show', { 'id' :  activity.tournament_id }) }}">
+                    <b>
+                        {% if activity.tournament_title != "" %}
+                            {{ activity.tournament_title }}
+                        {% else %}
+                            {{ activity.tournament_id }}
+                        {% endif %}
+                        <i class="icon-chevron-right"></i>
+                    </b>
+                </a>
+            {% endif %}
+            {% if context != 'details' %}</div></div>{% endif %}
+        {% endif %}
+    {% if context == 'details' %} 
+        </h1>
+    {% else %}
+        </div>
+    {% endif %}
+{% endif %}
+                
+{% if context == 'details' %}
+    <div class="bloc1-nav"> 
+        <!--Navleft--> 
+        <span class="nav nav-pills infos">
+{% else %}
+    <br/>
+    {% if context == 'shareToFB' %} <center> {% endif %}
+    <div class="date">
+{% endif %}                
+{% if activity.isPublic %}
+    <span rel="tooltip" title="Visibilité : Public">
+        <span class="glyphicon glyphicon-globe"></span>
+    </span>
+{% else %}
+    <span rel="tooltip" title="Visibilité : Ma communauté">
+        <span class="icon-group"></span>
+    </span>
+{% endif %}
+{% if activity.place_id is not null %}
+    <span>
+        {% if activity.place_town_label is not null and activity.place_town_label != "" %}
+            {{ "activity.near"|trans }} {{ activity.place_town_label }},
+        {% elseif activity.place_region_label is not null and activity.place_region_label != "" %}
+            {{ "activity.in"|trans }} {{ activity.place_region_label }}
+            {% if activity.place_region_label is not null %}
+                ({{ activity.place_region_label }})
+            {% endif %},
+        {% elseif activity.place_fullAdress is not null and activity.place_fullAdress != "" %}
+            {{ "activity.near"|trans }} {{ activity.place_fullAdress }},
+        {% endif %}
+    </span>
+{% endif %}
+{% set createdAgo = activity.issuedAt|created_ago_str %}
+{{ createdAgo['pretty'] }}
+{% if createdAgo['prettyUnit'] != '' %}
+    {{ ' ' ~ ('time.' ~ createdAgo['prettyUnit'])|trans }}
+{% endif %}
+{% if activity.source is defined and activity.source is not null %}
+    {% if activity.source == "runkeeper" %}
+        , {{ "activity.from"|trans }} Runkeeper
+    {% elseif activity.source == "nikeplus" %}
+        , {{ "activity.from"|trans }} Nike+
+    {% elseif activity.source == "gpx" %}
+        , {{ "activity.from"|trans }} {{ "activity.a-gpx-file"|trans }}
+    {% elseif activity.source == "ffa" %}
+        , {{ "activity.from"|trans }} FFA
+    {% elseif activity.source == "Suunto" %}
+        , {{ "activity.from"|trans }} <a target="_blank" href="http://www.movescount.com/fr/moves/move{{ activity.idFromService }}">Suunto</a>
+    {% elseif activity.source == "Garmin" %}
+        , {{ "activity.from"|trans }} <a target="_blank" href="https://connect.garmin.com/modern/activity/{{ activity.idFromService }}">Garmin</a>
+        {# ancien : https://connect.garmin.com/activity/ #}
+    {% else %}
+        , {{ "activity.from"|trans }} {{ activity.source }}
+    {% endif %}
+{% else %}
+    , {{ "activity.from"|trans }} Keepinsport
+{% endif %}
+{% if activity.club_id is not null %}
+    <span>
+    , club 
+    <a href="{{ path('ksClub_public_profile', { 'clubId' : activity.club_id }) }}">
+        {{ activity.club_name }}
+    </a>
+    </span>
+{% endif %}
+{% if context != 'details' and activity.linkedEvent_id is not null and activity.linkedEvent_type == 'event_coaching' %}
+    <span>
+    </br>{{ 'coaching.linked-to'|trans }} : <a href="{{ path('ksWikisport_show', { 'id' : activity.wikiPlan_id } ) }}"> {{ activity.coachingPlan }} </a>
+    </span>
+{% endif %}
+{% if activity.tournament_id is not null %}
+    <span>
+    , tournoi 
+    <a href="{{ path('ksTournament_show', { 'id' : activity.tournament_id }) }}">
+        {{ activity.tournament_title != '' ? activity.tournament_title : activity.tournament_id }}
+    </a>
+    </span>
+{% endif %}
+
+{% if context == 'details' %} 
+    </span>
+        <!--NavRight-->
+        <ul class="nav nav-pills navbar-right icons">
+{% else %}
+    {% if context == 'shareToFB' %} </center> {% endif %}
+    </div>
+{% endif %}
+{% if fullscreen is defined and fullscreen == 'true' and context == 'details' %}
+    {#<li><a rel="tooltip" title="{{ "coaching.share-plan"|trans }}" id="bSharePlan" class="glyphicon glyphicon-share"></a></li>
+    <li id="bDeletePlan"><a rel="tooltip" title="{{ "coaching.delete-plan"|trans }}" class="glyphicon glyphicon-trash"></a></li>
+    <li id="bUpdatePlan"><a rel="tooltip" title="{{ "coaching.update-selected-plan"|trans }}" class="glyphicon glyphicon-pencil"></a></li>
+    <li id="bGoToStartDatePlan"><a rel="tooltip" title="{{ "coaching.go-to-start-date-plan"|trans }}"><i class="glyphicon glyphicon-chevron-left" ></i></a></li>
+    <li id="bGoToEndDatePlan"><a rel="tooltip" title="{{ "coaching.go-to-end-date-plan"|trans }}"><i class="glyphicon glyphicon-chevron-right" ></i></a></li>#}
+    
+    {% if activity.user_id is defined and activity.user_id is not null and activity.isActive %}
+        <ul class="nav nav-pills navbar-left icons pull-right">
+            <li id="launchVisitButton"><a class="disabled glyphicon glyphicon-question-sign" rel="tooltip" title="{{ 'visit.launch-visit'|trans }}"></a></li>
+        </ul>
+    {% endif %}
+    
+    <a class="btn btn-success btn-xs" onclick="history.go(-1);" rel="tooltip" title="{{ "actions.back"|trans }}">
+        <i class="glyphicon glyphicon-step-backward"></i>
+    </a>
+{% else %}
+    {% if activity.type == 'abstract_activity' %}
+        {#{% set href = {#path('ksWikisport_show', {'id' : connectedActivity.id }) %} #}
+        {% set href = "" %}
+    {% else %}
+        {% set href = path('ksActivity_showActivity', {'activityId' : activity.id, 'fullscreen' : 'true' }) %}
+    {% endif %}
+    {% if context != 'fromKS' and context !='shareToFB' %}
+        <span>
+            <a class="success pull-right"  href="{{ href }}"><i class="glyphicon glyphicon-chevron-right"></i>{{ "actions.show"|trans|upper }}</a>
+        </span>
+    {% endif %}
+{% endif %}
+{% if context == 'details' %} 
+        </ul>
+    </div>
+{% else %}
+{% endif %}
+                
+{% if context == 'shareToFB' %}
+    <br><br>
+    <div id="gmap"></div>
+    <center>
+        <span class="map">
+            <div id="minimap_{{ activity.id }}"></div>
+        </span>
+    </center>
+    <br>
+{% endif %}                

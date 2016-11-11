@@ -1,0 +1,984 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/fullcalendar.css') }}" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksevent/css/timepicker.0.9.9.css') }}" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/ui.multiselect.css') }}" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/common.css') }}" type="text/css" />
+    
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksevent/js/timepicker.0.9.9.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/fullcalendar.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/generic-autosuggest-gmap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/ui.multiselect.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/plugins/localisation/jquery.localisation-min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/plugins/scrollTo/jquery.scrollTo-min.js') }}"></script>
+    
+    
+{% endblock %}
+
+  
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Agenda'|trans }}
+{% endblock %}
+        
+
+        
+    
+{% block content %}
+        
+        
+<h1 class="sportif">{{ 'users.manage_agenda_keepin'|trans }}</h1>
+<div class="blocHeaderSeparator"></div>
+
+<div id="contentCalendar">
+     <!-- boite modale pour l'affichage d'un petit formulaire d'ajout d'événement -->
+    <div class="modal hide" id="confirmAskEvent">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3 id="title_modal_event"></h3>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+            <a id="confirmAskEvent-button" href="#" class="btn btn-primary">{{ 'modal.add'|trans }}</a>
+            <a id="editAskEvent-button" href="#" class="btn btn-primary">{{ 'modal.edit'|trans }}</a>
+            <a id="deleteAskEvent-button" href="#" class="btn btn-primary">{{ 'modal.delete'|trans }}</a>
+            <a href="#" data-dismiss="modal" class="btn">{{ 'modal.close'|trans }}</a>
+        </div>
+    </div>
+
+    <div id="listLoad"></div>
+    <div id="weatherdiv" class="hide">
+        <label for='weather'>Météo</label>
+        <select name='weather' id='weather'>
+            <option value=''></option>
+        {% for key, weather in weathers %}
+            <option value='{{ weather.id }}'>{{ weather.name }} </option>
+        {% endfor %}
+        </select>
+    </div>
+    <div id="stateOfHealthdiv" class="hide">
+        <label for='stateOfHealth'>Etat de forme</label>
+        <select name='stateOfHealth' id='stateOfHealth'>
+            <option value=''></option>
+        {% for key, stateOfHealth in statesOfHealth %}
+            <option value='{{ stateOfHealth.id }}'>{{ stateOfHealth.name }} </option>
+        {% endfor %} 
+        </select>   
+    </div> 
+    <div id="typeEventdiv" class="hide">
+        <label for='typeEvent'>Type de l'événement *</label>
+        <select name='typeEvent' id='typeEvent'>
+            <option value=''></option>
+        {% for key, typeEvent in typeEvents %}
+            <option value='{{ typeEvent.id }}'>{{ typeEvent.nomType }}</option>
+        {% endfor %} 
+        </select> 
+    </div>
+    <div id="bodyModal"></div>
+    <div id="sportdiv" class="hide">
+        <label for='sport'>Sport *</label>
+        <select name='sport' id='sport'>
+            <option value=''></option>
+        {% for key, sport in sports %}
+            <option value='{{ sport.id }}'>{{ sport.label }} </option>
+        {% endfor %} 
+        </select> 
+    </div>
+    <div id="frienddiv" class="hide">
+        <label for='friendList'>Inviter des amis</label>
+        <select id='friendList' class='multiselect' multiple='multiple' name='friendList[]'>
+        {% for key, friend in aFriends %}
+            <option value='{{ friend["id"] }}'>{{ friend["name"] }}</option>
+        {% endfor %} 
+        </select> 
+    </div>
+    <script type="text/javascript"
+      src="http://jqueryui.com/themeroller/themeswitchertool/">
+    </script>
+    <div id="switcher"></div>
+
+    <div id="calendar">
+
+    </div>
+     
+</div>
+
+{{ google_map_container(map) }}
+{{ google_map_js(map) }}
+{{ google_map_css(map) }}   
+
+
+
+
+<script type='text/javascript'>
+    $(document).ready(function() {
+        
+      
+                $('#map_canvas').hide();
+                $('#bodyModal').hide();
+
+                $.datepicker.regional['fr'] = {clearText: 'Effacer', clearStatus: '',
+		closeText: 'Fermer', closeStatus: 'Fermer sans modifier',
+		prevText: '<Préc', prevStatus: 'Voir le mois précédent',
+		nextText: 'Suiv>', nextStatus: 'Voir le mois suivant',
+		currentText: 'Courant', currentStatus: 'Voir le mois courant',
+		monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin',
+		'Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+		monthNamesShort: ['Jan','Fév','Mar','Avr','Mai','Jun',
+		'Jul','Aoû','Sep','Oct','Nov','Déc'],
+		monthStatus: 'Voir un autre mois', yearStatus: 'Voir un autre année',
+		weekHeader: 'Sm', weekStatus: '',
+		dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+		dayNamesShort: ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'],
+		dayNamesMin: ['Di','Lu','Ma','Me','Je','Ve','Sa'],
+		dayStatus: 'Utiliser DD comme premier jour de la semaine', dateStatus: 'Choisir le DD, MM d',
+		dateFormat: 'dd/mm/yy', firstDay: 0, 
+		initStatus: 'Choisir la date', isRTL: false};
+            
+                $.datepicker.setDefaults($.datepicker.regional['fr']);
+ 
+                 //Construction du formulaire d'ajout d'événement du calendrier 
+                var bodyModal = "";
+                //e.preventDefault();
+                $('#title_modal_event').html("Ajout d'un événement de mon calendrier : ")
+                bodyModal += "<label for='name'>Nom de l'événement *</label>";
+                bodyModal += "<input type='text' name='nameEvent' id='nameEvent' />";
+                bodyModal += "<div class='alert alert-error' id='msg-name'>{{ 'modal.name_event_must_be_entered'|trans }}</div>";
+                bodyModal += "<label for='DateStart'>Date de l'événement</label>";
+                bodyModal += "<input type='text' name='dateStartEvent' id='dateStartEvent' /> à <input type='text' name='dateEndEvent' id='dateEndEvent' />";
+                //bodyModal += selectTypeEvent;
+                bodyModal += "<div class='alert alert-error' id='msg-type'>{{ 'modal.type_event_must_be_entered'|trans }}</div>";
+                bodyModal += $('#typeEventdiv').html();
+                bodyModal += "<div class='alert alert-error' id='msg-sport'>{{ 'modal.sport_event_must_be_entered'|trans }}</div>";
+                bodyModal += $('#sportdiv').html();
+                bodyModal += $('#stateOfHealthdiv').html();
+                bodyModal += $('#weatherdiv').html();
+                //#HIDE FOR PROD
+                /*bodyModal += $('#frienddiv').html();
+                bodyModal += "<label for='name'>Cet événement est une confrontation : </label>";
+                bodyModal += "<input type='checkbox' name='is_confrontation' value='1' />";*/
+                bodyModal += "<div id='adrContent'><label for='name'>Lieu de l'événement</label>";
+                bodyModal += "<textarea rows='5' cols='20' name='generic_adress_name' id='generic_adress_name' style='width:400px;height:75px;'></textarea>";
+                bodyModal += "<label for='generic_longitude'>Longitude </label>";
+                bodyModal += "<input type='text' name='generic_longitude' id='generic_longitude' />"; 
+                bodyModal += "<label for='generic_town'>Ville </label>";
+                bodyModal += "<input type='text' name='generic_town' id='generic_town' />"; 
+                bodyModal += "<label for='generic_latitude'>Latitude </label>";
+                bodyModal += "<input type='text' name='generic_latitude' id='generic_latitude' />";
+                bodyModal += "<label for='generic_country_area'>Zone pays </label>";
+                bodyModal += "<input type='text' name='generic_country_area' id='generic_country_area' />";
+                bodyModal += "<label for='generic_country_code'>Code Pays</label>";
+                bodyModal += "<input type='text' name='generic_country_code' id='generic_country_code' /></div>";
+                bodyModal += "<div id='mapContent'></div>";
+                //label description de l'événement
+                bodyModal += "<label for='description'>Description de l'événement</label>";
+                //textarea de l'événement 
+                bodyModal += "<textarea rows='5' cols='20' name='description' id='description' style='width:400px;height:75px;'></textarea>";
+
+               $('#bodyModal').html(bodyModal);
+
+                loadCalendar();
+
+                //Chargement du Calendrier    
+                function loadCalendar(){
+
+                    var date = new Date();
+                    var d = date.getDate();
+                    var m = date.getMonth();
+                    var y = date.getFullYear();
+                    nameEvent = null;
+                    description = null;
+                    idTypeEvent = null;
+
+                    var calendar = $('#calendar').fullCalendar({
+                        
+                            header: {
+                                    left: 'prev,next today',
+                                    center: 'title',
+                                    right: 'month,agendaWeek,agendaDay'
+                            },
+                            selectable: true,
+                            selectHelper: true,
+
+                            //Création d'événement
+                            select: function(start, end, allDay) {
+                                
+                                bodyModal = $('#bodyModal').html();
+                                
+                                $('#editAskEvent-button').hide();
+                                $('#deleteAskEvent-button').hide();
+                                $('#confirmAskEvent-button').show();
+                                $('#confirmAskEvent .modal-body').html(bodyModal);
+                                $('#confirmAskEvent-button').attr('href', this.href);
+                                $('#confirmAskEvent').modal('show');
+                                                                
+                                $('#dateStartEvent').val($.fullCalendar.formatDate(start, "dd/MM/yyyy HH:mm"));
+                                $('#dateEndEvent').val($.fullCalendar.formatDate(end, "dd/MM/yyyy HH:mm"));
+                                $('#dateStartEvent').datetimepicker();
+                                $('#dateEndEvent').datetimepicker();
+                                
+                                //au changement des dates 
+                                //date début
+                                $('#dateStartEvent').change(function(){
+                                    start   = $('#dateStartEvent').val();
+                                    end = $('#dateEndEvent').val();
+                                    //Pour éviter les problèmes date dep > date fin 
+                                    // on va décaller de +1h quand c'est le cas
+                                    if(start > end){
+                                        end  = dateFrFormatToCalendarFormat(start,1);
+                                        end  = $.fullCalendar.parseDate(end);
+                                        end  = $.fullCalendar.formatDate(end, "dd/MM/yyyy HH:mm")
+                                        $('#dateEndEvent').val(end);
+                                    }   
+                                    start   = dateFrFormatToCalendarFormat(start,0);
+                                    start   = $.fullCalendar.parseDate(start);
+                                    end  = dateFrFormatToCalendarFormat(end,0);
+                                    end   = $.fullCalendar.parseDate(end);
+                                    
+                                }); 
+                                //date fin
+                                $('#dateEndEvent').change(function(){
+                                    end     = $('#dateEndEvent').val();
+                                    start   = $('#dateStartEvent').val();
+                                    //Pour éviter les problèmes date dep > date fin 
+                                    // on va décaller de +1h quand c'est le cas
+                                    if(start > end){
+                                        start  = dateFrFormatToCalendarFormat(end,-1);
+                                        start   = $.fullCalendar.parseDate(start);
+                                        start = $.fullCalendar.formatDate(start, "dd/MM/yyyy HH:mm")
+                                        $('#dateStartEvent').val(start);
+                                    }  
+                                    end  = dateFrFormatToCalendarFormat(end,0);
+                                    end   = $.fullCalendar.parseDate(end);
+                                    start   = dateFrFormatToCalendarFormat(start,0);
+                                    start   = $.fullCalendar.parseDate(start);
+                                }); 
+                                
+                                //google map    
+                                autocompleteGmap();
+                                
+                                $('#weather').hide(); 
+                                $('#stateOfHealth').hide(); 
+                                $('#sport').hide(); 
+                                $("label[for='weather']").hide();
+                                $("label[for='stateOfHealth']").hide();
+                                $("label[for='sport']").hide();
+                                
+                                $("#msg-type").hide();
+                                $("#msg-name").hide();
+                                $("#msg-sport").hide();
+                                
+                                
+                                //on désactive le bouton d'ajout par défaut
+                               $('#confirmAskEvent-button').attr("disabled","disabled");
+                               //#HIDE FOR PROD      
+                                $('#typeEvent').change(function(){
+                                     
+                                    typeEvent = $('#typeEvent option:selected').html();
+                                    //OLD - ACTIVITY INFOS
+                                    /*if(typeEvent=="event_training" || typeEvent=="event_competition"){
+                                        $('#weather').show(); 
+                                        $('#stateOfHealth').show();
+                                        $('#sport').show(); 
+                                        $("label[for='weather']").show(); 
+                                        $("label[for='stateOfHealth']").show(); 
+                                        $("label[for='sport']").show();
+                                        
+                                         if($('#sport').val()!=""){
+                                            $("#msg-sport").hide();
+                                         }
+                                        
+                                    }else{
+                                       $('#weather').hide(); 
+                                       $('#stateOfHealth').hide(); 
+                                       $('#sport').hide(); 
+                                       $("label[for='weather']").hide();
+                                       $("label[for='stateOfHealth']").hide(); 
+                                       $("label[for='sport']").hide();
+                                    }*/
+                                    
+                                     if ($("#confirmAskEvent-button").attr("disabled")==undefined) {
+                                        $('#confirmAskEvent-button').attr("disabled","disabled");
+                                    } 
+                                    
+                                    //réactivation du bouton si au moins un titre est un type
+                                    if($('#typeEvent').val()!="" && $('#nameEvent').val()!=""){
+                                        $('#confirmAskEvent-button').removeAttr("disabled");
+                                    }  
+                                    
+                                    if($('#typeEvent').val()!=""){
+                                        $("#msg-type").hide();
+                                    }
+                                    
+                                });
+                                
+                                
+                                $('#nameEvent').keyup(function(){
+
+                                    if ($("#confirmAskEvent-button").attr("disabled")==undefined) {
+                                        $('#confirmAskEvent-button').attr("disabled","disabled");
+                                    } 
+                                    
+                                    if($('#typeEvent').val()!="" && $('#nameEvent').val()!=""){
+                                        $('#confirmAskEvent-button').removeAttr("disabled");
+                                        
+                                    }
+                                    
+                                    if($('#nameEvent').val()!=""){
+                                        $("#msg-name").hide();
+                                    }
+                                    
+                                   
+                                    
+                                    
+    
+                                });
+                               //#HIDE FOR PROD   
+                               /*if($(".ui-multiselect .selected").html()!=null && $(".ui-multiselect .available").html()!=null){
+                                   $(".ui-multiselect").remove(); 
+                               }
+                               
+                               $(".multiselect").multiselect();*/
+
+                                //TODO PUT GMAP ON MODAL CORRECTLY
+                                
+                                /*contentMap = $('#map_canvas').html();
+                                $('#mapContent').html(contentMap);*/
+                                
+                                //Evénement ajout à la sélection
+                                $('#confirmAskEvent-button').unbind();
+                                $('#confirmAskEvent-button').click(function(e) {
+                                    
+  
+                                    nameEvent = $('#nameEvent').val();
+                                    idTypeEvent = $('#typeEvent').val();
+                                    sportEvent = $('#sport').val();
+                                    
+                                    textTypeEvent = $("#typeEvent option:selected").text();
+
+
+                                    
+                                    if(nameEvent!="" && idTypeEvent!=""){
+                                        
+                                        validEvent = true;
+                                        
+                                        /*if(textTypeEvent == "event_training" || textTypeEvent == "event_competition"){
+                                            
+                                            if(sportEvent==""){
+                                                $("#msg-sport").show();
+                                                validEvent = false;
+                                            }else{
+                                                validEvent = true;
+                                            } 
+                                        }*/
+                                        
+                                        if(validEvent){
+                                                
+                                            description = $('#description').val();
+
+                                            //Geoloc
+                                            generic_adress_name = $('#generic_adress_name').val();
+                                            generic_longitude = $('#generic_longitude').val();
+                                            generic_town = $('#generic_town').val();
+                                            generic_latitude = $('#generic_latitude').val();
+                                            generic_country_area = $('#generic_country_area').val();
+                                            generic_country_code = $('#generic_country_code').val();
+
+                                            weather = $('#weather').val();
+                                            stateOfHealth = $('#stateOfHealth').val();
+                                            sport = $('#sport').val();
+                                            friendList = $('#friendList').val();
+
+
+                                            //Mise à jour coté serveur
+                                            var request = $.ajax({
+                                                url: "{{ path('ksAddEventToUserCalendar')}}",
+
+                                                type: "POST",
+                                                data : {
+                                                    nameEvent : nameEvent,
+                                                    description : description,
+                                                    idTypeEvent : idTypeEvent,
+                                                    startEvent : $.fullCalendar.formatDate(start, "yyyy-MM-dd HH:mm:ss"),
+                                                    endEvent : $.fullCalendar.formatDate(end, "yyyy-MM-dd HH:mm:ss"),
+                                                    generic_adress_name : generic_adress_name,
+                                                    generic_longitude : generic_longitude ,
+                                                    generic_town : generic_town,
+                                                    generic_latitude : generic_latitude,
+                                                    generic_country_area : generic_country_area,
+                                                    generic_country_code : generic_country_code,
+                                                    weather : weather,
+                                                    stateOfHealth : stateOfHealth,
+                                                    sport : sport,
+                                                    friendList : friendList,
+
+                                                }, 
+                                                dataType: "json",
+                                            });
+
+                                            request.done(function(response) {
+                                                //traitement de la réponse
+                                                if(response){
+                                                    $('#calendar').fullCalendar('refetchEvents');
+                                                    $('#confirmAskEvent').modal('toggle');
+
+                                                }    
+
+                                            });
+
+                                            request.fail(function(jqXHR, textStatus) {
+                                                alert("Mise à jour de l'événement en base de donnée impossible : " + textStatus);
+                                            });
+
+                                            calendar.fullCalendar('unselect');
+                                                
+                                            }    
+
+                                    }else{
+                                        
+                                       
+                                        if(nameEvent==""){
+                                            $("#msg-name").show();
+                                        } 
+                                        
+                                        if(idTypeEvent==""){
+                                            $("#msg-type").show();
+                                        } 
+                                        
+                                    }   
+
+                                });
+
+                            },
+                            editable: true,
+                            //déplacement d'un événement
+                            eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
+                                
+                                if(event.id){
+                                    
+                                    var request = $.ajax({
+                                        url: "{{ path('ksUpdateEventToUserCalendar')}}",
+
+                                        type: "POST",
+                                        data : {
+                                            dayDelta : dayDelta,
+                                            minuteDelta : minuteDelta,
+                                            allDay:allDay,
+                                            idEvent:event.id,
+                                        }, 
+                                        dataType: "json",
+                                    });
+
+                                    request.done(function(response) {
+                                        //traitement de la réponse
+                                        if(response){
+                                            $('#calendar').fullCalendar('refetchEvents');
+                                            //$('#confirmAskEvent').modal('toggle');
+
+                                        }   
+
+                                    });
+
+                                    request.fail(function(jqXHR, textStatus) {
+                                        alert("Mise à jour de l'événement en base de donnée impossible : " + textStatus);
+                                    });
+
+                                }    
+                            
+                            },
+                            
+                            eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+                           
+                                if(event.id){
+                                    
+                                    var request = $.ajax({
+                                        url: "{{ path('ksResizeEventToUserCalendar')}}",
+
+                                        type: "POST",
+                                        data : {
+                                            dayDelta : dayDelta,
+                                            minuteDelta : minuteDelta,
+                                            idEvent:event.id,
+                                        }, 
+                                        dataType: "json",
+                                    });
+
+                                    request.done(function(response) {
+                                        //traitement de la réponse
+                                        if(response){
+                                            $('#calendar').fullCalendar('refetchEvents');
+                                            //$('#confirmAskEvent').modal('toggle');
+
+                                        }   
+
+                                    });
+
+                                    request.fail(function(jqXHR, textStatus) {
+                                        alert("Mise à jour de l'événement en base de donnée impossible : " + textStatus);
+                                    });
+
+                                }    
+
+                            },
+                            
+                            eventClick: function(event) {console.log(event);
+                                $('#calendar').fullCalendar('updateEvent', event);
+
+                                $('#confirmAskEvent-button').hide();
+                                $('#editAskEvent-button').show();
+                                $('#deleteAskEvent-button').show();
+
+                                //Suppresion d'un événement
+                                $('#title_modal_event').html("Modification d'un événement de mon calendrier : ")
+                                var bodyModal = "Choisissez l'action que vous voulez effectuez pour l'événement : "+event.title+"";
+                                
+                                $('#confirmAskEvent .modal-body').html(bodyModal);
+                                $('#confirmAskEvent-button').attr('href', this.href);
+                                $('#confirmAskEvent').modal('show');
+                                
+                                 //Récupération de la valeur du titre saisit
+                                $('#deleteAskEvent-button').unbind();
+                                $('#deleteAskEvent-button').click(function(e) {
+                                    
+                                    if(event.id){
+
+                                         var request = $.ajax({
+                                            url: "{{ path('ksDeleteEventOfAUserCalendar')}}",
+                                            type: "POST",
+                                            data : {
+                                                idEvent : event.id,
+                                            }, 
+                                            dataType: "json"
+                                        });
+
+                                        request.done(function(response) {
+                                            //traitement de la réponse
+                                            if(response.result){
+                                                 calendar.fullCalendar('removeEvents', event.id );
+                                                 $('#confirmAskEvent').modal('toggle');
+                                            }    
+                                           
+                                        });
+
+                                        request.fail(function(jqXHR, textStatus) {
+                                            alert("Mise à jour de l'événement en base de donnée impossible : " + textStatus);
+                                        });
+                                        
+                                          
+                                    }    
+
+                                })
+                                //Edition de l'événement
+                                $('#editAskEvent-button').unbind();
+                                $('#editAskEvent-button').click(function(e) {
+                                   
+                                    if(event.id){
+
+                                        var request = $.ajax({
+                                            url: "{{ path('ksEditEventOfAUserCalendar')}}",
+                                            type: "POST",
+                                            data : {
+                                                idEvent : event.id,
+                                            }, 
+                                            dataType: "json"
+                                        });
+
+                                        request.done(function(response) {
+                                            //traitement de la réponse
+                                            if(response){
+                                                /*$('#title_modal_event').html(this.title)
+                                                bodyModal = $('#bodyModal').html();*/
+                                                 var bodyModal = "";
+                                                //e.preventDefault();
+                                                $('#title_modal_event').html(this.title)
+                                                //label titre de l'événement
+                                                bodyModal += "<label for='name'>Nom de l'événement *</label>";
+                                                //input titre de l'événement 
+                                                bodyModal += "<input type='text' name='nameEvent' id='nameEvent' />";
+                                                bodyModal += "<div class='alert alert-error' id='msg-name'>{{ 'modal.name_event_must_be_entered'|trans }}</div>";
+                                                //identifiant de l'événement en cours 
+                                                bodyModal += "<input type='hidden' name='idEvent' id='idEvent' />";
+                                                bodyModal += "<label for='DateStart'>Date de l'événement</label>";
+                                                bodyModal += "<input type='text' name='dateStartEvent' id='dateStartEvent' /> à <input type='text' name='dateEndEvent' id='dateEndEvent' />";
+                                                bodyModal += "<div class='alert alert-error' id='msg-type'>{{ 'modal.type_event_must_be_entered'|trans }}</div>";
+                                                bodyModal += $('#typeEventdiv').html();
+                                                bodyModal += "<div class='alert alert-error' id='msg-sport'>{{ 'modal.sport_event_must_be_entered'|trans }}</div>";
+                                                /*bodyModal += $('#sportdiv').html();
+                                                bodyModal += $('#stateOfHealthdiv').html();
+                                                bodyModal += $('#weatherdiv').html();*/
+                                                //#HIDE FOR PROD
+                                                /*bodyModal += $('#frienddiv').html();*/
+                                                bodyModal += "<div id='adrContent'><label for='name'>Lieu de l'événement</label>";
+                                                bodyModal += "<textarea rows='5' cols='20' name='generic_adress_name' id='generic_adress_name' style='width:400px;height:75px;'></textarea>";
+                                                bodyModal += "<label for='generic_longitude'>Longitude </label>";
+                                                bodyModal += "<input type='text' name='generic_longitude' id='generic_longitude' />"; 
+                                                bodyModal += "<label for='generic_town'>Ville </label>";
+                                                bodyModal += "<input type='text' name='generic_town' id='generic_town' />"; 
+                                                bodyModal += "<label for='generic_latitude'>Latitude </label>";
+                                                bodyModal += "<input type='text' name='generic_latitude' id='generic_latitude' />";
+                                                bodyModal += "<label for='generic_country_area'>Zone pays </label>";
+                                                bodyModal += "<input type='text' name='generic_country_area' id='generic_country_area' />";
+                                                bodyModal += "<label for='generic_country_code'>Code Pays</label>";
+                                                bodyModal += "<input type='text' name='generic_country_code' id='generic_country_code' /></div>";
+                                                //label description de l'événement
+                                                bodyModal += "<label for='description'>Description de l'événement</label>";
+                                                //textarea de l'événement 
+                                                bodyModal += "<textarea rows='5' cols='20' name='description' id='description' style='width:400px;height:75px;'></textarea>";
+
+                                                bodyModal += "<div id='mapContent'></div>";
+     
+                                                $('#confirmAskEvent-button').hide();
+                                                $('#deleteAskEvent-button').hide();
+                                                $('#editAskEvent-button').show();
+                                                $('#confirmAskEvent .modal-body').html(bodyModal);
+                                                $('#confirmAskEvent-button').attr('href', this.href);
+                                                $('#confirmAskEvent').modal('show');
+                                                
+                                                if(response.aEvents[0]["startDate"]){
+                                                    $('#dateStartEvent').val(response.aEvents[0]["startDate"]);
+                                                 
+                                                }
+                                                
+                                                if(response.aEvents[0]["endDate"]){
+                                                    $('#dateEndEvent').val(response.aEvents[0]["endDate"]);
+                                                }
+                                                
+                                                $('#dateStartEvent').datetimepicker();
+                                                $('#dateEndEvent').datetimepicker();
+                                                
+                                                if(response.aEvents[0]["fullAdress"]){
+                                                    $('#generic_adress_name').val(response.aEvents[0]["fullAdress"]);
+                                                }
+
+
+                                                autocompleteGmap();
+
+                                                //on remplit avec les valeurs récupérés
+                                                
+                                                if(response.aEvents[0]["title"]){
+                                                    $('#nameEvent').val(response.aEvents[0]["title"]);
+                                                }
+                                                
+                                                if(response.aEvents[0]["content"]){
+                                                    $('#description').val(response.aEvents[0]["content"]);
+                                                }
+                                                
+                                                if(response.aEvents[0]["id"]){
+                                                    $('#idEvent').val(response.aEvents[0]["id"]);
+                                                }
+                                                
+                                                if(response.aEvents[0]["idTypeEvent"]){
+                                                    $("#typeEvent option[value=" + response.aEvents[0]["idTypeEvent"] +"]").attr("selected","selected") ;
+                                                } 
+                                                
+                                                
+                                                //si existe météo,state of health , sport
+                                                /*if(response.aEvents[0]["weatherId"]){
+                                                    $("#weather option[value=" + response.aEvents[0]["weatherId"] +"]").attr("selected","selected") ;
+                                                } 
+                                                
+                                                if(response.aEvents[0]["stateOfHealthId"]){
+                                                    $("#stateOfHealth option[value=" + response.aEvents[0]["stateOfHealthId"] +"]").attr("selected","selected") ;
+                                                } 
+                                                
+                                                if(response.aEvents[0]["sportId"]){
+                                                    $("#sport option[value=" + response.aEvents[0]["sportId"] +"]").attr("selected","selected") ;
+                                                }*/ 
+                                                
+
+                                                //au changement des dates 
+                                                $('#dateStartEvent').change(function(){
+                                                    start   = $('#dateStartEvent').val();
+                                                    end     = $('#dateEndEvent').val();
+                                                    //Pour éviter les problèmes date dep > date fin 
+                                                    // on va décaller de +1h quand c'est le cas
+                                                    if(start > end){
+                                                        end  = dateFrFormatToCalendarFormat(start,1);
+                                                        end   = $.fullCalendar.parseDate(end);
+                                                        end = $.fullCalendar.formatDate(end, "dd/MM/yyyy HH:mm")
+                                                        $('#dateEndEvent').val(end);
+                                                    }    
+
+                                                }); 
+
+                                                $('#dateEndEvent').change(function(){
+                                                    end     = $('#dateEndEvent').val();
+                                                    start   = $('#dateStartEvent').val();
+                                                    //Pour éviter les problèmes date dep > date fin 
+                                                    // on va décaller de +1h quand c'est le cas
+                                                    if(start > end){
+                                                        start  = dateFrFormatToCalendarFormat(end,-1);
+                                                        start   = $.fullCalendar.parseDate(start);
+                                                        start = $.fullCalendar.formatDate(start, "dd/MM/yyyy HH:mm")
+                                                        $('#dateStartEvent').val(start);
+                                                    }   
+                                                });
+                                                
+                                                
+                                                //HIDE FOR PROD
+                                                /*typeEvent = $('#typeEvent option:selected').html();
+                                                if(typeEvent=="event_training" || typeEvent=="event_competition"){
+                                                    $('#weather').show(); 
+                                                    $('#stateOfHealth').show(); 
+                                                    $('#sport').show(); 
+                                                    $("label[for='weather']").show();
+                                                    $("label[for='stateOfHealth']").show();
+                                                    $("label[for='sport']").show();
+                                                    $("#msg-type").show();
+                                                    $("#msg-name").show();
+                                                    
+                                                }else{
+                                                    $('#weather').hide(); 
+                                                    $('#stateOfHealth').hide(); 
+                                                    $('#sport').hide(); 
+                                                    $("label[for='weather']").hide();
+                                                    $("label[for='stateOfHealth']").hide();
+                                                    $("label[for='sport']").hide();
+                                                    $("#msg-type").hide();
+                                                    $("#msg-name").hide();
+                                                }*/
+                                                
+
+                                                //on désactive le bouton d'ajout par défaut
+                                                //$('#editAskEvent-button').attr("disabled","disabled");
+                                                
+                                                $("#msg-type").hide();
+                                                $("#msg-name").hide(); 
+                                                $("#msg-sport").hide(); 
+                                                
+                                                        
+                                                //HIDE FOR PROD            
+                                                /*$('#typeEvent').change(function(){
+                                                    
+                                                    typeEvent = $('#typeEvent option:selected').html();
+                                                    if(typeEvent=="event_training" || typeEvent=="event_competition"){
+                                                        $('#weather').show(); 
+                                                        $('#stateOfHealth').show();
+                                                        $('#sport').show(); 
+                                                        $("label[for='weather']").show(); 
+                                                        $("label[for='stateOfHealth']").show(); 
+                                                        $("label[for='sport']").show(); 
+                                                    }else{
+                                                        $('#weather').hide(); 
+                                                        $('#stateOfHealth').hide(); 
+                                                        $('#sport').hide(); 
+                                                        $("label[for='weather']").hide();
+                                                        $("label[for='stateOfHealth']").hide(); 
+                                                        $("label[for='sport']").hide();
+                                                    }
+
+                                                    if ($("#editAskEvent-button").attr("disabled")==undefined) {
+                                                        $('#editAskEvent-button').attr("disabled","disabled");
+                                                    } 
+
+                                                    //réactivation du bouton si au moins un titre est un type
+                                                    if($('#typeEvent').val()!="" && $('#nameEvent').val()!=""){
+                                                        $('#editAskEvent-button').removeAttr("disabled");
+                                                    }  
+
+                                                    if($('#typeEvent').val()!=""){
+                                                        $("#msg-type").hide();
+                                                    }
+
+
+                                                });
+                                                
+                                                if($(".ui-multiselect .selected").html()!=null && $(".ui-multiselect .available").html()!=null){
+                                                    $(".ui-multiselect").remove(); 
+                                                }
+                               
+                                                $(".multiselect").multiselect();*/
+
+
+                                                $('#nameEvent').keyup(function(){
+
+                                                    if ($("#editAskEvent-button").attr("disabled")==undefined) {
+                                                        $('#editAskEvent-button').attr("disabled","disabled");
+                                                    } 
+
+                                                    if($('#typeEvent').val()!="" && $('#nameEvent').val()!=""){
+                                                        $('#editAskEvent-button').removeAttr("disabled");
+
+                                                    }
+
+                                                    if($('#nameEvent').val()!=""){
+                                                        $("#msg-name").hide();
+                                                    }
+                                                    
+                                                    if($('#sport').val()!=""){
+                                                        $("#msg-sport").hide();
+                                                    }
+
+                                                });
+                                                
+                                                //Action de modification de l'événement 
+                                                $('#editAskEvent-button').unbind();
+                                                $('#editAskEvent-button').click(function(e) {
+                                                    
+                                                    description = $('#description').val();
+                                                    idTypeEvent = $('#typeEvent').val();
+                                                    nameEvent = $('#nameEvent').val();
+                                                    idEvent = $('#idEvent').val();
+                                                 
+                                                    start   = $('#dateStartEvent').val();
+                                                    start   = dateFrFormatToCalendarFormat(start,0);
+                                                    start   = $.fullCalendar.parseDate(start);
+
+                                                    end     = $('#dateEndEvent').val();
+                                                    end  = dateFrFormatToCalendarFormat(end,0);
+                                                    end   = $.fullCalendar.parseDate(end);
+                                                    
+                                                     //geoloc
+                                                    generic_adress_name = $('#generic_adress_name').val();
+                                                    generic_longitude = $('#generic_longitude').val();
+                                                    generic_town = $('#generic_town').val();
+                                                    generic_latitude = $('#generic_latitude').val();
+                                                    generic_country_area = $('#generic_country_area').val();
+                                                    generic_country_code = $('#generic_country_code').val();
+                                                    
+                                                    weather = $('#weather').val();
+                                                    stateOfHealth = $('#stateOfHealth').val();
+                                                    sport = $('#sport').val();
+                                                    //textTypeEvent = $("#typeEvent option:selected").text();
+                                                    
+        
+
+                                                    if(nameEvent!="" && idTypeEvent!=""){
+
+                                                  
+
+                                                        /*if(textTypeEvent == "event_training" || textTypeEvent == "event_competition"){
+
+                                                            if(sportEvent==""){
+                                                                $("#msg-sport").show();
+                                                                validEvent = false;
+                                                            }else{
+                                                                validEvent = true;
+                                                            } 
+                                                        }else{
+                                                            if(nameEvent==""){
+                                                                $("#msg-name").show();
+                                                            } 
+                                                            if(idTypeEvent==""){
+                                                                $("#msg-type").show();
+                                                            } 
+
+                                                            if($('#sport').val()==""){
+                                                                $("#msg-sport").show();
+                                                            }
+                                                        }*/    
+
+                                                      
+                                                                //Mise à jour coté serveur
+                                                            var request = $.ajax({
+                                                                    url: "{{ path('ksEditEventToUserCalendar')}}",
+
+                                                                    type: "POST",
+                                                                    data : {
+                                                                        nameEvent : nameEvent,
+                                                                        description : description,
+                                                                        idTypeEvent : idTypeEvent,
+                                                                        idEvent:idEvent,
+                                                                        dateEndEvent:end,
+                                                                        dateStartEvent:start,
+                                                                        generic_adress_name : generic_adress_name,
+                                                                        generic_longitude : generic_longitude ,
+                                                                        generic_town : generic_town,
+                                                                        generic_latitude : generic_latitude,
+                                                                        generic_country_area : generic_country_area,
+                                                                        generic_country_code : generic_country_code,
+                                                                        weather : weather,
+                                                                        stateOfHealth : stateOfHealth,
+                                                                        sport : sport,
+
+                                                                    }, 
+                                                                    dataType: "json",
+                                                                });
+
+                                                                request.done(function(response) {
+                                                                    //traitement de la réponse
+                                                                    if(response){
+                                                                        $('#calendar').fullCalendar('refetchEvents');
+                                                                        $('#confirmAskEvent').modal('toggle');
+                                                                    }    
+
+                                                                });
+
+                                                                request.fail(function(jqXHR, textStatus) {
+                                                                    alert("Mise à jour de l'événement en base de donnée impossible : " + textStatus);
+                                                                });
+                                                        
+
+                                                    }
+                                                    
+                                                });
+                                                
+                                            }    
+                                           
+                                        });
+
+                                        request.fail(function(jqXHR, textStatus) {
+                                            alert("Mise à jour de l'événement en base de donnée impossible : " + textStatus);
+                                        });
+                                        
+                                          
+                                    }  
+
+                                })
+
+				
+				return false;
+                            },
+                            
+                            events: "{{ path('ksGetAllEventOfUserCalendar')}}",
+                            {{ translationCalendar|raw }}
+                            
+                    });
+                }
+                
+                function dateFrFormatToCalendarFormat(start,addHour){
+                    var digitpattern = /\d+/g;
+                    matches = start.match(digitpattern);
+                   
+                    month = matches[0];
+                    day = matches[1];
+                    year = matches[2];
+                    hour = matches[3];
+                    minutes = matches[4];
+                    
+                    if(addHour!=0){
+                        if(hour.substring(0,1)=="0"){
+                             hour = hour.substring(1,2);
+                        } 
+                        if(addHour>0){
+                           hour = parseInt(hour)+parseInt(addHour);
+                        }else{
+                           hour = parseInt(hour)-parseInt(Math.abs(addHour)); 
+                        }    
+                       
+                        
+                        if(hour < 10){
+                             hour = "0"+hour;
+                        } 
+                    }    
+
+                    dateFormated = year+"-"+day+"-"+month+" "+hour+":"+minutes+":00";
+                    
+                    return dateFormated;
+                }
+                
+
+		
+	});
+        
+</script>    
+    
+{% endblock %}

@@ -1,0 +1,99 @@
+<footer>
+    <script type="text/javascript">
+        function showLegalMentionsModal() {
+            var legalMentionsModal = $("#legalMentionsModal");
+            var closeModal = function() {
+                legalMentionsModal.modal('hide');
+            }
+
+            legalMentionsModal.on('shown', function() {
+                setTimeout(closeModal,3000);
+            });
+
+            legalMentionsModal.modal('show');
+            legalMentionsModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                e.stopPropagation();
+            });
+        }
+    </script>
+    
+    <div class="modal fade" id="legalMentionsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class='modal-header'>
+                    <a class='close' data-dismiss='modal'>&times;</a>
+                    <h3>Mentions légales</h3>
+                </div>
+                <div class='modal-body'>
+                    <div style="color:#333!important">
+                        <p>Le présent site internet, accessible à l'adresse www.keepinsport.com est exploité par la société KEEPINSPORT,
+                            Société à Responsabilité Limitée, au capital de 1250 euros, immatriculée au RCS de Toulouse sous le numéro B 750 020 612,
+                            dont le siège social est situé 19 Chemin du Carrelot, 31100 Toulouse - FRANCE
+                        </p>
+
+                        <p>Réalisation du site: Keepinsport - Copyright 2014 - Tous droits réservés </p>
+
+                        <p>Directeur de la publication : Clément FAURE</p>
+
+                        <p>Hébergement du site :
+                            <pre>
+                            ONLINE
+                            140 Quai du Sartel - 59100 Roubaix
+                            Tel: 03 20 45 36 80
+                            </pre>
+                        </p>
+                        <p>Ce site a été régulièrement déclaré auprès de la Commission Nationale de l'Informatique et des Libertés </p>
+                        <p>Pour toute question contacter :
+                            <pre>
+                            KEEPINSPORT
+                            contact@keepinsport.com
+                            19 Chemin du Carrelot, 31100 Toulouse
+                            FRANCE
+                            </pre>
+                        </p>
+                    </div>
+                </div>
+                <div class='modal-footer'>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="col-md-6">
+            <ul class="list-inline" id="reseaux">
+                {#<li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau1.png') }}" /></a></li>#}
+                <li><a target="_blank" href="https://twitter.com/Keepinsport"><img src="{{ asset('V2/images/reseau2.png') }}" /></a></li>
+                {#<li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau3.png') }}" /></a></li>#}
+                <li><a target="_blank" href="https://www.facebook.com/pages/Keepinsport/303227623023110"><img src="{{ asset('V2/images/reseau4.png') }}" /></a></li>
+                {#<li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau5.png') }}" /></a></li>#}
+                {#<li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau6.png') }}" /></a></li>#}
+            </ul>
+        </div>
+        <div class="col-md-6" id="step5">
+            {% render 'KsUserBundle:User:feedbackForm' %}
+        </div>   
+    </div><!--/.container-->
+    
+    <div class="footer-black">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">Keepinsport © 2015. All rights reserved.</div>
+                <div class="col-md-4">
+                    {#<img src="{{ asset('V2/images/logos-paiement.png') }}" />#}
+                    <a href="#" onclick="showLegalMentionsModal();">
+                        Mentions légales
+                    </a>
+                    &nbsp;|&nbsp;
+                    <a href="{{ path('ks_general_conditions') }}">
+                        CGU
+                    </a>
+                    &nbsp;|&nbsp;
+                    <a href="{{ path('ks_sales_conditions') }}">
+                        CGV
+                    </a>
+                </div>
+            </div>
+        </div><!--/.container-->
+    </div>
+</footer><!--/footer-->

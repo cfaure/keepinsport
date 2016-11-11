@@ -1,0 +1,93 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('multiselect/js/ui.multiselect.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('multiselect/js/locale/ui-multiselect-fr.js') }}"></script>  
+{% endblock %}
+    
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('multiselect/css/ui.multiselect.css') }}" type="text/css" />
+{% endblock %}
+    
+{% block content %}
+
+    {% if teamComposition is defined %}
+        {% set path = path('ksTeamComposition_update', {"teamCompositionId" : teamComposition.id}) %}
+        {% set returnPath = path('ksTeamComposition_show', {"teamCompositionId" : teamComposition.id}) %}
+        {% set team = teamComposition.team %}
+    {% else %}
+        {% set path = path('ksTeamComposition_create', {"teamId" : team.id}) %}
+        {% set returnPath = path('ksTeam_show', {"teamId" : team.id}) %}
+    {% endif %}
+
+    <h1 class="clubs">Edition de l'activité</h1>
+    <div class="blocHeaderSeparator"></div>
+    <form id="teamCompositionForm" action="{{ path }}" method="post" {{ form_enctype(teamCompositionForm) }}>
+        <div class="input-prepend">
+            <span class="add-on">
+                {{ form_label(teamCompositionForm.name, 'Nom' ) }}
+            </span>
+            {{ form_widget(teamCompositionForm.name ) }}
+        </div>
+
+        <div class="input-prepend pull-left">
+            <span class="add-on"><i class="glyphicon glyphicon-calendar"></i></span>
+            {{ form_widget(teamCompositionForm.date.date, { attr: { class:"datepicker input-small"} }) }}
+        </div>
+
+        <div class="input-prepend bootstrap-timepicker pull-left" style="margin: 0 2px 0 2px;">
+            <span class="add-on"><i class="icon-time"></i></span>
+            {{ form_widget(teamCompositionForm.date.time, { attr: { class:"timepicker input-mini" } }) }}
+        </div>
+            
+        {{ form_widget(teamCompositionForm.users) }}
+        {{ form_errors(teamCompositionForm.users) }}
+
+        {{ form_rest(teamCompositionForm) }}
+
+        <br/>
+            
+        <a href="{{ returnPath }}" class="btn" >
+            <i class="icon-backward"></i> Retour
+        </a>
+        
+        <input class="btn btn-clubs" type="submit" value="Enregistrer l'activité">
+    </form>
+
+    
+    
+    <script type="text/javascript">
+        var $form = $("#teamCompositionForm");
+        var $timepicker             = $form.find(".timepicker");
+        var $datepicker             = $form.find(".datepicker");
+        
+        $datepicker.datepicker({
+            dateFormat: "dd/mm/yy",
+            firstDay: 1,
+            changeDate: function(ev) {
+            }
+        });
+
+        $timepicker.timepicker({
+            showSeconds: false,
+            showMeridian: false
+        });
+        
+        $(".multiselect").css("width", "500px");
+        $("select.users").find("option").removeAttr("selected");
+        {% if teamComposition is defined %}
+            {% for teamCompositionHasUser in teamComposition.users %}
+                    $("select.users").find( "option[value={{ teamCompositionHasUser.user.id }}]" ).attr("selected", "selected")
+            {% endfor %}
+        {% endif %}
+        $(".multiselect").multiselect({sortable:false});
+        $("div.ui-multiselect").find("ul.connected-list").css("height", "100px");
+    </script>
+
+{% endblock %}

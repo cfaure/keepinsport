@@ -1,0 +1,1795 @@
+{#% extends club is defined and club is not null ? "KsClubBundle::layout_full.html.twig" : "KsUserBundle::layout_full.html.twig" %#}
+{% extends "KsUserBundle::layout_full.html.twig" %}
+
+{% block title %}
+	Keepinsport - Agenda
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksagenda/css/fullcalendar.css') }}" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksagenda/css/style.css') }}" type="text/css" /> 
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <style>
+        thead, table caption {
+            text-align: center;
+            font-variant: small-caps;
+            font-weight: bold;
+        }
+        
+        table.wikiSessions{
+            border:3px solid #DB2033;
+        }
+        table.wikiSessions thead{
+            background-color: #DB2033;
+            color: white;
+            text-align: center;
+        }
+        table.wikiSessions caption{
+            color: #DB2033;
+        }
+        table.favoriteSessions{
+            {% if user is defined and user is not null %}
+                border:3px solid #1787c7;
+            {% else %} border:3px solid #f8c70b;
+            {% endif %}
+        }
+        table.favoriteSessions thead {
+            {% if user is defined and user is not null %}
+                background-color: #1787c7;
+            {% else %} background-color: #f8c70b;
+            {% endif %}
+            color: white;
+            text-align: center;
+        }
+        table.favoriteSessions caption {
+            {% if user is defined and user is not null %}
+                color: #1787c7;
+            {% else %} color: #f8c70b;
+            {% endif %}
+        }
+        
+        table.favoriteSessions td {
+            line-height : 10px;
+            padding:5px;
+        }
+        
+        table.wikiSessions td {
+            line-height : 10px;
+            padding:5px;
+        }
+        
+    </style>
+    
+    <style>
+
+	#external-events {
+		float: left;
+		width: 14%;
+		padding: 0 10px;
+		border: 1px solid #ccc;
+		text-align: left;
+                position:fixed;
+                margin-top:-130px;
+	}
+		
+	#external-events h4 {
+		font-size: 16px;
+		margin-top: 0;
+		padding-top: 1em;
+	}
+		
+	.external-event { /* try to mimick the look of a real event */
+		/*margin: 10px 0;*/
+		font-size: .85em;
+                border: 1px solid #ccc;
+		cursor: pointer;
+	}
+
+    </style>
+
+    
+    <style>
+        thead, table caption {
+            text-align: center;
+            font-variant: small-caps;
+            /*font-weight: bold;*/
+        }
+        
+        table.sessionsTable, table.scheduleRequiredTable{
+            border:3px solid #eeeeee;
+            text-align: center;
+        }
+        table.sessionsTable thead, table.scheduleRequiredTable thead {
+            background-color: #eeeeee;
+            color: white;
+            text-align: center;
+            color: black;
+        }
+        table.sessionsTable caption, table.scheduleRequiredTable caption, .goldStars {
+            color: #eeeeee;
+        }
+    </style>
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    {#<script type="text/javascript" src="{{ asset('bundles/ksagenda/js/fullcalendar_ced.js') }}"></script>#}
+    <script type="text/javascript" src="{{ asset('bundles/ksagenda/js/fullcalendar.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksevent/js/scripts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap-multiselect.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var eventsTypes         = new Array();
+            var eventsSports        = new Array();
+            var eventsUsers         = new Array();
+            var eventsCoachingPlans = new Array();
+            var eventsAvailability  = "";
+            var eventsFrom          = new Array();
+            
+            {% if user is defined and user is not null %}
+                eventsFrom[0] = "me";
+                eventsFrom[1] = "my_clubs"; //FMO pour éviter de voir les évents des autres clubs que les siens !
+            {% endif %}
+            
+            var ajax = null;
+            
+            $('table.wikiSessions').dataTable({
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bSort": false,
+                "bInfo": false,
+                "bAutoWidth": true,
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %},
+                "fnDrawCallback" : function() {makeDraggable();}, //FMO : obligatoire car sinon il n'y a que les external-event de la 1ère page qui sont draggables !
+            });
+            
+            $('table.favoriteSessions').dataTable({
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bSort": false,
+                "bInfo": false,
+                "bAutoWidth": true,
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %},
+                "fnDrawCallback" : function() {makeDraggable();}, //FMO : obligatoire car sinon il n'y a que les external-event de la 1ère page qui sont draggables !
+            });
+            
+            $('table.favoriteSessions').on('page', function() {
+                //console.log("page");
+            });
+            
+            function makeDraggable() {
+                $('#external-events div.external-event').each(function() {
+                    var eventObject = {
+                            start :null,
+                            end: null, 
+                            club_id : null,
+                            user_id : null,
+                            sport_id : $(this).data('sport_id'),
+                            sport_code : $(this).data('sport_code'),
+                            sport_label : $(this).data('sport_label'),
+                            coachingCategory_id : $(this).data('category_id'),
+                            category : $(this).data('category'),
+                            coachingSession_id : $(this).data('id'),
+                            sessionDetail : $(this).data('detail'),
+                            eventDistance : $(this).data('distance'),
+                            eventDuration : $(this).data('duration'),
+                            eventElevationGain : $(this).data('elevation_gain'),
+                            eventElevationLost : $(this).data('elevation_lost'),
+                            eventSpeedAverage : $(this).data('speed_average'),
+                            eventHrAverage : $(this).data('hr_average'),
+                            difficulty_id : $(this).data('difficulty_id'),
+                            title: $.trim($(this).text())
+                    };
+
+                    // store the Event Object in the DOM element so we can get to it later
+                    $(this).data('eventObject', eventObject);
+
+                    // make the event draggable using jQuery UI
+                    $(this).draggable({
+                            zIndex: 9999,
+                            revert: true,      // will cause the event to go back to its
+                            revertDuration: 0  //  original position after the drag
+                    });
+                });
+            }
+
+            var calendar = $('#agenda').fullCalendar({        
+                header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'year,month,agendaWeek'
+                },
+                {% render 'KsUserBundle:Translation:loadFullCalendar_translations' %}
+                firstDay : 1, //Le premier jour est un lundi
+                selectable: true,
+                {% if user is defined and user is not null and (app.user.isAllowedPackPremium or app.user.isAllowedPackElite) and mainPlan is defined and mainPlan is not null %}
+                    //FMO : si encours, on affiche par défaut la semaine, si dans le futur, on affiche le mois
+                    {% if mainPlan[0].type %} defaultView: 'agendaWeek',
+                    {% else %} defaultView: 'month',
+                    {% endif %}
+                {% endif %}
+                viewDisplay: function(view) { reDrawGraph(view)},
+                selectHelper: true,
+                weekNumbers: true,
+                editable: true,
+                droppable: true, // this allows things to be dropped onto the calendar !!!
+                drop: function(date) { // this function is called when something is dropped
+
+                        // retrieve the dropped element's stored Event Object
+                        var originalEventObject = $(this).data('eventObject');
+
+                        // we need to copy it, so that multiple events don't have a reference to the same object
+                        var copiedEventObject = $.extend({}, originalEventObject);
+
+                        copiedEventObject.isCreation = true;
+                        copiedEventObject.isDropped = true;
+                        copiedEventObject.start = date;
+                        copiedEventObject.allDay = true
+                        copiedEventObject.sport_id = originalEventObject.sport_id;
+                        copiedEventObject.sport_code = originalEventObject.sport_code;
+                        copiedEventObject.sport_label = originalEventObject.sport_label;
+                        copiedEventObject.type = 'event_coaching';
+                        copiedEventObject.coachingPlan_id = $("#ksCoachingPlanType_name").val();
+                        copiedEventObject.category = originalEventObject.category;
+                        copiedEventObject.title = originalEventObject.title;
+                        //console.log(originalEventObject);
+                        copiedEventObject.coachingCategory_id = originalEventObject.coachingCategory_id;
+                        copiedEventObject.coachingSession_id = originalEventObject.coachingSession_id;
+                        copiedEventObject.sessionDetail = originalEventObject.sessionDetail;
+                        copiedEventObject.eventDistance = originalEventObject.eventDistance;
+                        copiedEventObject.eventDuration = originalEventObject.eventDuration;
+                        copiedEventObject.eventElevationGain = originalEventObject.eventElevationGain;
+                        copiedEventObject.eventElevationLost = originalEventObject.eventElevationLost;
+                        copiedEventObject.eventSpeedAverage = originalEventObject.eventSpeedAverage;
+                        copiedEventObject.eventHrAverage = originalEventObject.eventHrAverage;
+                        copiedEventObject.difficulty_id = originalEventObject.difficulty_id;
+                        copiedEventObject.color= "rgb(242, 242, 242)";
+                        {% if user is defined and user is not null %} 
+                            copiedEventObject.user_id = {{ user.id }};
+                            copiedEventObject.textColor = "#1787c7";
+                            copiedEventObject.borderColor = "#1787c7";
+                            copiedEventObject.usersParticipate = "{{ user.id }}";
+                        {% elseif club is defined and club is not null and isManager %}
+                            copiedEventObject.club_id = {{ club.id }};
+                            copiedEventObject.textColor = "#caa206";
+                            copiedEventObject.borderColor = "#caa206";
+                            copiedEventObject.usersParticipate = $("#ksClub_ClubHasUsersType_user").val();
+                        {% endif %}
+                        
+                        //$("#ksEventType_coachingSession").select2("val", copiedEventObject.coachingSession_id);
+                        //$("#coachingSessionDetail").val(copiedEventObject.sessionDetail);
+                        //$coachingSessionIdInit = null;
+                        //console.log(copiedEventObject);
+                        
+                        // render the event on the calendar
+                        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+                        $('#agenda').fullCalendar('renderEvent', copiedEventObject, false);
+                        
+                        var params = {
+                            "startDate"             : copiedEventObject.start,
+                            "endDate"               : copiedEventObject.start,
+                            "allDay"                : copiedEventObject.allDay,
+                            "title"                 : copiedEventObject.title,
+                            "clubId"                : copiedEventObject.club_id,
+                            "userId"                : copiedEventObject.user_id,
+                            "type"                  : copiedEventObject.type,
+                            "coachingPlanId"        : copiedEventObject.coachingPlan_id,
+                            "coachingCategoryId"    : copiedEventObject.coachingCategory_id,
+                            "coachingSessionId"     : copiedEventObject.coachingSession_id,
+                            "coachingSessionDetail" : copiedEventObject.sessionDetail,
+                            "eventDistance"         : copiedEventObject.eventDistance,
+                            "eventDuration"         : copiedEventObject.eventDuration,
+                            "eventElevationGain"    : copiedEventObject.eventElevationGain,
+                            "eventElevationLost"    : copiedEventObject.eventElevationLost,
+                            "eventSpeedAverage"     : copiedEventObject.eventSpeedAverage,
+                            "eventHrAverage"        : copiedEventObject.eventHrAverage,
+                            "coachingSessionDetail" : copiedEventObject.sessionDetail,
+                            "sportId"               : copiedEventObject.sport_id,
+                            "usersParticipate"      : copiedEventObject.usersParticipate,
+                            "difficultyId"          : copiedEventObject.difficulty_id,
+                            "modalTitle"            : copiedEventObject.club_id ? copiedEventObject.club_id + " - " + copiedEventObject.title : copiedEventObject.title
+                        }
+
+                        params["isCreation"] = true;
+                        params["isDropped"] = true;
+                        
+                        //console.log(params);
+                        
+                        showEventFormModal(params);
+                        
+                },
+                events: function(start, end, callback) {
+                    if( ajax ) ajax.abort();
+                    ajax = $.post(
+                        {% if user is defined and user is not null %}
+                            Routing.generate('ksAgenda_getEvents', {'id' : "{{ user.id }}"}),
+                            {
+                                "eventsFrom[]"              : eventsFrom,
+                                "eventsTypes[]"             : eventsTypes,
+                                "eventsSports[]"            : eventsSports,
+                                "eventsCoachingPlans[]"     : eventsCoachingPlans,
+                                "start"                     : Math.round(start.getTime() / 1000),
+                                "end"                       : Math.round(end.getTime() / 1000)
+                            },
+                        {% else %}
+                            Routing.generate('ksAgendaClub_getEvents', {'id' : "{{ club.id }}"}),
+                            {
+                                //"eventsFrom[]"  : eventsFrom,
+                                "eventsTypes[]"             : eventsTypes,
+                                "eventsSports[]"            : eventsSports,
+                                "eventsUsers[]"             : eventsUsers,
+                                "eventsCoachingPlans[]"     : eventsCoachingPlans,
+                                "eventsAvailability"        : eventsAvailability,
+                                "start"                     : Math.round(start.getTime() / 1000),
+                                "end"                       : Math.round(end.getTime() / 1000)
+                            },
+                        {% endif %}
+                        function(events) {
+                            ajax = null;
+                            callback(events);
+                        }
+                    );
+                },
+                
+                eventRender: function(event, eventElement) {
+                    //eventElement.find('.fc-event-title').prepend("<div class='imageLegend trunc' style=''><img src='{{ asset('img/new.PNG') }}'/></div>");
+                    
+                    $header = "<div id='header_" + event.id + "'>";
+                    
+                    //Sport
+                    if ( event.sport_label && event.sport_label != 'empty') {
+                        if (event.club_id) $header += "<img class='pull-left' src='{{ asset('img/topLeftCorner/clubs/') }}" + event.sport_code + ".png') }}'/>";
+                        else $header += "<img class='pull-left' src='{{ asset('V2/images/sports/') }}" + event.sport_code + ".png') }}'/>";
+                    }
+                    
+                    if (event.type) {
+                        switch( event.type ) {
+                            case "event_meal":
+                                $header += "<span class='pull-right icon-food iconInAgendaEvent'></span>";
+                                break;
+                            
+                            case "event_misc":
+                                $header += "<span class='pull-right icon-user iconInAgendaEvent'></span>";
+                                break;
+
+                            case "event_competition":
+                                $header += "<span class='pull-right icon-trophy iconInAgendaEvent'></span>";
+                                break;
+
+                            case "event_training":
+                                $header += "<span class='pull-right icon-home iconInAgendaEvent'></span>";
+                                /*eventElement.find('.fc-event-title').append(
+                                    "<br><i class='pull-right' style='font-size:0.8em'> Entrainement<i> "
+                                );*/
+                                eventElement.find('.fc-event-time').remove();
+                                break;
+                            case "event_coaching":
+                                $header += "<span class='pull-right icon-book iconInAgendaEvent'></span>";
+                                if (event.eventCompetition) $header += "<span class='pull-right icon-trophy icon-3x'></span>";
+                                break;
+                             case "event_google":
+                                $header += "<span class='pull-left'><img src='{{ asset('img/google.jpg') }}'/></span>";
+                                eventElement.find('.fc-event-time').remove();
+                                break;
+                        }
+                    }
+                    
+                    if (event.club_name) {
+                        //FMO : avant on affichait le logo du club en petit => remplacé par le logo "new" si nouvelle séance pour l'utilisateur
+                        //$header += "<img style='opacity: .5;' class='pull-left' src='{{ asset('img/clubs/') }}" + event.club_id + "/resize_48x48/" + event.avatar + "'/>";
+                        /*eventElement.find('.fc-event-inner').prepend(
+                            //"(" + event.club_name + ") "
+                            "<center><div class='imageLegend trunc'> <span class='text'>" + event.club_name + "</span></div></center></br>"
+                        );*/
+                    }
+                    
+                    $title = "<div id='title_" + event.id + "'>";
+                    if (event.activitySession_id) {
+                        if (event.duration == '00:00') $title += "<span class='pull-right icon-remove icon-3x'/>";
+                        else $title += "<span class='pull-right icon-check icon-3x'/>";
+                    }
+                    //if (event.isNew == 1) $header += "<img class='' src='{{ asset('img/new.png') }}'/>";
+                    if (event.isWarning == 1) $header += "<span class='icon-warning-sign icon-btn icon-red icon-3x selected'></span>";
+                    //$title += "</br>";
+                    if (event.type == "event_training" && event.description) {
+                        //FMO : attention ne pas utiliser $description déjà utilisée sur _eventModalForm.html sinon bug !
+                        if (event.description.length > 30) $desc = event.description.substr(0, 30) + "...";
+                        else $desc = event.description;
+                        if (!event.club_name) $title += "<i style='font-size:0.8em'>" + $desc + "</i>";
+                    }
+                    else if (event.category) {
+                        $title += "<b style='font-size:1em'>" + event.category + "</b></br>";
+                        $title += "<i style='font-size:0.8em'>" + event.title + "</i>";
+                    }
+                    else $title += "<i style='font-size:0.8em'>" + event.title + "</i>";
+                    $title += "</br>";
+                    
+                    $details = "<div id='details_" + event.id + "' style='display:none'>";
+                    if (event.activitySession_id && event.intensity_id && event.duration != '00:00') {
+                        switch(event.intensity_id) {
+                            case '1' : $details += "<div class='icon-green icon-btn icon-circle icon-2x selected' title='{{'coaching.intensity'|trans}}'></div> "; break;
+                            case '2' : $details += "<div class='icon-orange icon-btn icon-circle icon-2x selected' title='{{'coaching.intensity'|trans}}'></div> "; break;
+                            case '3' : $details += "<div class='icon-red icon-btn icon-circle icon-2x selected' title='{{'coaching.intensity'|trans}}'></div> "; break;
+                        }
+                    }
+                    if (event.activitySession_id && event.stateOfHealth_id && event.duration != '00:00') {
+                        switch(event.stateOfHealth_id) {
+                            case '3' : $details += "<div class='icon-green icon-btn icon-smile icon-2x selected' title='{{'coaching.stateOfHealth'|trans}}'></div> "; break;
+                            case '2' : $details += "<div class='icon-orange icon-btn icon-meh icon-2x selected' title='{{'coaching.stateOfHealth'|trans}}'></div> "; break;
+                            case '1' : $details += "<div class='icon-red icon-btn icon-frown icon-2x selected' title='{{'coaching.stateOfHealth'|trans}}'></div> "; break;
+                        }
+                    }
+                    if (event.coachingPlan_id && event.activitySession_id && event.achievement) {
+                        $details +=event.achievement + "/10 ";                        
+                    }
+                    
+                    eventElement.find('.fc-event-inner').prepend($header);
+                    eventElement.find('.fc-event-title').append($title);
+                    eventElement.find('.fc-event-title').append($details);
+                    
+                    //Affiche le nombre de participants
+                    if (event.maxParticipations && event.usersParticipations) {
+                        if (event.maxParticipations) 
+                            eventElement.find('.fc-event-title').append("</br><span class='icon-group'> " + event.usersParticipations + " / " + event.maxParticipations + " </span>");
+                        else 
+                            eventElement.find('.fc-event-title').append("</br><span class='icon-group'> " + event.usersParticipations + " </span>");
+                        //eventElement.find('.fc-event-title').append("</center>");
+                    }
+                    
+                    //Lieu (pas nécessaire)
+                    /*if ( event.town_label ) {
+                        eventElement.find('.fc-event-title').append(
+                            "<br><i class='pull-right' style='font-size:0.8em'>à " + event.town_label + "<i> "
+                        );
+                    }*/ 
+                },
+                
+                eventMouseover: function(event, jsEvent, view) {
+                    var contenuSeance="";
+                    if (event.activitySession_id) {
+                        if (event.duration != '00:00') {
+                            if (event.activity_type == "session_endurance_on_earth") {
+                                contenuSeance += "\
+                                    <div id='tooltip' style='font-size:0.8em'>\
+                                        <p><center>\
+                                           <img src='{{ asset('bundles/ksactivity/images/timer_mini.png') }}' title='{{ 'activity.duration'|trans }}' /> " + event.duration + "  \
+                                           <img src='{{ asset('bundles/ksactivity/images/ruler_mini.png') }}' title='{{ 'activity.distance'|trans }}' /> " + event.distance + "\
+                                        </center></p><center>";
+                                if (event.elevationGain != '-') contenuSeance +=
+                                        "<p>\
+                                            <img src='{{ asset('bundles/ksactivity/images/mountain_mini.png') }}' title='D+' /> +" + event.elevationGain;
+                                if (event.elevationLost != '-') contenuSeance +=
+                                            "<img src='{{ asset('bundles/ksactivity/images/mountain_mini.png') }}' title='D-' /> -" + event.elevationLost;
+                                contenuSeance += "</p></center></div>";
+                            }
+                            else if (event.activity_type == "session_team_sport") {
+                                contenuSeance += "\
+                                    <div id='tooltip' style='font-size:0.8em'>\
+                                        <p>\
+                                           <img src='{{ asset('bundles/ksactivity/images/timer_mini.png') }}' title='{{ 'activity.duration'|trans }}' /> " + event.duration + "  \
+                                           <img src='{{ asset('bundles/ksactivity/images/whistle_mini.png') }}' title='{{ 'activity.result'|trans }}' /> " + event.result.toUpperCase() + "\
+                                        </p>\
+                                    </div>";
+                            }
+                            else {
+                                contenuSeance += "\
+                                    <div id='tooltip' style='font-size:0.8em'>\
+                                        <p>\
+                                           <img src='{{ asset('bundles/ksactivity/images/timer_mini.png') }}' title='{{ 'activity.duration'|trans }}' /> " + event.duration + "  \
+                                        </p>\
+                                    </div>";
+                            }
+                        }
+                        else {
+                            contenuSeance += "<div id='tooltip'><b>{{ 'coaching.not-done'|trans }}</b></div>";
+                        }
+                    }
+                    else if (event.type == 'event_coaching' && event.coachingSession_id) {
+                        contenuSeance += "\
+                            <div id='tooltip' style='font-size:0.8em;width:200px'>\
+                                <p>\
+                                    <center>\
+                                        <img src='{{ asset('bundles/ksactivity/images/timer_mini.png') }}' title='{{ 'activity.duration'|trans }}' /> " + (event.eventDuration ? event.eventDuration : (event.coachingDuration ? event.coachingDuration : '-')) + "\
+                                        &nbsp;&nbsp;&nbsp;<img src='{{ asset('bundles/ksactivity/images/ruler_mini.png') }}' title='{{ 'activity.distance'|trans }}' /> " + (event.eventDistance ? event.eventDistance : (event.coachingDistance ? event.coachingDistance : '-')) +"\
+                                    </center>\
+                                </p>\
+                                <p>\
+                                    <center>\
+                                        <img src='{{ asset('bundles/ksactivity/images/mountain_mini.png') }}' title='D+' +/>" + (event.eventElevationGain ? event.eventElevationGain : (event.coachingElevationGain ? event.coachingElevationGain : '-')) + "\
+                                        &nbsp;&nbsp;&nbsp;<img src='{{ asset('bundles/ksactivity/images/mountain_mini.png') }}' title='D-' -/>" + (event.eventElevationLost ? event.eventElevationLost : (event.coachingElevationLost ? event.coachingElevationLost : '-'))  + "\
+                                    </center>\
+                                </p>";
+                        if (event.sessionDetail) contenuSeance += "<p>" + event.sessionDetail;
+                        contenuSeance += "</p></div>";
+                    }
+                    //var contenuSeance=event.duration.split("\n").join('<br>');
+                    
+                    //console.log(contenuSeance);
+				
+                    var tooltip = '<div class="tooltipevent" style="width:auto;height:auto;background:#ffcc00;-moz-border-radius:5px;-webkit-border-radius: 5px;padding:5px;font-family: Arial,Verdana,sans-serif;position:absolute;z-index:10001;">' + contenuSeance +'</div>';
+                    $("body").append(tooltip);
+                    $(this).mouseover(function(e) {
+                        $(this).css('z-index', 10000);
+                        $('.tooltipevent').fadeIn('500');
+                        $('.tooltipevent').fadeTo('10', 1.9);
+                    }).mousemove(function(e) {
+                        $('.tooltipevent').css('top', e.pageY + 10);
+                        $('.tooltipevent').css('left', e.pageX + 20);
+                    });
+                },
+                
+		eventMouseout: function(event,jsEvent) {
+                    $(this).css('z-index', 8);
+                    $('.tooltipevent').remove();
+		},
+                
+                //Création d'événement
+                {% if club is defined and club is not null and isManager %}
+                    select: function(start, end, allDay) {
+                        //console.log(allDay)
+                        var params = {
+                            "startDate"     : start,
+                            "endDate"       : end,
+                            "allDay"        : allDay,
+                            "isCreation"    : true,
+                            "clubId"        : "{{ club.id }}",
+                            "isPublic"      : false,
+                            "modalTitle"    : "{{ 'coaching.create-event'|trans }}"
+                        };
+                        showEventFormModal(params);
+                    },
+                {% endif %}
+                
+                {% if user is defined and user is not null and app.user.id == user.id and (app.user.isAllowedPackPremium or app.user.isAllowedPackElite) %}
+                    select: function(start, end, allDay) {
+                        var params = {
+                            "startDate"     : start,
+                            "endDate"       : end,
+                            "allDay"        : allDay,
+                            "isCreation"    : true,
+                            "userId"        : "{{ app.user.id }}",
+                            "isPublic"      : true,
+                            "modalTitle"    : "{{ 'coaching.create-event'|trans }}"
+                        }
+                        showEventFormModal(params);
+                    },
+                {% endif %}
+                //Clic sur un événement
+                eventClick: function(event) {
+
+                    //Si l'événement dure 1 jour, il n'y a pas de end
+                    if ( ! event.end ) event.end = event.start;
+
+                    //console.log(event.maxParticipations);
+                    var params = {
+                        "isDropped"             : false,
+                        "startDate"             : event.start,
+                        "endDate"               : event.end,
+                        "allDay"                : event.allDay,
+                        "id"                    : event.id,
+                        "title"                 : event.title,
+                        "content"               : event.content,
+                        "type"                  : event.type,
+                        "clubId"                : event.club_id,
+                        "userId"                : event.user_id,
+                        "isPublic"              : event.isPublic,
+                        "isWarning"             : event.isWarning,
+                        "coachingPlanId"        : event.coachingPlan_id,
+                        "coachingCategoryId"    : event.coachingCategory_id,
+                        "coachingSessionId"     : event.coachingSession_id,
+                        "coachingDistance"      : event.coachingDistance,
+                        "coachingDuration"      : event.coachingDuration,
+                        "coachingElevationGain" : event.coachingElevationGain,
+                        "coachingElevationLost" : event.coachingElevationLost,
+                        "coachingSpeedAverage"  : event.coachingSpeedAverage,
+                        "coachingHrAverage"     : event.coachingHrAverage,
+                        "eventCompetition"      : event.eventCompetition,
+                        "eventDistance"         : event.eventDistance,
+                        "eventDuration"         : event.eventDuration,
+                        "eventElevationGain"    : event.eventElevationGain,
+                        "eventElevationLost"    : event.eventElevationLost,
+                        "eventSpeedAverage"     : event.eventSpeedAverage,
+                        "eventHrAverage"        : event.eventHrAverage,
+                        "coachingSessionDetail" : event.sessionDetail,
+                        "sportId"               : event.sport_id,
+                        "maxParticipations"     : event.maxParticipations,
+                        "usersParticipate"      : event.usersParticipate,
+                        "activitySessionId"     : event.activitySession_id,
+                        "difficultyId"          : event.difficulty_id,
+                        "modalTitle"            : event.club_id ? event.club_name + " - " + event.title : event.title
+                    }
+                    
+                    $isManager = {% if isManager is defined and isManager %} true {% else %} false {% endif %};
+                    params["isManager"] = $isManager;
+                    
+                    {% if club is defined and club is not null %}
+                        //Si une activité est liée à l'événement on ne permet pas la modif
+                        if (event.activitySession_id == null &&  $isManager || event.type == 'event_training' && !$isManager) params["isEdition"] = true;
+                        else params["isShow"] = true;
+
+                        showEventFormModal(params);
+                    {% endif %}
+
+                    {% if user is defined and user is not null %}
+                        //Si une activity est liée à un event, c'est qu'on est sur un plan d'entrainement donc on n'affiche pas la boite de dialogue qui permet de modifier/supprimer l'event
+                        //var now = new Date();
+                        if (event.club_id !=null && event.coachingPlan_id == null && event.type != "event_google") params["isEdition"] = true;
+                        else params["isShow"] = true;
+                        
+                        if (event.activitySession_id == null || event.activitySession_id != null && event.coachingSession_id) showEventFormModal(params);
+                        else document.location.href = Routing.generate('ksActivity_showActivity', {'activityId' : event.activitySession_id})
+                    {% endif%}
+                },
+                
+                //Déplacement d'un événement
+                eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
+                    if (event.activitySession_id == null) {
+                        {% if club is defined and club is not null and isManager or user is defined and user is not null and app.user.id == user.id %}
+                            if ( event.type == 'event_meal' && event.club_id == null  && event.type != 'event_google') {
+                                $.post(
+                                    Routing.generate('ksAgenda_moveOrResizeEvent', {'id' : event.id}), 
+                                    {
+                                        "dayDelta"      : dayDelta,
+                                        "minuteDelta"   : minuteDelta,
+                                        "allDay"        : allDay,
+                                        "isMove"        : true,
+                                    },
+                                    function(response) {
+                                    }
+                                );
+                            }
+                            else if (event.type == 'event_coaching' && event.type != 'event_google') {
+                                var callbackButton1 = function () {
+                                    $.post(
+                                        Routing.generate('ksAgenda_moveOrResizeEvent', {'id' : event.id}), 
+                                        {
+                                            "dayDelta"      : dayDelta,
+                                            "minuteDelta"   : minuteDelta,
+                                            "allDay"        : allDay,
+                                            "isMove"        : true,
+                                        },
+                                        function(response) {
+                                        }
+                                    );
+                                };
+                                var callbackButton2 = function () {
+                                    $.post(
+                                        Routing.generate('ksAgenda_duplicateEvent', {'id' : event.id}), 
+                                        {
+                                            "dayDelta"      : dayDelta,
+                                            "minuteDelta"   : minuteDelta,
+                                            "allDay"        : allDay,
+                                            "isMove"        : true,
+                                        },
+                                        function(response) {
+                                            calendar.fullCalendar('refetchEvents');
+                                        }
+                                    );
+                                };
+                                
+                                
+                                var callbackButton3 = function() {
+                                    if (event.coachingPlan_id) {
+                                        $.post(
+                                            Routing.generate('ksAgenda_duplicateEvents', {'id' : event.id}), 
+                                            {
+                                                "dayDelta"      : dayDelta,
+                                                "minuteDelta"   : minuteDelta,
+                                                "allDay"        : allDay,
+                                                "isMove"        : true,
+                                            },
+                                            function(response) {
+                                                if (response.code == -1) {
+                                                    showInformation('{{ 'coaching.move-not-allowed'|trans }}');
+                                                }
+                                                calendar.fullCalendar('refetchEvents');
+                                            }
+                                        );
+                                    }
+                                    else {
+                                        showInformation('{{ 'coaching.choose-at-least-1-plan'|trans }}');
+                                    }
+                                }
+                                
+                                {% if club is defined and club is not null and isManager %} 
+                                        $context = 'clubs'; 
+                                {% endif %}
+                                {% if user is defined and user is not null and app.user.id == user.id %}
+                                    $context = 'sportif';
+                                {% endif %}
+                                //askConfirmation('{{ 'coaching.duplicate-message'|trans|raw }}', $context, callbackYes, callbackNo);
+                                askMultipleChoices('{{ 'coaching.duplicate-message'|trans|raw }}', $context, '{{ 'coaching.move'|trans }}', '{{ 'coaching.duplicate-session'|trans }}', '{{ 'coaching.move-mass'|trans }}', callbackButton1, callbackButton2, callbackButton3);
+                            }
+                            else {
+                                showInformation("{{ 'coaching.message-eventDrop'|trans }}");
+                                calendar.fullCalendar('refetchEvents');
+                            }
+                        {% else %}
+                            showInformation("{{ 'coaching.message-eventDrop'|trans }}");
+                            calendar.fullCalendar('refetchEvents');
+                        {% endif %}
+                    }
+                    else {
+                        showInformation("{{ 'coaching.message-eventDrop'|trans }}");
+                        calendar.fullCalendar('refetchEvents');
+                    }
+                },
+                //Resize sur un événement
+                eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+                    if (event.activitySession_id == null) {
+                        {% if club is defined and club is not null and isManager %}
+                            if(event.id && event.type != 'event_google'){
+                                $.post(
+                                    Routing.generate('ksAgenda_moveOrResizeEvent', {'id' : event.id}), 
+                                    {
+                                        "dayDelta"      : dayDelta,
+                                        "minuteDelta"   : minuteDelta,
+                                        "isMove"        : false
+                                    },
+                                    function(response) {
+                                    }
+                                );
+                            }
+                            else {
+                                showInformation("{{ 'coaching.message-eventDrop'|trans }}");
+                                calendar.fullCalendar('refetchEvents');
+                            }
+                        {% elseif user is defined and user is not null and app.user.id == user.id %}
+                            if (event.type == 'event_coaching' && event.club_id == null && event.type != 'event_google' || event.type == 'event_meal' && event.club_id == null && event.type != 'event_google') {
+                                $.post(
+                                    Routing.generate('ksAgenda_moveOrResizeEvent', {'id' : event.id}), 
+                                    {
+                                        "dayDelta"      : dayDelta,
+                                        "minuteDelta"   : minuteDelta,
+                                        "isMove"        : false
+                                    },
+                                    function(response) {
+                                    }
+                                );
+                            }
+                            else {
+                                showInformation("{{ 'coaching.message-eventResize'|trans }}");
+                                calendar.fullCalendar('refetchEvents');
+                            }
+                        {% else %}
+                            showInformation("{{ 'coaching.message-eventResize'|trans }}");
+                            calendar.fullCalendar('refetchEvents');
+                        {% endif %}
+                    }
+                    else {
+                        showInformation("{{ 'coaching.message-eventResize'|trans }}");
+                        calendar.fullCalendar('refetchEvents');
+                    }
+                }
+            });
+            
+            //filtre type
+            $("#eventsTypesSelect").multiselect({
+                buttonClass: 'btn btn-link',
+                buttonText: function(options) {
+                    if (options.length == 0) {
+                        return '{{ 'coaching.types'|trans }} <b class="caret"></b>';
+                    }else {
+                        var selected = '';
+                        options.each(function() {
+                            selected += $(this).text() + ', ';
+                        });
+                        return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                    }
+                },
+                onChange:function(element, checked){
+                    eventsTypes = $("#eventsTypesSelect").val();
+                    calendar.fullCalendar('refetchEvents');
+                    reDrawGraph();
+                }
+            });
+            
+            //filtre sports
+            $("#ksSportTypeMultiSimple_sport").multiselect({
+                includeSelectAllOption: false,
+                buttonClass: 'btn btn btn-link',
+                buttonText: function(options) {
+                    if (options.length == 0) {
+                        return '{{ "news-feed.sports"|trans }} <b class="caret"></b>';
+                    }else {
+                        var selected = '';
+                        options.each(function() {
+                            selected += $(this).text() + ', ';
+                        });
+                        return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                    }
+                },
+                onChange:function(element, checked){
+                    eventsSports = $("#ksSportTypeMultiSimple_sport").val();
+                    calendar.fullCalendar('refetchEvents');
+                    reDrawGraph();
+                }
+            });
+            
+            var coachingPlansData = new Array();
+            var membersData = new Array();
+            {% for coachingPlanData in coachingPlansData %}
+                coachingPlansData[{{ coachingPlanData.id }}] = new Array();
+                coachingPlansData[{{ coachingPlanData.id }}]['startDate'] = '{{ coachingPlanData.startDate }}';
+                coachingPlansData[{{ coachingPlanData.id }}]['endDate'] = '{{ coachingPlanData.endDate }}';
+                coachingPlansData[{{ coachingPlanData.id }}]['type'] = '{{ coachingPlanData.type }}';
+                
+                {% if coachingPlanData.userId is defined and coachingPlanData.userId is not null %}
+                    membersData[{{coachingPlanData.userId}}] = new Array();
+                    membersData[{{coachingPlanData.userId}}]['planId'] = {{ coachingPlanData.id }};
+                    membersData[{{coachingPlanData.userId}}]['startDate'] = '{{ coachingPlanData.startDate }}';
+                    membersData[{{coachingPlanData.userId}}]['endDate'] = '{{ coachingPlanData.endDate }}';
+                    membersData[{{coachingPlanData.userId}}]['type'] = '{{ coachingPlanData.type }}';
+                {% endif %}
+            {% endfor %}
+            
+            //Filtre membre
+            {% if club is defined and club is not null %}
+                $("#ksClub_ClubHasUsersType_user").multiselect({
+                    includeSelectAllOption: false,
+                    buttonClass: 'btn btn btn-link',
+                    buttonText: function(options) {
+                        if (options.length == 0) {
+                            return '{{ 'coaching.members'|trans }} <b class="caret"></b>';
+                        }else {
+                            var selected = '';
+                            options.each(function() {
+                                selected += $(this).text() + ', ';
+                            });
+                            return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                        }
+                    },
+                    onChange:function(element, checked){
+                        eventsUsers = $("#ksClub_ClubHasUsersType_user").val();
+                        calendar.fullCalendar('refetchEvents');
+                        updatePlanFromMembers();
+                        $member = $("#ksClub_ClubHasUsersType_user").val();
+                        if ($member != null && $member.length == 1) {
+                            reDrawGraph();
+                            showFirstDateFromMember($("#ksClub_ClubHasUsersType_user option:selected").text());
+                        }
+                        else {
+                            $("#flatViewContainer").html("");
+                            showFirstDateFromMember(-1);
+                        }
+                    }
+                });
+            {% endif %}
+            
+            //Filtre Plan
+            $('#ksCoachingPlanType_name option:eq(0)').remove();
+            $("#ksCoachingPlanType_name").multiselect({
+                includeSelectAllOption: false,
+                buttonClass: 'btn btn btn-link',
+                buttonText: function(options) {
+                    if (options.length == 0) {
+                        {% set label = 'coaching.attach'|trans %}
+                        return ' {{ label }} <b class="caret"></b>';
+                    }else {
+                        var selected = '';
+                        options.each(function() {
+                            selected += $(this).text() + ', ';
+                        });
+                        return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                    }
+                },
+                onChange:function(element, checked){
+                    eventsCoachingPlans = $("#ksCoachingPlanType_name").val();
+                    calendar.fullCalendar('refetchEvents');
+                    $clubId =null;
+                    {% if club is defined and club is not null %} 
+                        $clubId = {{ club.id }}; 
+                        $member = $("#ksClub_ClubHasUsersType_user").val();
+                        if ($member != null && $member.length == 1) {
+                            reDrawGraph();
+                            showFirstDateFromMember($("#ksClub_ClubHasUsersType_user option:selected").text());
+                        }
+                        else {
+                            $("#flatViewContainer").html("");
+                            showFirstDateFromMember(-1);
+                        }
+                    {% elseif user is defined and user is not null %}
+                        reDrawGraph();
+                    {% endif %}
+                }
+            });
+            
+            function updatePlanFromMembers() {
+                //Sélectionne le plan de type "suivi" en fonction du membre sélectionné (cas d'un coach vers un coaché)
+                $("#ksCoachingPlanType_name  > option").removeAttr('selected');
+                $("#ksCoachingPlanType_name").multiselect('refresh');
+                $userId = $("#ksClub_ClubHasUsersType_user").val();
+                if ($userId != null && $userId.length == 1 && membersData[$userId] != null) {
+                    $("#ksCoachingPlanType_name > option[value="+membersData[$userId]['planId']+"]").attr("selected", "selected");
+                    eventsCoachingPlans = $("#ksCoachingPlanType_name").val();
+                    //$('#agenda').fullCalendar( 'gotoDate', new Date(membersData[$userId]['endDate']));
+                    calendar.fullCalendar( 'gotoDate', new Date());
+                    $("#ksCoachingPlanType_name").multiselect('refresh');
+                }
+                else {
+                    eventsCoachingPlans = $("#ksCoachingPlanType_name").val();
+                    calendar.fullCalendar('refetchEvents');
+                    calendar.fullCalendar( 'gotoDate', new Date());
+                }
+            }
+
+            $("#ksCoachingPlanType_name  > option").removeAttr('selected');
+            {% if newPlanId is defined and newPlanId is not null %} 
+                $("#ksCoachingPlanType_name > option[value={{ newPlanId }}]").attr("selected", "selected");
+                eventsCoachingPlans = $("#ksCoachingPlanType_name").val();
+                calendar.fullCalendar( 'gotoDate', new Date(coachingPlansData[{{ newPlanId }}]['startDate']));
+            {% endif %}
+            $("#ksCoachingPlanType_name").multiselect('refresh');
+                        
+            {% if club is defined and club is not null %}
+                //filtre disponibilité
+                $("#sortByAll").click(function() {
+                    eventsAvailability = 'all';
+                    calendar.fullCalendar('refetchEvents');
+                });
+
+                $("#sortByAvailable").click(function() {
+                    eventsAvailability = 'available';
+                    calendar.fullCalendar('refetchEvents');
+                });
+
+                $("#sortByFull").click(function() {
+                    eventsAvailability = 'full';
+                    calendar.fullCalendar('refetchEvents');
+                });
+                
+                //Gestion de l'envoi de mails aux participants
+                $("#bSendUpdateByMail").click(function() {
+                    if( !$("#bSendUpdateByMail").hasClass("disabled") ) {
+                        $("#bSendUpdateByMail").addClass("disabled");
+                        $("#loader").show();
+                        if ($("#ksClub_ClubHasUsersType_user").val() == null) showInformation('{{ 'coaching.choose-at-least-1-member'|trans }}');
+                        else {
+                            $.post(
+                                Routing.generate('ksClub_sendUpdateToParticipants', { "clubId" : {{ club.id }} }), 
+                                {
+                                    'userIds' : $("#ksClub_ClubHasUsersType_user").val()
+                                },
+                                function(response) {
+                                    if( response.response == 1 ) {
+                                        showInformation('{{ 'coaching.email-send'|trans }}');
+                                    } else {
+                                        showInformation('{{ 'coaching.error'|trans }}');
+                                    }
+
+                                    $("#bSendUpdateByMail").removeClass("disabled");
+                                    $("#loader").hide();
+                                }
+                            );
+                        }
+                     }
+                });
+                $("#ksClub_ClubHasUsersType_user > option").removeAttr('selected');
+                $("#ksClub_ClubHasUsersType_user").multiselect('refresh');
+            {% endif %}
+            
+            /*Gestion de l'ancienne vue à plat
+            $("#bFlatView").click(function() {
+                if( !$("#bFlatView").hasClass("disabled") ) {
+                    $("#bFlatView").addClass("disabled");
+                    $("#loader").show();
+                    if ($("#ksCoachingPlanType_name").val() == null) {
+                        showInformation('{{ 'coaching.choose-at-least-1-plan'|trans }}');
+                        $("#bFlatView").removeClass("disabled");
+                        $("#loader").hide();
+                    }
+                    else {
+                        if ($("#ksCoachingPlanType_name").val().length != 1) { 
+                            showInformation('{{ 'coaching.only-1-plan'|trans }}');
+                            $("#bFlatView").removeClass("disabled");
+                            $("#loader").hide();
+                        }
+                        else {
+                            $planId = $("#ksCoachingPlanType_name").val();
+                            {% if club is defined and club is not null %}
+                                document.location.href=Routing.generate('ksCoaching_flatView', { "clubId" : {{ club.id }}, "planId" :  $planId, "startOn" : 1, "endOn" : null});
+                            {% elseif user is defined and user is not null %}
+                                document.location.href=Routing.generate('ksCoaching_flatView', { "userId" : {{ user.id }}, "planId" :  $planId, "startOn" : 0, "endOn" : null});
+                            {% endif %}
+                        }
+                    }
+                }
+            });*/
+            
+            $("#bGoToStartDatePlan").click(function() {
+                var planId = $("#ksCoachingPlanType_name").val();
+                if (planId) {
+                    var date = new Date(coachingPlansData[planId]['startDate']);
+                    calendar.fullCalendar( 'gotoDate', date);
+                }
+                else {
+                    showInformation('{{ 'coaching.choose-at-least-1-plan'|trans }}');
+                }
+            });
+            $("#bGoToEndDatePlan").click(function() {
+                var planId = $("#ksCoachingPlanType_name").val();
+                if (planId) {
+                    var date = new Date(coachingPlansData[planId]['endDate']);
+                    calendar.fullCalendar( 'gotoDate', date);
+                }
+                else {
+                    showInformation('{{ 'coaching.choose-at-least-1-plan'|trans }}');
+                }
+            });
+                
+                
+            $("#bSessionsTool").click(function() {
+                if ($("#sessionsTool").css('display') == 'block') {
+                    $("#inner").hide();
+                    $("#sessionsTool").hide();
+                    $("#main").addClass("span12");
+                    $("#main").removeClass("span9");
+                    calendar.fullCalendar( 'changeView', 'agendaWeek');
+                }
+                else {
+                    $("#inner").show();
+                    $("#sessionsTool").show();
+                    $("#main").addClass("span9");
+                    $("#main").removeClass("span12");
+                    calendar.fullCalendar( 'changeView', 'month');
+                }
+            });
+            
+            //$("#bSessionsTool").click();
+                
+            //Partage d'un plan
+            {% if user is defined and user is not null %} 
+                $("#bSharePlan").click(function() {
+                    if( !$("#bSharePlan").hasClass("disabled") ) {
+                        $("#bSharePlan").addClass("disabled");
+                        $("#loader").show();
+                        if ($("#ksCoachingPlanType_name").val() == null) {
+                            showInformation('{{ 'coaching.choose-at-least-1-plan'|trans }}');
+                            $("#bSharePlan").removeClass("disabled");
+                            $("#loader").hide();
+                        }
+                        else {
+                            if ($("#ksCoachingPlanType_name").val().length != 1) { 
+                                showInformation('{{ 'coaching.only-1-plan'|trans }}');
+                                $("#bSharePlan").removeClass("disabled");
+                                $("#loader").hide();
+                            }
+                            else {
+                                $planId = $("#ksCoachingPlanType_name").val();
+                                if (coachingPlansData[$planId]['type'] != '2') {
+                                    $label = $("#ksCoachingPlanType_name option:selected").text();
+                                    $category = 3; //Plan d'entrainement
+                                    $.post(
+                                        Routing.generate('ksArticle_create', { "categoryId" : 3}), 
+                                        $("#fArticleForm").serialize() + "&ks_activitybundle_articletype[label]="+ $label + "&ks_activitybundle_articletype[categoryTag]="+ $category + "&userId="+ {{ user.id }} + "&planId=" + $planId,
+                                        function(response) {
+                                            if ( response.response == 1 ) {
+                                                $activityId = response.article.id;
+                                                $.post(
+                                                    Routing.generate('ksCoaching_sharePlan', { "planId" : $planId }), 
+                                                    {
+                                                    },
+                                                    function(response) {
+                                                        if( response.response == 1 ) {
+                                                            showInformation('{{ 'coaching.plan-successfully-shared'|trans }}');
+                                                            document.location.href=Routing.generate('ksWikisport_show', { "id" :  $activityId  });
+                                                        }
+                                                    }
+                                                 );
+                                            } else {
+                                                if (response.errors['label'][0] == 'Cet article existe déjà') showInformation('{{ 'coaching.label-already-used'|trans }}');
+                                                else showInformation('{{ 'coaching.error'|trans }}');
+                                                $("#bSharePlan").removeClass("disabled");
+                                                $("#loader").hide();
+                                            }
+                                        }
+                                    );
+                                }
+                                else {
+                                    //Cas d'une tentative de partage d'un plan de type coach
+                                    showInformation('{{ 'coaching.share-only-user-plan'|trans }}');
+                                    $("#bSharePlan").removeClass("disabled");
+                                    $("#loader").hide();
+                                }
+                            }
+                        }
+                    }
+                });
+            
+                /*$("#bGoogleAgendaSync").click(function() {
+                    document.location.href = Routing.generate('ks_set_services');
+                    $("#bGoogleAgendaSync").addClass("disabled");
+                });*/
+            {% endif %}
+                
+            $("#bDeletePlan").click(function() {
+                if( !$("#bDeletePlan").hasClass("disabled") ) {
+                    $("#bDeletePlan").addClass("disabled");
+                    $("#loader").show();
+                    if ($("#ksCoachingPlanType_name").val() == null) {
+                        showInformation('{{ 'coaching.choose-at-least-1-plan'|trans }}');
+                        $("#bDeletePlan").removeClass("disabled");
+                        $("#loader").hide();
+                    }
+                    else {
+                        if ($("#ksCoachingPlanType_name").val().length != 1) { 
+                            showInformation('{{ 'coaching.only-1-plan'|trans }}');
+                            $("#bDeletePlan").removeClass("disabled");
+                            $("#loader").hide();
+                        }
+                        else {
+                            $planId = $("#ksCoachingPlanType_name").val();
+                            if (coachingPlansData[$planId]['type'] != '2') {
+                                var callbackYes = function () {
+                                    $.post(
+                                        Routing.generate('ksCoaching_deletePlan', { "planId" : $planId }), 
+                                        {
+                                        },
+                                        function(response) {
+                                            if( response.response == 1 ) {
+                                                showInformation('{{ 'coaching.plan-successfully-deleted'|trans }}');
+                                                {% if club is defined and club is not null %} 
+                                                    document.location.reload();
+                                                {% else %}
+                                                    document.location.href = Routing.generate('ksAgenda_index', {'id' : {{ app.user.id }} });
+                                                {% endif %}
+
+                                            } else if( response.response == -1 ) {
+                                                showInformation('{{ 'coaching.shared-plan-used'|trans }}');
+                                            } else if( response.response == -2 ) {
+                                                showInformation('{{ 'coaching.sessions-linked'|trans }}');
+                                            }
+
+                                            $("#bDeletePlan").removeClass("disabled");
+                                            $("#loader").hide();
+                                        }
+                                    );
+                                }
+                                var callbackNo = function () {
+                                    $("#bDeletePlan").removeClass("disabled");
+                                    $("#loader").hide();
+                                };
+                                askConfirmation('{{ 'coaching.delete-plan-message'|trans|raw }}', 'sportif', callbackYes, callbackNo);
+                            }
+                            else {
+                                //Cas d'une tentative de suppression d'un plan de type coach
+                                showInformation('{{ 'coaching.delete-only-user-plan'|trans }}');
+                                $("#bSharePlan").removeClass("disabled");
+                                $("#loader").hide();
+                            }
+                        }
+                    }
+                }
+            });
+
+            //Permet de gérer la création d'un nouveau plan directement depuis l'agenda
+            $("#bCreatePlan").click(function() {
+                {% if club is defined and club is not null %} 
+                    var memberId = $("#ksClub_ClubHasUsersType_user").val();
+                    if (memberId != null && memberId.length == 1) {
+                        $("#bCreatePlan").addClass("disabled");
+                        $("#newPlanFromAgenda").show();
+                        $("#bSavePlan").show();
+                    }
+                    else {
+                        showInformation('{{ 'coaching.choose-only-one-member'|trans }}');
+                        $("#bCreatePlan").removeClass("disabled");
+                        $("#newPlanFromAgenda").hide();
+                        $("#bSavePlan").hide();
+                    }
+                {% else %}
+                    if( ! $("#bCreatePlan").hasClass("disabled") ) {
+                        $("#bCreatePlan").addClass("disabled");
+                        $("#newPlanFromAgenda").show();
+                        $("#bSavePlan").show();
+                        $("#bUpdatePlan").hide();
+                    }
+                    else {
+                        $("#bCreatePlan").removeClass("disabled");
+                        $("#newPlanFromAgenda").hide();
+                        $("#bSavePlan").hide();
+                        $("#bUpdatePlan").show();
+                    }
+                {% endif %}
+            });
+            
+            //Permet de modifier le libellé du plan sélectionné
+            $("#bUpdatePlan").click(function() {
+                if( ! $("#bUpdatePlan").hasClass("disabled")) {
+                    $("#bUpdatePlan").addClass("disabled");
+                    $("#updateSelectedPlan").show();
+                    $("#updateSelectedPlan").val($("#ksCoachingPlanType_name option:selected").text());
+                    $("#bSavePlan").show();
+                    $("#bCreatePlan").hide();
+                }
+                else {
+                    $("#bUpdatePlan").removeClass("disabled");
+                    $("#updateSelectedPlan").hide();
+                    $("#bSavePlan").hide();
+                    $("#bCreatePlan").show();
+                }
+            });
+            
+            $("#bSavePlan").click(function() {
+                if( ! $("#bSavePlan").hasClass("disabled") ) {
+                    //Cas de la création d'un nouveau plan
+                    if ($("#bCreatePlan").hasClass("disabled") && !$("#bUpdatePlan").hasClass("disabled")) {
+                        var newPlan = $("#newPlanFromAgenda").val();
+                        var memberId = $("#ksClub_ClubHasUsersType_user").val();
+                        if (memberId!= null && memberId.length == 1) $dataMemberId = "&memberId=" + memberId;
+                        else $dataMemberId = "";
+                        if (newPlan !="") {
+                            $("#loader").show();
+                            $("#bSavePlan").addClass("disabled");
+                            $.ajax({
+                                url: Routing.generate('ksCoaching_createNewPlan', {'clubId' : {% if club is defined and club is not null %} {{ club.id }} {% else %} 0 {% endif %}}),
+                                type: "POST",
+                                data: "newPlan="+ newPlan + $dataMemberId,
+                                success : function(response) {
+                                    if ( response.publishResponse == 1 ) {
+                                        showInformation('{{ 'coaching.plan-successfully-created'|trans }}');
+                                        {% if club is defined and club is not null %} 
+                                            document.location.reload();
+                                        {% else %}
+                                            document.location.href = Routing.generate('ksAgenda_index', {'id' : {{ app.user.id }}, 'newPlanId' : response.newPlanId });
+                                        {% endif %}
+                                    }
+                                    else {
+
+                                    }
+                                    $("#bCreatePlan").removeClass("disabled");
+                                    $("#bSavePlan").removeClass("disabled");
+                                    $("#newPlanFromAgenda").hide();
+                                    $("#bSavePlan").hide();
+                                    $("#loader").hide();
+                                }
+                            });
+                        }
+                    }
+                    else if (!$("#bCreatePlan").hasClass("disabled") && $("#bUpdatePlan").hasClass("disabled")) {
+                        //Cas de la modification du libellé du plan sélectionné
+                        var label = $("#updateSelectedPlan").val();
+                        var planId = $("#ksCoachingPlanType_name").val();
+                        if (planId == null || planId == "" || label == "") {
+                            showInformation('{{ 'coaching.choose-at-least-1-plan'|trans }}');
+                            $("#bUpdatePlan").removeClass("disabled");
+                            $("#updateSelectedPlan").val("");
+                            $("#updateSelectedPlan").hide();
+                            $("#bSavePlan").hide();
+                        }
+                        else {
+                            $("#loader").show();
+                            $("#bSavePlan").addClass("disabled");
+                            $.ajax({
+                                url: Routing.generate('ksCoaching_updateSelectedPlan', {'planId' : planId}),
+                                type: "POST",
+                                data: "newLabel="+ label,
+                                success : function(response) {
+                                    if ( response.publishResponse == 1 ) {
+                                        showInformation('{{ 'coaching.plan-successfully-updated'|trans }}');
+                                            document.location.href = Routing.generate('ksAgenda_index', {'id' : {{ app.user.id }}, 'newPlanId' : planId });
+                                    }
+                                    else {
+
+                                    }
+                                    $("#bUpdatePlan").removeClass("disabled");
+                                    $("#bSavePlan").removeClass("disabled");
+                                    $("#updateSelectedPlan").hide();
+                                    $("#bSavePlan").hide();
+                                    $("#loader").hide();
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            
+            $("#ksSportTypeMultiSimple_sport > option").removeAttr('selected');
+            $("#ksSportTypeMultiSimple_sport").multiselect('refresh');
+            
+            calendar.fullCalendar('refetchEvents');
+            
+            var $filter_all              = $("input[type=radio][name=sessionsFilter][value=all]");
+            var $filter_subscriptions    = $("input[type=radio][name=sessionsFilter][value=subscriptions]");
+            
+            $filter_all.iCheck({
+                radioClass: 'iradio_square-red',
+            });
+            $filter_all.on('ifChecked', function(event){
+                $("div.all").show();
+                $("div.subscriptions").hide();
+            });
+            $filter_subscriptions.iCheck({
+                radioClass: 'iradio_square-blue'
+            });
+            $filter_subscriptions.on('ifChecked', function(event){
+                $("div.all").hide();
+                $("div.subscriptions").show();
+            });
+            
+            function showFirstDateFromMember(username) {
+                $('#scheduleRequiredTable').find("tbody").find("tr").each(function(){
+                    //console.log($(this).find(".username").text().replace(/\s/g,""));
+                    if (username == -1) $(this).show();
+                    else {
+                        if ($(this).find(".username").text().replace(/\s/g,"") != username) $(this).hide();
+                        else $(this).show();
+                    }
+                });
+            }
+            
+            {% if app.user.isAllowedPackPremium is defined and app.user.isAllowedPackPremium or app.user.isAllowedPackElite is defined and app.user.isAllowedPackElite %}
+                {% if mainPlan is defined and mainPlan is not null %}
+                    $("#ksCoachingPlanType_name > option[value={{ mainPlan[0].id }}]").attr("selected", "selected");
+                    eventsCoachingPlans = $("#ksCoachingPlanType_name").val();
+                    $("#ksCoachingPlanType_name").multiselect('refresh');
+                {% endif %}
+                if ($("#ksCoachingPlanType_name").val() != null && $("#ksCoachingPlanType_name").val() != '') reDrawGraph();
+            {% endif %}    
+                
+               
+            $KPIalreadyDisplayed = false;
+            
+            function reDrawGraph(view) {
+                if (view == null) view = calendar.fullCalendar('getView');
+                
+                if ($("#ksCoachingPlanType_name").val() != null && $("#ksCoachingPlanType_name").val() != '') {
+                    $agendaDate = new Date($("#agenda").fullCalendar('getDate'));
+                    $getDay = $agendaDate.getDay() == 0 ? 7 : $agendaDate.getDay();
+                    
+                    $startDate = new Date();
+                    $endDate = new Date();
+
+                    switch(view.name) {
+                        case 'year':
+                            $startDate = new Date($agendaDate.getFullYear(), 0, 1);
+                            $endDate = new Date($agendaDate.getFullYear(), 11, 31);
+                            break;
+                        case 'month':
+                            $startDate = new Date($agendaDate.getFullYear(), $agendaDate.getMonth(), 1);
+                            $endDate = new Date($agendaDate.getFullYear(), $agendaDate.getMonth()+1, -1);
+                            break;
+                        case 'agendaWeek':
+                            $startDate.setTime($agendaDate.getTime() - ($getDay -1 ) * 86400000);
+                            $endDate.setTime($startDate.getTime() + 6 * 86400000);
+                            break
+                    }
+                    startOn = padStr($startDate.getFullYear()) + '-'+ padStr(1+$startDate.getMonth()) + '-'+ padStr($startDate.getDate());
+                    endOn = padStr($endDate.getFullYear()) + '-'+ padStr(1+$endDate.getMonth()) + '-'+  padStr($endDate.getDate());
+                    
+                    var planId = $("#ksCoachingPlanType_name").val();
+                    
+                    if (!$KPIalreadyDisplayed ) {
+                        $("#KPIViewContainer").html("");
+                        $("#KPIViewLoader").show();
+                        $.get(
+                            Routing.generate('ksCoaching_getCoachingGraph', { "context": "KPIView", "planId" :  planId, "startOn" : startOn, "endOn" : endOn}),
+                            function(response) {
+                                if (response.code ==1) {
+                                    $("#KPIViewContainer").html(response.KPIView);
+                                    $KPIalreadyDisplayed = true; 
+                                    $("#KPIViewLoader").hide();
+                                }
+                            }
+                        );
+                    }
+                    
+                    $("#flatViewContainer").html("");
+                    $("#flatViewLoader").show();
+                    //console.log(startOn);
+                    //console.log(endOn);
+                    $.get(
+                        Routing.generate('ksCoaching_getCoachingGraph', { "context": "flatView", "planId" :  planId, "startOn" : startOn, "endOn" : endOn}),
+                        function(response) {
+                            if (response.code ==1) {
+                                $("#flatViewContainer").html(response.flatView);
+                                $("#flatViewLoader").hide();
+                                
+                                {% if user is defined and user is not null %}
+                                    $("#statisticsViewContainer").html("");
+                                    $("#statisticsViewLoader").show();
+                                    $.get(
+                                        Routing.generate('ksCoaching_getStatisticsGraph', { "id": {{ user.id }}, "startOn" : startOn, "endOn" : endOn, "planId" : planId}),
+                                        function(response) {
+                                            if (response.code ==1) {
+                                                $("#statisticsViewContainer").html(response.graph);
+                                                $("#statisticsViewLoader").hide();
+                                            }
+                                        }
+                                    );
+                                {% endif %}
+                            }
+                        }
+                    );
+                }
+                else {
+                    $KPIalreadyDisplayed = false;
+                    $("#KPIViewContainer").html('');
+                    $("#flatViewContainer").html('');
+                    $("#statisticsViewContainer").html('');
+                }
+            }
+            
+            function padStr(i) {
+                return (i < 10) ? "0" + i : "" + i;
+            }
+        });
+    </script>
+{% endblock %}
+    
+{% block content %}
+    {% if club is defined and club is not null %}
+        {% include 'KsEventBundle:Event:_eventModalForm.html.twig' with {'form' : eventForm, "clubId" : club.id} %}
+        <h2 class="clubs">{{ 'titles.dashboard-of'|trans( { '%username%' : club.name} ) }}
+            <a class="btn btn-clubs btn pull-right" href="{{ path('ksClub_public_profile', {'clubId' : club.id }) }}">
+                <i class="icon-backward icon-white"></i>
+            </a>
+        </h2>
+    {% elseif user is defined and user is not null %}
+        {% include 'KsEventBundle:Event:_eventModalForm.html.twig' with {'form' : eventForm, "userId" : app.user.id} %}
+        <h2 class="sportif">{{ 'titles.dashboard-of'|trans( { '%username%' : user.username} ) }}
+            <a class="btn btn-sportif btn pull-right" href="{{ path('ksActivity_activitiesList') }}">
+                <i class="icon-backward icon-white"></i>
+            </a>
+        </h2>
+    {% endif %}
+    <div class="blocHeaderSeparator"></div>
+    <div class="row-fluid">
+        {% if club is defined and club is not null and isManager and club.id == 38 or user is defined and user is not null and app.user.isAllowedPackPremium %}
+            <div id="inner" class="span3" {% if user is defined and user is not null and app.user.isAllowedPackPremium %} style="display:none"{% endif %}></div>
+            <div class="span9">
+        {% else %}
+            <div class="span12">
+        {% endif %}
+                <div class="pull-right">
+                    <select id="eventsTypesSelect" name="eventsTypesSelect[]" multiple="multiple">
+                        <option value="trainings">{{ 'events.trainings'|trans }}</option>
+                        <option value="meals">{{ 'events.meals'|trans }}</option>
+                        <option value="others">{{ 'events.others'|trans }}</option>
+                        {% if club is defined and club is not null and isManager or user is defined and user is not null %} <option value="coaching">{{ 'events.coaching'|trans }}</option> {% endif %}
+                        {#<option value="competitions">{{ 'events.competitions'|trans }}</option>#}
+                        <option value="google">{{ 'events.google'|trans }}</option>
+                        {#% if isManager %} <option value="goals">{{ 'events.goals'|trans }}</option> {% endif %#}
+
+                    </select>
+                    {#{{ form_widget(eventSportChoiceForm.sport) }}#}
+
+                    {% if club is defined and club is not null and isManager %}
+                        <div class="btn-group">
+                            <button data-toggle="dropdown" class="multiselect dropdown-toggle btn btn btn-link" type="button" style="width: auto;">
+                                {{ 'events.availability'|trans }} <b class="caret"></b>
+                            </button>
+                            <ul class="dropdown-menu" style="max-height: 400px; overflow-y: auto; overflow-x: hidden;">
+                                <li>
+                                    <a style="padding:0;" href="javascript:void(0);">
+                                        <label style="margin:0;padding:3px 20px 3px 20px;width:100%;height:100%;cursor:pointer;">
+                                            <input id="sortByAll" type="radio" name="sortBy" value="all" checked="checked" style="margin-bottom:5px;"> {{ 'events.all'|trans }}
+                                        </label>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a style="padding:0;" href="javascript:void(0);">
+                                        <label style="margin:0;padding:3px 20px 3px 20px;width:100%;height:100%;cursor:pointer;">
+                                            <input id="sortByAvailable" type="radio" name="sortBy" value="available" style="margin-bottom:5px;"> {{ 'events.available'|trans }}
+                                        </label>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a style="padding:0;" href="javascript:void(0);">
+                                        <label style="margin:0;padding:3px 20px 3px 20px;width:100%;height:100%;cursor:pointer;">
+                                            <input id="sortByFull" type="radio" name="sortBy" value="full" style="margin-bottom:5px;"> {{ 'events.full'|trans }}
+                                        </label>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            
+                {% if club is defined and club is not null and isManager %}
+                    {{ form_widget(eventUsersChoiceForm.user) }}
+                    {{ form_widget(eventCoachingPlanChoiceForm.name) }}
+                {% endif %}
+
+                {% if user is defined and user is not null and (app.user.isAllowedPackPremium or app.user.isAllowedPackElite) %}
+                    {{ form_widget(eventCoachingPlanChoiceForm.name) }}
+                {% endif %}
+
+                <div class="row-fluid">
+                    {% if club is defined and club is not null and isManager is defined and isManager and club.id == 38 or user is defined and user is not null and (app.user.isAllowedPackPremium or app.user.isAllowedPackElite) %}
+                        {% if club is defined and club is not null and isManager is defined and isManager and club.id == 38 or user is defined and user is not null and app.user.isAllowedPackPremium %}
+                            <a id="bSessionsTool" class="btn btn-{% if isManager is defined and isManager %}club{% else %}sportif{% endif %} btn">
+                                <i class="glyphicon glyphicon-plus-sign icon-white" rel="tooltip" title="{{ "coaching.show-sessions-tool"|trans }}"></i>
+                            </a>
+                        {% endif %}
+                        <a id="bGoToStartDatePlan" class="btn btn">
+                            <i class="icon-step-backward icon-white" rel="tooltip" title="{{ "coaching.go-to-start-date-plan"|trans }}"></i>
+                        </a>
+                        <a id="bGoToEndDatePlan" class="btn btn">
+                            <i class="icon-step-forward icon-white" rel="tooltip" title="{{ "coaching.go-to-end-date-plan"|trans }}"></i>
+                        </a>
+                        {#<a id="bFlatView" class="btn btn-{% if club is defined and club is not null and isManager %}clubs{% elseif user is defined and user is not null %}sportif{% endif %} btn">
+                            <i class="icon-zoom-in icon-white" rel="tooltip" title="{{ "coaching.help-flat-view"|trans }}"></i>
+                        </a>#}
+                        {% if club is defined and club is not null and isManager %}
+                            <a id="bSendUpdateByMail" class="btn btn-clubs btn">
+                                <i class="icon-envelope icon-white" rel="tooltip" title="{{ "coaching.help-send-mail"|trans }}"></i>
+                            </a>
+                        {% endif %}
+                        {% if user is defined and user is not null and app.user.isAllowedPackPremium %}
+                            <a id="bSharePlan" class="btn btn-sportif btn">
+                                <i class="icon-share icon-white" rel="tooltip" title="{{ "coaching.share-plan"|trans }}"></i>
+                            </a>
+                        {% endif %}
+                        {% if user is defined and user is not null and (app.user.isAllowedPackPremium or app.user.isAllowedPackElite) %}
+                            <a id="bGoogleAgendaSync" class="btn btn-sportif btn disabled">
+                                <i class="icon-refresh icon-white" rel="tooltip" title="{{ "coaching.sync-google-agenda"|trans }}"></i>
+                            </a>
+                        {% endif %}
+                        {% if club is defined and club is not null and isManager or user is defined and user is not null and app.user.isAllowedPackPremium %}
+                            <a id="bDeletePlan" class="btn btn-danger btn">
+                                <i class="icon-trash icon-white" rel="tooltip" title="{{ "coaching.delete-plan"|trans }}"></i>
+                            </a>
+                            <img id="loader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none" style="padding:0px 0px 0px 0px;">
+                            </br>
+                            <span style="padding-top:10px;"> 
+                                <a id="bCreatePlan" class="btn btn">
+                                    <i class="glyphicon glyphicon-plus icon-white" rel="tooltip" title="{{ "coaching.create-new-plan"|trans }}"></i>
+                                </a>
+                            </span>
+                            <input id="newPlanFromAgenda" class="input-block-level" type="text" maxlength="25" value="" placeholder="{{ 'coaching.new-plan'|trans }}" style="padding-top:5px;display:none;width: 40%"/>
+                            {% if user is defined and user is not null %} 
+                                <span style="padding-top:10px;"> 
+                                    <a id="bUpdatePlan" class="btn btn">
+                                        <i class="glyphicon glyphicon-pencil-sign icon-white" rel="tooltip" title="{{ "coaching.update-selected-plan"|trans }}"></i>
+                                    </a>
+                                </span>
+                                <input id="updateSelectedPlan" class="input-block-level" type="text" maxlength="25" value="" placeholder="" style="padding-top:5px;display:none;width: 40%"/>
+                            {% endif %}
+                            <a id="bSavePlan" class="btn btn" style="padding-top:5px;display:none">
+                                <i class="icon-save icon-white" rel="tooltip" title="{{ "coaching.save-new-plan"|trans }}"></i>
+                            </a>
+                        {% endif %}
+                        <form id="fArticleForm" method="post" {{ form_enctype(articleForm) }}>
+                            {{ form_widget(articleForm.label, { attr: { style: "display:none"} }) }}
+                            {{ form_widget(articleForm.categoryTag, { attr: { style: "display:none"} }) }}
+                            {{ form_rest(articleForm) }}
+                        </form>
+                    {% endif %}
+                </div>
+        </div>
+    </div>
+    </br>
+    <div class="row-fluid">
+        {% if user is defined and user is not null and app.user.isAllowedPackPremium or club is defined and club is not null and isManager and club.id == 38 %}
+            <div id="sessionsTool" class="span3" style="{% if user is defined and user is not null and app.user.isAllowedPackPremium %}display:none{% endif %}"> 
+            </br>
+                <div id='external-events'>
+                    <div style="margin-top:5px">
+                        <label class="pull-left" style="margin-left:10px">
+                            <span class="pull-left" style="margin-right:5px"><input type="radio" name="sessionsFilter" value="subscriptions" checked></span>
+                            <span class="pull-left">{{ 'coaching.my-favorite-sessions'|trans }}</span>
+                        </label>
+                        <label class="pull-left" style="margin-left:10px">
+                            <span class="pull-left" style="margin-right:5px"><input type="radio" name="sessionsFilter" value="all"></span>
+                            <span class="pull-left">{{ 'coaching.all-sessions'|trans }}</span>
+                        </label>
+                    </div>
+                    <br clear="all"/>
+                    <div class="all" style="display:none">
+                        {% set new_category = '' %}
+                        {% set first = true %}
+                        {% if wikiSessions|length == 0 %}
+                            <div class="blocHeaderSeparator"></div>
+                            {{ 'coaching.no-favorite-sessions'|trans }}
+                        {% else %}
+                            <div class="blocHeaderSeparator"></div>
+                                <table class="table table-bordered wikiSessions">
+                                    <thead>
+                                        <tr>
+                                            <th><center>{{ 'coaching.result'|trans }}</center></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% for wikiSession in wikiSessions %}
+                                        {% if wikiSession.category != 'Défaut' %}
+                                            {% if new_category != wikiSession.category %}
+                                                {% set new_category = wikiSession.category %}
+                                                {% if first == true %}
+                                                    {% set first = false %}
+                                                {% else %}
+                                                    </li>
+                                                    </ul>
+                                                    </div>
+                                                    </tr>
+                                                    </td>
+                                                    
+                                                {% endif %}
+                                                    <tr>
+                                                    <td>
+                                                    <div class="btn-group">
+                                                        <button id="btnGroupVerticalDrop1" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                            {{ wikiSession.category }}
+                                                        <span class="caret"></span>
+                                                        </button>
+                                                    <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop1">
+                                                    <li>
+                                            {% endif %}
+                                            <center>
+                                                    <div class='external-event' class="tooltip" title="{% if wikiSession.detail is null or wikiSession.detail == '' %} - {% else %} {{ wikiSession.detail }} {% endif %}"
+                                                   data-sport_id="{{ wikiSession.sport_id }}"
+                                                   data-sport_code="{{ wikiSession.sport_code }}"
+                                                   data-sport_label="{{ wikiSession.sport_label }}"
+                                                   data-category_id="{{ wikiSession.coachingCategory_id }}"
+                                                   data-category="{{ wikiSession.category }}"
+                                                   data-id="{{ wikiSession.coachingSession_id }}"
+                                                   data-detail="{{ wikiSession.detail }}"
+                                                   data-distance="{{ wikiSession.distance }}"
+                                                   data-duration="{{ wikiSession.duration }}"
+                                                   data-elevation_gain="{{ wikiSession.elevationGain }}"
+                                                   data-elevation_lost="{{ wikiSession.elevationLost }}"
+                                                   data-speed_average="{{ wikiSession.speedAverage }}"
+                                                   data-hr_average="{{ wikiSession.hrAverage }}"
+                                                   data-difficulty_id="{{ wikiSession.difficulty_id }}"
+                                                >{{ wikiSession.session_name }}</div>
+                                            </center>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </li>
+                                    </ul>
+                                    </div>
+                                                </td>
+                                            </tr>
+                                    </tbody>
+                                </table>     
+                        {% endif %}
+                    </div>
+                    <div class="subscriptions">
+                        {% set new_category = '' %}
+                        {% set first = true %}
+                        {% if favoriteSessions|length == 0 %}
+                            <div class="blocHeaderSeparator"></div>
+                            {{ 'coaching.no-favorite-sessions'|trans }}
+                        {% else %}
+                            <div class="blocHeaderSeparator"></div>
+                                <table class="table table-bordered favoriteSessions">
+                                    <thead>
+                                        <tr>
+                                            <th><center>{{ 'coaching.result'|trans }}</center></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        {% for favoriteSession in favoriteSessions %}
+                                        {% if favoriteSession.category != 'Défaut' %}
+                                            {% if new_category != favoriteSession.category %}
+                                                {% set new_category = favoriteSession.category %}
+                                                {% if first == true %}
+                                                    {% set first = false %}
+                                                {% else %}
+                                                    </li>
+                                                    </ul>
+                                                    </div>
+                                                    </tr>
+                                                    </td>
+                                                    
+                                                {% endif %}
+                                                    <tr>
+                                                    <td>
+                                                    <div class="btn-group">
+                                                        <button id="btnGroupVerticalDrop1" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                            {{ favoriteSession.category }}
+                                                        <span class="caret"></span>
+                                                        </button>
+                                                    <ul class="dropdown-menu" role="menu" aria-labelledby="btnGroupVerticalDrop1">
+                                                    <li>
+                                            {% endif %}
+                                            <center>
+                                                    <div class='external-event' class="tooltip" title="{% if favoriteSession.detail is null or favoriteSession.detail == '' %} - {% else %} {{ favoriteSession.detail }} {% endif %}"
+                                                   data-sport_id="{{ favoriteSession.sport_id }}"
+                                                   data-sport_code="{{ favoriteSession.sport_code }}"
+                                                   data-sport_label="{{ favoriteSession.sport_label }}"
+                                                   data-category_id="{{ favoriteSession.coachingCategory_id }}"
+                                                   data-category="{{ favoriteSession.category }}"
+                                                   data-id="{{ favoriteSession.coachingSession_id }}"
+                                                   data-detail="{{ favoriteSession.detail }}"
+                                                   data-distance="{{ favoriteSession.distance }}"
+                                                   data-duration="{{ favoriteSession.duration }}"
+                                                   data-elevation_gain="{{ favoriteSession.elevationGain }}"
+                                                   data-elevation_lost="{{ favoriteSession.elevationLost }}"
+                                                   data-speed_average="{{ favoriteSession.speedAverage }}"
+                                                   data-hr_average="{{ favoriteSession.hrAverage }}"
+                                                   data-difficulty_id="{{ favoriteSession.difficulty_id }}"
+                                                >{{ favoriteSession.session_name }}</div>
+                                            </center>
+                                        {% endif %}
+                                    {% endfor %}
+                                    </li>
+                                    </ul>
+                                    </div>
+                                                </td>
+                                            </tr>
+                                    </tbody>
+                                </table> 
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        <div id="main" class="{% if user is defined and user is not null %}span12{% else %}span9{% endif %}">
+        {% if user is defined and user is not null and (app.user.isAllowedPackPremium or app.user.isAllowedPackElite) or club is defined and club is not null and isManager and club.id == 38 %}
+            {% if isManager is defined and isManager %}
+                <center>
+                    <table id="scheduleRequiredTable" cellpadding="0" cellspacing="0" border="0" width="" class="table table-bordered scheduleRequiredTable">
+                        <thead>
+                            <tr>
+                                <th><center>{{ 'coaching.members'|trans }}</center></th>
+                                <th><center>{{ 'coaching.first-no-session'|trans }}</center></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for key, line in scheduleRequired %}
+                                {% if line.username is not null %}
+                                    <tr id="{{ line.username }}">
+                                        <td class="username">
+                                            <center>{{ line.username }}</center>
+                                        </td>
+                                        <td>
+                                            <center><span class="label label-important">{{ line.missingDate }}</span></center>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </center>
+                <br clear="all"/>
+            {% endif %}
+                <div id="KPIView">
+                    <center>
+                        <img id="KPIViewLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none"/>
+                    </center>
+                    <br clear="all"/>
+                    <div id="KPIViewContainer"></div>
+                </div>
+                <br clear="all"/>
+                <br clear="all"/>
+                <div id="agenda"></div>
+                <br clear="all"/>
+                <div class="blocHeaderSeparator"></div>
+                <br clear="all"/>
+                {% if club is defined and club is not null%}
+                    {% set label = 'clubs' %}
+                {% else %}
+                    {% set label = 'sportif' %}
+                {% endif %}
+                <div class="row-fluid">
+                    <center>
+                        <img id="loaderFlatView" class="" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display: none; padding: 5px 0px 0px 10px">
+                    </center>
+                </div>
+                <br clear="all"/>
+                <div id="flatView">
+                    <center>
+                        <img id="flatViewLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none"/>
+                    </center>
+                    <br clear="all"/>
+                    <div id="flatViewContainer"></div>
+                </div>
+        {% else %}
+            <div class="span12">
+                <div id="agenda"></div>
+            </div>
+        {% endif %}
+        </div>
+        <br clear="all"/>    
+{% endblock content %}

@@ -1,0 +1,131 @@
+<div id="slideout">
+    <img src="{{ asset('img/feedback.png') }}" alt="Feedback" />
+    <div id="slideout_inner">
+        <p class="feedbackEnTete">Remarques, suggestions ?</p>
+        <form id="feedbackForm" class="feedbackForm" action="{{ path('ksUser_postFeedback') }}"  method="post" {{ form_enctype(feedbackForm) }} novalidate="novalidate">
+            {{ form_widget(feedbackForm.description, { attr: {rows: 5, class:"description", style: "width:100%; resize: none;"} }) }}
+            {{ form_rest(feedbackForm) }}     
+        </form>
+        <div>
+            <a href="#" id="bPostFeedback" class="bPostFeedback btn btn-primary" />Envoyer</a>
+            <span class="loader" align="center"><img src="{{ asset('bundles/ksactivity/images/load.gif') }}" alt="Loading" /></span> 
+        </div>
+        <br/>
+        <div class="messages alert alert-info">
+            Feedback transmis, merci !
+        </div>
+    </div>
+</div>
+
+<style>
+   
+    #slideout {
+        z-index:1000;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 35px;
+        padding: 12px 0;
+        text-align: center;
+        background: #49AFCD;
+        -webkit-transition-duration: 0.3s;
+        -moz-transition-duration: 0.3s;
+        -o-transition-duration: 0.3s;
+        transition-duration: 0.3s;
+        -webkit-border-radius: 0 5px 5px 0;
+        -moz-border-radius: 0 5px 5px 0;
+        border-radius: 0 5px 5px 0;
+    }
+    
+    #slideout p.feedbackEnTete {
+        color :  #0074CC;
+        font-size: 1em;
+        font-weight: bold
+    }
+
+    #slideout_inner {
+        position: fixed;
+        top: 60px;
+        left: -250px;
+        background: #49AFCD;
+        width: 200px;
+        padding: 25px;
+        min-height: 170px;
+        -webkit-transition-duration: 0.3s;
+        -moz-transition-duration: 0.3s;
+        -o-transition-duration: 0.3s;
+        transition-duration: 0.3s;
+        text-align: left;
+        -webkit-border-radius: 0 0 5px 0;
+        -moz-border-radius: 0 0 5px 0;
+        border-radius: 0 0 5px 0;
+    }
+
+    #slideout_inner textarea {
+        width: 190px;
+        height: 100px;
+        margin-bottom: 6px;
+    }
+
+    #slideout:hover {
+        left: 250px;
+    }
+
+    #slideout:hover #slideout_inner {
+        left: 0;
+    }
+</style>
+
+<script type="text/javascript">
+    attachPostFeedbackEvent($("a[id=bPostFeedback]"));
+    
+    function attachPostFeedbackEvent(elt) {
+        var slideOutInner = $('#slideout_inner');
+        //var messagesBloc = slideOutInner.find('.messages');
+        var feedbackForm = slideOutInner.find('.feedbackForm');
+        var textareaDescription = feedbackForm.find(".description");
+        var bPostFeedback = slideOutInner.find(".bPostFeedback");
+        var messagesBloc = slideOutInner.find(".messages");
+        var loader = slideOutInner.find('.loader');
+        
+        textareaDescription.html("");
+        textareaDescription.val("");
+        loader.hide();
+        messagesBloc.hide();
+        
+        var postFeedback = function() {
+            bPostFeedback.addClass("disabled");
+            loader.show();
+            $.post(feedbackForm.attr('action'), feedbackForm.serialize(), function(response) {
+                /*usersSearchResultsBloc.html(response.html);
+                usersSearchResultsBloc.show();*/
+                if( response.postResponse == 1 ) {
+                    bPostFeedback.removeClass("disabled");
+                    textareaDescription.html("");
+                    textareaDescription.val("");
+                    messagesBloc.show();
+                } else {
+                    
+                }
+                loader.hide();
+            }).error(function(xqr, error) {
+                console.log("error " + error);
+            });
+        };
+        
+        textareaDescription.focus(function() {
+            textareaDescription.html("");
+            textareaDescription.val("");
+            messagesBloc.hide();
+        });
+        
+        feedbackForm.submit(function() {
+            postFeedback()
+            return false;
+        });
+
+        elt.click(function(e) {
+            postFeedback();
+        });
+    }
+</script>

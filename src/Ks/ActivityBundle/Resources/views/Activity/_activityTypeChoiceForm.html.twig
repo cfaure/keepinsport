@@ -1,0 +1,119 @@
+<div class="thumbnail">
+    <ul id="activityTypeList" class="nav nav-pills" style="margin-bottom:0px">
+        <li rel="all" class="active">
+            <a href="#">{{ "activity.all"|trans }}</a>
+        </li>
+        <li rel="session">
+            <a href="#">{{ "activity.sport-activity"|transchoice(2) }}</a>
+        </li>
+        <li rel="status">
+            <a href="#">{{ "activity.status"|trans }}</a>
+        </li>
+        <li rel="photo">
+            <a href="#">{{ "activity.photos"|trans }}</a>
+        </li>
+        <li rel="video">
+            <a href="#">{{ "activity.video"|transchoice(2) }}</a>
+        </li>
+        <li rel="link">
+            <a href="#"> {{ "activity.link"|transchoice(2) }}</a>
+        </li>
+        {#<li rel="article">
+            <a href="#">Articles</a>
+        </li>#}
+        {#<li rel="options" class="dropdown" style="float:right">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="icon-cog"></i>
+            <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            <!-- links -->
+            </ul>
+        </li>#}
+    </ul>
+</div>
+
+<script type="text/javascript">
+
+    var ajaxRequests = new Array();
+
+    $("#activityTypeList > li[rel!=options]").unbind();
+    $("#activityTypeList > li[rel!=options]").click(function() {
+        
+        liAll = $("#activityTypeList > li[rel=all]");
+        li = $( this );
+
+        //Si on a cliqué sur autre chose que "Tout"
+        if ( li.attr('rel') != liAll.attr('rel')) {
+            //on déselectionne "Tout"
+            if( liAll.hasClass('active') ) {
+                liAll.removeClass('active');
+            }
+
+            if( $( this ).hasClass('active') ) {
+                $( this ).removeClass('active');
+
+                //Si tout est déselectionné, on selectionne "Tout"
+                if ( $("#activityTypeList > li.active").size() == 0 ) {
+                    liAll.addClass('active');
+                }
+            } else {
+                $( this ).addClass('active');
+            }
+        } 
+        //on a cliqué sur "Tout"
+        else {
+            //On déselectionne les autres options
+            $("#activityTypeList > li[rel!=options]").each(function(key, value) {
+                if( $( this ).hasClass('active') ) {
+                    $( this ).removeClass('active');
+                }
+            });
+
+            liAll.addClass('active');
+
+        }
+
+        //on récupère les catégories selectionnées
+        activitiesTypes = getActivityTypesSelect();
+
+        //on récupère les from users selectionnés
+        fromUsers = getFromUsersSelect();
+        
+
+        $('#activitiesBlockList').html('');
+        for ( var i = 0; i < ajaxRequests.length; i++) {
+            ajaxRequests[i].abort();
+        }
+        ajaxRequests = new Array();
+        ajaxRequests.push(loadActivities(0, activitiesTypes, fromUsers, null, null, new Boolean(true)));
+
+        return false;
+    });
+    
+    {# FIXME: code en double #}
+    function getActivityTypesSelect() {
+        activitiesTypes = new Array();
+        $("#activityTypeList > li[rel!=options]").each(function(key, value) {
+            if( $(this).hasClass('active') && $(this).attr('rel') != 'all') {
+                activitiesTypes.push($(this).attr('rel'));
+            }
+        });
+        return activitiesTypes;
+    }
+    
+    function getFromUsersSelect() {
+        //On récupère la catégorie active entre (Toutes, moi , tous mes amis)
+        if ( $("#fromUserList").size() > 0 ) {
+            $("#fromUserList > li[rel!=options]").each(function(key, value) {
+                if( $(this).hasClass('active') ) {
+                    fromUsers = $(this).attr("rel");
+                }
+            });
+        } else {
+            //fromUsers = new Array();
+            fromUsers = new Array("{{ user.id }}");
+        }
+        return fromUsers;
+    }
+</script>

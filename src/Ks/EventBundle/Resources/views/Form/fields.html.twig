@@ -1,0 +1,32 @@
+{% block placetype_widget %}
+    {% spaceless %}
+        <div {{ block('widget_container_attributes') }} class="localisationBloc">
+            <div class="fullAdressBloc ">
+                {{ form_widget(form.fullAdress, { attr: { "style":"height : 34px; resize : none;" } }) }}
+            </div>
+
+            <div class="infosToHideBloc">
+                {{ form_rest(form) }}
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var containerIdStr          = '{{ block('widget_container_attributes') }}';
+            var containerId             = containerIdStr.substring(4, containerIdStr.length -1);
+
+            var $localisationBloc       = $("div#"+ containerId +".localisationBloc");
+            var $bAddLocalisation       = $localisationBloc.find(".bAddLocalisation");
+            var $fullAdressBloc         = $localisationBloc.find(".fullAdressBloc");
+            var $fullAdress             = $fullAdressBloc.find("textarea.full_adress");
+            var $bRemoveLocalisation    = $fullAdressBloc.find(".bRemoveLocalisation");
+            var $infosToHideBloc        = $localisationBloc.find("div.infosToHideBloc");
+
+            if( typeof(google) !== 'undefined' ) {
+                attachAutocompleteGmap($localisationBloc);
+            } else {
+                $localisationBloc.hide();
+            }
+        </script>
+
+    {% endspaceless %}
+{% endblock %}

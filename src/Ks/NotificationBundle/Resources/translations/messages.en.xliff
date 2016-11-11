@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>friendRequests.accept</source>
+                <target>Accept the friend request</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>friendRequests.refuse</source>
+                <target>Refuse the friend request</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>friends.label</source>
+                <target>Friends</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>notifications.label</source>
+                <target>Notifications</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>notifications.do_not_have_friends_request</source>
+                <target>You don't have a pending friend request.</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>notifications.more</source>
+                <target>More notifications</target>
+            </trans-unit>  
+            <trans-unit id="7">
+                <source>notifications.type</source>
+                <target>Notification type</target>
+            </trans-unit>  
+            <trans-unit id="8">
+                <source>notifications.text</source>
+                <target>Notification message</target>
+            </trans-unit>  
+            <trans-unit id="9">
+                <source>notifications.created_at</source>
+                <target>Created at</target>
+            </trans-unit>  
+            <trans-unit id="10">
+                <source>notifications.from_user</source>
+                <target>From user</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>notifications.notificationsList</source>
+                <target>Notifications list</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

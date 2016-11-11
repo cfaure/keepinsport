@@ -1,0 +1,45 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>{{ 'users.club_list_member'|trans }} : {{ club.name }}</h1>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td>{{ entity.member.firstname }}</td>
+            <td>{{ entity.member.lastname }}</td>
+            <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('ks_member_edit',  { 'id': entity.member.id , 'idClub': club.id } ) }}"> {{ 'crud.edit'|trans }}</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        
+        <a href="{{ path('ks_member_new', { 'idClub': club.id }) }}">
+            {{ 'users.club_add_a_member'|trans }}
+        </a>
+    </li>
+</ul>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+#nextEvolutions 
+{
+    height:150px;
+    width:100%;
+    /*margin-right: 40px;
+    padding:14px;*/
+    background: url("../../../img/loader_ks_57.gif") no-repeat 50% 50%;
+    /*border:1px solid #ddd;*/
+    /*box-shadow: 0px 1px 3px #CCCCCC;*/
+    
+    /* Do not alter the below settings*/
+    position:relative;
+    font-size:0.9em;
+}
+#nextEvolutions>* {display:none;}
+
+#lastActivities 
+{
+    height:185px;
+    width:100%;
+    /*margin-right: 40px;
+    padding:14px;*/
+    background: url("../../../img/loader_ks_57.gif") no-repeat 50% 50%;
+    /*border:1px solid #ddd;*/
+    /*box-shadow: 0px 1px 3px #CCCCCC;*/
+    
+    /* Do not alter the below settings*/
+    position:relative;
+    font-size:1em;
+}
+#lastActivities>* {display:none;}
+
+#friendsAroundMe 
+{
+    height:185px;
+    width:100%;
+    /*margin-right: 40px;
+    padding:14px;*/
+    background: url("../../../img/loader_ks_57.gif") no-repeat 50% 50%;
+    /*border:1px solid #ddd;*/
+    /*box-shadow: 0px 1px 3px #CCCCCC;*/
+    
+    /* Do not alter the below settings*/
+    position:relative;
+    font-size:1em;
+}
+#friendsAroundMe>* {display:none;}
+
+#lastArticlesModified 
+{
+    height:150px;
+    width:250px;
+    /*margin-right: 40px;
+    padding:14px;*/
+    background: url("../../../img/loader_ks_57.gif") no-repeat 50% 50%;
+    /*border:1px solid #ddd;*/
+    /*box-shadow: 0px 1px 3px #CCCCCC;*/
+    
+    /* Do not alter the below settings*/
+    position:relative;
+    font-size:0.9em;
+}
+#lastArticlesModified>* {display:none;}
+
+#loginComments 
+{
+    height:350px;
+    /*width:150px;*/
+    /*margin-right: 40px;
+    padding:14px;*/
+    background: url("../../../img/loader_ks_57.gif") no-repeat 50% 50%;
+    /*border:1px solid #ddd;*/
+    /*box-shadow: 0px 1px 3px #CCCCCC;*/
+    
+    /* Do not alter the below settings*/
+    position:relative;
+    font-size:1em;
+}
+#loginComments>* {display:none;}
+  

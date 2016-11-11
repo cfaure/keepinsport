@@ -1,0 +1,47 @@
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class='modal-header'>
+                <a class='close' data-dismiss='modal'>&times;</a>
+                <h3 id="context" class="sportif">Information</h3>
+            </div>
+            <div class='modal-body'></div>
+            <div class='modal-footer'>
+                <a href='#' class='cancel btn' data-dismiss='modal'>Fermer</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">    
+    function showInformation(information, $context) {
+        var infoModal = $("#infoModal");
+        var modalBody = infoModal.find('.modal-body');
+        var cancelButton = infoModal.find('a.cancel');
+        
+        if ($context != null) {
+            $('#context').removeClass('sportif');
+            $('#context').addClass($context);
+        }
+        
+        modalBody.html(information);
+
+        var closeModal = function() {
+            modalBody.html("");
+            infoModal.modal('hide');
+        }
+        
+        infoModal.on('shown', function() {
+            setTimeout(closeModal,3000);
+        });
+
+        /*infoModal.on('hide', function() {
+            closeModal();   
+        });*/
+
+        infoModal.modal('show');
+        infoModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+            e.stopPropagation();
+        });
+        
+    }
+</script>

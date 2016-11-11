@@ -1,0 +1,151 @@
+{% if context is not defined %}
+    {% set context = 'default' %}
+{% endif %}
+
+{% if context == 'shareToFB' %}
+    
+    {# FMO : permet d'afficher une minimap si utilisation d'un GPS sur l'activité #}
+    <script type="text/javascript">
+        {{ waypointsActivity|raw }}
+        
+        {% if waypointsActivity|length != 0 %}
+            if (Object.keys(waypointsActivity.points).length != 0) {
+                $map = new google.maps.Map(document.getElementById("gmap"), {mapTypeId: google.maps.MapTypeId.TERRAIN});
+                $points= new Array();
+                $mapPoints = new Array();
+                //console.log(waypoints.id);
+                if (Object.keys(waypointsActivity.points).length != 0) {
+                    $firstPoint = Object.keys(waypointsActivity.points)[0];
+                    $lastPoint = Object.keys(waypointsActivity.points)[Object.keys(waypointsActivity.points).length - 1];
+
+                    $lat_min = waypointsActivity.points[$firstPoint].lat;
+                    $lat_max = waypointsActivity.points[$firstPoint].lat;
+                    $lon_min = waypointsActivity.points[$firstPoint].lon;
+                    $lon_max = waypointsActivity.points[$firstPoint].lon;
+
+
+                    $i=0;
+                    $j=0;
+                    $iStep = Math.ceil(Object.keys(waypointsActivity.points).length / 500);
+                    if ($iStep == 0) $iStep = 1;
+                    $.each(waypointsActivity.points, function(key2, waypoint) {
+                        //console.log(key2+'lat/lon='+waypoint.lat+'/'+waypoint.lon);
+                        if ($i % $iStep == 0) { // FMO: on ne prend qu'1 relevé sur $iStep sinon l'appel à l'API google plante sur des gros tracés (GPX par exemple)
+                            $mapPoints.push(
+                                new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+                            );
+                            if ( waypoint.lat < $lat_min ) $lat_min = waypoint.lat;
+                            if ( waypoint.lat > $lat_max ) $lat_max = waypoint.lat;
+                            if ( waypoint.lon < $lon_min ) $lon_min = waypoint.lon;
+                            if ( waypoint.lon > $lon_max ) $lon_max = waypoint.lon;
+
+                            $points[$j] = [waypoint.lat,  waypoint.lon];
+                            $j++;
+                        }
+                        $i++;
+                    });
+
+                    //On trace le parcours 
+                    $traceRoute = new google.maps.Polyline({
+                        path: $mapPoints,
+                        strokeColor: "#2581BA",
+                        strokeOpacity: 1.0,
+                        strokeWeight: 3
+                    });
+
+                    $map.setCenter(new google.maps.LatLng(
+                        (($lat_max + $lat_min) / 2.0),
+                        (($lon_max + $lon_min) / 2.0)
+                    ));
+
+                    //$map.fitBounds($traceRoute.Bounds()); en commentaire sinon ça plante ?!
+                    $traceRoute.setMap($map);
+
+                    //$zoom = $map.getZoom();
+                    //console.log($zoom);
+
+                    $encoded = createEncodings($points);
+                    $path = "weight:3%7Ccolor:0x0000ff%7Cenc:"+ $encoded;//.replace("\\\\", "\\");
+
+                    $html = '<img id="' + waypointsActivity.id + '" crossorigin="anonymous" border="0" src="//maps.googleapis.com/maps/api/staticmap?center=' + (($lat_max + $lat_min) / 2.0) + ',' + (($lon_max + $lon_min) / 2.0);
+                    //$html += '&zoom=' + $zoom;
+                    $html += '&size=472x394&maptype='+google.maps.MapTypeId.TERRAIN+'&path='+$path+'"</img>';
+                    //console.log($html);
+                    $("#minimap_"+waypointsActivity.id).html($html);
+                }
+            };
+        {% endif %}
+    </script>
+
+{% endif %}
+
+{% if activity.type == 'article' and isShared is defined and isShared %}
+    {# Pas de headline dans le cas d'une collaboration à un article #}
+{% else %}
+    {% if context == 'details' %}
+        <div class="bloc1">
+            <div id="stepActivityDetailHeader" class="container">
+                {% include 'KsActivityBundle:Activity:_activityHeadline.html.twig' with {'context' : context }%}
+            </div>
+        </div>
+    {% else %}
+        {% include 'KsActivityBundle:Activity:_activityHeadline.html.twig' with {'context' : context }%}
+    {% endif %}
+{% endif %} 
+
+{% if connectedActivity is defined and connectedActivity is not null %}
+    {% if activity.label|length > 0 %}
+        <p>test{{ activity.label|nl2br }}</p>
+    {% endif %}
+    {% include 'KsActivityBundle:Activity:_activityBloc.html.twig' with {activity: connectedActivity, isShared: true, connectedActivity: null } %}
+    <br style="clear:both" />
+    {% if isShared is not defined %}
+        {% if ( mail is not defined or ( mail is defined and not mail ) )%} 
+            <div class="activityActionsBloc">
+                {% include 'KsActivityBundle:Activity:_activityActions.html.twig' with {'isLight' : false }%}
+            </div>
+            {#<div class="visible-phone visible-tablet">
+                {% include 'KsActivityBundle:Activity:_activityActions.html.twig' with {'isLight' : true }%}
+            </div>#}
+
+            <br clear="all"/>
+        {% endif %}
+        {% include 'KsActivityBundle:Comment:_commentsBloc.html.twig' %}
+    {% endif %}
+{% else %}
+
+    {% if activity.type == 'video' or activity.type == 'link' %}
+        {% include 'KsActivityBundle:Activity:_activityLink_content.html.twig' %}
+    {% elseif activity.type == 'article' %}
+        {% include 'KsActivityBundle:Wikisport:_preview.html.twig' %}
+    {% elseif activity.type == 'sportsmen_search' %}
+        {% include 'KsActivityBundle:SportsmenSearch:_content.html.twig' %}
+    {#% elseif connectedActivity is not null %}
+            aa
+        {% include 'KsActivityBundle:Activity:_activityBloc.html.twig' with {'activity' : connectedActivity} %#}
+    {% else %}
+        {% include 'KsActivityBundle:Activity:_activityContent.html.twig' %}
+    {% endif %}
+
+    {% include 'KsActivityBundle:PhotoAlbum:_photos.html.twig' %}
+
+
+
+    {% if isShared is not defined or ( isShared is defined and not isShared )%}
+        {% if ( mail is not defined or ( mail is defined and not mail ) )%} 
+            <div class="activityActionsBloc {% if context == 'details' %}container{% endif %}">
+                {% include 'KsActivityBundle:Activity:_activityActions.html.twig' with {'isLight' : false }%}
+            </div>
+            <br>
+            {#<div class="visible-phone visible-tablet">
+                {% include 'KsActivityBundle:Activity:_activityActions.html.twig' with {'isLight' : true }%}
+            </div>#}
+        {% endif %}
+        <div {% if context == 'details' %}class="container"{% endif %}>    
+            {% include 'KsActivityBundle:Comment:_commentsBloc.html.twig' %}
+        </div>
+    {% endif %}
+{% endif %}
+            
+            
+            

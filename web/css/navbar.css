@@ -1,0 +1,217 @@
+/* 
+    Document   : navbar
+    Created on : 07 jmars. 2013, 16:41:33
+    Author     : Cédric Delpoux
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+
+/*.nav > li > a > img {
+    max-width: 25px;
+}
+
+.navbar .nav > li > a {
+    padding : 10px 15px 12px 15px;
+}
+
+.navbar .nav > li > a.icon {
+    padding : 10px 3px 12px 3px;
+}
+
+.navbar-fixed-top-second {
+    left: 0;
+    margin-bottom: 0;
+    position: fixed;
+    right: 0;
+    top : 42px;
+    z-index: 1030;
+    display:none;
+    text-transform: uppercase;
+}*/
+
+/*.navbar-fixed-top-second .nav > li > a, .navbar-fixed-top-second .nav > li > a:hover {
+    color:white;
+    text-shadow: 0;
+}
+
+.navbar-fixed-top-second .container {
+  width: 940px;
+}
+
+@media (max-width: 767px) {
+    .navbar .container, .navbar-fixed-top-second .container {
+        width: 724px;
+    }
+}
+@media (min-width: 768px) and (max-width: 979px) {
+   .navbar .container, .navbar-fixed-top-second .container {
+        width: 724px;
+    }
+}
+@media (max-width: 979px) {
+    .navbar .container, .navbar-fixed-top-second .container {
+        width: 1170px;
+    }
+}*/
+@media (min-width: 1200px) {
+    .navbar .container, .navbar-fixed-top-second .container {
+        width: 1170px;
+    }
+}
+
+
+#navbar-sportif .navbar-inner { 
+    background-color: #1787C7;
+    background: -webkit-linear-gradient( top, #1787C7, #126899);
+    background:    -moz-linear-gradient( top, #1787C7, #126899);
+    background:     -ms-linear-gradient( top, #1787C7, #126899);
+    background:      -o-linear-gradient( top, #1787C7, #126899);
+    background-image: linear-gradient(to bottom, #1787C7, #126899);
+    background-repeat: repeat-x;
+    border: 0;
+} 
+
+#navbar-friends .navbar-inner { 
+    background-color: #12A24A;
+    background: -webkit-linear-gradient( top, #12A24A, #0D7435);
+    background:    -moz-linear-gradient( top, #12A24A, #0D7435);
+    background:     -ms-linear-gradient( top, #12A24A, #0D7435);
+    background:      -o-linear-gradient( top, #12A24A, #0D7435);
+    background-image: linear-gradient(to bottom, #12A24A, #0D7435);
+    background-repeat: repeat-x;
+    border: 0;
+} 
+
+#navbar-clubs .navbar-inner { 
+    background-color: #F8C70B;
+    background: -webkit-linear-gradient( top, #F8C70B, #caa206);
+    background:    -moz-linear-gradient( top, #F8C70B, #caa206);
+    background:     -ms-linear-gradient( top, #F8C70B, #caa206);
+    background:      -o-linear-gradient( top, #F8C70B, #caa206);
+    background-image: linear-gradient(to bottom, #F8C70B, #caa206);
+    background-repeat: repeat-x;
+    border: 0;
+} 
+
+#navbar-wikisport .navbar-inner { 
+    background-color: #DB2033;
+    background: -webkit-linear-gradient( top, #DB2033, #af1929);
+    background:    -moz-linear-gradient( top, #DB2033, #af1929);
+    background:     -ms-linear-gradient( top, #DB2033, #af1929);
+    background:      -o-linear-gradient( top, #DB2033, #af1929);
+    background-image: linear-gradient(to bottom, #DB2033, #af1929);
+    background-repeat: repeat-x;
+    border: 0;
+} 
+
+#navbar-shops .navbar-inner { 
+    background-color: white;
+    border: 0;
+    color:black;
+} 
+
+.navbar {
+    margin-bottom:0;
+}
+
+.navbar-inner {
+    border-radius: 0px;
+}
+
+#navbar-sportif, #navbar-friends, #navbar-clubs, #navbar-wikisport, #navbar-shops {
+    display : none;
+}
+
+.navbar-second {
+    box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.067);
+    /*margin-bottom:0;*/
+}
+
+.navbar-second .navbar-inner {
+    min-height:20px;
+}
+
+.navbar-second .nav > li > a {
+    font-size:12px;
+    padding-top:3px;
+    padding-bottom:7px;
+    text-shadow: none;
+}
+
+.navbar-second .nav > li.shops > a {
+    font-size:12px;
+    padding-top:3px;
+    padding-bottom:7px;
+    text-shadow: none;
+}
+
+.navbar-third .navbar-inner {
+    min-height:17px;
+    background-color: #F8C70B;
+    border:0;
+}
+
+.navbar-inverse .nav > li > a {
+    min-height:17px;
+    border:0;
+    font-size:18px;
+    padding-left:4px;
+    padding-right:4px;
+}
+
+.navbar-third .nav > li > a {
+    font-size:10px;
+    padding-top:2px;
+    padding-bottom:6px;
+    text-shadow: none;
+    line-height: 25px;
+}
+
+.navbar .brand, .navbar .nav > li.sportif > a, .navbar .nav > li.friends > a, .navbar .nav > li.clubs > a, .navbar .nav > li.wikisport > a {
+    text-transform :uppercase;
+    color:white;
+}
+
+.navbar .nav > li.shops > a {
+    text-transform :uppercase;
+    color:white;
+}
+
+.navbar-second .nav > li.shops > a {
+    color:black;
+}
+
+.navbar-second .nav > li:hover > a, .navbar-second .nav > li.select > a,
+.navbar-third .nav > li:hover > a, .navbar-third .nav > li.select > a{
+    color : black;
+}
+
+.navbar .nav > li.sportif:hover, #navbar-sportif li.sportif:hover, .navbar .nav > li.sportif.select {
+    background-color: #1787C7;
+    cursor:  pointer;
+}
+.navbar .nav > li.friends:hover, #navbar-friends li.friends:hover, .navbar .nav > li.friends.select{
+    background-color: #12A24A;
+    cursor:  pointer;
+}
+.navbar .nav > li.clubs:hover, #navbar-clubs li.clubs:hover, .navbar .nav > li.clubs.select {
+    background-color: #F8C70B;
+    cursor:  pointer;
+}
+.navbar .nav > li.wikisport:hover, #navbar-wikisport li.wikisport:hover, .navbar .nav > li.wikisport.select {
+    background-color: #DB2033;
+    cursor:  pointer;
+}
+
+.navbar .nav > li.shops:hover > a {
+    background-color: white;
+    color : black;
+    cursor:  pointer;
+}
+
+.navbar .nav > li.shops.select > a {
+    background-color: white;
+    color:black;
+}

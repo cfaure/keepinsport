@@ -1,0 +1,81 @@
+{% block content %}
+
+<h3>{{ 'users.activity_sessions_in_stand_by'|trans }} : </h3>
+
+
+{% if aActivities is defined %}
+
+<table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{{ 'users.type_activity'|trans }}</th>
+                <th>{{ 'users.date_start_activity'|trans }}</th>
+                <th>{{ 'users.duration_activity'|trans }}</th>
+                <th>{{ 'users.distance_activity'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for activity in aActivities %}
+            <tr>
+                <td>{{ activity.type }}</td>
+                <td>{{ activity.start_time|date('d/m/Y H:i:s') }}</td>
+                <td>{{ activity.duration|hourMinutes }}</td>
+                {% if activity.total_distance is defined %}
+                    <td>{{ activity.total_distance|metersToKm }} Km</td>
+                {% else %}
+                    <td>NC</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="alert alert-info">
+        Nous avons détecté que vous aviez <strong>{{ nomberActivitites }}</strong> activités Runkeeper
+    </div>
+
+    <a class="btn btn-primary" href="#" id="btnSyncActivitiesWithRunKeeper">
+        Synchroniser toutes mes activités Runkeeper
+    </a>
+
+<script type="text/javascript">
+  //Creation de fichier jobs lors de l'acceptation de la synchro
+$("#btnSyncActivitiesWithRunKeeper").click(function() {
+    
+     var syncRunkeeperAccountModal = $("#syncRunkeeperAccountModal");
+     var formActivitiesRunkeeper = syncRunkeeperAccountModal.find('.formActivitiesRunkeeper');
+
+    $.post(Routing.generate('ksyncRunkeeper_createJob'), {
+                },
+    function(response) {
+        $("#valid-runkeep").show();
+        if (response.syncResponse==1) {
+            
+            formActivitiesRunkeeper.html("<div class='alert alert-success'>"+response.successMessage+"</div>");
+            formActivitiesRunkeeper.show();
+
+            //recharge la page quand on clique sur ok 
+            $("#valid-runkeep").click(function() {
+                //window.location.href = window.opener.href;
+                splitArray = window.location.href.split("?");
+                window.location.href = splitArray[0];
+                //console.log(splitArray[0]);
+            });
+            
+            
+        } else {
+            formActivitiesRunkeeper.html("<div class='alert alert-warning'>"+response.errorMessage+"</div>");
+            formActivitiesRunkeeper.show();
+            
+        }
+    }).fail(function(jqXHR, textStatus) {
+        console.log("error " + textStatus);
+    });
+});   
+</script> 
+
+
+
+{% endif %}
+    
+{% endblock %}

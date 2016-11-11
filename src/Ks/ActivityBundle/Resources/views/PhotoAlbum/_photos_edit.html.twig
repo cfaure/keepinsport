@@ -1,0 +1,91 @@
+{% if activity.photos is defined and activity.photos is not null %}
+    <br clear="all"/>
+    {% if activity.photos|length > 0 %} 
+        Clique sur la photo pour la "flouter", elle sera supprimée.
+    {% endif %}
+    <div id="thumbs">
+        {% for key, photo in activity.photos %}
+            {% set deprecatedUrl = asset('img/activities/' ~ activity.id ~ '/' ~ photo.id ~ photo.ext ) %}
+            {% set originalUrl = asset('img/activities/' ~ activity.id ~ '/original/' ~ photo.id ~ photo.ext ) %}
+            {% set thumbnailUrl = asset('img/activities/' ~ activity.id ~ '/thumbnail/' ~ photo.id ~ photo.ext ) %}
+            
+            {% if edition is defined and edition %}
+                {% set lightbox = "lightbox_" ~ activity.id %}
+            {% else %}
+            {% endif %}
+            <div class="thumb" key="{{ key }}">
+                {% if originalUrl|issetImg %}
+                    <a href="#" title="">
+                        {% if thumbnailUrl|issetImg %}
+                            <img class="photoForGallery" src="{{ thumbnailUrl }}" alt="" >
+                        {% else %}
+                            <img class="photoForGallery" src="{{ originalUrl }}" alt="" >
+                        {% endif %}
+                    </a>
+                {% else %}
+                    {% if deprecatedUrl|issetImg %}
+                        <a href="#" title="">
+                            <img class="photoForGallery" src="{{ deprecatedUrl }}" alt="" >
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+             <input id="cb_delete_photo_{{ key }}" class="photos_to_delete" style="display:none" type="checkbox" value="{{ photo.id ~ photo.ext }}">
+        {% endfor %}
+    </div>
+    
+    <style>
+        #thumbs{
+            margin: auto;
+            padding: 0;
+            -moz-box-shadow:0px 0px 10px #000;
+            -webkit-box-shadow:0px 0px 10px #000;
+        }
+
+        .thumb{
+            margin:0;padding: 0;
+            position:relative;
+            /*width:240px;
+            height:150px;*/
+            overflow:hidden;
+            list-style-type:none;
+            float:left;
+
+        }
+
+        .thumb a{text-decoration:none;}
+
+        /*.thumb img{border:none;}*/
+
+        .blur-clone{
+            position:absolute;
+        }
+
+        .blur-meta{
+            width:240px;height:150px;
+            position:absolute;
+            bottom:0;right:0;
+            text-align:right;
+            font-family:'Fontdiner Swanky';
+            font-size:16px;
+            background-color:#fff;
+            color:#000;	
+        }
+
+        .blur-meta span{
+            position:absolute;
+            bottom:0;right:0;
+            padding:3px 5px;
+            width:240px;
+        }
+    </style>
+    <script type="text/javascript">
+        var $thumbs = $(".thumb");
+        blurImages($thumbs);
+    </script>
+        
+{% endif %}
+
+
+
+    

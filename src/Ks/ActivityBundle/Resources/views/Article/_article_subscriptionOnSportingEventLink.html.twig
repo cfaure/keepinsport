@@ -1,0 +1,25 @@
+{#<span id="participateSportingEventBloc-{{ article.id }}">
+    {% if app.user|participatesInArticleSportEvent(article) %}
+        <a class="btn btn-mini btn-info" rel="participateAnymoreArticleSportingEventTrigger-{{ article.id }}" href="{{ path('ksArticle_removeParticipationInArticleSportingEvent', {'articleId': article.id}) }}">Je ne participe pas à cet événement</a>
+    {% else %}
+        <a class="btn btn-mini btn-info" rel="participateArticleSportingEventTrigger-{{ article.id }}" href="{{ path('ksArticle_participationInArticleSportingEvent', {'articleId': article.id}) }}">Je participe à cet événement</a>
+    {% endif %}
+</span>
+    
+<script type="text/javascript">
+    attachNotParticipateAnymoreInArticleSportingEvent($('a[rel="participateAnymoreArticleSportingEventTrigger-{{ article.id }}"]'));
+    attachParticipateInArticleSportingEvent($('a[rel="participateArticleSportingEventTrigger-{{ article.id }}"]'));
+</script>#}
+
+<span id="participateSportingEventBloc-{{ article.id }}">
+    {% if article.event|userParticipatesEvent(app.user) %}
+        <a class="btn btn-mini btn-info" rel="participateAnymoreArticleSportingEventTrigger-{{ article.id }}" href="{{ path('ksArticle_removeParticipationInArticleSportingEvent', {'articleId': article.id}) }}">Je ne participe pas à cet événement</a>
+    {% else %}
+        <a class="btn btn-mini btn-info" rel="participateArticleSportingEventTrigger-{{ article.id }}" href="{{ path('ksArticle_participationInArticleSportingEvent', {'articleId': article.id}) }}">Je participe à cet événement</a>
+    {% endif %}
+</span>
+    
+<script type="text/javascript">
+    attachNotParticipateAnymoreInArticleSportingEvent($('a[rel="participateAnymoreArticleSportingEventTrigger-{{ article.id }}"]'));
+    attachParticipateInArticleSportingEvent($('a[rel="participateArticleSportingEventTrigger-{{ article.id }}"]'));
+</script>

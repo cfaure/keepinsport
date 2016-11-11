@@ -1,0 +1,9 @@
+<div class="alert alert-info">
+    <a class="close" data-dismiss="alert" href="#">×</a>
+    <h4 class="alert-heading">Differences</h4>
+    <hr/>
+    {% include 'KsActivityBundle:Article:_article_tags.html.twig'  with { 'tags' : tags, 'articleTagsId' : actualArticleTags } %}
+    <br/>
+    {% include 'KsActivityBundle:Article:_article_tags.html.twig'  with { 'tags' : tags, 'articleTagsId' : versionArticleTags } %}
+   
+</div>

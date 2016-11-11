@@ -1,0 +1,1063 @@
+{#FMO :  en mode création l'activité n'existe pas encore donc on part sur user->getId() pour sauvegarder une image du canvas pour la poster sur FB #}
+{% set activityId = app.user.id %}
+
+{% if sport_category_code == "team_sport" %}
+    {% if activity is not defined %}
+        {% set action = path('ksActivity_publishTeamSportSession', {"sportId" : sportId, "clubId" : clubId }) %}
+    {% else %}
+        {% set action = path('ksActivity_updateTeamSportSession', {"activityId" : activity.id }) %}
+    {% endif %}
+{% elseif sport_category_code == "endurance" %}
+    {% if activity is not defined %}
+        {% set action = path('ksActivity_publishEnduranceSession', {"sportId" : sportId, "clubId" : clubId }) %}
+    {% else %}
+        {% set action = path('ksActivity_updateEnduranceSession', {"activityId" : activity.id }) %}
+    {% endif %}
+{% elseif sport_category_code == "endurance_under_water" %}
+    {% if activity is not defined %}
+        {% set action = path('ksActivity_publishEnduranceSession', {"sportId" : sportId, "clubId" : clubId }) %}
+    {% else %}
+        {% set action = path('ksActivity_updateEnduranceSession', {"activityId" : activity.id }) %}
+    {% endif %}
+{% elseif sport_category_code == "other" %}
+    {% if activity is not defined %}
+        {% set action = path('ksActivity_publishActivitySession', {"sportId" : sportId, "clubId" : clubId }) %}
+    {% else %}
+        {% set action = path('ksActivity_updateActivitySession', {"activityId" : activity.id }) %}
+    {% endif %}
+{% endif %}
+
+ {% if activity is defined and activity is not null and (sportId is not defined or sportId is null) %}
+     {% set sportId = activity.sport.id %}
+{% endif %}
+
+{% if sport_category_code == "endurance" %} {#and activity is not defined #}
+    <!--bloc2-->
+    <div class="bloc2">
+        <div id="gpxImportBloc" class="container">
+            <h3 class="title">Utilisation d'un fichier GPX <span class="mini">(facultatif)</span></h3>
+            <div class="photo">
+                {% if sport_category_code == "endurance" %}
+                    <div class="subtitle">
+                        <span id="checkboxSRTM" rel="tooltip" title="{{ "actions.SRTM-tooltip"|trans }}"><input name="checkboxSRTM" type="checkbox"> </span> {{ 'actions.SRTM'|trans }}
+                    </div>
+                {% endif %}
+                <br clear="all"/>    
+                <div id="jqueryFileUpload_gpx">
+                    {% include 'KsActivityBundle:Activity:uploadGPX.html.twig' with {'uploadDirName' : 'gpx'} %}
+                </div>
+            </div>
+        </div>
+    </div><!--/bloc2-->
+{% endif %}
+
+<br clear="all"/>
+            
+<div id="shareFacebookJsHtml">
+</div>
+
+<form id="fActivitySessionForm" class="sportSessionForm" action="{{ action }}"  method="post" enctype="multipart/form-data" novalidate="novalidate">
+     
+    <!--bloc3-->
+    <div id="activityDetailBlocHeader" class="bloc3">
+        <div class="container">
+            <div class="row tab1-activite">
+                <div class="col-md-3">
+                    <ul>
+                        <li>Date</li>
+                        <li>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></div>
+                                    {{ form_widget(form.issuedAt.date, { attr: { class:"datepicker form-control"} }) }}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <ul>
+                        <li>Heure</li>
+                        <li>
+                            <div class="form-group">
+                                <div class="input-append bootstrap-timepicker">
+                                    {{ form_widget(form.issuedAt.time, { attr: { class:"timepicker form-control" } }) }}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <ul>
+                        <li>Durée</li>
+                        <li>
+                            <div class="form-group">
+                                <div class="input-append bootstrap-timepicker">
+                                    {{ form_widget(form.duration, { attr: { class:"durationpicker form-control" } }) }}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-5">
+                    <ul>
+                        <li>Lieu</li>
+                        <li>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-globe"></span></div>
+                                    {{ form_widget(form.place) }}
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div><!--/.container-->
+    </div><!--/bloc3-->
+    
+    <!--bloc4-->
+    <div class="bloc4">
+        <div class="container">
+            <div id="activityDetailBlocDescription" class="col-md-4">
+                <div class="form-group">
+                    {% if isDone is defined and isDone == 1 %} {% set description = 'activity.description'|trans %} {% else %} {% set description = 'activity.reason'|trans %} {% endif %}
+                    <div class="title bleu">{{ description }}</div>
+                    {% set heightTextArea = 380 %}
+                    {% if sport_category_code == "team_sport" %}
+                        {% set heightTextArea = 380 %}
+                    {% endif %}
+                    {{ form_widget(form.description, { attr: {class: "form-control", style: " height: " ~ heightTextArea ~"px; resize: none;"} }) }}
+                </div>
+            </div>
+            <div id="activityDetailBlocDetails" class="col-md-8">
+                <div class="title bleu">Détails</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="coachingPlan">
+                            <div class="form-group">                          
+                                <div class="controls">
+                                    <span style="display:inline-block;">{{ form_widget(form.event) }}</span>
+                                    <span style="display:inline-block;margin-top: 10px" >{{ 'coaching.achievement'|trans }} : </span>
+                                    {{ form_widget(form.achievement) }}
+                                    <span class="bleu glyphicon glyphicon-question-sign" rel="tooltip" title="{{ "coaching.achievement-help"|trans }}"></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="stateOfHealthBloc" class="stateOfHealthBloc">
+                            {{ form_widget(form.stateOfHealth) }}
+                            <span style="display:inline-block;width:85px;">Forme : </span>
+                            <span id="redStateOfHealth" style="display:inline-block;width:30px" rel="tooltip" title="{{ "stateOfHealth.tired"|trans }}" data-code="tired" class="icon-red icon-btn icon-frown icon-2x"></span>
+                            <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "stateOfHealth.so_so"|trans }}" data-code="so_so" class="icon-orange icon-btn icon-meh icon-2x"></span>
+                            <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "stateOfHealth.great"|trans }}" data-code="great" class="icon-green icon-btn icon-smile icon-2x"></span>
+                        </div>
+                            
+                        <div class="intensityBloc">
+                            {{ form_widget(form.intensity) }}
+                            <span style="display:inline-block;width:85px;">Intensité : </span>
+                            <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "intensity.low"|trans }}" data-code="low" class="icon-green icon-btn icon-circle icon-2x"></span>
+                            <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "intensity.medium"|trans }}" data-code="medium" class="icon-orange icon-btn icon-circle icon-2x"></span>
+                            <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "intensity.high"|trans }}" data-code="high" class="icon-red icon-btn icon-circle icon-2x"></span>
+                            {#<span>Intensité : </span><span class="intensityValue" ></span>
+                            <div class="intensitySlider" style="min-height:0"></div> #}  
+                        </div>
+
+                        {#<div class="wasOfficialBloc">
+                            {{ form_widget(form.wasOfficial) }}
+                            <span style="display:inline-block;width:85px;">Evénement : </span>
+                            <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "wasOfficial.training"|trans }}" data-code="no" class="icon-btn icon-home icon-2x"></span>
+                            <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "wasOfficial.competition"|trans }}" data-code="yes" class="icon-btn icon-trophy icon-2x"</span>
+                        </div>#}
+
+                        <div class="pull-left">
+                            <span style="display:inline-block;width:85px;" >Public : </span>
+                            <span style="display:inline-block;">{{ form_widget(form.isPublic) }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <ul>
+                            <li>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="input-group" rel="tooltip" title="KCalories">
+                                                <div class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-fire"></span>
+                                                </div>
+                                                {{ form_widget(form.calories, { attr: { "placeholder":"Calories", class:"form-control"} }) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% if form.distance is defined %}  
+                                        <div class="col-md-6">
+                                            <div class="form-group distance">
+                                                <div class="input-group" rel="tooltip" title="Distance (km)">
+                                                    <div class="input-group-addon"><span class="glyphicon glyphicon-road"></span></div>
+                                                    {{ form_widget(form.distance, { attr: { "placeholder":"Distance", class:"form-control"} }) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            <li>
+                                <div class="row">
+                                    {% if form.elevationGain is defined %}  
+                                        <div class="col-md-6">
+                                            <div class="form-group elevationLost">
+                                                <div class="input-group" rel="tooltip" title="D+(mètres)">
+                                                    <div class="input-group-addon"><span class="glyphicon glyphicon-arrow-up"></span></div>
+                                                    {{ form_widget(form.elevationGain, { attr: { "placeholder":"D+", class:"form-control"} }) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    {% if form.elevationLost is defined %}
+                                        <div class="col-md-6">
+                                            <div class="form-group elevationLost">
+                                                <div class="input-group" rel="tooltip" title="D-(mètres)">
+                                                    <div class="input-group-addon"><span class="glyphicon glyphicon-arrow-down"></span></div>
+                                                    {{ form_widget(form.elevationLost, { attr: { "placeholder":"D-", class:"form-control"} }) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            <li>
+                                {% if form.sportGround is defined %}
+                                    {{ form_widget(form.sportGround) }}
+                                    {% if sportId is defined and sportId is not null %}
+                                        {% render "KsActivityBundle:Sport:customSelectSportsGrounds" with {"sportId": sportId} %}
+                                    {% endif %}
+                                    <br/>
+                                {% endif %}
+                            </li>
+                            <li>
+                                {% if form.club is defined %}      
+                                    {{ form_widget(form.club, { attr: { class:"form-control"} }) }}
+                                    <br/>
+                                {% endif %}
+                            </li>
+                            <li>
+                                {% if form.tournament is defined %}      
+                                    {{ form_widget(form.tournament, { attr: { class:"form-control"} }) }}
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bleu"><span class="glyphicon glyphicon-cog"></span> Matériel</div>
+                        {{ form_widget(form.equipments, { attr: { "data-placeholder":"Précise ton matériel utilisé ici !"} }) }}
+                    </div>
+                </div>
+                <div class="row">
+                    {% if sport_category_code == "team_sport" %}
+                        <br/><br/>
+                        <div cl ass="row">
+                            <div class="col-md-6">
+                                {% if form.result is defined %}      
+                                <div class="resultBloc">
+                                    {{ form_widget(form.result) }}
+                                    <span class="bleu" style="display:inline-block;width:85px;">Résultat </span>
+                                    <span style="display:inline-block;width:30px;font-weight:bold;text-align: center" rel="tooltip" title="{{ "result.defeat"|trans }}" data-code="d" class="icon-btn">D</span>
+                                    <span style="display:inline-block;width:30px;font-weight:bold;text-align: center" rel="tooltip" title="{{ "result.draw"|trans }}" data-code="n" class="icon-btn">N</span>
+                                    <span style="display:inline-block;width:30px;font-weight:bold;text-align: center" rel="tooltip" title="{{ "result.victory"|trans }}" data-code="v" class="icon-btn">V</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                {% if form.scores is defined %}  
+                                <span class="btn btn-success btn-xs" id="add-another-score">Ajouter un score</span>
+                                <span class="btn btn-danger btn-xs" id="remove-last-score">Enlever le dernier score</span>
+                                {% endif %}
+                            </div>
+                        </div> 
+                    {% endif %}
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-md-6">
+                        {% if form.usersWhoHaveParticipated is defined %}
+                            {#{ form_label(form.usersWhoHaveParticipated, 'Partenaires' ) }#}
+                                <div style="margin-top:12px">
+                                    <span class="icon-group" style="color:green"></span> Avec :
+                                </div>
+                                <div>
+                                    {{ form_widget(form.usersWhoHaveParticipated, { attr: { "data-placeholder":"Précise tes partenaires ici !", class:"multiple-users-select2 usersWhoHaveParticipated", style: "width:100%;"} }) }}
+                                </div>
+                        {% endif %}
+                        {% if form.opponentsWhoHaveParticipated is defined %}
+                            <div style="">
+                                <span class="icon-group" style="color:red"></span> Contre :
+                            </div>
+                            <div >
+                                {{ form_widget(form.opponentsWhoHaveParticipated, { attr: { "data-placeholder":"Adversaires", class:"multiple-users-select2 opponentsWhoHaveParticipated", style: "width:100%;"} }) }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        {% if form.scores is defined %}  
+                            {# store the prototype on the data-prototype attribute #}
+                            <div id="score-fields-list" class="row" data-prototype="{{ form_widget(form.scores.vars.prototype) | e }}">
+                                {#<div class="col-md-2">
+                                    <div >
+                                        <div style="height:30px;padding-top:30px">Moi, mon équipe</div>
+                                        <div style="height:30px;padding-top:10px">Adversaire(s)</div>
+                                    </div>
+                                </div>#}
+                                {% for numField, scoreField in form.scores %}
+                                    <div class="col-md-2">
+                                        {#{ form_label(scoreField) }#}
+                                        {{ form_errors(scoreField) }}
+                                        {{ form_label(scoreField.score1, "") }}
+                                        {{ form_widget(scoreField.score1) }}
+                                        {{ form_label(scoreField.score2, "") }}
+                                        {{ form_widget(scoreField.score2) }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <span style="display:none">{{ form_widget(form.scores) }}</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div><!--/.container-->
+    </div><!--/bloc4-->
+        
+    {{ form_rest(form) }}
+
+   {% if eventId is defined and eventId != null %}
+         <input type="hidden" name="eventId" value="{{ eventId }}" />     
+   {% endif %}
+        
+</form>
+
+<!--bloc5-->
+<div class="bloc5" id="activityPhotoBloc">
+    <div class="container">
+        <h4 class="bleu">Photos</h4>
+        {% if activity is defined %}
+            {% include 'KsActivityBundle:PhotoAlbum:_photos_edit.html.twig' with {'activity' : activity} %}  
+        {% endif %}
+        <br/>
+        <div id="jqueryFileUpload_photos">
+            {% include 'KsImageBundle::index.html.twig' with {'uploadDirName' : 'photos'} %}
+        </div>
+    </div><!--/.container-->
+</div><!--/bloc5-->
+
+<!--bloc6-->
+{#<form id="frequencyForm" class="frequencyForm" action="" method="POST" enctype="multipart/form-data">
+    <div class="bloc6">
+        <div class="container">
+            <h4 class="bleu"><span class="glyphicon glyphicon-calendar"></span> Fréquence <span class="bleu glyphicon glyphicon-question-sign" rel="tooltip" title="{{ "frequency.help"|trans }}"></span></h4>
+            <div class="row">
+                <div class="col-md-2 first">
+                    <div class="title">LUNDI</div>
+                    <ul>      
+                        <li>
+                            <div class="checkbox">{{ form_widget(frequencyForm.isScheduledOnMon) }}</div>
+                        </li>      
+                    </ul>
+                </div>
+                <div class="col-md-2 alt">
+                    <div class="title">MARDI</div>
+                    <ul>      
+                        <li>
+                            <div class="checkbox">{{ form_widget(frequencyForm.isScheduledOnTue) }}</div>
+                        </li>      
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <div class="title">MERCREDI</div>
+                    <ul>      
+                        <li>
+                            <div class="checkbox">{{ form_widget(frequencyForm.isScheduledOnWed) }}</div>
+                        </li>      
+                    </ul>
+                </div>
+                <div class="col-md-2 alt">
+                    <div class="title">JEUDI</div>
+                    <ul>      
+                        <li>
+                            <div class="checkbox">{{ form_widget(frequencyForm.isScheduledOnThu) }}</div>
+                        </li>      
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <div class="title">VENDREDI</div>
+                    <ul>      
+                        <li>
+                            <div class="checkbox">{{ form_widget(frequencyForm.isScheduledOnFri) }}</div>
+                        </li>      
+                    </ul>
+                </div>
+                <div class="col-md-2 alt">
+                    <div class="title">SAMEDI</div>
+                    <ul>      
+                        <li>
+                            <div class="checkbox">{{ form_widget(frequencyForm.isScheduledOnSat) }}</div>
+                        </li>      
+                    </ul>
+                </div>
+                <div class="col-md-2 last">
+                    <div class="title">DIMANCHE</div>
+                    <ul>      
+                        <li>
+                            <div class="checkbox">{{ form_widget(frequencyForm.isScheduledOnSun) }}</div>
+                        </li>      
+                    </ul>
+                </div>
+            </div>  
+        </div><!--/.container-->
+    </div><!--/bloc6-->#}
+    
+    <!--bloc7-->
+    <div class="bloc7">
+        <div class="container">
+            {#Heure d'envoi du mail#}
+            <div class="row">
+                {#<div class="col-md-2 bloc-heure-envoi">
+                    <div class="form-group">
+                        <div class="input-append bootstrap-timepicker">
+                            {{ form_widget(frequencyForm.mailTime, { attr: { class:"form-control" } }) }}
+                        </div>
+                    </div>
+                </div>#}
+                <div class="col-md-12 bloc-publier"> 
+                    <br/>
+                    <span class="mention" id="mentionPrivacy"><span class="glyphicon glyphicon-ok-circle"></span>Cette activité sera publique</span> 
+                    <button type="button" class="publish btn btn-success">{% if activity is defined and activity is not null %}{{ 'actions.save-updates'|trans }}{% else %}{{ 'actions.publish-activity'|trans }}{% endif %}</button> 	
+                    <div id="publishLoader" style="display:none;"><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div>
+                </div>
+            </div>
+        </div>
+    </div><!--/bloc7-->
+</form>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            //On cré des liens là où il en faut 
+            var rgx = new RegExp('((https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])','ig');
+            $.each( $(".description"), function(key, description) {
+                //console.log( description )
+                //console.log( $( this ).html() )
+                var desc = $( this ).html();
+                var descWithLinks = desc.replace(rgx,"<a href='$1' target='_BLANK'>$1</a>");
+                //console.log(htmlWithLinks)
+                //On remplace le lien dans la description adéquate
+                $(".description").eq(key).html(descWithLinks);
+                //console.log($(response.html).find(".description").eq(key));
+            });
+        
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                radioClass: 'iradio_flat-blue'
+            });
+
+            $('#ksActivity_activitySessionType_isPublic').on('ifChecked', function (event) {
+                $("#mentionPrivacy").html('<span class="glyphicon glyphicon-ok-circle"></span> Cette activité sera publique</div></span>');
+            });
+
+            $('#ksActivity_activitySessionType_isPublic').on('ifUnchecked', function (event) {
+                $("#mentionPrivacy").html('<span class="glyphicon glyphicon-ok-circle"></span> Cette activité sera privée</div></span>');
+            });
+
+            var $sportChoiceFormBloc = $("#sportChoiceFormBloc");
+            var $messagesBloc  = $("div.messagesBloc");
+            var $publishButton = $('button.publish');
+            var $publishLoader = $("#publishLoader");
+            
+            $sportCategoryCode = '{{ sport_category_code }}';
+            
+            $('input[type=checkbox][name=shareFacebookCheckbox]').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+            });
+            
+            $('input[type=checkbox][name=shareFacebookCheckbox]').iCheck('check');
+            shareFacebookCheckbox = true;
+            
+            $('input[type=checkbox][name=shareFacebookCheckbox]').on('ifChecked', function (event) {
+                shareFacebookCheckbox = true;
+            });
+            $('input[type=checkbox][name=shareFacebookCheckbox]').on('ifUnchecked', function (event) {
+                shareFacebookCheckbox = false;
+            });
+            
+            $('input[type=checkbox][name=checkboxSRTM]').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+            });
+            
+            //$('input[type=checkbox][name=checkboxSRTM]').iCheck('check');
+            checkboxSRTM = false;
+            
+            $('input[type=checkbox][name=checkboxSRTM]').on('ifChecked', function (event) {
+                checkboxSRTM = true;
+            });
+            $('input[type=checkbox][name=checkboxSRTM]').on('ifUnchecked', function (event) {
+                checkboxSRTM = false;
+            });
+            
+            $('#cbLu').iCheck({checkboxClass: 'icheckbox_square-blue'});
+            $('#cbMa').iCheck({checkboxClass: 'icheckbox_square-blue'});
+            $('#cbMe').iCheck({checkboxClass: 'icheckbox_square-blue'});
+            $('#cbJe').iCheck({checkboxClass: 'icheckbox_square-blue'});
+            $('#cbVe').iCheck({checkboxClass: 'icheckbox_square-blue'});
+            $('#cbSa').iCheck({checkboxClass: 'icheckbox_square-blue'});
+            $('#cbDi').iCheck({checkboxClass: 'icheckbox_square-blue'});
+            
+            $("#ksActivity_activitySessionType_event").select2({
+                placeholder         : '{{ 'coaching.link-to-plan'|trans }}',
+                containerCssClass   : 'light input-block-level',
+                allowClear: true,
+                width: 350
+            }).on("change", function(e) {
+            });
+            
+            //FMO : cas de la publication d'une activité à partir d'une séance de son agenda ET cas de la modif d'une activité
+            {% if eventId is defined and eventId != null %}
+                $("#ksActivity_activitySessionType_event").select2("val", '{{ eventId }}');
+                $("#ksActivity_activitySessionType_event").select2("enable", true);
+            {% endif %}
+            
+            var publishActivity = function() {
+                if( !$publishButton.hasClass("disabled")) {
+                    $publishButton.addClass("disabled");
+                    $publishLoader.css('visibility', 'visible');
+                    $publishLoader.show();
+                    
+                    $('div.error_list').remove();
+
+                    var $sportSessionForm = $("#fActivitySessionForm");
+                    //Création de champs contenant les photos téléchargées
+                    var $fileUploadForm = $("#jqueryFileUpload_photos").find("form.fileUploadForm");
+                    $("input.uploaded_photo").remove();
+                    $.each($fileUploadForm.find("tr.template-download"), function(key, templateDownload) {
+                        $sportSessionForm.append(
+                            $("<input>", { type:"hidden", name : "photosToAdd[]"})
+                                .addClass("uploaded_photo")
+                                .val( $( this ).attr("imgName") )
+                        );
+                    });                
+                    
+                    $.each($("input.photos_to_delete:checked"), function(key, input) {
+                        $sportSessionForm.append(
+                            $("<input>", { type:"hidden", name : "photosToDelete[]"})
+                                .val( $( this ).attr("value") )
+                        );
+                    });
+                    
+                    //Création du champ contenant le GPX uploadé
+                    var $gpxfileUploadForm = $("#jqueryFileUpload_gpx").find("form.GPXUploadForm");
+                    $("input.uploaded_GPX").remove();
+                    $.each($gpxfileUploadForm.find("tr.template-download"), function(key, templateDownload) {
+                        $sportSessionForm.append(
+                            $("<input>", { type:"hidden", name : "GPXToAdd[]"})
+                                .addClass("uploaded_GPX")
+                                .val( $( this ).attr("imgName") )
+                        );
+                    });
+                    
+                    //Création des champs contenants les fréquences /sport
+                    var $frequencyForm = $sportChoiceFormBloc.find("form.frequencyForm");
+                    //var $SRTMForm = $sportChoiceFormBloc.find("form.SRTMForm");
+                                        
+                    // Cas du mode édition (pas de post auto sur FB
+                    {% if activity is defined %}
+                        shareFacebookCheckbox = false;
+                    {% endif %}
+
+                    $customSelect   = $container.find(".customSelectSports");
+                    var customSelectSports = $customSelect.select2("val");
+                    
+                    customSelectSports = $("#customSelectSports").val();
+                    
+                    //console.log($sportSessionForm.serialize());
+                    //console.log($frequencyForm.serialize());
+                    
+                    $.ajax({
+                        url: $sportSessionForm.attr('action'),
+                        type: "POST",
+                        data: $sportSessionForm.serialize() + "&" + $frequencyForm.serialize() + "&changeSport="+ customSelectSports + "&checkboxSRTM="+checkboxSRTM + "&coachingPlanId=" + $("#ksActivity_activitySessionType_event").select2("val"),
+                        success : function(response) {
+                            if ( response.publishResponse == 1 ) {
+                                activityId = response.activityId;
+                                
+                                $("#shareFacebookJsHtml").html(response.shareFacebookJsHtml);
+                                $("#sportSessionFormContainer").html("");
+                                document.body.scrollTop = '0px';
+                                $publishLoader.css('visibility', 'visible');
+                                $publishLoader.show();
+                                
+                                //context, activityId, shareFbEnabled, type
+                                shareActivityEvent({{ app.user.id }}, response.issetGPX, activityId, true, 'auto');
+                                
+                            } else {
+                                $.each(response.errors, function (fieldName, errors) {
+                                    var labelValue = $("label[for*='" + fieldName + "']").html();
+                                    var div = $("<div>").addClass("error_list");
+                                    var p = $("<p>", {css: {"text-decoration":"underline"}}).html("Erreurs sur ce champ :");
+                                    var ul = $("<ul>");
+                                    $.each(errors, function (key, error) {
+                                        var li = $("<li>").html(error);
+                                        ul.append(li);
+                                    });
+                                    var br = $("<br>", {clear:"all"});
+
+                                    div.append(p);
+                                    div.append(ul);
+                                    div.append(br);
+                                    $('[name*="' + fieldName + '"]').parent().append(div);
+                                });
+
+                                $publishButton.removeClass("disabled");
+                                $publishLoader.css('visibility', 'hidden');
+                            }
+                        }
+                    });
+                    
+                    
+                }
+            };
+            
+            $publishButton.click(publishActivity);
+            
+            $("#shareFbButton").click(function() {
+                if( $( this ).find("i.icon-ok").size() > 0 ) {
+                    $( this ).find("i.icon-ok").removeClass("icon-ok").addClass("icon-remove");
+                } else {
+                    $( this ).find("i.icon-remove").removeClass("icon-remove").addClass("icon-ok");
+                }
+            });
+    });
+    
+    var connectIconsAndSelect = function( bloc, select ) {
+        bloc.find(".icon-btn").click(function() {
+            //On déselectionne tout
+            bloc.find(".icon-btn").removeClass("selected");
+
+            //On efface tous les tooltip
+            $( this ).parent().find(".tooltip").removeClass("in");
+
+            //On sélectionne l'icone sur laquelle on a cliqué
+            $( this ).addClass("selected");
+            var code = $( this ).data("code");
+            
+            //On sélectionne le bon élément dans la liste déroulante
+            $.each(select.children(), function(key, option) { 
+                if( $( option ).text() == code ) { 
+                    $( option ).attr("selected", "selected");
+                } else {
+                    $( option ).removeAttr("selected");
+                }
+            });
+        });
+    }
+    
+    //Affichage du canevas avec les données de l'utilisateur (personnage, équipments par défaut, en fonction du sport)
+    var activityId = '{{ activityId }}';
+    {% if sport_category_code == "team_sport" %}
+        {% set activityType = "session_team_sport" %}
+    {% else %}
+        {% set activityType = "default" %}
+    {% endif %}
+    
+    var activityType = '{{ activityType }}';
+    var activityCodeSport = '{{ sport_codeSport }}';
+    
+    var imagesPath = "{{ asset('bundles/kscanvasdrawing/images/') }}";
+    
+    var scoreCount;
+    
+    var character = {
+        "sexeCode"              : '{{ character.sexeCode }}',  
+        "skinColor"             : '{{ character.skinColor }}',
+        "hairColor"             : '{{ character.hairColor }}',
+        "eyesColor"             : '{{ character.eyesColor }}',
+        "shirtColor"            : '{{ character.shirtColor }}',
+        "shortColor"            : '{{ character.shortColor }}',
+        "shoesPrimaryColor"     : '{{ character.shoesPrimaryColor }}',
+        "shoesSecondaryColor"   : '{{ character.shoesSecondaryColor }}'
+    };
+    
+    // matériel
+    $("select.equipments").select2({
+        'containerCssClass' : 'light input-block-level',
+    }).on("change", function(e) {
+    });   
+    
+    //var selectedEquipments = $("select.equipments").select2("val");
+    //    $("select.equipments option").each(function() {
+    //});
+
+    //Récupération des matériels topés par défaut à activer pour le sport sélectionné
+    var ids = '{{ equipmentsIds.content |raw }}';
+    //console.log(ids);
+    var reg = new RegExp('["]', 'gi');
+    var replacedIds = ids.replace(reg, '').replace('[', '').replace(']', '');
+    idsJS = replacedIds.split(",");
+    $("select.equipments").select2("val", idsJS);
+    //console.log(idsJS);
+    
+    //Affichage du canvas en fonction du personnage et des équipments par défaut selon le sport sélectionné
+    {{ selectedEquipments|raw }}
+    {{ allEquipments|raw }}
+
+    var $form = $("#fActivitySessionForm");
+    
+    //stateOfHealh
+    var $stateOfHealthBloc = $form.find(".stateOfHealthBloc");
+    var $stateOfHealthSelect = $stateOfHealthBloc.find("select");
+    connectIconsAndSelect( $stateOfHealthBloc, $stateOfHealthSelect );
+    
+    if( $stateOfHealthSelect.val() == "") {
+        //$stateOfHealthBloc.find(".icon-btn:eq(1)").click();
+    }
+    else {
+        $stateOfHealthBloc.find(".icon-btn:eq(" + ($stateOfHealthSelect.val()-1) + ")").click();
+    }
+    
+    //Intensity
+    var $intensityBloc = $form.find(".intensityBloc");
+    var $intensitySelect = $intensityBloc.find("select");
+    connectIconsAndSelect( $intensityBloc, $intensitySelect );
+    
+    if( $intensitySelect.val() == "") {
+        //$intensityBloc.find(".icon-btn:eq(1)").click();
+    }
+    else {
+        $intensityBloc.find(".icon-btn:eq(" + ($intensitySelect.val() - 1) + ")").click();
+    }
+    
+    //Résultat
+    var $resultBloc = $form.find(".resultBloc");
+    var $resultSelect = $resultBloc.find("select");
+    connectIconsAndSelect( $resultBloc, $resultSelect );
+    
+    if( $resultSelect.val() == "") {
+        $resultBloc.find(".icon-btn:eq(1)").click();
+    }
+    else {
+        $resultBloc.find(".icon-btn:eq(" + $resultSelect.val() + ")").click();
+    }
+    
+    //Competition
+    var $wasOfficialBloc = $form.find(".wasOfficialBloc");
+    var $wasOfficialSelect = $wasOfficialBloc.find("select");
+    connectIconsAndSelect( $wasOfficialBloc, $wasOfficialSelect );
+    
+    if( $wasOfficialSelect.val() == "") {
+        $wasOfficialBloc.find(".icon-btn:eq(0)").click();
+    }
+    else {
+        $wasOfficialBloc.find(".icon-btn:eq(" + $wasOfficialSelect.val() + ")").click();
+    }
+    
+    //date et heure
+  
+    var $timepicker             = $form.find(".timepicker");
+    var $datepicker             = $form.find(".datepicker");
+    var $durationpicker         = $form.find(".durationpicker");
+    var $frequencytimepicker    = $("div.sportChoiceFormBloc").find("form.frequencyForm").find(".frequencytimepicker");
+    
+    if( $timepicker.val() == "" ) $timepicker.val("00:00");
+    if( $durationpicker.val() == "" ) $durationpicker.val("1:00:00");
+    if ($frequencytimepicker == "") $frequencytimepicker.val("21:00");
+    
+    $datepicker.css("z-index", "0");
+    $timepicker.css("z-index", "0");
+    $durationpicker.css("z-index", "0");
+    $frequencytimepicker.css("z-index", "0");
+    if( document.body.clientWidth >= 963 ) {
+        $datepicker.datepicker({
+            dateFormat: "dd/mm/yy",
+            firstDay: 1,
+        });
+
+        $timepicker.timepicker({
+            showSeconds: false,
+            showMeridian: false
+        });
+        
+        $durationpicker.timepicker({
+            showSeconds: true,
+            showMeridian: false
+        });
+        
+        $frequencytimepicker.timepicker({
+            showSeconds: false,
+            showMeridian: false
+        });
+    } else {
+        var theme = $.browser.safari ? 'ios' : 'android-ics';
+        
+        $datepicker.scroller({ 
+                preset: 'date',
+                theme: theme,
+                display: 'bottom',
+                lang : 'fr',
+                height : 30,
+                rows : 3,
+                showLabel : 'true'
+        });
+
+        $timepicker.scroller({ 
+                preset: 'time',
+                theme: theme,
+                display: 'bottom',
+                lang : 'fr',
+                height : 35,
+                showLabel : 'true'
+        });
+        
+        $durationpicker.scroller({ 
+                preset: 'time',
+                theme: theme,
+                display: 'bottom',
+                lang : 'fr',
+                height : 35,
+                showLabel : 'true'
+        });
+        
+        $frequencytimepicker.scroller({ 
+                preset: 'time',
+                theme: theme,
+                display: 'bottom',
+                lang : 'fr',
+                height : 35,
+                showLabel : 'true'
+        });
+    }
+    
+    //Slider Réalisation
+    $sliderAchievement = $("#ksActivity_activitySessionType_achievement");
+    $sliderAchievement.slider({
+        min : 0,
+        max : 10,
+        value : $("#ksActivity_activitySessionType_achievement").val()
+    });
+    $sliderAchievement.slider().on('slide', function(ev){
+        //
+    });
+    if ($sliderAchievement.val() === "") $sliderAchievement.val(5);
+    
+    //$sliderAchievement.hide();
+    
+    //$("#ksActivity_activitySessionType_event").select2().on("change", function(e) { 
+    //    $sliderAchievement.show();
+    //}); 
+    
+    $divWho       = $form.find("div.who");
+    //$divOther   = $form.find("div.other");
+    $divPhoto     = $("div.photo");
+    $divGPX       = $("div.gpx");
+    $divFrequency = $("div.frequency");
+
+    $divWho.css("display", "none");
+    //$divOther.css("display", "none");
+    //$divPhoto.css("display", "none");
+
+    //Partenaires
+    $("button.who").click(function(e) {
+
+        if( $divWho.is(":visible") ) {
+            $divWho.hide();
+            $( this ).find("i").removeClass("icon-minus").addClass("glyphicon glyphicon-plus");
+        } else {
+            $divWho.show();
+            $( this ).find("i").removeClass("glyphicon glyphicon-plus").addClass("icon-minus");
+        }
+        //$divSpeed.show();
+        e.preventDefault();
+    });
+
+
+    //Other
+    /*$("button.other").click(function(e) {
+        if( $divOther.is(":visible") ) {
+            $divOther.hide();
+            $( this ).find("i").removeClass("icon-minus").addClass("glyphicon glyphicon-plus");
+        } else {
+            $divOther.show();
+            $( this ).find("i").removeClass("glyphicon glyphicon-plus").addClass("icon-minus");
+        }
+
+        e.preventDefault();
+    });*/
+    
+    //Photo
+    $("button.photo").click(function(e) {
+        if( $divPhoto.is(":visible") ) {
+            $divPhoto.hide();
+            $( this ).find("i").removeClass("icon-minus").addClass("glyphicon glyphicon-plus");
+        } else {
+            $divPhoto.show();
+            $( this ).find("i").removeClass("glyphicon glyphicon-plus").addClass("icon-minus");
+        }
+
+        e.preventDefault();
+    });
+    
+    //GPX
+    $("button.gpx").click(function(e) {
+        if( $divGPX.is(":visible") ) {
+            $divGPX.hide();
+            $( this ).find("i").removeClass("icon-minus").addClass("glyphicon glyphicon-plus");
+        } else {
+            $divGPX.show();
+            $( this ).find("i").removeClass("glyphicon glyphicon-plus").addClass("icon-minus");
+        }
+
+        e.preventDefault();
+    });
+    
+    //FREQUENCY
+    $("button.frequency").click(function(e) {
+        if( $divFrequency.is(":visible") ) {
+            $divFrequency.hide();
+            $( this ).find("i").removeClass("icon-minus").addClass("glyphicon glyphicon-plus");
+        } else {
+            $divFrequency.show();
+            $( this ).find("i").removeClass("glyphicon glyphicon-plus").addClass("icon-minus");
+        }
+
+        e.preventDefault();
+    });
+    
+    // Participants
+    $("select.usersWhoHaveParticipated").select2({
+         'containerCssClass' : 'light',
+    }).on("change", function(e) { 
+        $(".score1").css("height", $(".usersWhoHaveParticipated").height());
+    }); 
+     
+    // Adversaires
+    $("select.opponentsWhoHaveParticipated").select2({
+        'containerCssClass' : 'light',
+    }).on("change", function(e) { 
+        $(".score1").css("height", $(".opponentsWhoHaveParticipated").height());
+    });    
+    
+    //Upload Photos
+    var $fileUploadForm = $("#jqueryFileUpload_photos").find("form.fileUploadForm");
+    $fileUploadForm.fileupload({
+        acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+    });
+    
+    
+    $divPlace         = $("div.place");
+    $divDuration      = $("div.duration");
+    $divDistance      = $("div.distance");
+    $divElevationGain = $("div.elevationGain");
+    $divElevationLost = $("div.elevationLost");
+    $divDate          = $("div.date");
+    
+    //FileUpload
+    var $gpxfileUploadForm = $("#jqueryFileUpload_gpx").find("form.GPXUploadForm");
+    $gpxfileUploadForm.fileupload({
+            acceptFileTypes : /(\.|\/)(gpx)$/i,
+            maxNumberOfFiles : 1,
+            maxFileSize: 11000000,
+            autoUpload:true,
+            progressall: function (e, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress .bar').css(
+                    'width',
+                    progress + '%'
+                );
+            },
+            change: function (e, data) {
+                if( $divPlace.is(":visible") ) {
+                    $divPlace.hide();
+                    $divDuration.hide();
+                    $divDistance.hide();
+                    $divElevationGain.hide();
+                    $divElevationLost.hide();
+                    $divDate.hide();
+                } else {
+                    $divPlace.show();
+                    $divDuration.show();
+                    $divDistance.show();
+                    $divElevationGain.show();
+                    $divElevationLost.show();
+                    $divDate.show();
+                }
+                $("#ksActivity_activitySessionType_description").val("");
+                $("#ksActivity_activitySessionType_distance").val("");
+                $("#ksActivity_activitySessionType_elevationGain").val("");
+                $("#ksActivity_activitySessionType_duration").val("1:00:00");
+            }
+    });
+    
+    function refreshData() {
+        if( $divPlace.is(":visible") ) {
+            $divPlace.hide();
+            $divDuration.hide();
+            $divDistance.hide();
+            $divElevationGain.hide();
+            $divElevationLost.hide();
+            $divDate.hide();
+        } else {
+            $divPlace.show();
+            $divDuration.show();
+            $divDistance.show();
+            $divElevationGain.show();
+            $divElevationLost.show();
+            $divDate.show();
+        }
+        $("#ksActivity_activitySessionType_description").val("");
+        $("#ksActivity_activitySessionType_distance").val("");
+        $("#ksActivity_activitySessionType_elevationGain").val("");
+        $("#ksActivity_activitySessionType_duration").val("");
+    }
+        
+    {% if form.scores is defined %}  
+        
+        $('#score-fields-list input[type=text]').addClass('span');
+        var scoreCount = '{{ form.scores | length }}';
+        $('#add-another-score').click(function() {
+            var scoreList = jQuery('#score-fields-list');
+        
+            // grab the prototype template
+            var newWidget = scoreList.attr('data-prototype');
+            // replace the "$$name$$" used in the id and name of the prototype
+            // with a number that's unique to our scores
+            // end name attribute looks like name="activity[scores][2]"
+            newWidget = newWidget.replace(/\$\$name\$\$/g, scoreCount);
+                        
+            // create a new list element and add it to our list
+            var newLi = jQuery('<div class="col-md-2" style="border:0; margin-right:5px;margin-top:26px"></div>').html(newWidget);
+            newLi.appendTo(jQuery('#score-fields-list'));
+            
+            $score1 = $('#ksActivity_activitySessionType_scores_' + scoreCount + '_score1')
+            $score1.addClass("span score1");
+            $score1.css("height", $(".usersWhoHaveParticipated").height());
+            $score1.css("margin-bottom", '16px');
+            
+            $score2 = $('#ksActivity_activitySessionType_scores_' + scoreCount + '_score2')
+            $score2.addClass("span score2");
+            $score2.css("height", $(".opponentsWhoHaveParticipated").height());
+            $score2.css("margin-bottom", '0px');
+            
+            $('#ksActivity_activitySessionType_scores_' + scoreCount + '_roundOrder').val(scoreCount);
+            scoreCount++;
+            
+            //console.log(scoreCount);
+            var i = scoreCount-1;
+            //console.log('#ksActivity_activitySessionType_scores_' + i + '_score1');
+            //console.log('#ksActivity_activitySessionType_scores_' + i + '_score2');
+            
+        });
+        $('#remove-last-score').click(function() {
+            if (scoreCount > 0) {
+                $('#score-fields-list').children().last().remove();
+                scoreCount--;
+            }
+        });
+    {% endif %}
+</script>

@@ -1,0 +1,20 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block activity_content %}
+    {% include 'KsActivityBundle:Activity:_activities.html.twig' with {'activities': activities} %}
+    <br clear="all" />
+
+{% endblock %}

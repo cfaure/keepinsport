@@ -1,0 +1,23 @@
+{% extends is_granted("ROLE_USER")
+    ? "::layout_V2.html.twig"
+    : "::noauth.html.twig"
+%}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+    {% for key, message in app.session.getFlashes() %}
+        <div class="{{ key }}">
+            {{ message|trans }}
+        </div>
+    {% endfor %}
+
+    <div>
+        {% block notification_content %}
+        {% endblock %}
+    </div>
+
+{% endblock %}

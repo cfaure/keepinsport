@@ -1,0 +1,784 @@
+<html>
+    <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Keepin-trail</title>
+    <link rel="stylesheet" href="{{ asset('V2/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('V2/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('V2/skins/flat/blue.css') }}">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="{{ asset('V2/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('V2/js/icheck.js') }}"></script>
+    <script src="{{ asset('V2/js/app.js') }}"></script>
+
+    {# Animation scroll #}
+    <script src="{{ asset('V2/js/bind-polyfill.js') }}"></script>
+    <script src="{{ asset('V2/js/smooth-scroll.js') }}"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#modifPackWatch').click();
+            smoothScroll.init({
+                speed: 1000, // Integer. How fast to complete the scroll in milliseconds
+                easing: 'easeInOutCubic', // Easing pattern to use
+                offset: 0, // Integer. How far to offset the scrolling anchor location in pixels
+            });
+        });
+    </script>
+
+    <div id="fb-root"></div>
+    <script>
+        var isConnectedToFB = false;
+
+        function login() {
+            FB.login(function(response) {
+                if (response.authResponse) {
+                    //console.log(response.authResponse);
+                    //console.log('... et redirect'); // connected
+                    window.location = "{{ url('_security_check_facebook') }}"; //"http://local.keepinsport.com/keepinsport/web/app_dev.php/login";
+                } else {
+                    // console.log('cancelled')
+                }
+            }, {scope: 'publish_actions,user_photos'});
+        }
+
+        function testLogin() {
+            //var isConnectedToFB;
+
+            if (isConnectedToFB) {
+                //console.log('redirect');
+                window.location = "{{ url('_security_check_facebook') }}";
+            } else {
+                login();
+                //console.log('login fb');
+            }
+        }
+
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '106071199501870', // App ID
+                status     : true, // check login status
+                //channelUrl : '//http://www.keepinsport.com/',
+                cookie     : true, // enable cookies to allow the server to access the session
+                xfbml      : true  // parse XFBML
+            });
+
+            // Additional initialization code here
+
+            FB.getLoginStatus(function(response) {
+                if (response.status === 'connected') {
+                    isConnectedToFB = true;
+                } else if (response.status === 'not_authorized') {
+                    //console.log('FB: not auth');
+                } else {
+                    //console.log('FB: not logged in');
+                }
+            });
+        };
+        // Load the SDK Asynchronously
+        (function(d){
+            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement('script'); js.id = id; js.async = true;
+            js.src = "//connect.facebook.net/fr_FR/all.js";
+            ref.parentNode.insertBefore(js, ref);
+            }(document));
+        //gapi.client.load('API_NAME', 'API_VERSION', CALLBACK);
+    </script>
+
+
+    <link rel="shortcut icon" type="image/x-icon" href="../V2/images/favicon.ico" /> 
+
+
+    <link href='https://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+</head>
+
+    <body class="home">
+        <!--HEADER-->
+            <header>
+                <div class="container">
+
+                    <div class="row   desktop">
+                        <div class="col-md-7"><a href="#"><img src="{{ asset('V2/images/logo-blanc.png') }}"></a></div>
+                        <div class="col-md-5">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="#"><img src="{{ asset('V2/images/btn-login.jpg') }}" alt="">Déjà inscrit ? Clique ici</a></li>
+                            <li><a href="#">EN</a></li>
+                            <li class="active"><a href="#">FR</a></li>
+                            <li><a href="#">RU</a></li>
+                        </ul>
+                      </div><!--/.nav-->
+                    </div>
+                    <!--nav responsive-->
+                    <a href="#" class="mobile logo"><img src="{{ asset('V2/images/logo-blanc.png') }}"></a>
+                    <a href="#" class="mobile login"><img src="{{ asset('V2/images/btn-login.jpg') }}" alt=""/></a>
+                </div>
+        </header>
+        <!--END HEADER-->
+
+
+        <!--WRAPPER-->
+        <div class="wrapper">
+
+
+        <!--bloc1-->
+        <div class="bloc1">
+        <div class="container">
+        <h1>Sportif exigeant, booste tes performances<br/> avec nos formules sur mesure !</h1>
+        <img class="photo" src="{{ asset('V2/images/sport-training.png') }}">
+        <img class="accroche desktop" src="{{ asset('V2/images/accroche-bloc1.png') }}">
+        <a href="#bloc4-montres" data-scroll>
+            <img class="fleche" src="{{ asset('V2/images/montre-sport-offerte.png') }}">
+        <a/>
+        <div class="montre">
+        <div id="carousel-bloc1" class="carousel slide" data-ride="carousel">
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner">
+            <div class="item active">
+                <a href="#bloc4-montres" data-scroll><img src="{{ asset('V2/images/montre-sport.png') }}"></a>
+            </div>
+            <div class="item">
+                <a href="#bloc4-montres" data-scroll><img src="{{ asset('V2/images/montre-sport2.png') }}"></a>
+            </div>
+            <div class="item">
+                <a href="#bloc4-montres" data-scroll><img src="{{ asset('V2/images/montre-sport3.png') }}"></a>
+            </div>
+            <div class="item">
+                <a href="#bloc4-montres" data-scroll><img src="{{ asset('V2/images/montre-sport4.png') }}"></a>
+            </div>
+          </div>
+        </div>
+        </div>
+
+
+        <div class="container-bloc">
+        <p>Amateur, confirmé, professionnel, tu souhaites atteindre un objectif précis ou simplement améliorer tes performances ?</p>
+        <h3>Des formules sur mesure ! </h3>
+        <p><span class="number">3</span>packs <span class="bleu">(Elite/Premium/Défis)</span> sont proposés pour répondre aux différents niveaux d'exigence des sportifs.</p>
+        <p class="bleu choix">Découvre nos offres :</p> 
+        <ul class="list-inline" id="btns">
+          <li><a href="#decouvrez" data-scroll class="btn-choix confort">Pack Défis</a></li>
+          <li><a href="#decouvrez" data-scroll class="btn-choix premium">Pack Premium</a></li>
+          <li><a href="#decouvrez" data-scroll class="btn-choix elite">Pack Elite</a></li>
+        </ul>
+        </div>
+
+        </div><!--/.container-->
+        </div><!--/bloc1-->
+
+
+        <!--bloc2-->
+        <div class="bloc2">
+        <div class="container">
+        <h2>Découvre les fonctionnalités</h2>
+        <img class="logo desktop" src="{{ asset('V2/images/logo-blanc-petit.png') }}">
+
+          <!-- Carousel mobile -->
+        <div id="carousel-mobile-bloc2" class="carousel slide mobile" data-ride="carousel">
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner">
+            <div class="item active">
+              <div class="images image1"><div class="content"><span>+</span> Suivi d'entraînement sur mesure</div></div>
+            </div>
+            <div class="item">
+               <div class="images image2"><div class="content">Analyses et statistiques <span>+</span></div></div>
+            </div>
+            <div class="item">
+                <div class="images image3"><div class="content"><span>+</span> Outils performants personnalisés</div></div>
+            </div>
+            <div class="item">
+                <div class="images image4"><div class="content"><span>+</span> Conseils de coachs professionnels</div></div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-5">
+          <p>Définis tes objectifs (chronomètre, résultat, état de forme) Keepinsport te permettra de les atteindre !</p>
+
+        <p>Des outils performants de création et d'analyse de plans d'entraînement, des conseils personnalisés de coachs professionnels.</p>
+
+        <p>Tes activités peuvent être automatiquement importées via nos services de synchronisation de montres ou d'applications smartphone :</p>
+        <center>
+            <img src="{{ asset('bundles/ksactivity/images/RunKeeper.png' ) }}" width="100"/>    
+            <img src="{{ asset('bundles/ksactivity/images/nike+.jpg' ) }}" width="50"/> 
+            <img src="{{ asset('bundles/ksactivity/images/endomondo.png' ) }}" width="90"/>
+            <br/>
+            <img src="{{ asset('bundles/ksactivity/images/garmin.jpg' ) }}" width="70"/>
+            <img src="{{ asset('bundles/ksactivity/images/polar.jpg' ) }}" width="70"/>
+            <img src="{{ asset('bundles/ksactivity/images/suunto_blanc.jpg' ) }}" width="70"/>
+            <img src="{{ asset('bundles/ksactivity/images/Gpx2.png' ) }}" width="60"/>
+        </center>
+        <h3 class="bleu">
+        Envie de progresser en course à pied ?<br>
+        Booste tes performances avec nos formules sur mesure !
+        </h3>
+         <a href="#decouvrez" data-scroll class="btn btn-primary btn-lg">Je découvre les packs !</a>
+          </div>
+          <div class="col-md-7 desktop">
+          <div class="images image1"><div class="content"><span>+</span> Suivi d'entraînement sur mesure</div></div>
+          <div class="images image2"><div class="content">Analyses et statistiques<span>+</span></div></div>
+          <div class="images image3"><div class="content"><span>+</span> Outils performants personnalisés</div></div>
+          <div class="images image4"><div class="content"><span>+</span> Conseils de coachs professionnels</div></div>
+          </div>
+        </div>
+
+        <img class="accroche desktop" src="{{ asset('V2/images/accroche-bloc2.png') }}">
+        </div><!--/.container-->
+        </div><!--/bloc2-->
+
+
+
+        <!--bloc3-->
+        <div class="bloc3">
+        <div class="container" id="decouvrez">
+        <h2>Découvre les packs</h2>
+        <img class="logo desktop" src="{{ asset('V2/images/logo-petit.png') }}">
+
+        <!--Accroches Mobile-->
+        <div class="mobile">
+        <div class="txt-mobile elite-mobile">Pack Elite<br/>À partir de 90€/mois</div>
+        <div class="txt-mobile premium-mobile">Pack Premium<br/>À partir de 5€/mois</div>
+        <div class="txt-mobile confort-mobile">Pack Défis<br/>c'est gratuit !</div>
+        <span class="fleche fleche-elite-mobile"><img src="{{ asset('V2/images/fleche.png') }}"></span>
+        <span class="fleche fleche-premium-mobile"><img src="{{ asset('V2/images/fleche2.png') }}"></span>
+        <span class="fleche fleche-confort-mobile"><img src="{{ asset('V2/images/fleche3.png') }}"></span>
+        </div>
+
+
+        <div class="row">
+          <div class="col-md-3 first" >
+            <ul>
+              <li><span class="content">Synchronisation automatique de tes activités</span></li>
+              <li><span class="content">Outil d'analyse et suivi d'entrainement</span></li>
+              <li><span class="content">Module de plan d'entraînement clé en main</span></li>
+              <li><span class="content">Avis et conseils d'un coach</span></li>
+              {#<li><span class="content disabled">Module de comparateur de séances</span></li>#}
+              <li><span class="content">Import de ton historique complet</span></li>
+              <li><span class="content">Synchronisation automatique avec Google Agenda</span></li>
+              <li class="bleu"><span class="content"></i>accès facilité à une montre professionnelle <a href="#bloc4-montres" data-scroll>plus de détails</a> </span></li>
+              <li><span class="content">Coaching sur mesure avec un professionnel</span></li>
+            </ul>
+          </div>
+           <div class="col-md-3 confort">
+           <div class="title"><img class="logo" src="{{ asset('V2/images/icon-confort.png') }}"><div class="desktop">Pack Défis<br/><span>c'est gratuit !</span></div></div>
+           <ul>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              {#<li><i class="glyphicon glyphicon-ok"></i></li>#}
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+            </ul>
+            <div class="choisir"><a href="#composez" data-scroll><span class="btn btn-primary desktop">Je choisis !</span><span class="glyphicon glyphicon glyphicon-plus-sign mobile"></span></a></div>
+          </div>
+           <div class="col-md-3 premium">
+            <div class="title"><img class="logo" src="{{ asset('V2/images/icon-premium.png') }}"><div class="desktop">Pack Premium<br/><span>À partir de 5€/ mois</span></div></div>
+           <ul>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              {#<li><i class="glyphicon glyphicon-ok"></i></li>#}
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li>&nbsp;</li>
+            </ul>
+            <div class="choisir"><a href="#composez" data-scroll><span class="btn btn-primary desktop">Je choisis !</span><span class="glyphicon glyphicon glyphicon-plus-sign mobile"></span></a></div>
+          </div>
+           <div class="col-md-3 elite">
+            <div class="title"><img class="logo" src="{{ asset('V2/images/icon-elite.png') }}"><div class="desktop">Pack Elite<br/><span>À partir de 95€/ mois</span></div></div>
+           <ul>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              {#<li><i class="glyphicon glyphicon-ok"></i></li>#}
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+            </ul>
+            <div class="choisir"><a href="#composez" data-scroll><span class="btn btn-primary desktop">Je choisis !</span><span class="glyphicon glyphicon glyphicon-plus-sign mobile"></span></a></div>
+          </div>
+        </div><!--/.row-->
+        </div><!--/.container-->
+        </div><!--/bloc3-->
+
+
+        <!--bloc4-->
+        <div class="bloc4" id="bloc4-montres">
+            <div class="container">
+                <h2>Découvre les montres</h2>
+                <img class="logo desktop" src="{{ asset('V2/images/logo-petit.png') }}">
+                <p class="bloc4-txt">Keepinsport c'est aussi l'accès facilité aux montres les plus performantes (nécessaires pour les sportifs les plus exigeants), financées sur 6, 12 ou 18 mois et sans frais en complément d'un engagement au pack Elite ou au pack Premium sur cette même durée</p>
+                <div id="carousel-montres" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <img src="{{ asset('V2/images/montre1.png') }}" alt="">
+                                    <span>SUUNTO Ambit 3</span>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>    
+                                </div>
+                                <div class="col-md-3">
+                                    <img src="{{ asset('V2/images/montre2.png') }}" alt="">
+                                    <span>GARMIN Forerunner 620</span>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>    
+                                </div>
+                                <div class="col-md-3">
+                                    <img src="{{ asset('V2/images/montre3.png') }}" alt="">
+                                    <span>SUUNTO Ambit 2s</span>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>   
+                                </div>
+                                <div class="col-md-3">
+                                    <img src="{{ asset('V2/images/montre4.png') }}" alt="">
+                                    <span>GARMIN Forerunner 10 </span>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>   
+                                </div>
+                            </div><!--/.row-->
+                        </div><!--/.item-->
+                        <div class="item">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <img src="{{ asset('V2/images/montre1.png') }}" alt="">
+                                    <span>SUUNTO Ambit 3</span>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>    
+                                </div>
+                                <div class="col-md-3">
+                                    <img src="{{ asset('V2/images/montre2.png') }}" alt="">
+                                    <span>GARMIN Forerunner 620</span>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>    
+                                </div>
+                                <div class="col-md-3">
+                                    <img src="{{ asset('V2/images/montre3.png') }}" alt="">
+                                    <span>SUUNTO Ambit 2s</span>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>   
+                                </div>
+                                <div class="col-md-3">
+                                    <img src="{{ asset('V2/images/montre4.png') }}" alt="">
+                                    <span>GARMIN Forerunner 10 </span>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>   
+                                </div>
+                            </div><!--/.row-->
+                        </div><!--/.item-->
+                    </div><!--/.carousel-inner-->
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-montres" role="button" data-slide="prev">
+                      <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-montres" role="button" data-slide="next">
+                      <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+                <h3 class="bleu">Compose ton pack et choisis ta montre !</h3> 
+                <a class="btn btn-primary btn-lg" href="#composez" data-scroll>J'y vais !</a> 
+            </div><!--/.container-->     
+        </div><!--/bloc4-->
+
+
+        <!--bloc4-->
+        <div class="bloc4 coach">
+        <div class="container">
+        <h2>Découvre les coachs</h2>
+        <img class="logo desktop" src="{{ asset('V2/images/logo-petit.png') }}">
+        <div class="clearfix"></div>
+        <div class="row">
+
+        <div class="col-md-6">
+            <p class="bloc4-txt">Avec Keepinsport bénéficie des conseils personnalisés de coachs professionnels ! Inscris toi pour être suivi par Pascal Blanc, Antoine Guillon ou un autre coach de ton choix.</p>
+            <h3 class="bloc4-txt bleu">Au programme : </h3>
+                <ul>
+                <li>1) Mise en relation avec le coach pour définition et validation de tes objectifs </li>
+                <li>2) Élaboration d'un planning détaillé sur mesure consultable dans ton agenda (synchro possible avec Google Agenda) En fonction de ton age, tes objectifs, ton historique, tes disponibilités, des sports que tu peux pratiquer, etc</li>
+                <li>3) Publication de tes activités sur le site manuellement ou avec ta montre grâce à nos services de synchronisation</li>
+                <li>4) Suivi de ton entraînement au fil de l'eau par le coach grâce au système de notification en temps réel (pour permettre à ton coach de faire évoluer ton planning)</li>
+                <li>5) Analyse de tes performances grâce à ton tableau de bord évolué</li>
+                <li>6) Questions/réponses illimitées autour de ton planning avec le coach(bénéficie de son retour d'expérience et de ses précieux conseils)</li>
+              </ul>
+          </div>
+
+          <div class="col-md-6">
+
+        <div id="carousel-coach" class="carousel slide" data-ride="carousel"> 
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner">
+            <div class="item active">
+                        <img src="{{ asset('V2/images/coach1.png') }}" alt=""> 
+                <span class="text-coach">
+                <p>Depuis plusieurs années, l'exploration de nos limites physiques et mentales est omniprésente dans le milieu sportif. Un sport mythique, une trace GPS, un chrono, une assistance rodée.</p>
+                </span>
+                <span class="text-coach">
+                KeepinSport permet de comprendre les adaptations de l'organisme et de repousser les limites de la fatigue.
+                <p>Explorer le monde en explorant ses propres limites...</p>
+                <p> <strong>Pascal Blanc</strong><br/> 
+                  Coach KeepinSport <br/>
+                  25 ans de compétition<br/>
+                  150 victoires en Trail, Ultratrail, VTT, Duathlon</p></span>
+            </div><!--/.item-->
+               <div class="item">
+                        <img src="{{ asset('V2/images/coach2.png') }}" alt=""> 
+                <span class="text-coach">
+                <p>Depuis plusieurs années, l'exploration de nos limites physiques et mentales est omniprésente dans le milieu sportif. Un sport mythique, une trace GPS, un chrono, une assistance rodée.</p>
+                </span>
+                <span class="text-coach">
+                KeepinSport permet de comprendre les adaptations de l'organisme et de repousser les limites de la fatigue.
+                <p>Explorer le monde en explorant ses propres limites...</p>
+                <p> <strong>Pascal Blanc</strong><br/> 
+                  Coach KeepinSport <br/>
+                  25 ans de compétition<br/>
+                  150 victoires en Trail, Ultratrail, VTT, Duathlon</p></span>
+            </div><!--/.item-->
+          </div><!--/.carousel-inner-->
+        </div>
+
+
+
+          </div>
+        </div>  <!--/.row -->
+        <div class="clearfix"></div>
+
+        <h3 class="bleu">Compose ton pack Elite et choisis ta montre !</h3> 
+         <a class="btn btn-primary btn-lg" href="#composez" data-scroll>J'y vais !</a> 
+         </div><!--/.container-->     
+        </div><!--/bloc4-->
+
+
+        <!--bloc5-->
+        <div class="bloc5" id="composez">
+            <div class="container">
+                <h2>Compose ton Pack</h2>
+                <img class="logo desktop" src="{{ asset('V2/images/logo-blanc-petit.png') }}" />
+            </div>	
+            <div class="container">
+                <form name="packComposeForm" id="packComposeForm">
+                    <div class="first-block"  id="step1">
+                        <div class="title1">
+                            <span class="number">1</span>Choisis ton pack : <b id="cost"></b>
+                        </div>
+                        <div class="bg1 block-choice elite" data-pos="elite" id="blocElite">
+                            <div class="disabledOverlay"></div>
+                            <div class="title"><img src="{{ asset('V2/images/icon-elite.png') }}">Pack Elite<br/><span>À partir de 50€/ mois (*)</span></div>
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="elite1" id="elite1"> <span class="bleu">+ montre haut de gamme</span></label>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="elite2" id="elite2"> <span class="bleu">+ montre</span></label>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="elite3" id="elite3"> <span class="bleu">Sans montre</span></label>
+                            </div><!--/.checkbox-->
+                            <ul class="fonctionnalites">		
+                                <li class="rouge">Coaching sur mesure avec un professionnel</li>
+                                <li>Accès au module de plan d'entrainements clés en main</li>			
+                                <li>Import complet de l'historique de mes entraînements</li>
+                                <li>Synchronisation automatique de mes activités</li>
+                                <li>Accès au module de statistiques avancées</li>
+                                <li> <i>* : prix en fonction du choix avec ou sans montre, et selon le coach</i></li>
+                            </ul><!--/.fonctionnalites-->
+                        </div><!--/.bg1-->
+                        <div class="bg2 block-choice advanced" data-pos="advanced" id="blocPremium">
+                            <div class="disabledOverlay"></div>
+                            <div class="title"><img src="{{ asset('V2/images/icon-premium.png') }}">Pack Premium<br/><span>À partir de 5€/ mois (**)</span></div>
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="advanced1" id="advanced1"> <span class="bleu">+ montre haut de gamme</span></label>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="advanced2" id="advanced2">  <span class="bleu">+ montre</span></label>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="advanced3" id="advanced3">  <span class="bleu">Sans montre</span></label>
+                            </div><!--/.checkbox-->
+                            <ul class="fonctionnalites">		
+                                <li class="rouge">Accès au module de plan d'entrainements clés en main</li>			
+                                <li class="rouge">Import complet de l'historique de mes entraînements</li>
+                                <li>Synchronisation automatique de mes activités</li>
+                                <li>Accès au module de statistiques avancées</li>
+                                <li> <i>** : prix en fonction du choix avec ou sans montre</i></li>
+                            </ul><!--/.fonctionnalites-->
+                        </div><!--/.bg2-->
+
+                        <div class="bg3 block-choice confort" data-pos="confort" id="blocDefis">
+                            <div class="disabledOverlay"></div>
+                            <div class="title"><img src="{{ asset('V2/images/icon-confort.png') }}">Pack Défis<br/><span>c'est gratuit !</span></div>
+                            <ul class="fonctionnalites">		
+                                <li>Synchronisation automatique de mes activités</li>
+                                <li>Accès au module de statistiques avancées</li>
+                            </ul><!--/.fonctionnalites-->
+                            <a class="btn btn-primary">Je choisis !</a>
+                            <span class="clearfix"></span>
+                        </div><!--/.bg3-->
+                    </div><!--/.first-block-->
+
+                    <div class="second-block block-choice montre" data-pos="montre" id="step2" >
+                        <div class="disabledOverlay"></div>
+                        <div class="title2">
+                            <span class="number">2</span>Choisis ta montre offerte :
+                        </div>
+                        <ul class="montres">
+                            <li class="watch elite1 advanced1">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre1.png') }}" alt="">
+                                    <label><input type="checkbox" name="montre1" id="montre1">SUUNTO Ambit 3 HR</label>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détail</a>
+                                </div><!--/.checkbox-->
+                            </li>
+                            <li class="watch elite1 advanced1">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre2.png') }}" alt="">
+                                    <label><input type="checkbox" name="montre2" id="montre2">GARMIN Forerunner 620</label>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détail</a>
+                                </div><!--/.checkbox-->
+                            </li>
+                            <li class="watch elite2 advanced2">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre3.png') }}" alt="">
+                                    <label><input type="checkbox" name="montre3" id="montre3">SUUNTO Ambit 2s</label>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détail</a>
+                                    </div><!--/.checkbox-->
+                            </li>
+                            <li class="watch elite2 advanced2">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre4.png') }}" alt="">
+                                    <label><input type="checkbox" name="montre4" id="montre4">GARMIN Forerunner 10 </label>
+                                    <a href="#" data-toggle="modal" data-target="#myModal">Plus de détail</a>
+                                </div><!--/.checkbox-->
+                            </li>
+                        </ul>
+                        <a href="javascript:;" id="okWatch" class="btn btn-primary btn-sm hide">Choisir cette montre</a>
+                        <br clear="all">
+                        <br clear="all">
+                        <a href="javascript:;" id="modifPackWatch">Modifier mon Pack</a>
+                    </div><!--/.second-block-->
+
+                    <div class="third-block block-choice coach"  data-pos="coach"  id="step3">
+                        <div class="disabledOverlay"></div>
+                        <div class="title3">
+                            <span class="number">3</span>Choisis ton coach personnel :
+                        </div>
+                        <div class="content">
+                            <div class="checkbox coachbox">
+                                <img src="{{ asset('V2/images/coach1.jpg') }}" alt="">
+                                <label><input type="checkbox"  name="coach1" id="coach1"> Pascal Blanc</label>
+                                <a href="#" data-toggle="modal" data-target="#myModal">Plus de détail</a>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox coachbox">
+                                <img src="{{ asset('V2/images/coach2.jpg') }}" alt="">
+                                <label><input type="checkbox"  name="coach2" id="coach2"> Antoine Guillon</label>
+                                <a href="#" data-toggle="modal" data-target="#myModal">Plus de détail</a>
+                            </div><!--/.checkbox-->
+                        </div><!--/.content-->
+                        <a href="javascript:;" id="modifPackCoach">Modifier mon Pack</a>
+                    </div><!--/.third-block-->
+                </form><!--/.form-->
+                <img class="accroche desktop" src="{{ asset('V2/images/accroche-bloc1.png') }}">
+            </div><!--/.container-->  
+        </div><!--/bloc5-->
+
+        <!--bloc6-->
+        <div class="bloc6">
+        <div class="container">
+        <h2>Les questions les plus fréquemment posées</h2>
+        <img class="logo desktop" src="{{ asset('V2/images/logo-petit.png') }}">
+
+        <div class="row">
+          <div class="col-md-6">
+          <div class="panel-group" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                  Collapsible Group Item #1
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse">
+              <div class="panel-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                  Collapsible Group Item #2
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+              <div class="panel-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                  Collapsible Group Item #3
+                </a>
+              </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+              <div class="panel-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+              </div>
+            </div>
+          </div>
+        </div>
+          </div>
+          <div class="col-md-6">
+          <div class="panel-group" id="accordion">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne2">
+                  Collapsible Group Item #1
+                </a>
+              </h4>
+            </div>
+            <div id="collapseOne2" class="panel-collapse collapse">
+              <div class="panel-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo2">
+                  Collapsible Group Item #2
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTwo2" class="panel-collapse collapse">
+              <div class="panel-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree2">
+                  Collapsible Group Item #3
+                </a>
+              </h4>
+            </div>
+            <div id="collapseThree2" class="panel-collapse collapse">
+              <div class="panel-body">
+                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+              </div>
+            </div>
+          </div>
+        </div>
+          </div>
+        </div><!--/row-->
+
+         </div><!--/.container-->  
+        </div><!--/bloc6-->
+
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Fermer</span></button>
+                <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+              </div>
+              <div class="modal-body">
+              <div class="row">
+                  <div class="col-md-8">
+              <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ultrices, nibh sed feugiat varius, purus felis maximus ipsum, at mollis lorem massa sit amet erat. Vivamus nibh sem, egestas eu nulla in, tempus tristique diam. Sed ligula quam, porttitor ac augue auctor, varius pharetra metus. Nulla faucibus nulla urna, feugiat posuere lectus ultrices sit amet. Sed nisl urna, tincidunt non mattis in, luctus eget mi. Phasellus nec dolor lacus. Sed a sollicitudin turpis, nec vehicula nulla. Proin volutpat massa arcu, nec lobortis massa rhoncus nec. Sed congue, turpis eu porttitor consequat, est risus lobortis tortor, vitae finibus sem est ac elit. Phasellus ornare, metus sit amet sollicitudin auctor, quam odio ornare sapien, quis tempus justo nisl ac enim. Donec commodo, sem non accumsan aliquet, sapien nibh cursus dolor, et elementum quam justo sed dui. Aenean in nisl sit amet magna blandit pellentesque sit amet ac diam. Etiam vel feugiat lacus.</p>
+              </div>
+          <div class="col-md-4"><img class="montre" src="{{ asset('V2/images/montre-sport.png') }}"></div>
+        </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        </div>
+        <!--END WRAPPER-->
+
+        <footer>
+            <div class="container">
+
+                <ul class="list-inline" id="reseaux">
+                    <li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau1.png') }}" /></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau2.png') }}" /></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau3.png') }}" /></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau4.png') }}" /></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau5.png') }}" /></a></li>
+                    <li><a href="#" target="_blank"><img src="{{ asset('V2/images/reseau6.png') }}" /></a></li>
+                </ul>
+
+                <div class="row">
+                    <div class="col-md-3">
+                        <h5>Information</h5>
+                        <ul>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Information</h5>
+                        <ul>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Information</h5>
+                        <ul>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <h5>Information</h5>
+                        <ul>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                            <li><a href="#">Lorm ipsum</a></li>
+                        </ul>
+                    </div>
+                </div><!--/.row-->
+            </div><!--/.container-->
+        </footer>
+
+        <div class="footer-black">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">Keepinsport © 2014. All rights reserved</div>
+                    <div class="col-md-4"><img src="{{ asset('V2/images/logos-paiement.png') }}" /></div>
+                </div>
+            </div><!--/.container-->
+        </div>
+
+    </body>
+</html>

@@ -1,0 +1,920 @@
+{% extends "::layout_V2.html.twig" %}
+
+{% block title %}
+	Keepinsport - Wikisport
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('ckeditor/sample.css') }}" />#}
+    
+    {# zoom sur photos #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('swipebox/source/swipebox.css') }}" />
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+    
+    {# zoom sur photos #}
+    <script src="{{ asset('swipebox/source/jquery.swipebox.min.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/v3_epoly.js') }}"></script> {# fonctions additionnelles pour l'objet polyline de google map #}
+    
+    <script type="text/javascript">
+        var averageNotes = new Array(); //Utilisé pour la gestion des notes des événéments de type compét
+        
+        $(document).ready(function() {
+            $("#body").addClass("wikisport"); //pour activer le css correspondant
+            
+            {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                $("#headerV2").css("background-color","#000");
+            {% endif %}
+        });
+        function attachUserParticipatesEvent_Event(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                       $(this).attr('href'),
+                       function(data) {
+                           if (data.participateResponse == -1) modalInfo(data.errorMessage);
+                           else $( elt ).parent().html(data.userParticipatesEventLink);
+                           elt.removeClass("disabled");
+                       }
+                   )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+
+        function attachUserNotParticipatesAnymoreEvent_Event(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.participateResponse == -1) modalInfo(data.errorMessage);
+                            else $( elt ).parent().html(data.userParticipatesEventLink);
+                            elt.removeClass("disabled");
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        
+        function attachEquipmentUsedEvent_Event(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.useResponse == -1) modalInfo(data.errorMessage);
+                            else {
+                                $( elt ).parent().html(data.userUsesEquipmentLink);
+                                showInformation("Ce matériel a été ajouté à ta liste !", "sportif");
+                                //console.log(data.photos);
+                            }
+                            elt.removeClass("disabled");
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        {% if article.activity.activityCoachingPlanId is defined and article.activity.activityCoachingPlanId is not null %}
+            $.get(
+                Routing.generate('ksCoaching_getCoachingGraph', { "context": "weekView", "planId" :  '{{ article.activity.activityCoachingPlanId }}', "userId" : {% if user is defined and user is not null %} {{ user.id }} {% else %} '-1'{% endif %}, "startOn" : null, "endOn" : null}),
+                function(response) {
+                    if (response.code ==1) {
+                        $("#weekViewContainer").html(response.weekView);
+                        //$("#flatViewLoader").hide();
+                    }
+                }
+            );
+        {% endif %}
+    </script>
+{% endblock %}
+    
+{% block body %}
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <!--BLOC1-->
+        <div class="bloc1">
+            <div class="container">
+                {% if articleEvent.event.sport.codeSport is defined %}
+                    <h1 class="title">
+                        <img style="padding-right:20px" rel="tooltip" title="{{ articleEvent.event.sport }}" class='pull-left' src='{{ asset("V2/images/sports/") }}{{ articleEvent.event.sport.codeSport }}.png'/>
+                {% else %}
+                    <h1 class="title premium">
+                {% endif %}
+                    {{ article.activity.label }}
+                    {% if article.activity.articleCategoryTag_id != '2' %}
+                        {% if article.activity.isPublic  %}
+                            {# 'article.public-article'|trans #}
+                        {% else %}
+                            ({{ 'article.private-article'|trans }})
+                        {% endif %}
+                    {% endif %}
+                </h1>
+                <div class="bloc1-nav"> 
+                    <!--Navleft-->
+                    <ul class="nav nav-pills infos">
+                        {#<li>{% include 'KsActivityBundle:Comment:_commentLink.html.twig' with {'activity': article.activity } %}</li>#}
+                        {#<li><a rel="tooltip" title="{{ 'actions.share'|trans }}" href="#" title=""><span class="glyphicon glyphicon-share"></span></a></li>#}
+                        <li> {% include 'KsActivityBundle:Activity:_subscriptionLink.html.twig' with { 'activity': article.activity }%} </li>
+                        <li> {% include 'KsActivityBundle:Activity:_voteLink.html.twig' with {'activity' : article.activity}%} </li>
+                        {#<li><a rel="tooltip" title="{{ 'actions.delete'|trans }}" href="#" title=""><span class="glyphicon glyphicon-trash"></span></a></li>#}
+                    </ul>
+                    <!--NavRight-->
+                    <ul class="navbar-right">
+                        {% if article.activity.articleCategoryTag_id == '2' %}
+                            <button type="button" class="btn btn-success" rel="tooltip" title="{{ 'article.duplicate-article'|trans }}" {% if article.activity.isPublic == '1' or article.activity.user_id == userId %}{% else %}disabled{% endif %}>
+                                <a href="{{ path('ksWikisport_duplicate', {"id" : article.activity.id }) }}"><span class="glyphicon glyphicon-plus-sign"></span> {{ 'article.duplicate'|trans }}</a>
+                            </button>
+                        {% endif %}
+                        <button type="button" class="btn btn-success" rel="tooltip" title="{{ 'article.update-article'|trans }}" {% if article.activity.isPublic == '1' or article.activity.user_id == userId %}{% else %}disabled{% endif %}>
+                            <a href="{{ path('ksWikisport_edit', {"id" : article.activity.id }) }}"><span class="glyphicon glyphicon-pencil"></span> {{ 'article.update'|trans }}</a>
+                        </button>
+                    </ul>
+                </div>
+                
+                <div class="plan"><!--Plan-->    
+                    
+                    {% if articleEvent.event.id is defined and articleEvent.event.id != '' %}
+                        <center><h3 class="title">{{ 'article.general'|trans }}</h3></center>
+                        {#% render 'KsEventBundle:Event:eventInfos' with {'id': articleEvent.event.id } %#}
+
+                        {# Affichage données liée au GPX et à l'event (date, lieu, type, sport #}
+                        <div class="row">
+                            <div class="col-md-3">
+                                <ul>
+                                    <li>
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                        <div class="donnees-bloc">
+                                            <div class="donnees-titre">Date</div>
+                                            <div class="donnees-chiffre">
+                                                {#% if articleEvent.event.isAllDay % FMO : mise en commentaire pour ne pas avoir à passer tous les events en prod à 1 pour les compets #}
+                                                    {{ articleEvent.event.startDate|date('d/m/Y') }} 
+                                                {#% else %#}
+                                                    {# Du {{ articleEvent.event.startDate|date('d/m/Y H:i') }} au {{ articleEvent.event.endDate|date('d/m/Y H:i') }} #}
+                                                {#% endif %#}
+                                            </div>
+                                        </div>
+                                    </li>    
+                                    {% if article.activity.sport_typeId == '2' or article.activity.sport_typeId == '3' %}
+                                        <li>
+                                            <span class="glyphicon glyphicon-road"></span>
+                                            <div class="donnees-bloc">
+                                                <div class="donnees-titre">{{ 'activity.distance'|trans }}</div>
+                                                <div class="donnees-chiffre">
+                                                    <span id="distance">
+                                                        {% if article.activity.distance is not null %}
+                                                            {{ article.activity.distance|number_format(2, '.', ',') }} km
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-md-2">
+                                <ul>
+                                    <li>
+                                        <span class="glyphicon glyphicon-time"></span>
+                                        <div class="donnees-bloc">
+                                            <div class="donnees-titre">{{ 'article.start'|trans }}</div>
+                                            <div class="donnees-chiffre">
+                                                <span id="issuedAt">
+                                                    {% if articleEvent.event.startDate is not null %}
+                                                        {{ articleEvent.event.startDate|date('H:i') }}
+                                                    {% else %}
+                                                        -
+                                                    {% endif %}
+                                                </span>
+                                           </div>
+                                        </div>
+                                    </li>
+                                    {% if article.activity.sport_typeId == '2' or article.activity.sport_typeId == '3' %}
+                                        <li>
+                                            <span class="glyphicon glyphicon-time"></span>
+                                            <div class="donnees-bloc">
+                                                <div class="donnees-titre">D+</div>
+                                                <div class="donnees-chiffre">
+                                                    <span id="elevationGain">
+                                                        {% if article.activity.elevationGain is not null %}
+                                                            {{ article.activity.elevationGain }} m
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                <ul>
+                                    <li>
+                                        <span class="glyphicon glyphicon-time"></span>
+                                        <div class="donnees-bloc">
+                                            <div class="donnees-titre">{{ 'article.location'|trans }}</div>
+                                            <div class="donnees-chiffre">
+                                                <span id="fullAddress">
+                                                    {% if article.activity.place.fullAdress is defined and article.activity.place.fullAdress is not null %}
+                                                        {{ article.activity.place.fullAdress }}
+                                                    {% else %}
+                                                        {{ article.activity.place_fullAdress }}
+                                                    {% endif %}
+                                                </span>
+                                           </div>
+                                        </div>
+                                    </li>
+                                    {% if article.activity.sport_typeId == '2' or article.activity.sport_typeId == '3' %}
+                                        <li>
+                                            <span class="glyphicon glyphicon-time"></span>
+                                            <div class="donnees-bloc">
+                                                <div class="donnees-titre">D-</div>
+                                                <div class="donnees-chiffre">
+                                                    <span id="elevationLost">
+                                                        {% if article.activity.elevationLost is not null %}
+                                                            {{ article.activity.elevationLost }} m
+                                                        {% else %}
+                                                            -
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                {% include 'KsActivityBundle:Wikisport:_notes.html.twig' with {
+                                    'activityId'    : article.activity.id,
+                                    'signsNote'     : article.activity.signsNote,
+                                    'foodNote'      : article.activity.foodNote,
+                                    'promotersNote' : article.activity.promotersNote,
+                                    'traceNote'     : article.activity.traceNote,
+                                    'awardsNote'    : article.activity.awardsNote
+                                 } %}
+                            </div>
+                        </div>
+                    {% endif %}    
+
+                    {# 2 => événement sportif (=compétition) #}
+                    {% if article.activity.articleCategoryTag_id == '2' and articleEvent.event.id is defined and articleEvent.event.id != '' %}
+                        {% render 'KsEventBundle:Event:eventParticipants' with {'id': articleEvent.event.id } %}
+                    {% endif %}
+
+                    {#{% if article.activity.sport_codeSport != "swimming" and rawTrackingDatas is defined and rawTrackingDatas != '' %}
+                        <div>
+                            <h3>{{ 'activity.splits'|trans }}</h3>
+                            <div class="splits" id="splitsContainer" style="display:none;height: 404px;overflow-y : scroll;">
+                                <center>
+                                    <img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+                                </center>
+                            </div>
+                        </div>
+                    {% endif %}#}
+
+                    <div class="row-fluid">
+                        {% if article.activity.articleCategoryTag_id == '2' and ((rawTrackingDatas is defined and rawTrackingDatas != '') or (article.activity.place_latitude is not null and article.activity.place_longitude is not null)) %}
+                            <center><h3 class="title"> {{ 'activity.graphs'|trans }} </h3></center>
+                            <div class="graphs">
+                                <div id="gmap-{{ article.activity.id }}" style="height:500px;"></div>
+
+                                {% if rawTrackingDatas is defined and rawTrackingDatas != '' %}
+                                    <div >
+                                        <div id="graphContainer"><!-- affichage du graphe --></div>
+                                    </div>
+                                {% endif %}
+                                {% if (rawTrackingDatas is defined and rawTrackingDatas != '') %}
+                                    <div class="alert alert-info">{{'activity.message-graphs'|trans}} </div>
+                                    <div class="alert alert-info">{{'activity.message-graphs2'|trans}} </div>
+                                {% endif %}        
+                            </div>        
+                        {% endif %}
+                    </div>
+
+                    <br clear="all">
+
+                    <div class="description"><!--Description-->
+                        <center><h3 class="title">{{ 'article.details'|trans }}</h3></center>
+                        <div>{{ article.activity.description|raw }}</div>
+                    </div>
+                    
+                    {# 3 => Plan d'entrainement #}
+                    {% if article.activity.articleCategoryTag_id == '3' %}
+                        {% render 'KsAgendaBundle:Agenda:trainingPlanUsers' with {'activityId': article.activity.id } %}
+                    
+                        <div id="weekViewContainer">
+                            <center><img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"></center>
+                        </div>
+                    {% endif %}
+
+                    {# 5 => Matériel #}
+                    {% if article.activity.articleCategoryTag_id == '5' and is_granted("IS_AUTHENTICATED_REMEMBERED")%}
+                        <div>
+                            {% render 'KsEquipmentBundle:Equipment:equipmentUsers' with {'id': article.activity.id } %}
+                        </div>
+                    {% endif%}
+
+                    {% if articleContent.photos is defined and articleContent.photos is not null and articleContent.photos|length != 0 %}
+                        <h3>{{ 'article.photos'|trans }}</h3>
+                        <div class="photos">
+                            {% include 'KsActivityBundle:Article:_article_photos.html.twig'  with { 'articleId' : article.activity.id, 'photos' : articleContent.photos } %}
+                        </div>
+                    {% endif %}
+
+                    <br style="clear:both">    
+                </div>
+            </div>
+        </div>
+        <br/>
+        <div class="activityActionsBloc container">
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <span>
+                    <center>
+                        {% include 'KsActivityBundle:Comment:_commentLink.html.twig' with {'activity': article.activity } %}
+
+                        {% if article.activity.isPublic == '1' or article.activity.user_id == userId %}
+                            <a class="btn" href="{{ path('ksWikisport_edit', { 'id' : article.activity.id }) }}" rel="tooltip" title="{{ "actions.edit"|trans }}">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                        {% endif %}
+
+                        <span id="subscriptionBloc-{{ article.activity.id }}" class="actionsButtonBloc">
+                            {% include 'KsActivityBundle:Activity:_subscriptionLink.html.twig' with {'activity': article.activity}%}
+                        </span>
+                        <span class="actionsButtonBloc">
+                            {% include 'KsActivityBundle:Activity:_voteLink.html.twig' with {'activity': article.activity}%}
+                        </span>
+                    </center>
+                </span>
+            {% endif %}
+        </div>
+        <br>
+        <div id="activityBloc-{{ article.activity.id }}" class="container"> {#FMO : id nécessaire pour permettre affichage des commentaires postés !#}
+            {% include 'KsActivityBundle:Comment:_commentsBloc.html.twig' with {'activity': article.activity, 'comments' : article.comments } %}
+        </div>
+    </div>
+    {% if rawTrackingDatas is defined and rawTrackingDatas != '' %}
+        <br style="clear:both" />
+
+    <script type="text/javascript">
+
+        var landmarks = []; // stockage des markers gmap
+        var latLong = {};  //Stockage des points latitude/longitude
+        var waypoints = [];
+
+        function formatPace(pace) {
+            avgPaceMin = Math.floor(pace);
+            avgPaceSec = Math.floor(Math.round((pace - avgPaceMin) * 60));
+            if (avgPaceSec == 60) { avgPaceSec = 0; ++avgPaceMin; }
+            avgPaceSecStr = avgPaceSec.toString();
+            if (avgPaceSec < 10) { avgPaceSecStr = "0" + avgPaceSecStr; }
+
+            return avgPaceMin + ":" + avgPaceSecStr;
+        }
+
+        function formatTime(totalMin, showZeroHours) {
+            hours = Math.floor(Math.floor(totalMin) / 60);
+            min = Math.floor(totalMin) % 60;
+            sec = Math.floor((totalMin - Math.floor(totalMin)) * 60.0); 
+
+            if (sec == 60) { sec = 0; ++min; }
+            if (min == 60) { min = 0; ++hours; }
+
+            secStr = sec.toString();
+            if (sec < 10) { secStr = "0" + secStr; }
+            minStr = min.toString();
+            if (min < 10) { minStr = "0" + minStr; }
+
+            return  (showZeroHours || hours > 0) ?
+                hours + ":" + minStr + ":" + secStr
+                : minStr + ":" + secStr;
+        } 
+
+        function km_on(map, traceRoute, distanceForOneMarkInKm) {
+            if (landmarks.length && (landmarks.length > 0)) {
+                for (i = 0; i<landmarks.length; ++i) landmarks[i].setMap(map);
+            } else {
+                var km_points = traceRoute.GetPointsAtDistance(distanceForOneMarkInKm * 1000);
+                //console.log(km_points);
+                for (i = 0; i < km_points.length; i++) {
+                    landmarks.push(
+                        createKmMarker(map, km_points[i], (i + 1) * distanceForOneMarkInKm)
+                    );
+                }
+            }
+        }
+
+        function createKmMarker(map, point, km) {
+            return new google.maps.Marker({
+                position: point,
+                map: map,
+                title: "Km " + km,
+                icon: new google.maps.MarkerImage('https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + km + '|49AFCD|FFFFFF'),
+                zIndex: Math.round(point.lat() * -100000) << 5
+            });
+        }
+
+        {# FIXME: reprendre le code de la page détails activité !#}
+
+        $(document).ready(function() {
+            //MAP
+            jsonDatas           = {{ rawTrackingDatas|raw }};
+
+            var waypoints       = jsonDatas.waypoints;
+            //console.log(waypoints);
+            var firstWaypoint   = 0;
+            var lastWaypoint    = waypoints.length - 1;
+            var kmsNumber       = parseInt({{ article.activity.distance }});
+            var duration        = "{{ article.activity.timeMoving }}";
+            var map             = new google.maps.Map(
+                document.getElementById("gmap-{{ article.activity.id }}"), {
+                mapTypeId: google.maps.MapTypeId.TERRAIN
+            });
+            var mapPoints       = [];
+
+            if( waypoints[firstWaypoint] !== undefined ) {
+                var lat_min = waypoints[firstWaypoint].lat;
+                var lat_max = waypoints[firstWaypoint].lat;
+                var lon_min = waypoints[firstWaypoint].lon;
+                var lon_max = waypoints[firstWaypoint].lon;
+
+
+                $.each(waypoints, function(key, waypoint) {
+                    mapPoints.push(
+                        new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+                    );
+                    if ( waypoint.lat < lat_min ) lat_min = waypoint.lat;
+                    if ( waypoint.lat > lat_max ) lat_max = waypoint.lat;
+                    if ( waypoint.lon < lon_min ) lon_min = waypoint.lon;
+                    if ( waypoint.lon > lon_max ) lon_max = waypoint.lon;
+                });
+
+                var locationMarker = new google.maps.Marker({
+                    map     : map,
+                    icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/ks-pin.png') }}" ),
+                    position: new google.maps.LatLng( waypoints[firstWaypoint].lat, waypoints[firstWaypoint].lon ),
+                });
+
+                new google.maps.Marker({
+                    map     : map,
+                    icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/ks-green-pin.png') }}" ),
+                    position: new google.maps.LatLng( waypoints[firstWaypoint].lat, waypoints[firstWaypoint].lon ),
+                    title   : "Départ"
+                });
+
+                new google.maps.Marker({
+                    map     : map,
+                    icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/ks-red-pin.png') }}" ),
+                    position: new google.maps.LatLng( waypoints[lastWaypoint].lat, waypoints[lastWaypoint].lon ),
+                    title   : "Fin"
+                });
+
+                //On trace le parcours 
+                traceRoute = new google.maps.Polyline({
+                    path: mapPoints,
+                    strokeColor: "#2581BA",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 3
+                });
+
+                map.setCenter(new google.maps.LatLng(
+                    ((lat_max + lat_min) / 2.0),
+                    ((lon_max + lon_min) / 2.0)
+                ));
+
+                map.fitBounds(traceRoute.Bounds());
+
+                traceRoute.setMap(map);
+
+                if ( kmsNumber > 50 ) {
+                    distanceForOneMark = 10; //On ajoute que les dizaines
+                }
+                else if( kmsNumber <= 15 ) {         
+                    distanceForOneMark = 1; //On affiche tous les kilomètres
+                } 
+                else {
+                    distanceForOneMark = 5; //On affiche tous les 5 kilomètres
+                }
+                km_on(map, traceRoute, distanceForOneMark);
+            } 
+            $.get(
+                Routing.generate('ksActivity_getDataGraph', {'activityId' : {{ article.activity.id }}} ), 
+                function(response) {
+                    //console.log(response);
+
+                    var pacesEnabled = true;
+                    var _waypoints = response.map.waypoints; // tableau sous échantilonné
+
+                    /*alert("min" + response.info["minEle"]);
+                    alert("avg" + response.info["avgEle"]);
+                    alert("max" + response.info["maxEle"]);
+                    alert("ecT" + response.info["ecartTypePace"]);*/
+
+                    // Traitement des données pour les splits
+                    var timeElapsedByKm = {};
+                    $.each(response.chart.distances, function(key, distance) {
+                        kmInf = (Math.floor(distance)).toString();
+
+                        if( timeElapsedByKm[kmInf] === undefined && kmInf != "0" ) {
+
+                            timeElapsedByKm[kmInf] = {
+                                "key"   : key,
+                                "time" : response.chart.fullDurationMoving[key],
+                                "km" : response.chart.distances[key],
+
+                            }
+                        }    
+                    });
+
+
+                    //console.log(timeElapsedByKm);
+
+                    betterKm = worseKm = 1;
+
+                    /* calculs du rythme et des dénivelés +/- */
+                    for (km = 1; km <= Object.keys(timeElapsedByKm).length; km++) {         
+                        if (timeElapsedByKm[km] !== undefined) {
+                            if( km != 1 && timeElapsedByKm[km - 1] ) {
+                                timeElapsedByKm[km]["paceInSeconds"] = (timeElapsedByKm[km]["time"] - timeElapsedByKm[km - 1]["time"]) / (timeElapsedByKm[km]["km"] - timeElapsedByKm[km - 1]["km"]);
+                                den = getDenBetweenWaypoints(response.chart.elevations, timeElapsedByKm[km - 1]["key"], timeElapsedByKm[km]["key"]);
+                            } else {
+                                //paceInSeconds = response.info.duration - timeElapsedByKm[km];
+                                timeElapsedByKm[km]["paceInSeconds"] = timeElapsedByKm[km]["time"] / timeElapsedByKm[km]["km"];
+                                //console.log("km " + km + " : " + secondsToTime(paceInSeconds));
+                                den = getDenBetweenWaypoints(response.chart.elevations, 0, timeElapsedByKm[km]["key"]);  
+                            }
+
+                            timeElapsedByKm[km]["d+"] = den["+"];
+                            timeElapsedByKm[km]["d-"] = den["-"];
+
+                            if (timeElapsedByKm[worseKm] !== undefined && timeElapsedByKm[betterKm] !== undefined) {
+                                if( timeElapsedByKm[km]["paceInSeconds"] > timeElapsedByKm[worseKm]["paceInSeconds"] ) {
+                                    worseKm = km;
+                                }
+                                if( timeElapsedByKm[km]["paceInSeconds"] < timeElapsedByKm[betterKm]["paceInSeconds"] ) {
+                                    betterKm = km;
+                                }
+                            }
+                        }
+                    }
+
+                    /* création du tableau */
+                    $splitsContainer = $("#splitsContainer").html("");
+
+                    $splitsTable = $('<table/>', {
+                        class: 'table table-bordered',
+                        style: 'margin-bottom:0;'
+                    });
+
+                    $thead = $('<thead/>').append( 
+                        $('<tr/>').append(
+                            $('<td/>').html( "Km" )
+                        )
+                        /*.append( 
+                            $('<td/>').html( "Allure" )
+                        )
+                        */
+                        .append( 
+                            $('<td/>').html( "D+" )
+                        )
+                        .append( 
+                            $('<td/>').html( "D-" )
+                        )
+                    );
+
+                    $splitsTable.append( $thead );
+
+                    for (km = 1; km <= Object.keys(timeElapsedByKm).length; km++) { 
+                        if (timeElapsedByKm[km] !== undefined) {
+                            $tr = $('<tr/>', {
+                                class : km == betterKm ? "success" : km == worseKm ? "error" : ""
+                            });
+
+                            $tdKm = $('<td/>').html( km );
+                            $tdPace = $('<td/>');
+                            $tdDPlus = $('<td/>');
+                            $tdDMoins= $('<td/>');
+
+                            $tdPace.html( secondsToTime(timeElapsedByKm[km]["paceInSeconds"]) );
+                            $tdDPlus.html( timeElapsedByKm[km]["d+"] );
+                            $tdDMoins.html( timeElapsedByKm[km]["d-"] );
+
+                            $tr.append( $tdKm );
+                            $tr.append( $tdPace );
+                            $tr.append( $tdDPlus );
+                            $tr.append( $tdDMoins );
+
+                            $splitsTable.append( $tr );
+                        }
+                    }
+
+
+                    $splitsContainer.append( $splitsTable );
+
+                    //GRAPH
+                    var dataType = { "ELEVATION_GREEN" : 0, "ELEVATION_ORANGE" : 1, "ELEVATION_RED" : 2};
+
+                    var highchartsOptions = {};
+                    highchartsOptions.chart =
+                    {
+                        renderTo: "graphContainer",
+                        type: 'spline',
+                        animation: false,
+                        height : 290,
+                        alignTicks: false,
+                        zoomType: 'x',
+                        events: {
+                            redraw: function() {
+                                var myChart = $('#graphContainer').highcharts();
+                            }
+                        }
+                    };
+
+                    highchartsOptions.xAxis = [{
+                        min: 0,
+                        data : response.chart.distances,
+                        title: {
+                            text : "{{ 'wikisport.distance'|trans }}",
+                            offset : 15
+                        }
+                    }];
+
+                    //yAxis  
+                    highchartsOptions.yAxis = new Array();
+                    highchartsOptions.yAxis[dataType.ELEVATION_GREEN] = {
+                        title: {
+                            text : "{{ 'wikisport.elevation'|trans }}",
+                            offset : 40
+                        },
+                        height: 200,
+                        top : 10,
+                        offset: 0,
+                        labels : {
+                            align :"right",
+                            x: -2
+                        },
+                        gridLineWidth:0,
+                        tickPixelInterval: 50,
+                        min: response.info["minEle"],
+                        max: response.info["maxEle"]
+                    };
+                    highchartsOptions.yAxis[dataType.ELEVATION_ORANGE] = {
+                        title: {
+                            text : "{{ 'wikisport.elevation'|trans }}",
+                            offset : 40
+                        },
+                        height: 200,
+                        top : 10,
+                        offset: 0,
+                        labels : {
+                            align :"right",
+                            x: -2
+                        },
+                        gridLineWidth:0,
+                        tickPixelInterval: 50,
+                        min: response.info["minEle"],
+                        max: response.info["maxEle"]
+                    };
+                    highchartsOptions.yAxis[dataType.ELEVATION_RED] = {
+                        title: {
+                            text : "{{ 'wikisport.elevation'|trans }}",
+                            offset : 40
+                        },
+                        height: 200,
+                        top : 10,
+                        offset: 0,
+                        labels : {
+                            align :"right",
+                            x: -2
+                        },
+                        gridLineWidth:0,
+                        tickPixelInterval: 50,
+                        min: response.info["minEle"],
+                        max: response.info["maxEle"]
+                    };
+
+                    highchartsOptions.rangeSelector = {
+                        enabled: false,
+                        inputEnabled: false
+                    };
+
+                    //response.chart.elevations = [0.1514,1056,0.6568,1047,0.9763,1045,1.2706,1052,1.5024,1065,2.1797,1082,3.1488,1098,3.4263,1126,3.5564,1148,3.7701,1132,4.2686,1171,4.6962,1179,4.9128,1179,5.6176,1208,6.1984,1203,6.4652,1198,7.1376,1204,7.397,1228,7.5346,1236,7.7374,1253,7.9477,1268,8.0366,1277,8.1344,1293,8.3141,1298,8.4606,1304,8.6032,1315,8.7359,1332,8.9006,1365,8.9712,1380,9.0521,1406,9.1756,1406,9.3077,1431,9.4006,1443,9.4924,1475,9.586,1538,9.6358,1538,9.6977,1583,9.8062,1614,9.8601,1613,9.9527,1613,10.0369,1600,10.1013,1608,10.1925,1608,10.2753,1609,10.4041,1610,10.6211,1597,10.7805,1603,10.899,1602,11.1692,1604,11.3436,1607,11.5328,1613,11.8574,1611,12.1558,1617,12.5214,1611,12.727,1613,12.9607,1612,13.7282,1610,14.0835,1597,15.2367,1609,15.464,1614,15.6287,1621,15.768,1625,15.9472,1632,16.123,1635,16.2519,1641,16.4492,1641,16.6279,1651,16.8201,1671,17.0877,1677,17.3976,1680,17.5715,1688,17.7576,1695,17.9129,1721,18.5313,1732,18.885,1726,18.9855,1758,19.2776,1783,19.514,1806,20.0544,1880,20.574,1947,20.8217,1970,21.0345,2006,21.3843,2015,21.6086,2060,21.7075,2069,21.797,2064,21.8651,2063,22.0715,2060,22.1477,2067,22.3078,2071,22.4284,2085,22.5291,2079,22.6465,2087,22.7386,2104,22.7937,2111,22.8771,2121,22.9423,2120,23.0394,2150,23.1659,2129,23.2966,2153,23.4432,2147,23.5912,2136,23.7107,2136,23.8018,2146,23.8708,2157,24.0004,2157,24.1748,2152,24.2676,2153,24.4194,2163,24.5344,2162,24.7019,2161,24.8271,2161,24.9897,2168,25.1461,2151,25.283,2151,25.3694,2171,25.5292,2180,25.7348,2176,25.9229,2169,26.13,2166,26.2791,2161,26.3796,2152,26.5217,2143,26.6672,2123,26.8726,2119,27.0217,2112,27.164,2104,27.2875,2107,27.4165,2098,27.5487,2092,27.6683,2085,27.8131,2084,28.0004,2116,28.291,2136,28.4578,2157,28.6135,2185,28.7724,2217,28.916,2250,29.0216,2280,29.1997,2312,29.4246,2334,29.621,2334,29.7454,2331,29.856,2329,30.0106,2348,30.1429,2357,30.3256,2358,30.4704,2367,30.596,2377,30.7571,2387,30.8896,2361,31.0269,2365,31.1971,2377,31.4974,2370,31.6832,2404,31.8485,2412,32.1523,2401,32.4536,2378,32.5458,2356,32.6738,2331,32.7904,2276,33.3419,2260,33.8295,2271,34.3592,2286,34.5902,2324,34.7529,2330,35.0797,2335,35.2299,2322,35.4254,2304,35.7317,2286,35.9779,2273,36.1987,2275,36.4057,2242,36.6798,2271,36.8369,2301,37.021,2334,37.1931,2347,37.4082,2355,37.6004,2349,37.993,2336,38.3709,2325,38.9562,2329,39.3151,2337,39.5527,2339,40.0493,2347,40.193,2351,40.3384,2346,40.4454,2345,40.7543,2337,40.9591,2330,41.0839,2331,41.4268,2322,41.6575,2312,42.012,2303,42.1115,2306,42.2891,2302,42.4539,2296,42.7551,2290,43.139,2275,43.3377,2274,43.5697,2272,43.7374,2271,43.9078,2261,44.1496,2236,44.4444,2237,44.6888,2220,44.923,2212,45.1596,2192,45.296,2181,45.4673,2165,45.6215,2157,45.793,2151,45.8887,2142,46.0335,2141,46.1432,2126,46.2331,2120,46.335,2114,46.4676,2101,46.5492,2078,46.6639,2067,46.8605,2025,46.9402,1996,47.0491,1965,47.1121,1925,47.1658,1925,47.2328,1896,47.3117,1867,47.3749,1859,47.4454,1859,47.5402,1831,47.5989,1810,47.6792,1793,47.7726,1767,47.8403,1739,47.9284,1714,48.0108,1714,48.1386,1662,48.3086,1635,48.4069,1611,48.4963,1585,48.6385,1535,48.8379,1523,48.9311,1486,49.1019,1460,49.1779,1420,49.3094,1420,49.5003,1380,49.661,1306,49.751,1306,49.9019,1286,50.0355,1264,50.1882,1250,50.3536,1233,50.5266,1207,50.689,1177,50.843,1161,50.9487,1122,51.0462,1110,51.2345,1085,51.3157,1054,51.5132,1054,51.6312,1034,51.7139,1028,51.925,1021,52.0208,974,52.0951,947,52.207,937,52.295,937,52.4191,915,52.5664,862,52.6705,856,52.7623,832,52.8575,797,52.9327,797,53.0595,779,53.1644,738,53.2325,738,53.328,743,53.3972,647,53.4332,647,53.4792,647,53.5834,615,53.7162,588,53.7925,596,53.961,624,54.0652,629,54.1967,617,54.2671,611,54.4978,611,54.624,667,54.8501,700,55.0167,702,55.1858,693,55.2825,687,55.4335,676,55.5973,675,55.776,672,55.955,667,56.13,658,56.2661,655,56.4572,647,56.5799,631,56.7472,601,56.9667,607,57.1235,606,57.267,604,57.3913,585,57.5515,585,57.6929,561,57.8678,560,57.9971,567,58.1498,569,58.2878,561,58.3706,561,58.4577,564,58.5048,562,58.7269,558,59.1073,519,59.3462,510,59.5151,500,59.7805,475,60.044,479,60.2887,449,60.404,450,60.6071,434,60.9276,410,61.0611,410,61.1832,388,61.2683,388,61.4372,388,61.5507,364,61.6758,359,61.8221,341,61.9509,342,62.1406,341,62.2602,333,62.3491,309,62.4938,310,62.6016,310,62.7049,287,62.8439,290,62.9305,276,63.0165,266,63.1212,262,63.2089,259,63.3336,248,63.4337,243,63.5132,237,63.7018,228,63.9583,209,64.1668,199,64.2906,183,64.4401,183,64.5527,169,64.6089,164,64.7216,146,64.8926,140,65.0137,135,65.1122,118,65.2691,121,65.4264,139,65.6576,135,65.7284,126,65.8341,144,65.9296,135,66.1144,120,66.2471,116,66.3789,111,66.5268,87,66.6375,67,66.7306,53,66.847,52,66.9367,34,67.0819,23,67.2298,21,67.3733,16,67.5244,10,67.7354,19,68.0647,20,68.7321,43,69.0792,25];
+
+                    //console.log("ici:"+response.chart.elevations);
+
+                    highchartsOptions.title = {text:""};
+                    highchartsOptions.credits = {enabled:false};
+                    highchartsOptions.series = [];
+                    highchartsOptions.series[dataType.ELEVATION_GREEN] = {
+                        id:   dataType.ELEVATION_GREEN,
+                        name: "{{ 'wikisport.slow-slope'|trans }}",
+                        data: response.chart.elevations_green,
+                        type: "area",
+                        fillOpacity: 0.65,
+                        yAxis: dataType.ELEVATION_GREEN,
+                        //visible: true,
+                        color: '#12a24a',
+                        marker: {
+                            enabled : false,
+                            symbol: 'circle',
+                            radius: 2
+                        }
+                    };
+
+                    highchartsOptions.series[dataType.ELEVATION_ORANGE] = {
+                        id:   dataType.ELEVATION_ORANGE,
+                        name: "{{ 'wikisport.regular-slope'|trans }}",
+                        data: response.chart.elevations_orange,
+                        type: "area",
+                        fillOpacity: 0.65,
+                        yAxis: dataType.ELEVATION_ORANGE,
+                        //visible: true,
+                        color: '#e6b809',
+                        marker: {
+                            enabled : false,
+                            symbol: 'circle',
+                            radius: 2
+                        }
+                    };
+
+                    highchartsOptions.series[dataType.ELEVATION_RED] = {
+                        id:   dataType.ELEVATION_RED,
+                        name: "{{ 'wikisport.hard-slope'|trans }}",
+                        data: response.chart.elevations_red,
+                        type: "area",
+                        fillOpacity: 0.65,
+                        yAxis: dataType.ELEVATION_RED,
+                        visible: true,
+                        color: '#db2033',
+                        marker: {
+                            enabled : false,
+                            symbol: 'circle',
+                            radius: 2
+                        }
+                    };
+
+
+                    // on en a besoin ici pour accéder à response... solution temp
+                    // => faire tous les traitements dans /activities/activity
+                    highchartsOptions.plotOptions = {
+                        area: {
+                            pointStart: 0,
+                            marker: {
+                                enabled: true,
+                                symbol: 'circle',
+                                radius: 3,
+                                states: {
+                                    hover: {
+                                        enabled: true
+                                    }
+                                }
+                            }
+                        },
+                        series : {
+                            point: {
+                                events: {
+                                    mouseOver: function() { // NOTE CF: il faut aussi gérer les cas où il n'y a pas de gmap associée
+                                        curPos = new google.maps.LatLng(
+                                            _waypoints[this.x].lat, _waypoints[this.x].lon);
+                                        locationMarker.setVisible(true);
+                                        locationMarker.setPosition(curPos);
+                                        if (!map.getBounds().contains(curPos)) {
+                                            map.panTo(curPos);
+                                        }
+                                    }
+                                }
+                            },
+                            events: {
+                                mouseOut: function() {    
+                                    locationMarker.setVisible(false);
+                                }
+                            },
+                            lineWidth: 2,
+                            marker: {
+                                enabled: true
+                            },
+                            shadow: false,
+                            states: {
+                                hover: {
+                                    lineWidth: 2
+                                }
+                            },
+                            enableMouseTracking: true
+                        }
+                    };
+
+                    highchartsOptions.tooltip = {
+                        headerFormat: "",
+                        shared: true,
+                        crosshairs: true,
+                        valueDecimals: 2,
+                        formatter: function() {
+                            var pointData   = response.chart.distances[this.x];
+                            var pointIndex  = response.chart.distances.indexOf(this.x);
+                            var yValStr = '';
+
+                            if (response.chart.elevations_green[pointIndex].y != null) {
+                                yValStr = '{{ 'wikisport.elevation'|trans }}: ' + response.chart.elevations_green[pointIndex].y + ' m<br />';
+                                yValStr += '{{ 'wikisport.slope'|trans }}: ' + response.chart.elevations_green[pointIndex].pente + ' %<br />';
+                            }
+                            if (response.chart.elevations_orange[pointIndex].y) {
+                                yValStr = '{{ 'wikisport.elevation'|trans }}: ' + response.chart.elevations_orange[pointIndex].y + ' m<br />';
+                                yValStr += '{{ 'wikisport.slope'|trans }}: ' + response.chart.elevations_orange[pointIndex].pente + ' %<br />';
+                            }
+                            if (response.chart.elevations_red[pointIndex].y) {
+                                yValStr = '{{ 'wikisport.elevation'|trans }}: ' + response.chart.elevations_red[pointIndex].y + ' m<br />';
+                                yValStr += '{{ 'wikisport.slope'|trans }}: ' + response.chart.elevations_red[pointIndex].pente + ' %<br />';
+                            }
+                            return yValStr
+                                + '{{ 'wikisport.distance'|trans }}: ' + Highcharts.numberFormat(this.x, 2) + ' km';
+                        }
+                    };
+
+                    $.each(response.map.waypoints, function(key, waypoint) {
+                        latLong[response.chart.distances[key]] = (new google.maps.LatLng( waypoint.lat, waypoint.lon ) );
+                    });
+
+                    $("#distance").html(response.info["distance"] + " km");
+                    //$("#elevationGain").html(response.info["D+"] + " m");
+                    //$("#elevationLost").html(response.info["D-"] + " m");
+                    $("#minElevation").html(response.info["minEle"] + " m");
+                    $("#maxElevation").html(response.info["maxEle"] + " m");
+                    $("#movingDuration").html(formatTime(response.info['duration'] / 60.0));
+                    if (response.info['duration'] && response.info['distance']) {
+                        $("#pace").html(formatPace(response.info["duration"] / 60.0 / response.info['distance']));
+                    }
+
+                    chart = new Highcharts.Chart(highchartsOptions);
+                }
+            );
+
+            var getDenBetweenWaypoints = function(elevations, p1, p2) {
+
+                //NOTE : Le tab élévation contient un couple de valeurs [kmCumul, ele]
+
+                var den = {
+                    '+'         : 0,
+                    '-'         : 0,
+                };
+
+                if ( elevations.length > 0 ) {
+                    var threshold =  5; 
+
+                    var eleRef = elevations[p1][1];
+
+                    for (i = p1; i <= p2; i++) {
+                        if ( ( elevations[i][1] - eleRef ) > threshold ) {
+                            den['+'] += elevations[i][1] - eleRef;
+                            eleRef = elevations[i][1];
+                        };
+                        if ( ( eleRef - elevations[i][1] ) > threshold ) {
+                            den['-'] += eleRef - elevations[i][1];
+                            eleRef = elevations[i][1];
+                        };
+                    };
+
+                } else {
+                    den["+"] = 0;
+                    den["-"] = 0;
+                }
+
+                return den;
+            }
+        });
+    </script>
+{% else %}
+    <script type="text/javascript">
+       $("#splitsContainer").html("Non disponibles");
+       {% if article.activity.place_latitude is not null and article.activity.place_longitude is not null %}
+        var map = new google.maps.Map(
+            document.getElementById("gmap-{{ article.activity.id }}"), {
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            center: new google.maps.LatLng( "{{ article.activity.place_latitude }}", "{{ article.activity.place_longitude }}" ),
+            zoom : 8,
+        });
+
+        var locationMarker = new google.maps.Marker({
+            map     : map,
+            position: new google.maps.LatLng( "{{ article.activity.place_latitude }}", "{{ article.activity.place_longitude }}" ),
+        });
+        {% endif %}
+    </script>
+{% endif %}
+    
+{% endblock body %}

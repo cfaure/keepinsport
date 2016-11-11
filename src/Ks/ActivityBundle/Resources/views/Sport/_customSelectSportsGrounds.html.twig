@@ -1,0 +1,16 @@
+<select id="customSelectSportsGrounds" class="customSelectSportsGrounds form-control" tabindex="-1" >
+    <option value="">-- Terrain --</option>
+    {% for sportGround in sportsGrounds %}
+         <option value="{{ sportGround.id }}" codeSportGround="{{ sportGround.code }}">{{ sportGround.label }}</option>
+    {% endfor %}
+</select>
+
+<script type="text/javascript">
+    $selectSportsGrounds         = $(".sportsGrounds");
+    $customSelectSportsGrounds   = $(".customSelectSportsGrounds");
+    
+    $customSelectSportsGrounds.val($selectSportsGrounds.val());
+    $customSelectSportsGrounds.change(function() { 
+        $selectSportsGrounds.val($( this ).val());
+    });
+</script>

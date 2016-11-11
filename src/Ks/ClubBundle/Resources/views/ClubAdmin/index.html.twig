@@ -1,0 +1,53 @@
+<h1>Club list</h1>
+
+<table class="records_list">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Country_area</th>
+            <th>Longitude</th>
+            <th>Latitude</th>
+            <th>Country_code</th>
+            <th>Adress_name</th>
+            <th>Tel_number</th>
+            <th>Mobile_number</th>
+            <th>Email</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td><a href="#">{{ entity.id }}</a></td>
+            <td>{{ entity.name }}</td>
+            <td>{{ entity.countryarea }}</td>
+            <td>{{ entity.longitude }}</td>
+            <td>{{ entity.latitude }}</td>
+            <td>{{ entity.countrycode }}</td>
+            <td>{{ entity.adressname }}</td>
+            <td>{{ entity.telnumber }}</td>
+            <td>{{ entity.mobilenumber }}</td>
+            <td>{{ entity.email }}</td>
+            <td>
+                <ul>
+                    <li>
+                        <a href="#">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('ksClub_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        <a href="{{ path('admin_club_new') }}">
+            Create a new entry
+        </a>
+    </li>
+</ul>

@@ -1,0 +1,21 @@
+<div>
+    <form class="activityChoiceForm" method="post" {{ form_enctype(form) }}>
+
+        {# Les erreurs générales du formulaire. #}
+        {{ form_errors(form) }}
+
+        <div class="input-prepend">
+            <span class="add-on" style="margin-left:0px;margin-right:-5px;">
+                {{ form_label(form.activitySession) }}
+            </span>
+            {{ form_widget(form.activitySession, { attr: {class:"activityChoice", style: "margin-bottom:0"} }) }}
+        </div>
+        
+        
+
+    {# Affiche tous les champs restants du formulaire, #}
+    {# ainsi que les champs cachés (token crsf inclus) et la balise de fin de form #}
+    {{ form_rest(form) }}
+    </form>
+</div>
+<div id="sportSessionFormContainer"></div>

@@ -1,0 +1,220 @@
+{% if activities is defined and activities is not null and activities|length > 0 %}
+    {% if activities == "503" %}
+        <div class="alert alert-danger">{{ 'sync.maintenance'|trans( { '%serviceName%' : serviceName} ) }}</div>
+    {% elseif activities == "401" and serviceName == 'Suunto' %}
+        <div class="alert alert-danger">{{ 'sync.suunto-not-allowed'|trans|raw }}</div>
+    {% else %}
+        <form id="importActivityToSync" method="post" action="{{ path('ksActivity_importActivitesFromSyncList') }}">
+            <section id="flip-scroll">
+                <table id="activitiesTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td><center>Source</center></td>
+                            <td><center>Données</center></td>
+                            <td><center>Etat de forme / Intensité</center></td>
+                            <td><center>Séance d'un plan</center></td>
+                            <td><center>Commentaire</center></td>
+                            <td><center>Matériel utilisé</center></td>
+                            <td><center>Sélection</center></td>
+                        </tr>
+                    </thead> 
+                    <tbody>
+                        {% set key = 0 %}
+                        {% for activity in activities %}
+                            <tr>
+                                {% if serviceId == 1 %}
+                                    <td>Runkeeper <br/><br/>{{ activity.sport }}</td>
+                                    <td>{{ activity.start_time }}<br/>{{ activity.total_distance }} {{ 'coaching.distance-mesure'|trans }}<br/>{{ activity.duration }}<br/>+{{ activity.climb }} {{ 'coaching.elevation-mesure'|trans }}</td>
+                                {% elseif serviceId == 3 %}
+                                    <td><center>Nike+<br/><br/>{{ activity.deviceType }}</td>
+                                    <td>{{ activity.startTimeUtc }}<br/>{{ activity.distance }} {{ 'coaching.distance-mesure'|trans }}<br/>{{ activity.duration }}</td>
+                                {% elseif serviceId == 4 %}
+                                    <td><center>Endomondo<br/><br/>{{ activity.sport }}</td>
+                                    <td>{{ activity.start_time }}<br/>{{ activity.distance_km }} {{ 'coaching.distance-mesure'|trans }}<br/>{{ activity.duration_sec }}</td>
+                                {% elseif serviceId == 5 %} {# SUUNTO #}
+                                    <td>{{ activity.Source }}<br/><br/>{{ activity.sport }}</td>
+                                    <td>{{ activity.LocalStartTime }}<br/>{{ activity.Distance }} {{ 'coaching.distance-mesure'|trans }}<br/>{{ activity.Duration }}<br/>+{{ activity.AscentAltitude }} {{ 'coaching.elevation-mesure'|trans }}<br/>-{{ activity.DescentAltitude }} {{ 'coaching.elevation-mesure'|trans }}</td>
+                                {% elseif serviceId == 7 %} {# GARMIN #}
+                                    <td>Garmin<br/><br/>{{ activity.sport }}</td>
+                                    <td>{{ activity.start_time }}<br/>{{ activity.total_distance }} {{ 'coaching.distance-mesure'|trans }}<br/>{{ activity.duration }}<br/>+{{ activity.climb }} {{ 'coaching.elevation-mesure'|trans }}<br/>-{{ activity.descent }} {{ 'coaching.elevation-mesure'|trans }}</td>
+                                {% elseif serviceId == 8 %} {# POLAR #}
+                                    <td>{{ activity.Source }}<br/><br/>{{ activity.Sport }}</td>
+                                    <td>{{ activity.LocalStartTime }}<br/>{{ activity.Distance }} {{ 'coaching.distance-mesure'|trans }}<br/>{{ activity.Duration }}<br/>+{{ activity.AscentAltitude }} {{ 'coaching.elevation-mesure'|trans }}<br/>-{{ activity.DescentAltitude }} {{ 'coaching.elevation-mesure'|trans }}</td>
+                                {% endif %}
+                                <td>
+                                    
+                                        <div class="intensityBloc stateOfHealthBloc_{{ key }}">
+                                            <select class="stateOfHealth_{{ key }}" name="stateOfHealth[{{ key }}]" style="display:none"><option value="">so_so</option><option value="1">tired</option><option value="2">so_so</option><option value="3">great</option></select>
+                                            <span data-code="great" class='icon-green icon-btn icon-smile icon-2x' rel='tooltip' title='{{ "stateOfHealth.great"|trans }}'></span>
+                                            <div data-code="so_so" class='icon-orange icon-btn icon-meh icon-2x' rel='tooltip' title='{{ "stateOfHealth.so_so"|trans }}'></div>
+                                            <div data-code="tired" class='icon-red icon-btn icon-frown icon-2x' rel='tooltip' title='{{ "stateOfHealth.tired"|trans }}'></div>
+                                        </div>
+                                        <div class="intensityBloc intensityBloc_{{ key }}">
+                                            <select class="intensity_{{ key }}" name="intensity[{{ key }}]" style="display:none"><option value="">- Intensité* -</option><option value="1">low</option><option value="2">medium</option><option value="3">high</option></select>
+                                            <div data-code="low" class='icon-green icon-btn icon-circle icon-2x' rel='tooltip' title='{{ "intensity.low"|trans }}'></div>
+                                            <div data-code="medium" class='icon-orange icon-btn icon-circle icon-2x' rel='tooltip' title='{{ "intensity.medium"|trans }}'></div>
+                                            <div data-code="high" class='icon-red icon-btn icon-circle icon-2x' rel='tooltip' title='{{ "intensity.high"|trans }}'></div>
+                                        </div>
+                                    
+                                </td>
+                                <td>
+                                        {{ form_widget(coachingSessionsForms[key].event) }}
+                                        <input type="hidden" id="event_{{ key }}" name="event[{{ key }}]" value="">
+                                        <br clear="all">
+                                        <br clear="all">
+                                        <input type="number" id="achievement_{{ key }}" name="achievement[{{ key }}]" value="">
+                                    
+                                </td>
+                                <td>
+                                    <textarea maxlength="256" name="description[{{ key }}]" value=""></textarea>
+                                </td>
+                                <td>
+                                    {{ form_widget(coachingEquipmentsForms[key].equipments, { attr: { "data-placeholder":"Précise ton matériel utilisé ici !"} }) }}
+                                    <input type="hidden" id="equipments_{{ key }}" name="equipments[{{ key }}]" value="">
+                                </td>
+                                <td>
+                                    {% if serviceId == 1 %} <input id="checkBox_{{key}}" type="checkbox" name="activity[{{key}}]" value="{{ activity.uri }}" />
+                                    {% elseif serviceId == 3 %} <input id="checkBox_{{key}}" type="checkbox" name="activity[{{key}}]" value="{{ activity.activityId }}" />
+                                    {% elseif serviceId == 4 %} <input id="checkBox_{{key}}" type="checkbox" name="activity[{{key}}]" value="{{ activity.id }}" />
+                                    {% elseif serviceId == 5 %} <input id="checkBox_{{key}}" type="checkbox" name="activity[{{key}}]" value="{{ activity.MoveID }}" />
+                                    {% elseif serviceId == 7 %} <input id="checkBox_{{key}}" type="checkbox" name="activity[{{key}}]" value="{{ activity.activityId }}" />
+                                    {% elseif serviceId == 8 %} <input id="checkBox_{{key}}" type="checkbox" name="activity[{{key}}]" value="{{ activity.activityId }}" />
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% set key = key + 1 %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </section>
+        </form>
+        
+        <div class="bloc3">
+            <div class="container">
+                <button id="btnSave" rel="tooltip" title="{{ 'sync.save'|trans }}" type="button" class="btn btn-success"><span class="glyphicon glyphicon-upload"></span>IMPORTER DANS MON AGENDA</button>
+                <img id="saveLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none;">
+            </div>
+        </div><!--/bloc3-->
+        
+        <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#activitiesTable').dataTable({
+                    "bPaginate": false,
+                    "bLengthChange": false,
+                    "bFilter": true,
+                    "bSort": 1,
+                    "bInfo": false,
+                    "bAutoWidth": false,
+                    "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+                });
+
+                var connectIconsAndSelect = function( bloc, select ) {
+                    bloc.find(".icon-btn").click(function() {
+                        //On déselectionne tout
+                        bloc.find(".icon-btn").removeClass("selected");
+
+                        //On efface tous les tooltip
+                        $( this ).parent().find(".tooltip").removeClass("in");
+
+                        //On sélectionne l'icone sur laquelle on a cliqué
+                        $( this ).addClass("selected");
+                        var code = $( this ).data("code");
+
+                        //On sélectionne le bon élément dans la liste déroulante
+                        $.each(select.children(), function(key, option) { 
+                            if( $( option ).text() == code ) { 
+                                $( option ).attr("selected", "selected");
+                            } else {
+                                $( option ).removeAttr("selected");
+                            }
+                        });
+                    });
+                }
+
+                var $form = $("#importActivityToSync");
+
+                $checkBox = new Array();
+                
+                {% set key2 = 0 %}
+                {% for activity in activities %}
+                    $("#achievement_{{ key2 }}").slider({
+                        min : 0,
+                        max : 10,
+                        value : 5
+                    });
+                    connectIconsAndSelect( $form.find(".intensityBloc_{{ key2 }}"), $form.find(".intensityBloc_{{ key2 }}").find("select") );
+                    connectIconsAndSelect( $form.find(".stateOfHealthBloc_{{ key2 }}"), $form.find(".stateOfHealthBloc_{{ key2 }}").find("select") );
+                    
+                    $("#ksCoachingPlanEventsType_{{ key2 }}_event").select2({
+                        placeholder         : '{{ 'coaching.link-to-plan'|trans }}',
+                        containerCssClass   : 'light input-block-level',
+                        //width: 150
+                    }).on("change", function(e) {
+                        $("#event_{{ key2 }}").val($("#ksCoachingPlanEventsType_{{ key2 }}_event").select2("val"));
+                    });
+                    $("#ksCoachingEquipments_{{ key2 }}_equipments").select2({
+                        'containerCssClass' : 'light input-block-level',
+                    }).on("change", function(e) {
+                        $("#equipments_{{ key2 }}").val($("#ksCoachingEquipments_{{ key2 }}_equipments").select2("val"));
+                    }); 
+                    $("#checkBox_{{ key2 }}").iCheck({
+                        checkboxClass: 'icheckbox_square-blue',
+                    });
+                    {% set key2 = key2 + 1 %}
+                {% endfor %}
+
+                $('#btnSave').click(function(e) {
+                    $atLeastOneIsChecked = false;
+                    $.each( $form.find('.icheckbox_square-blue'), function() {
+                        if ($(this).hasClass( "checked" )) $atLeastOneIsChecked = true;
+                    });
+
+                    if ($atLeastOneIsChecked) {
+                        e.preventDefault();
+                        $("#btnSave").addClass( "disabled" );
+                        $("#btnSearch").addClass( "disabled" );
+                        $("#btnService").addClass( "disabled" );
+                        $("#saveLoader").css('visibility', 'visible');
+                        $("#saveLoader").show();
+
+                        //console.log($('#importActivityToSync').serialize());
+
+                        $.post(
+                            $('#importActivityToSync').attr('action'),
+                            $('#importActivityToSync').serialize(),
+                            function(response) {
+                                // TODO: faire comme pour les autres formulaires...
+                                
+                                if (response.error == 403) {
+                                    showInformation("{{ 'garmin.error-403'|trans }}");
+                                    document.location.href = Routing.generate('ksActivity_showActivity', {'activityId' : response.activityId});
+                                }
+                                else {
+                                    if (response.numActivitiesCreated > 0) {
+                                        if (response.numActivitiesCreated == 1) {
+                                            showInformation('{{ 'sync.import-activity-sucess'|trans }}');
+                                            document.location.href = Routing.generate('ksActivity_showActivity', {'activityId' : response.activityId});
+                                        }
+                                        else {
+                                            showInformation(response.numActivitiesCreated + " {{ 'sync.import-activities-sucess'|trans }}");
+                                            document.location.href = Routing.generate('ksAgenda_index', {"id" : {{ app.user.id }}});
+                                        }
+
+                                    } else {
+                                        showInformation("{{ 'sync.no-activities-synced'|trans }}");
+                                    }
+                                }
+                            }
+                        );
+                    }
+                    else showInformation("{{ 'sync.choose-at-least-one-activity'|trans }}");
+                });
+            });
+        </script>
+    {% endif%}
+{% elseif activities is defined and activities is not null and activities|length ==0 %}
+    <div class="alert alert-warning">{{'sync.no-activities'|trans}} </div>
+{% else %}
+    <div class="alert alert-warning">{{'sync.not-available'|trans}} </div>
+{% endif %}

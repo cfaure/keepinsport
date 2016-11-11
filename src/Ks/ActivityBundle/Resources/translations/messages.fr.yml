@@ -1,0 +1,1132 @@
+sports:
+    other-sports:     Autres sports
+    my-sports:        Mes sports
+    football:         Football
+    tennis:           Tennis
+    judo:             Judo
+    handball:         Handball
+    basketball:       Basketball
+    running:          Course à pied
+    rugby:            Rugby
+    canoe-kayak:      Canoë Kayak
+    petanque:         Pétanque
+    windsurfing:      Voile
+    swimming:         Natation
+    scuba-diving:     Plongée
+    karate:           Karaté
+    tennis-table:     Tennis de table
+    badminton:        Badminton
+    ski:              Ski
+    cycling:          Vélo de route
+    waterPolo:        Water polo
+    volley:           Volley
+    hiking:           Randonnée
+    mountain-biking:  Vélo tout terrain
+    rowing:           Aviron
+    walking:          Marche
+    musculation:      Musculation
+    weight training:  Musculation
+    peloteBasque:     Pelote basque
+    golf:             Golf
+    yoga:             Yoga
+    elliptical:       Vélo elliptique
+    squash:           Squash
+    other:            Autre sport
+    crossCountrySkiing: Ski de fond
+    snowboard:        Snowboard
+    step-counter:     Compteur de pas
+    cross-training:   Circuit d'entraînement
+    climbing-stairs:  Montée d'escaliers
+    baby-foot:        Baby foot
+    billard:          Billard
+    skateboard:       Skateboard
+    ice_skate:        Patin à glace
+    surf:             Surf
+    downhill-skiing:  Ski alpin
+    spinning:         Vélo d'appartement
+    aquabike:         Aquabike
+    zumba:            Zumba
+    rower:            Rameur
+    climbing:         Escalade
+    archery:          Tir à l'arc
+    boxing:           Boxe
+    tree_climbing:    Accrobranche
+    triathlon:        Triathlon
+    aquagym:          Aquagym
+    boxeThai:         Boxe thaïlandaise
+    aikido:           Aïkido
+    salsa:            Salsa
+    bmx:              BMX
+    jujitsu:          Jujitsu
+    mma:              MMA
+    horse_riding:     Equitation
+    referee:          Arbitre
+    video_games:      E-sport
+    touringSki:       Ski de randonnée
+    paragliding:      Parapente
+    empty:            Repos
+    all_sports:       Tous les sports
+    street-stepper:   Street stepper
+    danse:            Danse
+    pilate:           Pilate
+    fitness:          Fitness
+    
+login:
+    one-community:    Des sportifs, des clubs, une seule communauté
+    welcome:          Bienvenue sur Keepinsport !
+    applications:     Synchro. disponibles
+    free:             100% gratuit !
+    
+    #carousel
+    plan-import-follow: Planifie, importe et suis toutes tes activités
+    progress-compare:   Progresse et rivalise avec tes amis
+    advices:            Bénéficie des conseils de la communauté et partage ton expérience
+    communicate-clubs:  Communique avec les membres de ton club
+    
+menu:
+    me:                 Moi
+    sportsmen:          Sportifs
+    clubs:              Clubs
+    wikisport:          Articles
+    shops:              Récompenses
+    sync-pending:       Synchronisation des activités en cours
+    sync-button:        Synchro manuelle
+    connect:            Se connecter
+    register:           S'inscrire
+    disconnect:         Se déconnecter
+    mails:              Mes mails
+    agenda:             Tableau de bord
+    notifications:      Mes notifications
+    evolutions:         Evolutions du site
+    gifts:              Récompenses
+    
+    #Sous menu sportif
+    news-feed:          Actualité
+    testimony:          Témoignages
+    profile:            Profil
+    equipment:          Equipement
+    ranking:            Classement
+    competitions:       Competitions
+    statistics:         Statistiques
+    comparison:         Comparatifs
+    configure-services: Mes services
+    my-friends:         Mes amis
+    publish-activity:   Publier activité
+    publish-no-activity: Séance non réalisée
+    update-activity:    Modification de l'activité
+    sync-activity:      Utiliser un service de synchronisation
+    
+    #Sous menu friends
+    
+    all-sportsmen:      Sportifs du site
+    invite:             Inviter des amis
+    look-for-partners:  Recherche de partenaires
+    localisations:      Lieux fréquentés
+    
+    #Sous menu friends
+    look-for-club:      Rechercher un club
+    create-club:        Créer un club
+    
+    #Sous menu wikisport
+    contest:            Concours coach
+    create-article:     Article wikisport
+    
+    #Sous menu Magasins
+    search-shops:       Recherche
+    create-shop:        Créer un nouveau magasin
+        
+    #barre de recherche
+    search-placeholder: Recherche (sportifs, clubs, articles)
+    no-matches-found: Aucun résultat
+    searching:  Recherche...
+    language:           Choix de langue
+    
+    #nouveau menu
+    advanced-functions: Fonctions avancées
+    expert-mode:        Passer en mode avancé
+    noob-mode:          Passer en mode simplifié
+    show:               Consulter
+    set-up:             Paramétrer
+    my-profile:         Mon profil
+    my-equipment:       Mon equipment
+    my-clubs:           Mes clubs
+    my-home-page:       Ma page principale (bientôt)
+    my-profile-page:    Ma page profil (bientôt)
+    my-services:        Mes services
+    services-message:   Des modes d'emploi sont disponibles sur certains services, ils sont accessibles via la zone de recherche en haut à gauche ("tuto"), n'hésite pas à y jeter un oeil ;)
+    expert-menu:        Menu avancé
+    noob-menu:          Menu
+    last-activities-sync : Tes dernières activités sportives ont été synchronisées avec succès !
+    invite-sync-button: Félicitations ! Dorénavant suite à l'activation de ton nouveau service, tu pourras lancer manuellement l'import de tes nouvelles activités via le bouton de "synchro" situé ci-dessus dans la barre de raccourcis. Si celui-ci tourne sur lui-même c'est que l'import d'activités est en cours, s'il est figé c'est qu'il n'y a plus rien à synchroniser depuis ta dernière connection à Keepinsport ! Bon sport ;)
+    
+    #clubs
+    club-profile:       Profil du club
+    club-home-page:     Page d'accueil du club (bientôt)
+    club-profile-page:  Page publique du club (bientôt)
+    members:            Membres
+    teams:              Equipes
+    events:             Evénements
+    tournaments:        Tournois
+    membership-in-progress: Demande d'adhésion
+    send-invit:         Inviter un sportif
+    club-agenda:        Agenda du club
+    user-mode:          Passer en mode utilisateur
+    join:               ADHERER !
+    unjoin:             Annuler sa demande
+    management:         Encadrement
+    athletes:           Athlètes
+    
+    activities-fromKS:  Info générales
+    activities-from-my-community:   Mon fil d'actualité
+    activities-from-wikisport: Wikisport
+    
+footer:
+    remarks-suggestion: "Remarques, suggestions ?"
+    stay-connected:     "Reste connecté"
+    
+activity:
+    status:   Statut
+    sport-activity: "{1} Activité sportive|]1,Inf[ Activités sportives"
+    photos:   Photos
+    link:     "{1} Lien|]1,Inf[ Liens"
+    video:    "{1} Vidéo|]1,Inf[ Vidéos"
+    tuto:     Tutoriels
+    all:      Tout
+    partners:  Partenaires
+    others:  Autres
+    from:   depuis
+    a-gpx-file: un fichier gpx
+    near: près de
+    in: à
+    
+    description:            Description
+    reason:                 Explication
+    duration: Durée
+    distance: Distance
+    result:   Résultat
+    scores:   Scores
+    team-mates: Coéquipiers
+    opponents:  Adversaires
+    from-a-service: A partir d'un service
+    semi-auto: Semi-automatique
+    manually: Saisie manuelle (avec ou sans GPX)
+    splits: Splits
+    resume: Données principales
+    graphs: Graphiques
+    message-graphs:  La carte est synchronisée avec les graphiques, n'hésite pas à promener ta souris !
+    message-graphs2: (Pour plus de détails, tu peux même zoomer en sélectionnant une zone sur les graphiques)
+    my-league:  Ma ligue
+    my-clubs:   Mes clubs
+    my-friends: Mes amis sportifs
+    me:         Moi
+    ks-network: Communauté Keepinsport
+    ks-user:    L'équipe Keepinsport
+    available-soon: Bientôt disponible, utilisez l'import manuel via GPX ci-dessous !
+    garmin-account-required: Nécessite un compte GARMIN
+    endomondo-account-required: Nécessite un compte ENDOMONDO
+    runkeeper-account-required: Nécessite un compte RUNKEEPER
+    nike+-account-required: Nécessite un compte NIKE+
+    suunto-account-required: Nécessite un compte SUUNTO
+    ffa-activities: Activités de la Fédération Française d'Athlétisme
+    no-gps-data: Aucune donnée GPS associée
+    
+actions:
+    info:         Information
+    show:         Détails
+    comment:      Commenter
+    share:        Partager
+    downloadTCX:  Télécharger au format TCX
+    subscribe:    M'abonner
+    unsubscribe:  Me désabonner
+    vote:         Encourager
+    publish:      Publier
+    publish-activity: Publier l'activité
+    save-updates: Enregistrer
+    edit:         Editer
+    delete:       Supprimer
+    save:         Enregistrer
+    add-image:    Ajouter une image
+    start:        Démarrer
+    cancel:       Annuler
+    publish-fb:   Publier sur mon mur
+    select-sport: Sélectionne un sport
+    send:         Envoyer
+    edit-profil:  Editer mon profil
+    write-message: Rédiger un nouveau message
+    go-top:       Remonter
+    create:       Créer
+    SRTM:         Traitement altitude SRTM
+    SRTM-tooltip: Temps de traitement un peu plus long mais les altitudes sont plus fiables car issues des données topographiques de la NASA
+    login-required : Inscription (gratuite) nécessaire ;)
+    visit:        Aperçu du site
+    visit-tour-desktop: Visite ->
+    visit-tour-tablet:  Visite ->
+    back:         Retour
+    good-start:   Bien débuter
+    duplicate:    Dupliquer
+    sync:         Synchroniser
+
+news-feed:
+    filter:             Type
+    perimeter:          Périmètre
+    sports:             Sports
+    order:              Ordre
+    modification-date:  Date de modification
+    creation-date:      Date de création
+    all-people:         Tout le monde
+    more-news:          Plus d'actualités
+    pull-up:            Remonte
+    no-more-news:       Toutes les actualités ont été chargées
+    
+headline:
+    I: J'ai
+    you:  Tu
+    someone: Quelqu'un
+    the: le
+    
+    participate-to: "{1} participe à|{2} participes à|{3} participe à"
+    have: "{1} ai|{2} as|{3} a"
+    will-do: "{1} ferais|{2} feras|{3} fera"
+    created: "{1} ai créé|{2} as créé|{3} a créé"
+    look-for-partners-to: recherche des partenaires pour une activité de 
+    published-status: publié un nouveau statut
+    published-photos: publié un album photos
+    published-photo: publié une photo
+    published-video: publié une vidéo
+    published-link: publié un lien
+    shared-news: partagé une actualité
+    practised: fait une activité de 
+    taked-part-article: collaboré à l'article suivant
+    created-tournament: créé le tournoi
+    the-event: l'événement
+    one-activity-of: une activité de
+    
+titles:
+    #Fil d'actualité
+    sponsors: Partenariat privilégié
+    nearby-users: Tu connais ?
+    nearby-clubs: Clubs près de toi
+    last-articles: Articles récents
+    last-activities: Dernières activités
+    nearby-shops: Récompenses
+    next-evolutions: Evolutions du site
+    next-events: Prochains événements
+    rss-flux: Flux rss - l'Equipe
+    facebook: Retrouve nous sur Facebook
+    twitter: Suis nous sur Twitter
+    
+    #Classement
+    direct-ranking: Saison
+    general-ranking: Détail
+    working: Fonctionnement
+    my-rank: Classement général
+    my-ranks: Mes classements par sport
+    no-sport-selected: Tu dois lier des sports à ton profil pour voir ces classements
+    do-sport: Fais du<br/>sport
+    cumul-points: Cumule <br/>des points
+    reach-gold-league: Change de<br/>ligue
+    win-trophies: Remporte <br/>des trophées
+    my-rankings: Mes classements
+    address-missing: Pas de classement par pays car il manque ton adresse au niveau de ton profil !
+    
+    #Concours
+    contest: Concours
+    coach-contest: Concours PARRAINAGE !
+    rules: Règlement
+    sponsor-godsons: Parraine des sportifs
+    coach-godsons:  Motive tes filleuls
+    win-price:  Gagne <br/>des prix !
+    my-godfather: Mon parrain
+    my-godsons: Mes filleuls
+    no-godsons: Aucun filleul pour le moment
+    rank: Rang
+    contestShop: Sportifs sélectionnés pour le tirage au sort
+    
+    #profil-public
+    all-godsons: Filleuls et petits-filleuls
+    season-evolution: Evolution par saison
+    my-clubs: Mes clubs
+    
+    #agenda
+    agenda-of: Agenda de %username%
+    
+    #coaching
+    dashboard-of: Tableau de bord / %username%
+    
+    #messages
+    subject:  Sujet
+    participants: Participants
+    last-message: Dernier message
+    
+    #others
+    sportman: Sportif
+    points:   Points
+    firstname: Prénom
+    lastname: Nom
+    town: Ville
+    sports: Sports
+    clubs: Clubs
+    actions: Actions
+    activities-number: Nombre d'activités
+    friends-number: Nombre d'amis
+    godsons-number: Nombre de filleuls
+    godsons-number-this-month: Nombre de filleuls (ajoutés sur ce mois)
+    sportsmen-number: Nombre de sportifs
+    sportman-points: Points sportif
+    godsons-points: Points filleuls
+    littles-godsons-points: Points petits filleuls
+    total-points: Points total
+    title:  Titre
+    resetting-password: Réinitialisation du mot de passe
+    check-email:      Regarde tes mails :)
+    show-more: Voir plus
+    
+    #club
+    package: Forfait(s)
+    
+    #wikisport
+    votes:  Notes
+    signs: Balisage
+    food: Ravitaillements
+    promoters: Organisation
+    trace:  Parcours
+    awards: Récompenses
+
+leagues:
+    gold:   Or
+    silver: Argent
+    bronze: Bronze
+    other:  Hors ligues
+    nutella: Hors ligues
+    stars-number: "{0,1} étoile|]1,Inf[ étoiles"
+  
+events:
+    competitions: Compétitions
+    trainings:    Entraînements
+    meals:        Repas
+    coaching:     Coaching
+    goals:        Objectifs
+    others:       Autres
+    google:       Google Agenda
+    public:       Public
+    training:     Entraînement
+    participations: Participants
+    max-participations: Max.
+    types:        Types
+    sports:       Sport
+    filters:      Filtres
+    availability: Disponibilité
+    full:         complet uniquement
+    available:    disponible uniquement
+    all:          tous
+    event_coaching : Plan d'entrainement
+    event_misc:   Divers
+    event_training:  Entrainement
+    event_meal:   Repas
+    
+    
+months:
+    January:    Janvier
+    February:   Février
+    March:      Mars
+    April:      Avril
+    May:        Mai
+    June:       Juin
+    July:       Juillet
+    August:     Août
+    September:  Septembre
+    October:    Octobre
+    November:   Novembre
+    December:   Décembre
+    
+words: 
+    or: ou
+    
+intensity:
+    label:  Intensité
+    label* -:  "- Intensité* -"
+    low:  Peu intense
+    medium: Normale
+    high: Intense
+    nc: Non précisé
+    
+stateOfHealth:
+    tired:  Fatigué
+    so_so:  Normal
+    great:  En forme
+    
+wasOfficial:
+    training: Entraînement
+    competition: Compétition
+    
+result:
+    victory : Victoire
+    draw:     Nul
+    defeat:   Défaite
+    
+equipmentsTypes:
+    tennis_racquet: Raquette
+    armband:        Brassard
+    watch:          Montre
+    shirt:          T-shirt
+    short:          Short
+    shoes:          Chaussures
+    road_bike:      Vélo de route
+    mountain_bike:  Vtt
+    gloves:         Gants
+    bonnet:         Bonnet
+    pants:          Pantalon
+    jacket:         Veste
+    footballSocks:  Chaussettes de foot
+    back_pack:      Sac à dos
+    earpiece:       Ecouteurs
+    ski:            Ski
+    snowboard:      Snowboard
+    light:          Lampe frontale
+
+dashboard:
+    title:                  Statistiques de 
+    evolution:              Evolution par saison
+    message_detail:         Les graphiques sont dynamiques, tu peux cliquer sur un histogramme ci-dessous pour faire apparaitre les activités associées !
+    message_items:          Tu peux faire disparaitre et ré-apparaitre des items en cliquant sur les vignettes ci-dessus !
+    message_sport:          Tu peux faire disparaitre et ré-apparaitre des sports en cliquant sur les vignettes ci-dessus !
+    match_friends:          Comparatifs
+    perimeter:              Périmètre
+    top5from:               Top 5 de 
+    my:                     ma
+    his:                    sa
+    community:              communauté
+    top5all:                Top 5 des sportifs
+    select_sportsmen:       Sélectionne des sportifs
+    select_season:          Sélectionne la période
+    last_year:              Cumul 12 mois
+    sum-period:             Cumul
+    all_sports:             TOUS LES SPORTS
+    message_no_activities:  Tu n'as pas réalisé d'activité pour ce sport !
+    detailed-analysis:      Analyse détaillée
+    select-equipment:       Sélectionne un de tes équipements
+    
+sportsmen:
+    message_click:          N'hésite pas à cliquer sur les repères de la carte pour voir les activités correspondantes !
+    list:                   Sportifs de la communauté
+
+users:
+    import_GPX:             Importer un fichier GPX
+    send_GPX_file:          Intégration GPX
+    message_GPX_processed:  Pour les gros fichiers (>10Mo), ce traitement peut prendre plusieurs minutes (délai maximum 10 minutes)
+    import_runkeeper:       Importer mes données
+    gpx_uses:               Utilisation d'un fichier GPX (facultatif)
+    facebook-invit:         Invitations Facebook
+    google-invit:           Invitations Google
+    connexion:              Connection
+    invite:                 Inviter depuis
+    invite-friends:         Invite tes amis à te rejoindre !
+    invite-by-mail:         Invitation par mail
+    invite-keepinsport:     Ajoute sur Keepinsport tes amis Facebook ou Google déjà inscrits sur le site
+    email:                  Adresse email
+    emailOrLogin:           Pseudo ou email
+    connect:                Activer
+    disconnect:             Désactiver
+    password:               Mot de passe
+    import-FFA:             Import Fédération Française d'Athlétisme
+    search-FFA:             Recherche FFA
+    sync-rk-OK:             Synchronisation avec votre compte RUNKEEPER effectuée avec succès !
+    sync-suunto-OK:         Demande de synchronisation SUUNTO envoyée avec succès ! Tu dois maintenant te rendre sur votre compte MOVESCOUNT afin d'autoriser l'application KEEPINSPORT à accéder à vos activités. Une fois cette étape obligatoire effectuée, tu pourras revenir sur cette page, la rafraichir et activer la recherche automatique de nouvelles activités (Service SUUNTO, bouton "activer" ci-dessous)
+    sync-suunto-OK2:        Synchronisation avec votre compte SUUNTO effectuée avec succès !
+    sync-suunto:            Synchroniser votre compte avec
+    suunto-tooltip:         Pour activer ce service il faut d'abord valider la demande sur le site de MOVESCOUNT puis relancer la synchronisation avec le bouton "configurer" à droite
+    sync-rk:                Synchroniser votre compte RUNKEEPER
+    setup:                  Configurer
+    bubble-stats-sport:     Consulter les statistiques sportives
+    bubble-profil:          Consulter la page profil
+    activities-month:       Activités du mois
+    own-points:             Points personnels
+    godSons:                Filleuls
+    godSons-points:         Points filleuls
+    littleGodSons-points:   Points Petits filleuls
+    total-godSons-points:   Points parrainage
+    total-contest-points:   TOTAL Points KS
+    
+sync:
+    maintenance:            Serveur %serviceName% en maintenance ! Indépendant de KS, merci de revenir un peu plus tard lorsque leur serveur sera de nouveau disponible ;)
+    suunto-not-allowed:     Problème d'authentification avec SUUNTO :( <br><br>=> Ton mail Keepinsport doit correspondre à ton pseudo sur MOVESCOUNT <br>=> Tu dois aussi avoir valider l'autorisation de synchro depuis MOVESCOUNT, peux-tu ré-essayer ?
+    search:                 Recherche
+    message:                Import de tes dernières activités (sur %parameter% jours)
+    not-available:          Fonction disponible pour SUUNTO et Garmin uniquement !
+    no-activities:          Aucune activité n'a été trouvée !
+    change-service:         Service actif
+    import-from-date:       Import historique
+    import-activity-sucess: Ton activité a été importée avec succès !
+    import-activities-sucess: activités ont été importées avec succès !
+    no-activities-synced:   Aucune activité n\'a été importée, merci de nous le signaler via les feedback !
+    choose-at-least-one-activity: Choisis au moins une activité !
+    help:                   Si des activités n'apparaissent pas ou si tu souhaites les récupérer sur les mois ou années précédentes, utilise la fonction d'import d'historique
+    import-async:           Import historique
+    save:                   Importer dans Keepinsport
+    
+ffa:
+    search:                 Recherche FFA
+    import:                 Import Fédération Française d'Athlétisme
+    message:                Activités récupérées à partir des filtres choisis, importe les activités que tu souhaites
+    save:                   Importer dans Keepinsport
+    
+shops:
+    search-shops:           Récompenses
+    id:                     Id
+    name:                   Nom
+    address:                Adresse
+    town:                   Ville
+    sports:                 Sports
+    actions:                Actions possibles
+    status:                 Statut
+    reference-KS:           Référencé !
+    waiting-for-approval:   Attente magasin
+    name:                   Nom
+    address:                Adresse
+    town:                   Ville
+    url:                    Site internet
+    email:                  E-mail (*)
+    telNumber:              Numéro de téléphone (*)
+    details:                Contact
+    message:                Pour bénéficer de bons d'achat dans vos magasins préférés en fonction de vos points il nous faut tout d'abord les contacter pour négocier avec eux. Plus un magasin aura de votes et plus il sera succeptible d'accepter donc n'hésitez pas à référencer vos magasins ici et à en parler autour de vous ! Pour pouvoir bénéficier d'une remise il faut juste préciser votre login au magasin lors de vos achats. Pour pouvoir être éligible aux tirages au sort pour les bons d'achat offerts par saison, il faut avoir pratiqué un des sports du magasin, que vous soyez dans la même région que celui-ci (selon votre lieu renseigné au niveau de votre profil). Nous procédons à chaque fin de mois à un tirage au sort pondérés par vos points gagnés, 1 par ligue sera offert !
+    votes:                  Votes
+    proposal:               Proposer un nouveau magasin !
+    new-shop:               Créer un nouveau magasin
+    create-update-shop:     Création / modification d'un magasin
+    avatar-change:          Choisir une image
+    search-by:              Sport, nom, ville, adresse, email
+    my-shops:               Mes magasins
+    shops-with-conditions:  Magasins avec récompenses
+    web-shops:              Magasins internet
+    web-shop:               Magasin internet
+    misc:                   Divers
+    contact:                Contact
+    more-shops:             Voir plus de magasins
+    all-shops-loaded:       Tous les magasins ont été chargés !
+    no-match:               Aucun magasin correspondant !
+    missing:                restants
+    conditions:             Remise / bon d'achat
+    message-participants:   Pour pouvoir être éligible aux tirages au sort pour les bons d'achat, il faut avoir pratiqué un des sports du magasin sur la saison, que vous soyez dans la même région que celui-ci et que vous ayez précisé une adresse email (selon vos données alimentées au niveau de votre profil) Le % de chance de gagner est indiqué à coté de votre nom ci-dessous, bon sport !
+    chance:                 Chance
+    next-month:             Mois suivant
+    previous-month:         Mois précédent
+    winners:                Gagnants !
+    has-won:                a gagné
+    see-all-winners:        Voir tous les gagnants
+    shop:                   Magasin
+
+article:
+    general:                Données principales
+    participants:           Participants Keepinsport
+    photos:                 Photos
+    map:                    Carte
+    subscribe:              J'y serai !
+    unsubscribe:            Je n'y serai pas
+    add-images:             Photos
+    show-mode:              Visualiser l'article
+    details:                Description
+    blur-pictures:          Clique sur une photo pour la rendre flou et elle sera supprimée !
+    add-pictures:           Tu peux ajouter des photos avec le bouton ou bien en "drag & drop"
+    start:                  Départ
+    location:               Lieu
+    update:                 Editer
+    update-article:         Modifier l'article
+    duplicate:              Dupliquer
+    duplicate-article:      Dupliquer l'article
+    date:                   Date
+    public-article:         Article public
+    private-article:        Article privé
+    create-new:             Créer un nouvel article
+    new:                    Nouveau
+    my-subscriptions:       Mes abonnements
+    all-articles:           Tous les articles
+    visibilities:           Visible par tout le monde ou sa communauté
+    users:                  Utilisateurs
+    looking-for-duplicates: Recherche de doublon en cours
+    notes:                  Notes
+    signs-help:             "Visibilité, respect de l'environnement, nombre suffisant sur l'ensemble du parcours, etc."
+    food-help:              "Qualité, quantité, nombre suffisant sur l'ensemble de la course, etc."
+    promoters-help:         "Communication, disponibilité, gestion du chrono, etc."
+    trace-help:             "Beauté des paysages, tracé varié, etc."
+    awards-help:            "Médailles, tshirt finisher, gains, etc."
+    
+equipment:
+    sport:                  Sport
+    type:                   Type
+    brand:                  Marque
+    name:                   Modèle
+    photo:                  Photo
+    weight:                 Poids
+    colors:                 Couleurs
+    delete:                 Suppression
+    new-equipment:          Créer un nouvel équipement
+    primary-color:          Couleur primaire
+    secondary-color:        Couleur secondaire
+    all-equipment:          Voir les équipements des autres sportifs
+    my-equipment:           Mon équipement
+    more-equipment:         Voir plus de matériels
+    search-by:              Sport, marque, modèle, type
+    message_page_edition_equipement: Ajoute ton matériel manuellement avec le bouton ci-dessous ou bien recherche le à partir de ceux existants. Pour te l'ajouter clique sur "J'ai !" celà te permettra de customiser ton personnage et surtout de sortir des statistiques détaillées selon l'équipement que tu auras utilisé lors de tes activités !
+    missing:                restants
+    all-equipments-loaded:  Tous les équipements ont été chargés !
+    weight-unity:           Kg
+    create-update-equipment: Création / modification équipement
+    avatar-change:          Choisir une image
+    no-match:               Aucun équipement correspondant !
+    search-tooltip:         recherche de matériel
+    add:                    J'ai !
+    wish:                   J'aimerais avoir !
+    already-have:           .
+    add-link:               Clique pour ajouter ce matériel à ta liste !
+    owner:                  Article principal créé par
+    sportsmen:              Sportifs qui l'utilisent
+    activities:             Activités réalisées avec
+    distance:               Distance parcourue avec
+    distance-mesure:        Km
+    time:                   Temps écoulé avec
+    add-equipment:          Ajouter cet équipement à mon matériel
+    remove-equipment:       Supprimer cet équipment de mon matériel
+    by-default:             (Associé aux activités postées)
+    newsFeed-access:        Accès au fil d'actualité !
+    show-main-article:      Voir l'article principal
+    edit-my-equipment:      Editer mon équipement
+    delete-my-equipment:    Supprimer mon équipement
+
+mails:
+    hi:                     Salut
+    enjoy-sport:            Bon sport
+    ks-team:                L'équipe Keepinsport
+    send-by-ks:             Envoyé par Keepinsport
+    access-to:              Accéder à la
+    notification-management: Gestion des notifications
+    answer:                 Répondre
+    more-information:       Plus d'informations
+    show-my-notifications:  Voir mes notifications
+    back-to-keepinsport:    Retourner sur Keepinsport
+    league-stars-blog:      Rappel du fonctionnement des ligues et étoiles sur le
+    ranking-access:         Accès au classement
+    league-update1:         Félicitations, tu as réalisé pendant le mois de
+    league-update2:         activités pour un total de
+    league-update3:         points. Tu termines ainsi la saison en ligue
+    league-update4:         étoile(s), et accèdes à la ligue
+    league-update4bis:      étoile(s), et restes donc en ligue
+    league-update5:         . Les compteurs sont remis à zéro, bon sport !
+
+notifications:
+    type:                   Type
+    texte:                  Message
+    created_at:             Date de création
+    from_user:              Origine
+    like:                   Encouragement
+    comment:                Commentaire
+    actions:                Actions
+    
+fb:
+    i-have:                 J'ai 
+    has:                    a 
+    somebody-has:           Quelqu'un a 
+    posted-one-activity-of: réalisé une activité de
+    close-to:               près de
+    in:                     En
+    points:                 Points
+    duration:               Durée
+    distance:               Distance
+    elevationGain:          D+
+    elevationLost:          D-
+    show-more:              Voir plus
+    
+checklist:
+    good-start:             Bien débuter
+    message:                Nous avons listé ici les actions les plus simples à réaliser sur le site, à gauche celles non réalisées à ce jour, à droite celles que tu as déjà réalisées !
+    actions-done:           Actions déjà réalisées...
+    actions-todo:           A essayer ?
+    publishSportActivity:   Publier une activité sportive
+    paramService:           Paramétrer un service (Suunto, RunKeeper, Nike+, Endomondo...)
+    createClub:             Créer un club / une association / un groupe de sportifs
+    createShop:             Référencer un magasin (pour gagner des cadeaux)
+    publishStatusPhotoVideo: Publier un statut / une photo / une vidéo
+    commentLikeShareActivity: Commenter / aimer / partager une activité
+    inviteFriends:          Inviter mes amis
+    participateArticle:     Participer à un article
+    subscribeEvent:         M’inscrire à un événement
+    expertMode:             Utiliser le mode avancé
+    visitSeen:              Visite guidée du site
+    
+frequency:
+    title:                  Fréquence
+    help:                   Pour vous faire gagner du temps, il est possible de générer automatiquement des activités selon vos habitudes. Il suffit de cocher les jours ou vous pratiquez votre sport et d'indiquer une heure de notification par mail.
+    
+coaching:
+    attach:                 Plan d'entrainement
+    help:                   Si tu lies cette activité à un plan existant défini par ton coach, il recevra automatiquement une notification suite à la publication de cette activité
+    mail-activity-done:     a réalisé une séance de son plan d'entrainement.
+    mail-activity-update:   a modifié une donnée de son activité.
+    scheduled:              Prévu le
+    name:                   Séance
+    content:                Description
+    linked-to:              Plan d'entrainement
+    difficulty:             Difficulté
+    send-update:            Notifier la mise à jour du plan
+    view-survey:            Accès à son questionnaire
+    send-mail:              Envoyer un email
+    send-mail-to-coach:     Envoyer un email à son coach
+    send-mail-all:          Envoyer un email à tout le club
+    message-new-plan-OK:    Nouveau plan ajouté à la liste !
+    message-new-plan-KO:    Erreur lors de la création, merci de nous contacter !
+    message-del-plan-OK:    Plan supprimé avec succès !
+    message-del-plan-KO:    Impossible de supprimer ce plan, il existe des événements liés !
+    message-new-category-OK: Nouvelle catégorie ajoutée à la liste !
+    message-new-category-KO: Erreur lors de la création, merci de nous contacter !
+    message-enable-category-OK: Catégorie activée !
+    message-enable-category-KO: Erreur lors de l'activation, merci de nous contacter !
+    message-edit-category-OK: Catégorie modifiée avec succès !
+    message-edit-category-KO: Erreur lors de la modification de la catégorie, merci de nous contacter !
+    message-disable-category-OK: Catégorie désactivée !
+    message-disable-category-KO: Erreur lors de la désactivation, merci de nous contacter !
+    message-del-category-OK: Catégorie supprimée avec succès !
+    message-del-category-KO: Impossible de supprimer cette catégorie, il existe des événements liés !
+    message-del-category-KO2: Impossible de supprimer cette catégorie, il existe des séances liées !
+    message-new-session-OK: Nouvelle séance type ajoutée à la liste !
+    message-update-session-OK: Mise à jour de la séance type avec succès !
+    message-update-session-KO: Erreur lors de la mise à jour, merci de nous contacter !
+    message-new-session-KO: Erreur lors de la création, merci de nous contacter !
+    message-del-session-OK: Séance type supprimée avec succès !
+    message-del-session-KO: Impossible de supprimer cette séance, il existe des événements liés !
+    message-required-type:  Type obligatoire !
+    message-required-plan:  Plan obligatoire !
+    message-required-category: Catégorie obligatoire !
+    message-choose-category: Choisis une nouvelle catégorie !
+    message-required-title: Séance obligatoire !
+    message-required-participants: Participant(s) obligatoire(s) !
+    message-required-only-one: Un seul membre pour les suivis d'entrainement !
+    message-required-sport: Sport obligatoire !
+    message-required-duration: Durée obligatoire !
+    message-required-data: Au moins une donnée est obligatoire ! (distance, durée, D+, D-, vitesse, HR)
+    create-event:           Créer un événement
+    message-auth:           Pour activer le module avancé de gestion de plans d'entrainements, merci de nous contacter par le feedback !
+    message-eventDrop:      Le déplacement de cet événement est impossible !
+    message-eventResize:    La mise à jour de cet événement est impossible !
+    achievement:            Auto-évaluation
+    achievement-help:       Cette note permet de t'auto-évaluer sur tes séances. (Indicateur repris sur ton tableau de bord)
+    achievement-tooltip1:   Note moyenne issue
+    achievement-tooltip2:   des auto-évaluations
+    mail-agenda-update-1:   t'invite à consulter ton tableau de bord, il a été mis à jour !
+    mail-agenda-update-2:   A tout de suite sur keepinsport
+    mail-agenda-update-3:   accéder à ton tableau de bord
+    mail-agenda-update-4:   ou
+    mail-agenda-update-5:   accéder à la page du club
+    mail-update-event-to-club: a modifié sa participation à un de tes événements !
+    mail-update-event-to-members: a modifié un événement où tu étais inscrit !
+    members:                Membre
+    types:                  Type événement
+    perimeter:              Périmètre
+    intensity:              Intensité
+    stateOfHealth:          Forme
+    session:                Séance
+    details:                Détails
+    remarks:                Remarques
+    category:               Catégorie
+    help-flat-view:         Générer une vue à plat du plan sélectionné
+    choose-at-least-1-member : Sélectionne au moins un sportif de ton club !
+    create-plan-for-member: Tu dois d'abord créer un plan pour ton sportif
+    email-send:             E-mail envoyé avec succès !
+    error:                  Erreur, merci de nous contacter via le feedback !
+    only-1-member:          Sélectionne un seul sportif !
+    choose-at-least-1-plan: Sélectionne un plan d'entrainement !
+    only-1-plan:            Sélectionne un seul plan d'entrainement !
+    share-only-user-plan:   Seuls les plans que tu as créés peuvent partagés !
+    already-shared:         Impossible de partager ce plan il est déjà partagé !
+    delete-only-user-plan:  Seuls les plans que tu as créés peuvent être supprimés !
+    share-plan-with-valid-length: Seuls les plans de plus de %weeks% semaines peuvent être partagés sur l'offre <span class="label label-premium">Premium</span> !
+    starting-date:          Date de début
+    ending-date:            Date de fin
+    refresh:                Actualiser
+    sport-repart:           Sports
+    category-repart:        Catégories
+    difficulty-repart:      Difficultés
+    duration-repart:        Durée
+    hr-repart:              Interactions cardio
+    hr-edit-help:           Mettre à jour sa fréquence de repos et sa fréquence max
+    hr-edit:                Mes fréquences cardiaques
+    splits-repart:          Interactions splits
+    time-zone-1:            1h ou -
+    time-zone-2:            entre 1h et 1h30
+    time-zone-3:            entre 1h30 et 2h
+    time-zone-4:            entre 2h et 3h
+    time-zone-5:            3h ou +
+    training-done:          Réalisé
+    training-scheduled:     Planifié
+    from:                   Du
+    to:                     au
+    sport:                  Sport
+    number:                 Occurences
+    duration:               Durée
+    distance:               Distance
+    elevationGain:          D+
+    elevationLost:          D-
+    link:                   Lien
+    date:                   Date
+    planed:                 Planifié
+    achieved:               Réalisé
+    not-done:               Activité non réalisée !
+    link-activity-message:  Complète les données de ta séance avec le formulaire suivant !
+    link-no-activity-message: Pourquoi n'as-tu pas réalisé cette séance ?
+    unlink-message:         Session déliée avec succès !
+    link-activity:          Créer une activité
+    link-no-activity:       Séance non réalisée
+    unlink-activity:        Délier l'activité
+    data-scheduled:         Données planifiées
+    data-interval:          Données fractionnées
+    VMASpeed:               VMA
+    VMASpeedRequired:       Renseigne ta VMA au niveau de ton profil utilisateur !
+    HRMaxRequired:          Renseigne ta FC max au niveau de ton profil utilisateur !
+    HRRestRequired:         Renseigne ta FC de repos au niveau de ton profil utilisateur !
+    HRMax:                  Max
+    HRRest:                 Repos
+    data-global:            Données globales à la séance
+    data-achieved:          Données réalisées
+    send-email:             Contacter
+    new-message:            Nouveau message
+    for:                    pour
+    for-all-members:        pour tous les membres du club
+    send-friendShip-first:  Pour contacter ce membre il faut que tu fasses partie de ses amis ! (=> clique sur son avatar, ci-dessus)
+    to-users:               Destinataires
+    choose-competitions:    Sélection d'une compétition
+    infos-competition:      Infos sur la course
+    create-new-session:     Créer une nouvelle séance type 
+    save-selected-session:  Enregistrer
+    delete-selected-session: Supprimer la séance type sélectionnée
+    new-session-label:      Titre nouvelle séance
+    update-session-label:   Modifier titre séance
+    cancel-selected-session: Annuler la saisie
+    update-selected-session: Modifier la séance type sélectionnée
+    link-to-plan:           Rattacher à un plan
+    link-to-session:        Rattacher à une session planifiée
+    training:               Entrainement
+    last-coaching-day:      Dernier jour planifié
+    first-no-session:       1er jour non planifié
+    warning-coaching:       Points d'attention
+    share-plan:             Partager le plan sélectionné
+    show-all-plans:         Voir tous les plans disponibles
+    plan-successfully-shared: Plan partagé avec succès !
+    users-training-plan:    Ils ont déjà utilisé ce plan
+    import:                 Importer
+    import-into-my-agenda:  Importer ce plan dans mon agenda
+    import-by-end:          Suivre ce plan via un rétro-planning
+    import-by-start:        Suivre ce plan dès que possible
+    week-view:              Détails
+    choose-one-date:        Sélectionne une date de début ou une date de fin !
+    week:                   SEMAINE
+    weeks:                  Nombre de semaines
+    plan-successfully-deleted: Plan supprimé avec succès !
+    delete-plan:            Supprimer le plan sélectionné
+    delete-plan-message:    Etes-vous sur de supprimer ce plan et toutes ses séances ?
+    plan-successfully-imported: Plan importé avec succès !
+    premium-required:       Profile <span class="label label-premium">Premium</span> requis !
+    label-already-used:     Un plan avec le même libellé existe déjà, modifie ton plan avant de le partager à nouveau !
+    owner:                  Créateur
+    description:            Description
+    my-favorite-sessions:   Mes séances
+    no-favorite-sessions:   Tu n'as pas de séances favorites pour le moment, tu dois d'abord les créer à la main dans l'agenda ! (Sport obligatoire)
+    multiple-choices:       Choix multiple
+    duplicate-message:      '- <b>Déplacer</b> uniquement cette séance</br>- <b>Dupliquer</b> uniquement cette séance</br>- <b>Déplacer en masse</b> toutes les séances du même jour'
+    move:                   Déplacer
+    duplicate-session:      Dupliquer
+    move-mass:              Déplacer en masse
+    move-not-allowed:       Déplacement en masse impossible car il existe d'autres séances sur le jour de destination !
+    sessions-linked:        'Suppression impossible : tu as déjà lié des séances de ce plan à tes activités !'
+    go-to-start-date-plan:  Début du plan
+    go-to-end-date-plan:    Fin du plan
+    my-categories:          Mes catégories
+    my-plans:               Mes plans
+    all-sessions:           Séances partagées
+    result:                 Glisser-déposer
+    new-category:           Nouvelle catégorie
+    create-new-plan:        Créer un nouveau plan
+    create-new-plan-premium: Créer un nouveau plan Premium
+    new-plan:               Nouveau plan
+    choose-title:           Saisir un titre
+    create-new-category:    Créer une nouvelle catégorie
+    edit-category:          Modifier une catégorie
+    enable-category:        Activer la catégorie
+    disable-category:       Désactiver la catégorie
+    delete-category:        Supprimer la catégorie
+    session-details:        Détail de la séance
+    save-new-plan:          Enregistrer le plan
+    plan-successfully-created: Plan créé avec succès !
+    sync-google-agenda:     Synchro Google Agenda
+    choose-only-one-member: Un membre et un seul doit être sélectionné pour lui créer un plan !
+    choose-one-category:    Sélectionne d'abord une catégorie pour la lier à ta nouvelle séance
+    progress:               Avancement
+    attendance:             Assiduité
+    efficiency:             Efficacité
+    efficiency-tooltip1:    En fonction des séances prévues
+    efficiency-tooltip2:    et des activités réalisées
+    sessions-ended:         Séances échues à ce jour
+    until-now:              Total à ce jour
+    sessions-done:          Séances réalisées
+    sessions-scheduled:     Séances planifiées
+    duration-done:          Durée réalisée
+    duration-linked:        Durée séances liées
+    update-selected-plan:   Mise à jour du libellé
+    plan-successfully-updated: Plan mis à jour avec succès !
+    shared-plan-used:       Suppression du plan impossible, il est utilisé par d'autres sportifs !
+    no-feeling-details:     Non précisé
+    distance-mesure:        km
+    elevation-mesure:       m
+    show-sessions-tool:     Outil avancé (drag & drop)
+    warning:                Séance sensible !
+    no-activities-found:    Pas d'activité réalisée sur cette période !
+    no-data-no-graphs:      Les graphiques avancés ne s'affichent ici que s'il y a des séances ou activités réalisées selon la période sélectionnée.
+    no-period-selected:     Aucune période sélectionnée !
+    activities:             activités
+    sessions-tool:          Création/mise à jour de séances 'type'
+    users:                  Utilisateur(s)
+    votes:                  Encouragement(s)
+    create-new-article:     Créer un article wikisport
+    own-sessions:           Séances hors-plan
+    not-defined:            Non précisé
+    disable-member:         Désactiver
+    enable-member:          Ré-activer le membre
+    show-planning:          Voir son planning
+    next-competition:       Prochaine compétition
+    days:                   jours
+    delete-premium-plan-forbidden:  Impossible de supprimer ce plan <span class='label label-premium'>Premium</span> car il a déjà été partagé !
+    delete-premium-forbidden:       Impossible de supprimer cette séance car elle fait partie d'un plan <span class='label label-premium'>Premium</span> qui a déjà été partagé !
+    duplicate-premium-forbidden:    Impossible de dupliquer cette séance car elle fait partie d'un plan <span class='label label-premium'>Premium</span> qui a déjà été partagé !
+    move-premium-forbidden:         Impossible de déplacer cette séance car elle fait partie d'un plan <span class='label label-premium'>Premium</span> qui a déjà été partagé !
+    create-activity-manually: Ajouter une activité manuellement
+    create-activity-by-sync: Ajouter des activités par un service de synchronisation
+    import-plan-agenda:     Importer un plan d'entrainement dans son agenda pour le suivre
+    import-plan:            Plans
+    your-goal-date:         Date de ton objectif
+    help-import:            Il est possible de décaler les séances après l'import dans son agenda
+    with-length-control:    Avec contrôle selon la durée du plan
+    help-import-control:    Permet de s'assurer que l'intégralité du plan pourra être suivi selon le choix de la date
+    go-elite:               Tu veux passer en Elite ?
+    elite:                  Elite
+    premium:                Premium
+    active-premium:         Active les fonctions PREMIUM !
+    change-session:         Modifier le type de séance de cette activité
+    between:                Entre
+    and:                    et
+    print:                  Impression semaine
+    Mon:                    Lundi
+    Tue:                    Mardi
+    Wed:                    Mercredi
+    Thu:                    Jeudi
+    Fri:                    Vendredi
+    Sat:                    Samedi
+    Sun:                    Dimanche
+    print-available-week-only: Impression disponible uniquement à la semaine !
+    resize-normal:          Afficher les splits et zones de cardio
+    resize-full:            Cacher les splits et zones de cardio
+    not-available:          Fonction non disponible
+    lap-ct-tooltip:         Permet d'avoir des comparaisons uniquement sur la zone de fractionné
+    lap-ct:                 Avec le premier et dernier lap
+
+hr:
+    zone0:                  Cardio non activé
+    zone1:                  Echauffement
+    zone2:                  Zone lipidique
+    zone3:                  Zone aérobique
+    zone4:                  Zone anaérobique
+    zone5:                  Maximum
+    from:                   De
+    to:                     à
+    rest:                   Fréquence cardiaque au repos
+    max:                    Fréquence cardiaque maximale
+    
+wikisport:
+    slope:                  Pente
+    slow-slope:             % faible
+    regular-slope:          % moyen
+    hard-slope:             % élevé
+    elevation:              Altitude
+    distance:               Distance
+    show-all:               Voir tous les articles
+    notes-saved-successfully: Notes sauvegardées avec succès !
+
+maintenance:
+    message1: Nous mettons actuellement
+    message2: à jour pour un meilleur confort d'utilisation...
+    message3: Durée de l'intervention prévue
+    message4: Maintenance en cours...
+    
+visit:
+    newsFeed-start: Bienvenue sur <b>Keepinsport</b> ! Pour continuer cette visite, utilise les flèches de ton clavier pour avancer (droite) ou reculer (gauche), ou clique sur les boutons ci-dessous.
+    newsFeed-header: La barre de menu du haut contient des <b>raccourcis</b> pour accéder aux fonctions principales les plus utilisées par la communauté, voici ce qu'il est possible de faire
+    newsFeed-publish: <b>Publier</b> une de tes activités sportives et gagner des points...
+    newsFeed-dashboard: Consulter <b>ton tableau de bord</b> qui recense toutes tes activités sportives avec ton agenda, tes stats mensuelles, hebdo, par sport, etc. Très utile pour suivre des plans d'entrainements ou simplement ses performances
+    newsFeed-stats : Consulter toutes ses <b>statistiques</b> mensuelles, hebdo, par sport, par équipement (cumul temps, distance, D+, D-, victoires, défaites, etc)...
+    newsFeed-ranking: Consulter le <b>classement</b> général de la communauté, les classements par sport, par pays...
+    newsFeed-competitions: Rechercher une <b>compétition</b> selon une région, une distance particulière...
+    newsFeed-results: Voir la liste de toutes les <b>récompenses</b> précédemment offertes ainsi que ses propres chances de gagner aux tirages au sort...
+    newsFeed-agenda: Etudier son propre <b>agenda</b>, très utile pour consulter ses activités réalisées ou gérer ses plans d'entrainements !
+    newsFeed-expert: Passer en mode <b>\"expert\"</b> pour accéder aux fonctions avancées (gratuit) => </br> -Activer un service de synchro <b>SUUNTO, GARMIN, POLAR, RUNKEEPER, NIKE+, ENDOMONDO</b></br>-Inviter ses amis sur KS</br>-Créer des articles wikisport</br>-Voir les lieux pratiqués par les sportifs de la communauté</br>-Consulter les clubs existants</br>-Et bien d'autres choses encore !)
+    newsFeed-search: Ceci est la barre de <b>recherche</b>, elle peut t'être très utile pour trouver un sportif, un équipement, une compétition ou un tutoriel par exemple, n'hésite pas à t'en servir !
+    newsFeed-profil: Pour accéder aux données de ton <b>profil</b>...
+    newsFeed-news: Ceci est le <b>fil d'actualités</b> du site.</br> Tu y trouveras toutes les activités sportives effectuées par les sportifs de la communauté.</br>Tu peux modifier les filtres, ils seront sauvegardés sur ton profil pour tes prochaines visites...
+    newsFeed-gifts: <i>\"Fais du sport, gagne des récompenses\"</i> => chaque mois les membres les plus actifs gagnent des <b>cadeaux</b> avec nos partenaires locaux !
+    newsFeed-feedback: Si tu souhaites envoyer une remarque à notre équipe pour signaler un problème, ou soumettre une demande d'évolution, n'hésite pas à le faire via la zone de <b>\"feedback\"</b> ici !
+    newsFeed-actions: Pour compléter et terminer cette visite, tu trouveras ici la liste des <b>actions</b> les plus communément utilisées par la communauté. Une fois réalisée, l'action est cochée et un bonus de point te sera attribué si tu les réalises toutes ;)
+    newsFeed-offers: Pour terminer cette visite, tu peux consulter nos <b>offres</b> <span class='label label-premium'>Premium</span> et <span class='label label-elite'>Elite</span> et construire ton propre pack avec ou sans achat de <b>montre spécialisée</b>, bon sport !
+    activityDetail-start: <center>Bienvenue sur l'<b>outil d'analyse</b></center><center><span class='label label-premium'>PREMIUM</span> / <span class='label label-elite'>ELITE</span></center><br>Pour continuer cette visite, utilise les flèches de ton clavier pour avancer (droite) ou reculer (gauche), ou clique sur les boutons ci-dessous
+    activityDetail-header: Les <b>infos générales</b> à savoir le pseudo du sportif qui a réalisé l'activité, le sport qu'il a pratiqué, le lieu, la date et son commentaire apparaissent ici.
+    activityDetail-points: Ceci est le nombre de <b>points</b> attribués à ton activité qui correspond aux calories consommées (selon le sport, ton poids, le temps, la vitesse moyenne, le D+, etc) Ces points vont te permettre de gagner des cadeaux chez nos partenaires !
+    activityDetail-main-data: Les données principales de ton activité sont précisées ici et correspondent en tout point avec celles de ta montre ou de l'application que tu synchronises (<b>SUUNTO, GARMIN, POLAR, STRAVA, RUNKEEPER, ENDOMONDO, NIKE+</b>)
+    activityDetail-graph: Le graphique suivant t'affiche ta trace GPS en fonction du temps (altitude, vitesse, rythme, cardio, température) <br>Pour les membres <span class='label label-premium'>Premium</span> et <span class='label label-elite'>Elite</span> il est possible de sélectionner une période du graphique pour afficher les <b>minimums, maximums et moyennes</b> de toutes tes données ! (recalcul et affichage en temps réel dans la zone en haut à gauche 'DONNEES AFFICHEES')
+    activityDetail-map: Ici se trouve ta trace GPS sur une carte. Pour les membres <span class='label label-premium'>Premium</span> et <span class='label label-elite'>Elite</span> uniquement, la carte est <b>synchronisée</b> avec la sélection du graphique, du choix du split, ou encore de la zone cardiaque sélectionnée.
+    activityDetail-splits: Pour les membres <span class='label label-premium'>Premium</span> et <span class='label label-elite'>Elite</span> uniquement, si tu cliques sur un <b>split (=1km donné de ton activité)</b>, automatiquement la carte se synchronisera avec ton choix, idem pour les graphiques ci-dessus.
+    activityDetail-hr: Pour les membres <span class='label label-premium'>Premium</span> et <span class='label label-elite'>Elite</span> uniquement, si tu utilises un <b>cardiofréquencemètre</b>, tu peux consulter le temps passé sur chacune de tes zones et avec un simple clic voir sur la carte et le graphique à quel moment tu te trouvais dans telle ou telle zone !
+    activityDetail-comparison-tool: Pour les membres <span class='label label-premium'>Premium</span> et <span class='label label-elite'>Elite</span> uniquement, un <b>comparateur de séance</b> du même type est proposé pour permettre de suivre sa progression sur le long terme sur une séance type bien précise.
+    activityDetail-actions: Enfin il est possible de commenter, partager sur Facebook, s'abonner ou encore encourager cette activité tout en bas. <br><br> N'hésite pas à utiliser les outils d'analyse <span class='label label-premium'>PREMIUM</span> / <span class='label label-elite'>ELITE</span> sur cette activité :)
+    dashboard-start-premium: <center>Bienvenue sur le<b> tableau de bord</b></center> <center><span class='label label-premium'>PREMIUM</span></center><br>Pour continuer cette visite, utilise les flèches de ton clavier pour avancer (droite) ou reculer (gauche), ou clique sur les boutons ci-dessous
+    dashboard-start-elite: <center>Bienvenue sur le<b> tableau de bord</b></center> <center><span class='label label-elite'>ELITE</span></center><br>Pour continuer cette visite, utilise les flèches de ton clavier pour avancer (droite) ou reculer (gauche), ou clique sur les boutons ci-dessous
+    dashboard-KPIView: Ce bloc contient des <b>indicateurs</b> de suivi de plan d'entraînement qui permettent de visualiser en un coup d'oeil des tendances.
+    dashboard-stepEliteMainKPI: Ce bloc précise éventuellement la prochaine <b>compétition</b> du sportif et permet notamment d'<b>envoyer un mail</b> rapidement à son coach.
+    dashboard-progressGauge: <b>Avancement</b> = indique la progression par rapport au plan choisi.
+    dashboard-attendanceGauge: <b>Assiduité</b> = le sportif réalise t-il ou non les séances planifiées par son coach ?
+    dashboard-efficiencyGauge: <b>Efficacité</b> = le sportif réalise t-il ses séances correctement par rapport aux données planifiées par son coach ?
+    dashboard-achievementGauge: <b>Auto-évaluation</b> = note sur 10 que le sportif se donne sur chaque activité réalisée (facultatif)
+    dashboard-agenda: L'<b>agenda</b> du sportif précise l'ensemble des séances planifiées à venir ou réalisées/non réalisées avec un code couleur simple. <br>En <span class='rouge'><b>rouge</b></span> les séances difficiles, en <span class='orange'><b>orange</b></span> les séances normales et en <span class='vert'><b>vert</b></span> les faciles. <br><br> RQ - Les données principales d'une séance bloc apparaissent au survol (<b>distance, durée, D+, D-</b>) et sur un simple clic tu peux accéder au détail et de la trace GPS associée.
+    dashboard-repartBySport: Selon la période de l'agenda sélectionnée (année, mois, semaine) tu peux consulter ici la <b>répartition de tes entraînements par sport</b>, et comparer ton planifié à ton réalisé.
+    dashboard-repartByCategory: De même ici <b>par catégorie</b> (chaque séance planifiée est liée à une catégorie précise)
+    dashboard-repartByDifficulty: <b>Par difficulté</b>, si tu passes ta souris sur chaque camembert, la durée totale s'affiche automatiquement.
+    dashboard-repartByDuration: <b>Par durée de session</b> afin de voir ton volume de sorties courtes ou longues par exemple.
+    dashboard-repartByHR: De plus, si tu utilises un <b>cardiofréquencemètre</b> tu peux consulter ici ton cumul de temps passé sur chacune de tes zones d'effort (en fonction de ta <b>fréquence de repos</b> et ta <b>fréquence max</b>)
+    dashboard-stats: Et enfin tu peux visualiser ici tes stats complètes par sport <br>=> <b>cumul distance, temps, D+, D-</b> (RQ - par défaut ton sport de prédilection est automatiquement choisis, et celui-ci est modifiable à souhait pour voir tes stats associées)
+    dashboard-flatView: Pour terminer cette visite, ci-dessous se trouve une <b>vue à plat</b> de tes entraînements avec le <u>'planifié'</u>, le <u>'réalisé'</u> qui récapitulent les données essentielles de tes activités et enfin une colonne <u>'commentaires'</u> qui recensent l'ensemble des discussions avec ton coach ou tes amis.<br><br> => Si ce tableau de bord te plait alors fonce sur le <b>constructeur de pack</b> de la page <span class='rouge'><b>Voir les offres KS</b></span> (accessible dans la barre de menu tout en haut) pour toi aussi en bénéficier ;)
+    launch-visit: Visite guidée
+    competitions-start: Tu recherches une compétition dans une <b>région précise</b> ou en fonction d'une <b>distance</b> particulière ?<br><br>Cette nouvelle page est faite pour toi !
+    competitions-filters: N'hésite pas à utiliser les <b>filtres</b> disponibles pour affiner ta recherche.
+    competitions-search: Si tu souhaites rechercher une compétition <b>par son nom</b>, utilise la fonction de recherche du site ici.
+    competitions-detail: Pour toutes les nouvelles compétitions, un simple clic te permet de consulter toutes les <b>informations indispensables</b><br><br> => comment s'inscrire, l'heure de départ, le réglement, les notes des internautes (balisage, ravitaillements, organisation, intérets, récompenses), etc.
+    competitions-subscribe: Pour finir, tu peux t'<b>abonner</b> à une course ou bien préciser que tu y participeras afin d'être <b>informé en temps réel des modifications éventuelles</b> (changement de parcours, d'heure de départ, etc)
+    
+garmin:
+    import-activity:    Import des activités Garmin
+    select-device:      Sélectionne ton appareil<br/>
+    activity-list :     Liste des activités
+    upload:             Transférer
+    looking-for-device: Recherche d\'un appareil Garmin compatible...<br/><br/> <img src="../bundles/ksactivity/js/garmin/device/style/ajax-loader.gif"/>
+    upload-successful:  Transfert réussi !
+    data-found:         #{tracks} activités trouvées sur cet appareil
+    on-failure:         Problème lors du chargement de l\'activité ! Merci de nous contacter par le feedback svp
+    configure:          Activer
+    error-403:          Erreur GARMIN ! Ton compte sur GARMIN Connect ne permet pas l'accès aux détails de tes activités !
+    
+polar:
+    configure:          Activer
+    
+profile:
+    premium-successful: Félicitations, tu es maintenant un membre <span class="label label-premium">PREMIUM</span> et ce gratuitement pour 1 mois !
+    premium-update:     Nous allons te contacter pour le paiement...en attendant bon sport :)
+    ask-for-premium:  Le paiement en ligne sera disponible le <b> 1er Juin 2015</b>, en attendant veux-tu bénéficier d'un <b>mois gratuit</b> ?
+    
+competitions:
+    FR: France
+    RE: Réunion
+    UNKNOWN: Etranger
+    region: Région
+    competitions-with-filters: compétition(s) selon les filtres

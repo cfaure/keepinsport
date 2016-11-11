@@ -1,0 +1,92 @@
+<div id="gmap-{{ activity.id }}" class="span9" style="margin-left:0px;height:400px;width:100%;border: 1px solid black;border-radius: 4px 4px 4px 4px;"></div>
+
+<script type="text/javascript">
+    var landmarks = []; // stockage des markers gmap
+    
+    function km_on(map, traceRoute) {
+        if (landmarks.length && (landmarks.length > 0)) {
+            for (i = 0; i<landmarks.length; ++i) landmarks[i].setMap(map);
+        } else {
+            var km_points = traceRoute.GetPointsAtDistance(5000);
+            for (i = 0; i < km_points.length; i++) {
+                landmarks.push(
+                    createKmMarker(map, km_points[i], i)
+                );
+            }
+        }
+    }
+
+    function createKmMarker(map, point, km) {
+        return new google.maps.Marker({
+            position: point,
+            map: map,
+            title: "Km " + km,
+            icon: new google.maps.MarkerImage('https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + km + '|49AFCD|FFFFFF'),
+            zIndex: Math.round(point.lat() * -100000) << 5
+        });
+    }
+
+    $(document).ready(function() {
+        jsonDatas           = {{ activity.rawTrackingDatas|raw }};
+        var waypoints       = jsonDatas.waypoints;
+        var firstWaypoint   = 0;
+        var lastWaypoint    = waypoints.length - 1;
+        var kmsNumber       = parseInt({{ activity.distance }});
+        var duration        = {{ activity.duration|seconds }};
+        var map             = new google.maps.Map(
+            document.getElementById("gmap-{{ activity.id }}"), {
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        });
+        var mapPoints       = [];
+
+        var lat_min = waypoints[0].lat;
+        var lat_max = waypoints[0].lat;
+        var lon_min = waypoints[0].lon;
+        var lon_max = waypoints[0].lon;
+
+        $.each(waypoints, function(key, waypoint) {
+            mapPoints.push(
+                new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+            );
+            if ( waypoint.lat < lat_min ) lat_min = waypoint.lat;
+            if ( waypoint.lat > lat_max ) lat_max = waypoint.lat;
+            if ( waypoint.lon < lon_min ) lon_min = waypoint.lon;
+            if ( waypoint.lon > lon_max ) lon_max = waypoint.lon;
+        });
+
+        var locationMarker = new google.maps.Marker({
+            map     : map,
+            icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/location.png') }}" ),
+            position: new google.maps.LatLng( waypoints[firstWaypoint].lat, waypoints[firstWaypoint].lon ),
+        });
+
+        new google.maps.Marker({
+            map     : map,
+            icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/green-pin.png') }}" ),
+            position: new google.maps.LatLng( waypoints[firstWaypoint].lat, waypoints[firstWaypoint].lon ),
+            title   : "Départ"
+        });
+
+        new google.maps.Marker({
+            map     : map,
+            icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/red-pin.png') }}" ),
+            position: new google.maps.LatLng( waypoints[lastWaypoint].lat, waypoints[lastWaypoint].lon ),
+            title   : "Fin"
+        });
+
+        //On trace le parcours 
+        traceRoute = new google.maps.Polyline({
+            path: mapPoints,
+            strokeColor: "#FF0000",
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+        map.setCenter(new google.maps.LatLng(
+            ((lat_max + lat_min) / 2.0),
+            ((lon_max + lon_min) / 2.0)
+        ));
+        map.fitBounds(traceRoute.Bounds());
+        traceRoute.setMap(map);
+        km_on(map, traceRoute);
+    });
+</script>

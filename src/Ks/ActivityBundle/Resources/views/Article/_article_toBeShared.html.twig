@@ -1,0 +1,12 @@
+{% if activity.modifications is defined and activity.modifications is not null %}
+    <center>
+        {% set lastTitle = activity.modifications.title %}
+        {% if lastTitle is not null %}
+            <b>{{ lastTitle }}</b>
+        {% else %}
+            <b>{{ activity.label}}</b>
+        {% endif %}
+    </center>
+    <br/>
+    <p>{{ activity.modifications.description|raw }}</p>
+{% endif %}

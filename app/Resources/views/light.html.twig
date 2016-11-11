@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:fb="http://www.facebook.com/2008/fbml">
+    <head>
+        <meta charset="utf-8">
+        <title>{% block title %}Keepinsport{% endblock %}</title>
+        
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Page d'accueil de Keepinsport" name="description">
+        <meta content="Keepinsport" name="author">
+        
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}" /> 
+        <link rel="icon" type="image/png" href="{{ asset('img/keepinsport_logo_16.png') }}" />
+        <link rel="apple-touch-icon" href="{{ asset('img/keepinsport_logo_57.png') }}" />
+        <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('img/keepinsport_logo_72.png') }}" />
+        <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('img/keepinsport_logo_114.png') }}" />
+
+        <!-- Le style -->
+        {% block stylesheets %}
+        
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-responsive.min.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}"  />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/buttons.css') }}"  />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/navbar.css') }}"  />
+        
+        {# icons font #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/fontawesome/css/font-awesome.min.css') }}" >
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/typicons/typicons.min.css') }}" >
+
+        <!-- Le fav and touch icons -->
+        <link href="{{ asset('ico/favicon.ico') }}" rel="shortcut icon" />
+        <link href="{{ asset('apple-touch-icon.png') }}" rel="apple-touch-icon" />
+        {% endblock %}   
+
+        {% block javascripts %}            
+        <script type="text/javascript" src="{{ asset('js/jquery-1.7.2.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/jquery-ui-1.8.18.custom.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+        {#<script type="text/javascript" src="{{ asset('js/bootstrap-modal.js') }}"></script>#}
+        <script type="text/javascript" src="{{ asset('js/hightcharts/highcharts.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('js/scripts.js') }}"></script>
+
+        <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+        <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+        <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        {% endblock %}
+    </head>
+
+    <body style="width:auto;">
+        <div class="visible-desktop" style="padding-top:60px"></div>
+        
+        {% include '::infoModal.html.twig' %}
+      
+        <div id="navbar" class="navbar navbar-inverse navbar-fixed-top" >
+            <div class="navbar-inner" >
+                <div class="container">
+                    <a class="visible-phone visible-tablet ksLogoLink" style=" float:left;padding-top:7px;" href="{{ path('ksProfile_informations', { "creationOrEdition" : "creation" } ) }}">
+                        <img src="{{ asset('img/ks_typo_logo_white_mini.png') }}"/>
+                        <span class="betaLogo">beta</span>
+                    </a>
+                    <div class="nav-collapse collapse" >
+                        <ul class="nav" >     
+                            <a class="visible-desktop ksLogoLink" style=" float:left;padding-top:7px;padding-right:30px;" href="{{ path('ksProfile_informations', { "creationOrEdition" : "creation" }) }}">
+                                <img src="{{ asset('img/ks_typo_logo_white_mini.png') }}"/>
+                                <span class="betaLogo">beta</span>
+                            </a>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            {% render 'KsUserBundle:User:feedbackBloc' %}
+            {% for key, message in app.session.getFlashes() %}
+                <div class="{{ key }}">
+                    {{ message|trans|raw }}
+                </div>
+            {% endfor %}
+            {% block content %}{% endblock %}
+            <br clear="all"/>
+            {#<div class="row">
+                <hr>
+                <div id="choisir_langue" class="span3">
+                    <a href="{{ path('ks_choisir_langue', {'langue' : 'fr'}) }}"><img src="{{ asset('img/flags/fr.png') }}" title="fr" alt="fr"/></a> |
+                    <a href="{{ path('ks_choisir_langue', {'langue' : 'en'}) }}"><img src="{{ asset('img/flags/en.png') }}" title="en" alt="en"/></a>
+                </div>
+                <div class="span6">
+                    <a href="{{ path('ks_legal_mentions') }}">Mentions légales</a>
+                    <a href="{{ path('ks_general_conditions') }}">Conditions générales</a>
+                </div>
+                <div class="span3 pull-right">Keepinsport © 2012</div>
+            </div>#}
+        </div>
+        <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+            try{
+            var pageTracker = _gat._getTracker("UA-29341430-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+        </script>
+    </body>
+</html>

@@ -1,0 +1,53 @@
+{% block subject %}
+{% autoescape false %}
+
+{% endautoescape %}
+{% endblock %}
+{% block body_text %}
+{% autoescape false %}
+{#{ body }#} 
+
+Bonjour ami sportif,
+
+
+Tu fais partie de ces quelques chanceux identifiés pour tester, en exclusivité, le tout nouveau réseau social communautaire et collaboratif dédié aux sportifs et aux clubs : <b>Keepinsport</b> !
+<br/><br/>
+Tu peux d'ores et déjà partager tes activités et multiplier les échanges de qualité avec tes proches, trouver de nouveaux partenaires de sport qui te ressemblent, suivre toutes tes activités de façon ludique, importer tes séances et résultats en un clic, sans changer tes habitudes, quels que soient tes sports, 
+partager simplement ton expérience et bénéficier à terme des conseils de milliers de sportifs...
+<br/><br/>
+Des tonnes de fonctionnalités sont encore en cours de développement (synchronisation des activités avec d'autres sites externes, gestion des clubs, des tournois, etc...) et nous sommes conscients que l'aspect visuel du site a encore une petite marge de progression ;)
+<br/><br/>
+Nous comptons donc sur ton esprit critique (et ton indulgence) pour faire progresser le site. Alors n'hésite pas à te connecter le plus souvent possible et à partager suggestions, encouragements, ou bugs grâce à la zone de Feedback.
+<br/><br/>
+Sauras-tu rivaliser avec les meilleurs sportifs et atteindre la ligue OR niveau 3 étoiles ?
+<br/>
+<a href="http://{{ host }}{{ path('fos_user_registration_register') }}?userId={{ user.id }}&salt={{ salt }}">S'inscrire sur <b>KeepinSport</b></a>
+<br/><br/>
+A très bientôt,<br/>
+Toute l'équipe Keepinsport.
+
+{#% if user.userDetail %}
+    {{ user.userDetail.firstname }} {{ user.userDetail.lastname }}
+{% else %}
+    {{ user.email }}
+{% endif%#}
+
+<style>
+    .btn btn-primary {
+        background-color: #0074CC;
+        background-image: -moz-linear-gradient(center top , #0088CC, #0055CC);
+        background-image: -webkit-linear-gradient(top, #0088CC, #0055CC);
+        background-repeat: repeat-x;
+        border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+        color: #FFFFFF;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    }
+    
+    .btn btn-primary:hover {
+        background-color: #0055CC;
+    }
+</style>
+
+{% endautoescape %}
+{% endblock %}
+{% block body_html %}{% endblock %}

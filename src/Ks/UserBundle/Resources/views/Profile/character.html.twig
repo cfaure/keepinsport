@@ -1,0 +1,313 @@
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "KsUserBundle::layout_full.html.twig" %}
+{% else %}
+    {% set extends = "KsUserBundle::layout_3_9.html.twig" %}    
+{% endif %}
+
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('plugins/spectrum/spectrum.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('plugins/spectrum/spectrum.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/perso.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/sky.js') }}"></script>
+    {#<script src="{{ asset('bundles/kscanvasdrawing/js/index.js') }}"></script> #}
+    <script src="{{ asset('bundles/kscanvasdrawing/js/cloud.js') }}"></script>
+    <script type="text/javascript">
+        var clear = function(c){  
+            var ctx = c.getContext('2d');
+
+            ctx.save();
+            ctx.fillStyle = 'white';  
+            ctx.beginPath();  
+            ctx.rect(0, 0, c.width, c.height);  
+            ctx.fill();  
+            ctx.closePath();  
+            ctx.restore();
+        } 
+        var reDraw = function(c){  
+            clear(c); 
+            
+            var persoX = 50;
+            var persoY = 0;
+            perso.draw(persoX, persoY);
+        } 
+        
+        $(document).ready(function() {  
+            c = document.getElementById('canvas');     
+            c.height = 210;  
+
+            ctx = c.getContext('2d');
+
+            //Initialisation des éléments
+            sky = new Sky(c);
+            perso = new Perso(c);
+            
+            {% if app.user.character is defined and app.user.character is not null %}
+                 perso.sexeCode = "{{ app.user.character.sexeCode }}";   
+                 perso.skinColor = "{{ app.user.character.skinColor }}";   
+                 perso.hairColor = "{{ app.user.character.hairColor }}";   
+                 perso.eyesColor = "{{ app.user.character.eyesColor }}";   
+                 perso.shirtColor = "{{ app.user.character.shirtColor }}";   
+                 perso.shortColor = "{{ app.user.character.shortColor }}";   
+                 perso.shoesPrimaryColor = "{{ app.user.character.shoesPrimaryColor }}";   
+                 perso.shoesSecondaryColor = "{{ app.user.character.shoesSecondaryColor }}";   
+            {% endif %}
+
+            //Initialisation des colorpicker
+            $("#skinColor").val(perso.skinColor);
+            $("#skinColor").spectrum({
+                preferredFormat: "hex6",
+                showPaletteOnly: true,
+                showPalette:true,
+                clickoutFiresChange: true,
+                color: perso.skinColor,
+                palette: [
+                    ['#FFDCB1', '#FCB275', '#E4B98E', '#E2B98F', '#E3A173'],
+                    ['#D99164', '#C8443', '#C77A58', '#A53900', '#880400'],
+                    ['#710200', '#440000', '#FFE0C4', '#EECFB4', '#DEAB7F'],
+                    ['#E0B184', '#DFA675', '#BE723C', '#A01900', '#5B0000'],
+                    ['#000000', '#EDE4C8', '#EFD6BD', '#EABD9D', '#E3C2AE'],
+                    ['#DFB997', '#D0926E', '#BD9778', '#BB6D4A', '#940A00'],
+                    ['#E1ADA4', '#A58869', '#7B0000', '#720000', '#380000']
+                ],
+                change: function( color ) {
+                    clear(c); 
+                    perso.skinColor = color.toHexString()
+                    reDraw(c);
+                }
+            });
+            
+            $("#eyesColor").val(perso.eyesColor);
+            $("#eyesColor").spectrum({
+                preferredFormat: "hex6",
+                showPaletteOnly: true,
+                showPalette:true,
+                clickoutFiresChange: true,
+                color: perso.eyesColor,
+                palette: [
+                    ['black', 'brown', 'green', 'blue']
+                ],
+                change: function( color ) {
+                    clear(c); 
+                    perso.eyesColor = color.toHexString()
+                    reDraw(c);
+                }
+            });
+            
+            $("#hairColor").val(perso.hairColor);
+            $("#hairColor").spectrum({
+                preferredFormat: "hex6",
+                showPaletteOnly: true,
+                showPalette:true,
+                clickoutFiresChange: true,
+                color: perso.hairColor,
+                palette: [
+                    ["#000000", "#FCD505", "#E5E4E0"],
+                    ['#584A22', '#A28262', '#BF9E12', '#996619', '#7E533C'],
+                    ['#693824', '#B55B1B', '#E47122', '#AF3432', '#732727'],
+                ],
+                change: function( color ) {
+                    clear(c); 
+                    perso.hairColor = color.toHexString()
+                    reDraw(c);
+                }
+            });
+            
+            $("#shirtColor").val(perso.shirtColor);
+            $("#shirtColor").spectrum({
+                preferredFormat: "hex6",
+                clickoutFiresChange: true,
+                color: perso.shirtColor,
+                change: function( color ) {
+                    clear(c); 
+                    perso.shirtColor = color.toHexString()
+                    reDraw(c);
+                }
+            });
+            
+            $("#shortColor").val(perso.shortColor);
+            $("#shortColor").spectrum({
+                preferredFormat: "hex6",
+                clickoutFiresChange: true,
+                color: perso.shortColor,
+                change: function( color ) {
+                    clear(c); 
+                    perso.shortColor = color.toHexString()
+                    reDraw(c);
+                }
+            });
+            
+            $("#shoesPrimaryColor").val(perso.shoesPrimaryColor);
+            $("#shoesPrimaryColor").spectrum({
+                preferredFormat: "hex6",
+                clickoutFiresChange: true,
+                color: perso.shoesPrimaryColor,
+                change: function( color ) {
+                    clear(c); 
+                    perso.shoesPrimaryColor = color.toHexString()
+                    reDraw(c);
+                }
+            });
+            
+            $("#shoesSecondaryColor").val(perso.shoesSecondaryColor);
+            $("#shoesSecondaryColor").spectrum({
+                preferredFormat: "hex6",
+                clickoutFiresChange: true,
+                color: perso.shoesSecondaryColor,
+                change: function( color ) {
+                    clear(c); 
+                    perso.shoesSecondaryColor = color.toHexString()
+                    reDraw(c);
+                }
+            });
+            
+            $('input[type=radio][name=sexeCode]').iCheck({
+                radioClass: 'iradio_square-blue',
+            });
+            
+            $('input[type=radio][name=sexeCode][value=male], input[type=radio][name=sexeCode][value=female]').on('ifChanged', function(event){
+                var sexeCode = $( this ).val();
+                perso.sexeCode = sexeCode;
+                reDraw(c);
+            });
+            
+            if( perso.sexeCode == "male" ) {
+                $('input[type=radio][name=sexeCode][value=male]').iCheck('check');
+            } else {
+                $('input[type=radio][name=sexeCode][value=female]' ).iCheck('check');
+            }
+
+            c.width = $(c).parent().width();
+            reDraw(c);
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %} 
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        {% include 'KsUserBundle:Profile:_breadcrumb.html.twig' with {'step': 5, 'creationOrEdition' : creationOrEdition} %}
+        {% set submitButtonText = "Etape suivante" %}
+    {% else %}
+        <h1 class="sportif">{{ 'menu.my-profile'|trans }}</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ks_user_public_profile', {'username' : app.user.username}) }}">
+                    <span class="avatarBloc">
+                        {% set user_imageName = null %}
+                        {% if app.user.userDetail is not null %}
+                            {% set user_imageName = app.user.userDetail.imageName %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                 {% include 'KsUserBundle:Profile:_buttons.html.twig' with{'creationOrEdition' : creationOrEdition } %}
+            </div>
+        </div>
+        <br/>
+        
+    <br/>
+
+        {% set submitButtonText = "Enregistrer" %}
+    {% endif %}
+        
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="sportif">Mon personnage</h3>
+        <div class="blocHeaderSeparator"></div>
+            <form action="{{ path('ksProfile_character', {'creationOrEdition' : creationOrEdition}) }}" method="post">
+                <div class="row-fluid">
+                    <div class="span4">
+                        <canvas id='canvas'></canvas>
+                        <label class="pull-left">
+                            <span class="pull-left" style="margin-right:5px"><input type="radio" name="sexeCode" value="male"></span>
+                            <span class="pull-left" >Homme</span>
+                        </label>
+                        <label class="pull-left" style="margin-left:10px">
+                            <span class="pull-left" style="margin-right:5px"><input type="radio" name="sexeCode" value="female"></span>
+                            <span class="pull-left">Femme</span>
+                        </label>
+                    </div>
+                    <div class="span6">
+                            
+                            <div class="row-fluid" style="margin-bottom:2px">
+                                <div class="span9">
+                                    Couleur de la peau
+                                </div>
+                                <div class="span3">
+                                    <input id="skinColor" type='color' name='skinColor' />
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="margin-bottom:2px">
+                                <div class="span9">
+                                    Couleur des cheveux
+                                </div>
+                                <div class="span3">
+                                    <input id="hairColor" type='color' name='hairColor' />
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="margin-bottom:2px">
+                                <div class="span9">
+                                    Couleur des yeux
+                                </div>
+                                <div class="span3">
+                                    <input id="eyesColor" type='color' name='eyesColor' />
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="margin-bottom:2px">
+                                <div class="span9">
+                                    Couleur du t-shirt
+                                </div>
+                                <div class="span3">
+                                    <input id="shirtColor" type='color' name='shirtColor' />
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="margin-bottom:2px">
+                                <div class="span9">
+                                    Couleur du short
+                                </div>
+                                <div class="span3">
+                                    <input id="shortColor" type='color' name='shortColor' />
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="margin-bottom:2px">
+                                <div class="span9">
+                                    Couleur primaires des chaussures
+                                </div>
+                                <div class="span3">
+                                    <input id="shoesPrimaryColor" type='color' name='shoesPrimaryColor' />
+                                </div>
+                            </div>
+                            <div class="row-fluid" style="margin-bottom:2px">
+                                <div class="span9">
+                                    Couleur secondaires des chaussures
+                                </div>
+                                <div class="span3">
+                                    <input id="shoesSecondaryColor" type='color' name='shoesSecondaryColor' />
+                                </div>
+                            </div>
+                            <br clear="all"/>
+                            <input type="submit" class=" btn btn-sportif pull-right" value="{{ submitButtonText }}"/>
+                            
+                    </div>
+                </div>
+          </form>          
+          
+          <br clear="all"/>
+          <div class="alert alert-info">{{'users.message_page_edition_character'|trans}} </div>      
+                
+    </div> 
+
+{% endblock %}

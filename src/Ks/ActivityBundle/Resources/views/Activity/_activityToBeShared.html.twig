@@ -1,0 +1,19 @@
+<div class="thumbnail">
+    {# FIXME: code plus ou moins en double avec _activityBloc !!! #}
+    {% if activity.sport_id is not null %}
+        <div class="pull-left" style="margin-right: 20px">
+            {% include 'KsActivityBundle:Activity:_infosBloc.html.twig' %}
+        </div>
+    {% endif %}
+
+    {% if activity.type == 'video' or activity.type == 'link' %}
+        {% include 'KsActivityBundle:Activity:_activityLink_content.html.twig' %}
+    {% elseif activity.type == 'article' %}
+        {% include 'KsActivityBundle:Article:_article_toBeShared.html.twig' %}
+    {% else %}
+        {% include 'KsActivityBundle:Activity:_activityContent.html.twig' %}
+    {% endif %}
+
+    {% include 'KsActivityBundle:PhotoAlbum:_photos.html.twig' %}
+</div>
+

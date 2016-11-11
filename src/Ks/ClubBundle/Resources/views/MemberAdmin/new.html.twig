@@ -1,0 +1,16 @@
+<h1>Member creation</h1>
+
+<form action="{{ path('ks_member_create') }}" method="post" {{ form_enctype(form) }}>
+    {{ form_widget(form) }}
+    <p>
+        <button type="submit">Create</button>
+    </p>
+</form>
+
+<ul class="record_actions">
+    <li>
+        <a href="{{ path('ks_member') }}">
+            Back to the list
+        </a>
+    </li>
+</ul>

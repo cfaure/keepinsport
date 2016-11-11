@@ -1,0 +1,87 @@
+<div class="modal fade" id="premiumPricesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #14a14a!important">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Fermer</span></button>
+                <h4 class="modal-title"><img src="{{ asset('V2/images/icon-premium.png') }}" title="Pack Premium" /> Pack Premium <span id="plusWatchPremium"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 pack">
+                        <p> 
+                            <span class="bleu">PACK PREMIUM :</span> Sélectionne une de nos 2 formules ci-dessous et bénéficie d'1 mois gratuit pour tester nos services !
+                        </p>             
+                        <ul class="col-md-12">
+                            <li class="content">           
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadiosPremium" value="12" id="premium1"><span class="bleu" id="premium1Label">5€ /mois</span>
+                                        <span style="font-size: 0.9em">(Le 1er mois est <b>gratuit</b> !)</span>
+                                    </label>
+                                </div>
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadiosPremium" value="1" id="premium2" checked><span class="bleu" id="premium2Label">50€ /an</span>
+                                        <span style="font-size: 0.9em">(<b> 2 mois offerts</b> par rapport au tarif mensuel)</span>
+                                    </label>
+                                </div>
+                                <br/>
+                                <p> 
+                                    <span style="font-size: 0.9em">Rq : Aucun engagement, les formules peuvent être modifiées à tout instant. Toute période commencée est due (paiement en début de période) Pour plus d'information, consulter nos conditions générales de ventes <a href="{{ path('ks_sales_conditions') }}">ici</a></span>
+                                </p>
+                            </li>
+                        </ul>                                
+                    </div>
+                </div>
+                <br/>
+                <div id="blocWatchPremium" style="">
+                    <p> 
+                        <span class="bleu" id="labelWatchPremium"></span> : Sélectionne un mode de paiement pour ta montre !
+                    </p>         
+                    <ul class="col-md-12">
+                        <li class="content">           
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadiosPremiumWatch" value="1" id="premiumWatchChoice1" checked ><span class="bleu" id="premiumWatchChoice1Label"></span>
+                                    <span style="font-size: 0.9em">(en 1 fois)</span>
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadiosPremiumWatch" value="2" id="premiumWatchChoice2"><span class="bleu" id="premiumWatchChoice2Label"></span>
+                                    <span style="font-size: 0.9em">(en 2 fois <b>sans frais</b>)</span>
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadiosPremiumWatch" value="3" id="premiumWatchChoice3"><span class="bleu" id="premiumWatchChoice3Label"></span>
+                                    <span style="font-size: 0.9em">(en 3 fois <b>sans frais</b></span>
+                                </label>
+                            </div>
+                            <br/>
+                            {#<p> 
+                                <span style="font-size: 0.9em">* : pour une estimation des mensualites, clique <a id="calculatorPremium" href="https://secure.kwixo.com/credit/calculator.htm?merchantId=97718" target="_blank">ici</a></span>
+                            </p>#}
+                            <br/>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 pack">
+                        <center>
+                            <span style="font-size: 1.2em!important" class="label label-gold">15% offert sur l'achat d'une montre pour 1 an d'abonnement !</span>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <a id="paymentPremiumBtn" type="button" class="btn btn-success">Accès au paiement</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>

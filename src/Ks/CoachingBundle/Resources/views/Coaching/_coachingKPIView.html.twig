@@ -1,0 +1,767 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and user is defined and user is not null and not app.user.isAllowedPackElite %}
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                radioClass: 'iradio_flat-blue'
+            });
+        {% endif %}
+                
+        var gaugeOptions = {
+
+            chart: {
+                type: 'solidgauge'
+            },
+
+            title: null,
+
+            pane: {
+                center: ['50%', '85%'],
+                size: '140%',
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    //backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                    innerRadius: '60%',
+                    outerRadius: '100%',
+                    shape: 'arc'
+                }
+            },
+
+            tooltip: {
+                enabled: true
+            },
+
+            // the value axis
+            yAxis: {
+                /*stops: [
+                    [0.1, '#DF5353'], // red
+                    [0.5, '#DDDF0D'], // yellow
+                    [0.9, '#55BF3B'] // green
+                ],*/
+                stops: [
+                    [0.0, '#DF5353'], // red
+                    [0.3, '#DF5353'], // red
+                    [0.31, '#DDDF0D'], // yellow
+                    [0.66, '#DDDF0D'], // yellow
+                    [0.67, '#55BF3B'], // green
+                    [1, '#55BF3B'] // green
+                ],
+                lineWidth: 0,
+                minorTickInterval: null,
+                tickPixelInterval: 400,
+                tickWidth: 0,
+                title: {
+                    y: -70
+                },
+                labels: {
+                    y: 16
+                }
+            },
+
+            plotOptions: {
+                solidgauge: {
+                    dataLabels: {
+                        y: 5,
+                        borderWidth: 0,
+                        useHTML: true
+                    }
+                }
+            }
+        };
+
+        $('#progressGauge').highcharts(Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 100,
+                title: {
+                    useHTML: true,
+                    text: '<span class="bleu">{{ 'coaching.progress'|trans|upper }}</span>'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            series: [{
+                name: '{{ 'coaching.progress'|trans }}',
+                data: [{{ progress }}],
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
+                           '<span style="font-size:12px;color:silver"></span></div>'
+                },
+                animation: {
+                    duration: 2000
+                }
+            }]
+
+        }));
+
+        $('#attendanceGauge').highcharts(Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 100,
+                title: {
+                    useHTML: true,
+                    text: '<span class="bleu">{{ 'coaching.attendance'|trans|upper }}</span>'
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            tooltip: {
+                enabled: false
+            },
+            exporting: {
+                enabled: false
+            },
+            series: [{
+                name: '{{ 'coaching.attendance'|trans }}',
+                data: [{{ attendance }}],
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
+                           '<span style="font-size:12px;color:silver"></span></div>'
+                },
+                tooltip: {
+                    valueSuffix: ' %'
+                }
+            }]
+
+        }));
+
+        $('#efficiencyGauge').highcharts(Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 100,
+                title: {
+                    useHTML: true,
+                    text: '<span class="bleu">{{ 'coaching.efficiency'|trans|upper }}</span>'
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            exporting: {
+                enabled: false
+            },
+            tooltip: {
+                formatter: function() {
+                    return '{{ 'coaching.efficiency-tooltip1'|trans }}<br/>{{ 'coaching.efficiency-tooltip2'|trans }}';
+                }
+            },
+            series: [{
+                name: '{{ 'coaching.efficiency'|trans }}',
+                data: [{{ efficiency }}],
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
+                           '<span style="font-size:12px;color:silver"></span></div>'
+                },
+                tooltip: {
+                    valueSuffix: ' %'
+                }
+            }]
+
+        }));
+        
+        $('#achievementGauge').highcharts(Highcharts.merge(gaugeOptions, {
+            yAxis: {
+                min: 0,
+                max: 10,
+                title: {
+                    useHTML: true,
+                    text: '<span class="bleu">{{ 'coaching.achievement'|trans|upper }}</span>'
+                }
+            },
+
+            credits: {
+                enabled: false
+            },
+
+            exporting: {
+                enabled: false
+            },
+            tooltip: {
+                formatter: function() {
+                    return '{{ 'coaching.achievement-tooltip1'|trans }}<br/>{{ 'coaching.achievement-tooltip2'|trans }}';
+                }
+            },
+            series: [{
+                name: '{{ 'coaching.achievement'|trans }}',
+                data: [{{ achievement }}],
+                dataLabels: {
+                    format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                        ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}/10</span><br/>' +
+                           '<span style="font-size:12px;color:silver"></span></div>'
+                },
+                tooltip: {
+                    valueSuffix: ' /10'
+                }
+            }]
+
+        }));
+        
+        //Envoi mail au membre sélectionné
+        $("#bSendMail").click(function() {
+            if( !$("#bSendMail").hasClass("disabled") ) {
+                $("#bSendMail").addClass("disabled");
+                var memberId = $("#ksClub_ClubHasUsersType_user").val();
+                if (memberId != null && memberId.length == 1) document.location.href=Routing.generate('ksMessage_new', { 'userId' : memberId });
+                else {
+                    showInformation('{{ 'coaching.choose-at-least-1-member'|trans }}');
+                    $("#bSendMail").removeClass("disabled");
+                }
+
+             }
+        });
+        
+        //Envoi d'un mail au coach
+        $("#bSendMailToCoach").click(function() {
+            {% if manager is defined and manager is not null and manager[0] is defined and manager[0] is not null %}
+                if( !$("#bSendMailToCoach").hasClass("disabled") ) {
+                    $("#bSendMailToCoach").addClass("disabled");
+                    var managerId = {{ manager[0].user_id }};
+                    //console.log(managerId);
+                    document.location.href=Routing.generate('ksMessage_new', { 'userId' : managerId });
+                }
+            {% endif %}
+        });
+                
+        //Envoi un mail de notification automatique au membre sélectionné
+        $("#bSendUpdateByMail").click(function() {
+            if( !$("#bSendUpdateByMail").hasClass("disabled") ) {
+                $("#bSendUpdateByMail").addClass("disabled");
+                $("#loader").show();
+                if ($("#ksClub_ClubHasUsersType_user").val() == null) {
+                    showInformation('{{ 'coaching.choose-at-least-1-member'|trans }}');
+                    $("#bSendUpdateByMail").removeClass("disabled");
+                }
+                else {
+                    $.post(
+                        Routing.generate('ksClub_sendUpdateToParticipants', { "clubId" : '{{ clubId }}' }), 
+                        {
+                            'userIds' : $("#ksClub_ClubHasUsersType_user").val()
+                        },
+                        function(response) {
+                            if( response.response == 1 ) {
+                                showInformation('{{ 'coaching.email-send'|trans }}');
+                            } else {
+                                showInformation('{{ 'coaching.error'|trans }}');
+                            }
+
+                            $("#bSendUpdateByMail").removeClass("disabled");
+                            $("#loader").hide();
+                        }
+                    );
+                }
+             }
+        });
+    });
+    
+    function showCoachingSurveyModal() {
+        var coachingSurveyModal = $("#coachingSurveyModal");
+        var modalBody = coachingSurveyModal.find('.modal-body');
+        var cancelButton = coachingSurveyModal.find('a.cancel');
+
+        var closeModal = function() {
+            coachingSurveyModal.modal('hide');
+        }
+
+        coachingSurveyModal.on('shown', function() {
+            setTimeout(closeModal,3000);
+        });
+
+        coachingSurveyModal.modal('show');
+        coachingSurveyModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+            e.stopPropagation();
+        });
+    }
+    
+</script>
+
+<div class="modal fade" id="coachingSurveyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class='modal-header'>
+                <a class='close' data-dismiss='modal'>&times;</a>
+                <h3 id="context" class="sportif">Questionnaire coach</h3>
+            </div>
+            <div class='modal-body'>
+                {% if questionnaireForm is defined and questionnaireForm is not null %}
+                    <div class="panel-group" id="accordion">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> <span class="number">1</span> Informations complémentaires</a> </h4>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse in">
+                                <div class="panel-body">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Téléphone</label>
+                                                {{ form_widget(questionnaireForm.userDetail.phone, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Profession</label>
+                                                {{ form_widget(questionnaireForm.userDetail.occupation, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Impératifs familiaux ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.familyConstraint, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Contraintes professionnelles ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.occupationConstraint, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Personne à contacter en cas d'urgence</label>
+                                                {{ form_widget(questionnaireForm.userDetail.contactEmergency, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseTwo"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"> <span class="number">2</span> Santé </a> </h4>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Es-tu suivi médicalement</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.medicalFollow) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Si oui, penses tu être bien entouré médicalement ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.medicalFollowingOK) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Médecin du sport ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.sportDoctor) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Ostéo ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.osteo) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Kiné ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.kine) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Podo ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.podo) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Actuellement sous traitement :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.medicalMonitoring) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Allergies :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.allergies) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>As-tu fait un test d'effort récemment ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.effortTest) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Informations supplémentaires </label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.medicalMisc, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseThree"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                            </div>
+                        </div>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"> <span class="number">3</span> Matériel </a> </h4>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse">
+                                <div class="panel-body"> 
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Chaussures :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.shoes, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Sac :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.bags, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Cardio :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.HR, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Vélo :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.bikes, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>               
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Autres</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.equipmentMisc, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Licencié :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.license, { attr: {class : "", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                    </div>                  
+                                </div>
+                                <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseFour"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                            </div>
+                        </div><!--Fin panneau-->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"> <span class="number">4</span> Passé sportif </a> </h4>
+                            </div>
+                            <div id="collapseFour" class="panel-collapse collapse">
+                                <div class="panel-body"> 
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Sports pratiqués :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.mySports, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Niveau :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.sportLevel, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Palmarès :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.achievement, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Blessures :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.injuries, { attr: {class : "", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Si oui, soigner de quelles manières ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.injuriesTreat, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseFive"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                            </div>
+                        </div><!--Fin panneau-->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"> <span class="number">5</span> Présent </a> </h4>
+                            </div>
+                            <div id="collapseFive" class="panel-collapse collapse">
+                                <div class="panel-body"> 
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Nombre d'heures d'entraînement par semaine :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.workoutHours, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Entraînement croisé ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.crossWorkout, { attr: {class : "", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Si oui, quelles activités ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.crossWorkouts, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>De quelle manière est ton entraînement actuellement ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.workoutDesc, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Semaine type :</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.workoutWeek, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Points forts</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.strongPoints, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Point faibles ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.weakPoints, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Blessures récurrentes ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.regularInjuries, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseSix"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                            </div>
+                        </div><!--Fin panneau-->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix"> <span class="number">6</span> A propos du coaching </a> </h4>
+                            </div>
+                            <div id="collapseSix" class="panel-collapse collapse">
+                                <div class="panel-body"> 
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>As-tu un coach ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.gotCoach, { attr: {class : "", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Si non, en souhaites tu un ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.wantCoach, { attr: {class : "", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Si oui, pourquoi ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.whyCoach, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Qu'est ce qui pourraient t'empêcher de réaliser tes objectifs ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.goalsImpediment, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Parmi ceux-ci, peut on en supprimer ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.goalsImpedimentDrop, { attr: {class : "", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Si oui, comment ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.goalsImpedimentManage, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="controls">
+                                                <label>Si tu devais lister les priorités dans ta vie, à quel rang placerais tu tes objectifs sportifs ?</label>
+                                                <br/>
+                                                {{ form_widget(questionnaireForm.userDetail.goalsRank, { attr: {class : "form-control", disabled : true} } ) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!--fin panneau-->
+                    </div>
+                {% endif %}
+            </div>
+            <div class='modal-footer'>
+                <a href='#' class='cancel btn' data-dismiss='modal'>Fermer</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="details">
+        {#% if isManagerFromAClub == 0 and lastDay is defined and lastDay is not null and lastDay|date('Y-m-d') < "now"|date('Y-m-d') %}
+            <span class="label label-danger">TERMINE !</span>
+        {% endif %#}
+        {% if planType == 'user' or planType == 'shared' %}
+            <span class="label label-premium"> Plan PREMIUM {% if planType =='shared' %} (partagé, non modifiable){% endif %}</span>
+        {% elseif planType == 'coach' %}
+            <span class="label label-elite">ELITE</span>
+        {% endif %}
+        {% if planType is defined and planType is not null %}
+            <p>
+                <span class="bleu">
+                    <span class="glyphicon glyphicon-calendar"></span> 
+                    {{ 'coaching.training-scheduled'|trans }} : 
+                </span>
+                {{ totalSessionsScheduled }} {{ 'coaching.activities'|trans }}, {{ totalCoachingDuration }}{#{% if totalCoachingDistance !=0 %}, {{ totalCoachingDistance }}km{% endif %}{% if totalCoachingElevationGain !=0 %}, +{{ totalCoachingElevationGain }}m{% endif %}{% if totalCoachingElevationLost !=0 %},  -{{ totalCoachingElevationLost }}m{% endif %}#}
+            </p>
+        {% endif %}
+        {% if isManagerFromAClub == 0 or isManagerFromAClub > 0 and planType == 'coach' %}
+            <p>
+                <span class="bleu">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    {{ 'coaching.training-done'|trans }} : 
+                </span>
+                {{ totalActivitiesDone }} {{ 'coaching.activities'|trans }}, {{ totalActivitiesDuration }}{#, {{ totalSessionsDistance }}km, +{{ totalSessionsElevationGain }}m,  -{{ totalSessionsElevationLost }}m#}
+            </p>
+        {% endif %}
+    </div>
+    {% if isManagerFromAClub >0 and (planType == 'user' or planType == 'shared') or planType is null %}
+        {# si le user est un coach et qu'il affiche un plan premium on n'affiche pas les KPI #}
+    {% else %}
+        {% if planType == 'coach'%}
+            <br clear="all">
+            <br clear="all">
+            <div class="col-md-3" id="stepEliteMainKPI">
+                <center>
+                    {% include 'KsUserBundle:User:_userImage_league.html.twig' with {
+                        'withBubble' : true,
+                        'user_id' : member.id, 
+                        'user_username' : member.username, 
+                        'user_imageName': member.imageName, 
+                        'user_league_category' : member.leagueCategoryLabel,
+                        'user_league_stars' : member.leagueLevelStarNumber
+                    } %}
+                    <div class="bleu desktop"> {{ member.firstName }} {{ member.lastName }} </div>
+                    <div class="bleu desktop"> ({{ member.username }})</div>
+                    {% if member.HRRest is not null %} <span style="color:green"><i class="glyphicon glyphicon-heart"></i> {{ 'coaching.HRRest'|trans }} : {{ member.HRRest }} </span>&nbsp; {% endif %}
+                    {% if member.HRMax is not null %} <span style="color:red"><i class="glyphicon glyphicon-heart"></i> {{ 'coaching.HRMax'|trans }} : {{ member.HRMax }} </span>&nbsp; {% endif %}
+                    {% if member.VMASpeed is not null %} <div class="add-on"><i class="glyphicon glyphicon-dashboard"></i> VMA : {{ member.VMASpeed }} </div> {% endif %}
+                    <center class="desktop">
+                        {% if isManager == 1 %}
+                            <a onclick="showCoachingSurveyModal();" class="btn btn-xs btn-success" rel="tooltip" title="{{ "coaching.view-survey"|trans }}"><span class="glyphicon glyphicon-info-sign"></span></a>
+                            <a id="bSendUpdateByMail" rel="tooltip" title="{{ "coaching.send-update"|trans }}" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-eye-open"></span></a>
+                            <a id="bSendMail" rel="tooltip" title="{{ "coaching.send-mail"|trans }}" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-envelope"></span></a>
+                        {% else %}
+                            <a id="bSendMailToCoach" rel="tooltip" title="{{ "coaching.send-mail-to-coach"|trans }}" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-envelope"></span></a>
+                        {% endif %}
+                    </center>
+                    {% if competition is defined and competition is not null and competition[0] is defined and competition[0] is not null %}
+                        <br/>
+                        <div class="bleu">{{ 'coaching.next-competition'|trans }} :</div>
+                        <span class="bleu"><a class="btn btn-xs btn-gold" rel="tooltip" title="{{ 'coaching.infos-competition'|trans }}" target ="_blank" href="{{ path('ksWikisport_show', { 'id' : competition[0].competition }) }}"> {{ competition[0].name }}</a> ({{ competition[0].delay }} {{ 'coaching.days'|trans }})</span>
+                    {% endif %}
+                </center>
+            </div>
+        {% else %}
+            <div class="col-md-3 desktop">
+                <center>
+                    <div id="progressGauge" style="width: 260px; height: 170px; "></div>
+                    {{ 'coaching.sessions-ended'|trans }} : <b>{{ totalSessionsEnded }}</b> <br/> {{ 'coaching.sessions-scheduled'|trans }} : <b>{{ totalSessionsScheduled }}</b>
+                </center>
+            </div>
+        {% endif %}
+        <div class="col-md-3 desktop">
+            <center>
+                <div id="attendanceGauge" style="width: 260px; height: 170px; "></div>
+                {{ 'coaching.sessions-done'|trans }} : <b>{{ totalSessionsDone }}</b> <br/> {{ 'coaching.until-now'|trans }} : <b>{{ totalSessionsEnded }}</b>
+            </center>
+        </div>
+        <div class="col-md-3 desktop">
+            <center><div id="efficiencyGauge" style="width: 260px; height: 170px; "></div></center>
+        </div>
+        <div class="col-md-3 desktop">
+            <center><div id="achievementGauge" style="width: 260px; height: 170px; "></div></center>
+        </div>
+    {% endif %}
+</div>

@@ -1,0 +1,218 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#signs_{{ activityId }}").raty(
+            { 'path'        : '{{ asset('V2/images') }}',
+              'half'        : true,
+              'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+              'score'       : '{{ signsNote }}',
+              'readOnly'    : true,
+            }
+        );
+        $("#food_{{ activityId }}").raty(
+            { 'path'        : '{{ asset('V2/images') }}',
+              'half'        : true,
+              'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+              'score'       : '{{ foodNote }}',
+              'readOnly'    : true,
+            }
+        );
+        $("#promoters_{{ activityId }}").raty(
+            { 'path'        : '{{ asset('V2/images') }}',
+              'half'        : true,
+              'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+              'score'       : '{{ promotersNote }}',
+              'readOnly'    : true,
+            }
+        );
+        $("#trace_{{ activityId }}").raty(
+            { 'path'        : '{{ asset('V2/images') }}',
+              'half'        : true,
+              'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+              'score'       : '{{ traceNote }}',
+              'readOnly'    : true,
+            }
+        );
+        $("#awards_{{ activityId }}").raty(
+            { 'path'        : '{{ asset('V2/images') }}',
+              'half'        : true,
+              'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+              'score'       : '{{ awardsNote }}',
+              'readOnly'    : true,
+            }
+        );
+
+        averageNotes[{{ activityId }}] = new Array("signs", "food", "promoters", "trace", "awards");
+        averageNotes[{{ activityId }}]['signs'] = new Array();
+        averageNotes[{{ activityId }}]['signs']['average'] = {{ signsNote }};
+        averageNotes[{{ activityId }}]['food'] = new Array();
+        averageNotes[{{ activityId }}]['food']['average'] = {{ foodNote }};
+        averageNotes[{{ activityId }}]['promoters'] = new Array();
+        averageNotes[{{ activityId }}]['promoters']['average'] = {{ promotersNote }};
+        averageNotes[{{ activityId }}]['trace'] = new Array();
+        averageNotes[{{ activityId }}]['trace']['average'] = {{ traceNote }};
+        averageNotes[{{ activityId }}]['awards'] = new Array();
+        averageNotes[{{ activityId }}]['awards']['average'] = {{ awardsNote }};
+
+        $("#myNotesBtn_{{ activityId }}").click(function() {
+            if (!$("#myNotesBtn_{{ activityId}}").hasClass('disabled')) {
+                $("#myNotesBtn_{{ activityId}}").addClass('disabled');
+                $("#loader_{{ activityId }}").show();
+
+                //Sauvegarde des précédentes moyennes pour corriger bug affichage
+                averageNotes[{{ activityId }}]['signs']['average']     = $("#signs_{{ activityId }}").raty('score');
+                averageNotes[{{ activityId }}]['food']['average']      = $("#food_{{ activityId }}").raty('score');
+                averageNotes[{{ activityId }}]['promoters']['average'] = $("#promoters_{{ activityId }}").raty('score');
+                averageNotes[{{ activityId }}]['trace']['average']     = $("#trace_{{ activityId }}").raty('score');
+                averageNotes[{{ activityId }}]['awards']['average']    = $("#awards_{{ activityId }}").raty('score');
+
+                $.get(
+                    Routing.generate('ksActivity_getMyNoteOnActivity', { 'activityId' : {{ activityId }} }),
+                    function(response) {
+                        if (response.code == 1) {
+                            $("#signs_{{ activityId }}").raty('readOnly', false);
+                            $("#signs_{{ activityId }}").raty('score', response.notes['signs']['myVal']);
+                            $("#food_{{ activityId }}").raty('readOnly', false);
+                            $("#food_{{ activityId }}").raty('score', response.notes['food']['myVal']);
+                            $("#promoters_{{ activityId }}").raty('readOnly', false);
+                            $("#promoters_{{ activityId }}").raty('score', response.notes['promoters']['myVal']);
+                            $("#trace_{{ activityId }}").raty('readOnly', false);
+                            $("#trace_{{ activityId }}").raty('score', response.notes['trace']['myVal']);
+                            $("#awards_{{ activityId }}").raty('readOnly', false);
+                            $("#awards_{{ activityId }}").raty('score', response.notes['awards']['myVal']);
+                        }
+                        else {
+                            $("#signs_{{ activityId }}").raty('readOnly', false);
+                            $("#signs_{{ activityId }}").raty('score', 0);
+                            $("#food_{{ activityId }}").raty('readOnly', false);
+                            $("#food_{{ activityId }}").raty('score', 0);
+                            $("#promoters_{{ activityId }}").raty('readOnly', false);
+                            $("#promoters_{{ activityId }}").raty('score', 0);
+                            $("#trace_{{ activityId }}").raty('readOnly', false);
+                            $("#trace_{{ activityId }}").raty('score', 0);
+                            $("#awards_{{ activityId }}").raty('readOnly', false);
+                            $("#awards_{{ activityId }}").raty('score', 0);
+                        }
+                        $("#cancelBtn_{{ activityId}}").show();
+                        $("#cancelBtn_{{ activityId}}").removeClass("disabled");
+                        $("#publishBtn_{{ activityId }}").show();
+                        $("#myNotesBtn_{{ activityId }}").hide();
+                        $("#loader_{{ activityId }}").hide();
+                    }
+                );
+            }
+        });
+
+        $("#publishBtn_{{ activityId }}").click(function() {
+            if (!$("#publishBtn_{{ activityId}}").hasClass('disabled')) {
+                $("#publishBtn_{{ activityId}}").addClass('disabled');
+                $("#loader_{{ activityId }}").show();
+                $.post(
+                    Routing.generate('ksActivity_noteOnActivity', { 'activityId' : {{ activityId }} }),
+                    {
+                        "signs"     : $("#signs_{{ activityId }}").raty('score'),
+                        "food"      : $("#food_{{ activityId }}").raty('score'),
+                        "promoters" : $("#promoters_{{ activityId }}").raty('score'),
+                        "trace"     : $("#trace_{{ activityId }}").raty('score'),
+                        "awards"    : $("#awards_{{ activityId }}").raty('score')
+                    },
+                    function(response) {
+                        if (response.code == -1) showInformation(response.error);
+                        else {
+                            showInformation("{{ 'wikisport.notes-saved-successfully'|trans }}");
+                        }
+                        $("#signs_{{ activityId }}").raty('score', response.notes['signs']['average']);
+                        $("#signs_{{ activityId }}").raty('readOnly', true);
+                        $("#food_{{ activityId }}").raty('score', response.notes['food']['average']);
+                        $("#food_{{ activityId }}").raty('readOnly', true);
+                        $("#promoters_{{ activityId }}").raty('score', response.notes['promoters']['average']);
+                        $("#promoters_{{ activityId }}").raty('readOnly', true);
+                        $("#trace_{{ activityId }}").raty('score', response.notes['trace']['average']);
+                        $("#trace_{{ activityId }}").raty('readOnly', true);
+                        $("#awards_{{ activityId }}").raty('score', response.notes['awards']['average']);
+                        $("#awards_{{ activityId }}").raty('readOnly', true);
+
+                        $("#publishBtn_{{ activityId}}").removeClass('disabled');
+                        $("#publishBtn_{{ activityId }}").hide();
+                        $("#myNotesBtn_{{ activityId }}").show();
+                        $("#myNotesBtn_{{ activityId}}").removeClass('disabled');
+                        $("#cancelBtn_{{ activityId}}").hide();
+                        $("#loader_{{ activityId }}").hide();
+                    }
+                )
+            }
+        });
+
+        $("#cancelBtn_{{ activityId}}").click(function() {
+            if (!$("#cancelBtn_{{ activityId}}").hasClass('disabled')) {
+                $("#cancelBtn_{{ activityId}}").addClass('disabled');
+                $("#signs_{{ activityId }}").raty('score', averageNotes[{{ activityId }}]['signs']['average']);
+                $("#signs_{{ activityId }}").raty('readOnly', true);
+                $("#food_{{ activityId }}").raty('score', averageNotes[{{ activityId }}]['food']['average']);
+                $("#food_{{ activityId }}").raty('readOnly', true);
+                $("#promoters_{{ activityId }}").raty('score', averageNotes[{{ activityId }}]['promoters']['average']);
+                $("#promoters_{{ activityId }}").raty('readOnly', true);
+                $("#trace_{{ activityId }}").raty('score', averageNotes[{{ activityId }}]['trace']['average']);
+                $("#trace_{{ activityId }}").raty('readOnly', true);
+                $("#awards_{{ activityId }}").raty('score', averageNotes[{{ activityId }}]['awards']['average']);
+                $("#awards_{{ activityId }}").raty('readOnly', true);
+                $("#publishBtn_{{ activityId }}").hide();
+                $("#myNotesBtn_{{ activityId }}").show();
+                $("#myNotesBtn_{{ activityId}}").removeClass('disabled');
+                $("#cancelBtn_{{ activityId}}").hide();
+            }
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-6" rel="tooltip" title="{{ 'article.signs-help'|trans }}">
+        {{ 'titles.signs'|trans }} :
+    </div>
+    <div class="col-md-6">
+        <div id="signs_{{ activityId }}"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6" rel="tooltip" title="{{ 'article.food-help'|trans }}">
+        {{ 'titles.food'|trans }} :
+    </div>
+    <div class="col-md-6">
+        <div id="food_{{ activityId }}"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6" rel="tooltip" title="{{ 'article.promoters-help'|trans }}">
+        {{ 'titles.promoters'|trans }} :
+    </div>
+    <div class="col-md-6">
+        <div id="promoters_{{ activityId }}"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6" rel="tooltip" title="{{ 'article.trace-help'|trans }}">
+        {{ 'titles.trace'|trans }} :
+    </div>
+    <div class="col-md-6">
+        <div id="trace_{{ activityId }}"></div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6" rel="tooltip" title="{{ 'article.awards-help'|trans }}">
+        {{ 'titles.awards'|trans }} :
+    </div>
+    <div class="col-md-6">
+        <div id="awards_{{ activityId }}"></div>
+    </div>
+</div>
+<center>
+    <img id="loader_{{ activityId }}" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none">
+    <a id="myNotesBtn_{{ activityId}}" class="btn" rel="tooltip" title="Je veux noter cette course !">
+        Mes notes <i class="glyphicon glyphicon-thumbs-up"></i>
+    </a>
+    <a style="display:none" id="publishBtn_{{ activityId}}" class="btn" rel=tooltip" title="Enregistrer mon vote">
+        Enregister <i class="glyphicon glyphicon-save"></i>
+    </a>
+    <a style="display:none" id="cancelBtn_{{ activityId}}" class="btn" rel=tooltip" title="Annuler">
+        Annuler <i class="glyphicon glyphicon-backward"></i>
+    </a>
+</center>

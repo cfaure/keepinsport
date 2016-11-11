@@ -1,0 +1,7 @@
+<a class="sportsmanSearchBtn" style="cursor: pointer">
+    <span class="icon-group"></span> {{ "menu.look-for-partners"|trans }}
+</a>
+
+{% if is_granted("ROLE_USER") %}
+    {% include 'KsActivityBundle:SportsmenSearch:_sportsmenSearchForm.html.twig' with {'form': sportsmenSearchForm} %}
+{% endif %}

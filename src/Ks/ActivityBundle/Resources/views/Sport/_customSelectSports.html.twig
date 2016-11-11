@@ -1,0 +1,19 @@
+<select {% if context is defined and context is not null%}id="customSelectSports{{ context }}"{% else %}id="customSelectSports"{% endif %} class="customSelectSports" tabindex="-1" {% if multiple is defined and multiple == "1" %}multiple="multiple"{% endif %}>
+    {% if multiple is defined and multiple == "1" %}
+        <option value="-1">--------{{"dashboard.all_sports"|trans }}--------</option>
+    {% else %}
+        <option></option>
+    {% endif %}
+    
+	{% for key, sportsList in sportsGroups %}
+        {% set optGroupLabel = "-- " ~ "sports.other-sports"|trans ~ " --" %}
+        {% if key == 0 %}
+            {% set optGroupLabel = "-- " ~ "sports.my-sports"|trans ~ " --" %}
+        {% endif %}
+       <optgroup label="{{ optGroupLabel }}">
+           {% for sport in sportsList %}
+                <option value="{{ sport.id }}" codeSport="{{ sport.code }}">{{ ("sports." ~ sport.code)|trans }}</option>
+           {% endfor %}
+       </optgroup>
+    {% endfor %}
+</select>

@@ -1,0 +1,53 @@
+<div id="newShop_modal" class='modal hide fade'>
+    <div class='modal-header'>
+        <a class='close' data-dismiss='modal'>&times;</a>
+        <h3 class="shops">{{ 'shops.create-update-shop'|trans }} </h3>
+    </div>
+        
+    <div class="jqueryFileUpload" style="margin-left:10px">
+        {% include 'KsShopBundle:Shop:avatar.html.twig' with {'uploadDirName' : 'shops'} %}
+    </div>
+        
+    <div class='modal-body'>
+        <div class="errorsBloc"></div>
+        <div class="messagesBloc"></div>
+        <form  method="post" {{ form_enctype(form) }}>
+            {{ form_label(form.name, "shops.name"|trans) }}
+            {{ form_widget(form.name, { attr: { class:"name input-block-level"} }) }}
+            
+            {{ form_label(form.address, "shops.address"|trans) }}
+            {{ form_widget(form.address, { attr: { class:"address input-block-level"} }) }}
+
+            {{ form_label(form.town, "shops.town"|trans) }}
+            {{ form_widget(form.town, { attr: { class:"town input-block-level"} }) }}
+            
+            {{ form_label(form.email, "shops.email"|trans) }}
+            {{ form_widget(form.email, { attr: { class:"email input-block-level"} }) }}
+
+            {{ form_label(form.telNumber, "shops.telNumber"|trans) }}
+            {{ form_widget(form.telNumber, { attr: { class:"telNumber input-block-level"} }) }}
+            
+            <div id="conditions">
+                {{ form_label(form.conditions, "shops.conditions"|trans) }}
+                {{ form_widget(form.conditions, { attr: { class:"conditions input-block-level"} }) }}    
+            </div>
+                
+            {{ "shops.web-shop"|trans }} {{ form_widget(form.webShop, { attr: { class:"webShop input-block-level", id:"webShop"} }) }}
+            </br>
+            {{ "titles.sports"|trans }} {{ form_widget(sportChoiceForm.sport) }}
+            {# 'shops.misc'|trans }} {{ form_widget(form.divers, { attr: { class:"divers input-block-level"} }) #}
+            
+            <INPUT type="hidden" value="test" name="selectedSports" id="selectedSports">
+            
+            {{ form_rest(form) }}  
+        </form>
+    </div>
+        
+    <input name="shopId" type="hidden" id="shopId" value="" />
+        
+    <div class='modal-footer'>
+        <img id="changeAvatarLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none">
+        <a href='#' class='cancel btn' data-dismiss='modal'>{{ 'actions.cancel'|trans }}</a>
+        <a id="saveButton" href='#' class='create btn btn-shops'>{{ 'actions.save'|trans }}</a>
+    </div>
+</div>

@@ -1,0 +1,50 @@
+{% extends "KsEventBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block ks_event_content %}
+
+    <div>
+        {{ 'event.listEvents'|trans }}
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>{{ 'event.name'|trans }}</th>
+                    <th>{{ 'event.author'|trans }}</th>
+                    <th>{{ 'event.content'|trans }}</th>
+                    <th>{{ 'event.creationDate'|trans }}</th>
+                    <th>{{ 'event.lastModificationDate'|trans }}</th>
+                    <th>{{ 'event.actions'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for event in events %}
+                <tr>
+                    <td>{{ event.name }}</td>
+                    <td>{{ event.user }}</td>
+                    <td>{{ event.content }}</td>
+                    <td>{{ event.creationDate|date('d/m/Y H:i:s') }}</td>
+                    <td>{{ event.lastModificationDate|date('d/m/Y H:i:s') }}</td>
+                    <td>
+                        <ul>
+                            <li>
+                                <a href="{{ path('ksevent_voirEvent', { 'idEvent': event.id }) }}">{{ 'event.show'|trans }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('ksevent_editerEvent', { 'idEvent': event.id }) }}">{{ 'event.edit'|trans }}</a>
+                            </li>
+                            <li>
+                                <a href="{{ path('ksevent_supprimerEvent', { 'idEvent': event.id }) }}">{{ 'event.delete'|trans }}</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <a href="{{ path('ksevent_ajouterEvent') }}">{{ 'event.add'|trans }}</a>
+    </div>
+
+{% endblock %}

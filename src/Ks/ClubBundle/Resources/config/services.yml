@@ -1,0 +1,10 @@
+services:
+    ks_club.twig.extension:
+        class: Ks\ClubBundle\Twig\Extensions\KsClubExtension
+        tags:
+            - { name: twig.extension }
+            
+    namer.club_image:
+        class: Ks\ClubBundle\Namer\Namer
+        tags:
+            - { name: namer }

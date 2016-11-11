@@ -1,0 +1,122 @@
+{% set abstractActivity = activity %}
+<div class="row-fluid">
+    <div id="avatarBloc-{{ activity.id }}" class="span1">
+        {% include 'KsActivityBundle:Activity:_activity_image.html.twig' with {'activity': activity } %}
+    </div>
+    <div id="activityBloc-{{ activity.id }}" class="span11">
+        <div class="activityBloc">
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and ( mail is not defined or ( mail is defined and not mail ) )%}
+                {% include 'KsActivityBundle:Activity:_actionsOnActivityFloatRight.html.twig' with {'activity': activity } %}
+            {% endif %}
+                
+            {% if abstractActivity.event is null %}
+                {% if activity.user_id %}
+                    {% if activity.user_id == app.user.id %}
+                        <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">Tu</a> as
+                    {% else %} 
+                        <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ activity.username }}</a> a 
+                    {% endif %}
+                {% else %}
+                    {% if activity.club_id is not null %}
+                        <a href="{{ path('ksClub_public_profile', { 'clubId' : activity.club_id }) }}">{{ activity.club_name }}</a> a
+                    {% else %}  
+                         Quelqu'un a
+                    {% endif %}
+                {% endif %}
+
+                {% if abstractActivity.connectedActivity_id is not null %}
+                    {% set activityType = abstractActivity.connectedActivity_type %}
+                    {% if activityType == 'article' %}
+                        {% set activityTypeWithPrefixe = 'articleWithPrefixe'|trans %}
+                    {% elseif activityType == 'status' %}
+                        {% set activityTypeWithPrefixe = 'statusWithPrefixe'|trans %}
+                    {% elseif activityType == 'session_endurance_under_water' %} 
+                        {% set activityTypeWithPrefixe = 'sessionEnduranceUnderWaterWithPrefixe'|trans %}
+                    {% elseif activityType == 'session_endurance_on_earth' %}
+                        {% set activityTypeWithPrefixe = 'sessionEnduranceOnEarthWithPrefixe'|trans %}
+                    {% elseif activityType == 'session' %}
+                        {% set activityTypeWithPrefixe = 'sessionWithPrefixe'|trans %}
+                    {% elseif activityType == 'session_team_sport' %}
+                        {% set activityTypeWithPrefixe = "la session collective" %}
+                    {% else %}
+                        {% set activityTypeWithPrefixe = activityType %}
+                    {% endif %}
+
+
+                    {% if abstractActivity.notificationType_name == "share" %}
+                        {# cas particulier pour l'article #}
+                        {% if activityType == 'article' %} 
+                            {{ 'activity.sharedThat'|trans({'%type%' : activityTypeWithPrefixe }) ~ " " }}
+                            <a href="{{ path('ksArticle_show', { 'articleId' : abstractActivity.connectedActivity_id }) }}">
+                                <b>{{ abstractActivity.connectedActivity_label}}</b>
+                                <i class="icon-chevron-right"></i>
+                            </a>
+
+                        {% else %}
+                            {{ 'activity.sharedThat'|trans({'%type%' : activityTypeWithPrefixe }) ~ " " }}
+                            de <a href="{{ path('ks_user_public_profile', { 'username' : abstractActivity.username }) }}">{{ abstractActivity.connectedActivity_username }}</a>
+                        {% endif %}
+                    {% elseif abstractActivity.notificationType_name == "edit" and activityType == "article" %}
+                        collaboré à {{ activityTypeWithPrefixe ~ " " }} 
+                        <a href="{{ path('ksArticle_show', { 'articleId' : abstractActivity.connectedActivity_id }) }}">
+                            <b>{{ abstractActivity.connectedActivity_label}}</b>
+                            <i class="icon-chevron-right"></i>
+                        </a>
+                    {% endif %}
+
+                    <br/>
+                    <p>{{ abstractActivity.description|nl2br }}</p>
+
+                    <br clear="all"/>
+                    <br />
+
+                    {% include 'KsActivityBundle:Activity:_activityToBeShared.html.twig' %}
+                {% elseif abstractActivity.teamComposition is not null %}
+                   partagé une composition d'équipe.
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td colspan="2">Sportif</td>
+                            </tr>
+                       </thead>
+                       <tbody>
+                           {% for teamCompositionHasUser in abstractActivity.teamComposition.users %}
+                               <tr>
+                                   <td>
+                                    {% if teamCompositionHasUser.user.userDetail is defined and teamCompositionHasUser.user.userDetail != null %}
+                                        {% set user_imageName = teamCompositionHasUser.user.userDetail.imageName %}
+                                    {% else %}
+                                        {% set user_imageName = null %}
+                                    {% endif %}
+                                    {% include 'KsUserBundle:User:_userImage.html.twig' with {' user_imageName' :  user_imageName }%}
+                                   </td>
+                                   <td>{{ teamCompositionHasUser.user.username }}</td>
+                               </tr>   
+                           {% endfor %}
+                       </tbody>
+                   </table>
+                
+            {% elseif abstractActivity.event is not null %}
+                 {% if activity.user_id == app.user.id %}
+                    <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">Tu</a> participes 
+                {% else %} 
+                    <a href="{{ path('ks_user_public_profile', { 'username' : activity.username }) }}">{{ activity.username }}</a> participe  
+                {% endif %}
+
+                à l'événement <a href="{{ path('ksEvent_show', { 'id' : abstractActivity.event.id }) }}">{{ event.name }}</a> 
+                {% if event.club is not null %}
+                    ({{ event.club.name }})
+                {% endif %}
+                , Date : {{ event.startDate|date("d/m/Y H:i") }} - {{ event.endDate|date("d/m/Y H:i") }}
+                        
+                   
+            {% endif %}
+
+            <br clear="all"/>
+
+            {% include 'KsActivityBundle:Comment:_commentsBloc.html.twig' %}
+        </div>
+    </div>
+</div>
+<br clear="all" />

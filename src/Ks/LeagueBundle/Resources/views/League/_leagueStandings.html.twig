@@ -1,0 +1,146 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+    
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+   
+{% block title %}
+	{{ parent() }} - {{ 'league.label'|trans }}
+{% endblock %}
+    
+{% block activity_content %}
+
+    <div class="content_middle">
+        {#ce que j'obtient avec mes données#}
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{{ 'user.rankingOfMyCommunity'|trans }}</th>
+                    <th>Avatar</th>
+                    <th>{{ 'user.username'|trans }}</th>
+                    <th>{{ 'user.points'|trans }}</th>
+                    <th>{{ 'league.leagueLevel'|trans }}</th>
+                    <th>{{ 'users.last_login'|trans }}</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set rank = 0 %}
+                {% for leagueCategory in leagueCategories %}
+                    {% if users[leagueCategory.id] is defined and users[leagueCategory.id] is not null %}
+                        
+                        {% for key, userResult in users[leagueCategory.id] %}
+                            {% set rank = rank + 1 %}
+                            {% set user = userResult[0] %}
+                            {% set userTotalPoints = userResult['totalPoints'] %}
+                            <tr class="{{ leagueCategory.label|lower }}">
+                                <td>{{ rank }}</td>
+                                <td class="avatar_width">
+                                    <a rel="tooltip" title="{{ user.username }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                                        {% if user.userDetail is defined and user.userDetail != null %}
+                                            {% set user_imageName = user.userDetail.imageName %}
+                                        {% else %}
+                                            {% set user_imageName = null %}
+                                        {% endif %}
+                                        {% include 'KsUserBundle:User:_userImage.html.twig' with {' user_imageName' :  user_imageName }%}
+                                    </a>
+                                </td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.myPoints|total_points }}</td>
+                                {#<td>{{ userTotalPoints }}</td>#}
+                                <td>
+                                    {% if user.leagueLevel.starNumber > 0 %} 
+                                        {% for i in range(1, user.leagueLevel.starNumber) %} 
+                                            <img src="{{ asset('bundles/ksactivity/images/star.png') }}" />
+                                        {% endfor %}
+                                    {#{% elseif  leagueCategory.label|lower != "other" %} 
+                                        Pas d'étoiles#}
+                                    {% endif %}
+                                </td>
+                                <td>{{ user.lastLogin|date('d/m/Y H:i:s') }}</td>
+                                <td>
+                                    <a class="btn btn-small btn-info" title="{{ user.username }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                                        Profil public
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                     {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+         
+       {#le rendu que ça aura à peut près
+       <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>{{ 'user.rankingOfMyCommunity'|trans }}</th>
+                    <th>{{ 'user.pseudo'|trans }}</th>
+                    <th>{{ 'user.points'|trans }}</th>
+                    <th>{{ 'league.leagueLevel'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set rank = 0 %}
+            
+                {% for leagueCategory in range(3, 1) %}
+                    
+                    {% if leagueCategory == 3 %} 
+                        {% set bgClass = "gold" %}
+                    {% elseif leagueCategory == 2 %} 
+                        {% set bgClass = "silver" %}
+                    {% elseif leagueCategory == 1 %} 
+                        {% set bgClass = "bronze" %}
+                    {% endif %}
+                    
+                    {% set star = 4 %}
+                    {% for j in range(4, 1) %}
+                        {% set rank = rank + 1 %}
+                        {% set star = star - 1 %}
+                        <tr class="{{ bgClass }}">
+                            <td>{{ rank }}</td>
+                            <td>aa</td>
+                            <td>{{ leagueCategory * j * 100 }}</td>
+                            <td>
+                                {% if star > 0 %} 
+                                    {% for k in range(1, star) %} 
+                                        <img src="{{ asset('bundles/ksactivity/images/star.png') }}" />
+                                    {% endfor %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                {% set rank = rank + 1 %}
+                <tr class="other">
+                    <td>{{ rank }}</td>
+                    <td>aa</td>
+                    <td>0</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>#}
+    </div>
+    <style>
+        .table td{
+            border : 1px solid black;
+        }
+        
+        .table tbody tr.gold td          { background-color: #e8b419; }
+        .table tbody tr.gold:hover td    { background-color: #d3a10c; }
+        .table tbody tr.silver td        { background-color: #dddcd9; }
+        .table tbody tr.silver:hover td  { background-color: #c7c6c5; }
+        .table tbody tr.bronze td        { background-color: #d16909; }
+        .table tbody tr.bronze:hover td  { background-color: #ba5e09; }
+        /*.table tbody tr.other td         { background-color: #844306; }
+        .table tbody tr.other:hover td   { background-color: #6b3503; }*/
+    </style>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            
+        });
+
+    </script>
+{% endblock %}

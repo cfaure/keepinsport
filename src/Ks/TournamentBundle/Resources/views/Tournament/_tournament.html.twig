@@ -1,0 +1,22 @@
+<div class="tournament tournament{{ tournament.rounds|length + 1 }}">
+{% for numRound, round in tournament.rounds %}
+    <div class="round round{{ round.num }}" data-id="{{ round.id }}">
+        <div class="roundTitle">
+            {% include 'KsTournamentBundle:Round:_title.html.twig' with { 'roundType' : tournament.rounds|length - numRound } %}
+        </div>
+    {% for match in round.matches %}
+        <div class="match" data-id="{{ match.id }}">
+            {% include 'KsTournamentBundle:Match:_match.html.twig' with { 'match' : match } %}
+        </div>
+    {% endfor %}
+    </div>
+{% endfor %}
+    <div class="round round{{ tournament.rounds|length + 1 }} lastRound">
+        <div class="roundTitle">
+            {% include 'KsTournamentBundle:Round:_title.html.twig' with { 'roundType' : 0 } %}
+        </div>
+        <div class="match winner">
+            {% include 'KsTournamentBundle:Tournament:_podium.html.twig' with { 'tournament' : tournament } %}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+<form id="feedbackFooterForm" class="feedbackForm" action="{{ path('ksUser_postFeedback') }}"  method="post" {{ form_enctype(feedbackForm) }} novalidate="novalidate">
+    {{ form_widget(feedbackForm.description, { attr: {class:"form-control", placeholder: 'footer.remarks-suggestion'|trans , val:""} }) }}
+    {{ form_rest(feedbackForm) }}   
+    <div>
+        <button type="button" id="bPostFeedback" class="bPostFeedback btn btn-success btn-sm" onclick="postFeedback()"><span class="glyphicon glyphicon-envelope"></span> {{ 'actions.send'|trans }}</button>
+    </div>
+</form>
+
+<script type="text/javascript">    
+    function postFeedback(elt) {
+        var feedbackForm = $('#feedbackFooterForm');
+        var textareaDescription = feedbackForm.find(".description");
+        var bPostFeedback = feedbackForm.find(".bPostFeedback");
+        var loader = feedbackForm.find('.loader');
+        
+        if( textareaDescription.val() != "" ) {
+            bPostFeedback.addClass("disabled");
+            loader.show();
+            $.post(feedbackForm.attr('action'), feedbackForm.serialize(), function(response) {
+                if( response.code == 1 ) {
+                    bPostFeedback.removeClass("disabled");
+                    textareaDescription.html("");
+                    textareaDescription.val("");
+                    showInformation("Merci, ton retour nous a été transmis !");
+                } else {
+
+                }
+                
+                loader.hide();
+            }).error(function(xqr, error) {
+                console.log("error " + error);
+            });
+        } else {
+            showInformation("Merci de remplir le champ de remarques et de suggestions !");
+        }  
+    };
+</script>

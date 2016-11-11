@@ -1,0 +1,211 @@
+{% block userReceivesMailNotificationsType_widget %}
+    {% spaceless %}
+        <div {{ block('widget_container_attributes') }} class="mailNotificationBloc">
+            {{ form_widget(form.type, { attr: { "class" : "notificationType" } }) }}
+            <div class="control-group">
+                
+                <label class="control-label"></label>
+                <div class="controls">
+                    <div class="notificationChoiceBloc input-prepend">
+                        
+                        <button class="btn yes" type="button" style="border-color:grey;">Oui</button><button class="btn no" type="button" style="border-color:grey;">Non</button>
+                    </div>
+                    {{ form_widget(form.wantsReceive, { attr: { "class": "receiveChoice", "style" : "" } }) }}
+                </div>
+            </div>
+            {#<div class="input-prepend input-append">
+                {{ form_widget(form.type, { attr: { "class" : "notificationType" } }) }}
+
+                <div class="notificationChoiceBloc input-prepend">
+                    <span class="name add-on" style="width:80%"></span>
+                    <button class="btn yes" type="button" style="width:9%;border-color:grey;">Oui</button><button class="btn no" type="button" style="width:9%;border-color:grey;">Non</button>
+                </div>
+                {{ form_widget(form.wantsReceive, { attr: { "class": "receiveChoice", "style" : "" } }) }}
+        
+            </div>#}
+            {{ form_rest(form) }}
+        </div>
+        <script type="text/javascript">
+            var containerIdStr              = '{{ block('widget_container_attributes') }}';
+            var containerId                 = containerIdStr.substring(4, containerIdStr.length -1);
+                
+            var $mailNotificationBloc       = $("div#"+ containerId +".mailNotificationBloc");
+            var $selectNotificationType     = $mailNotificationBloc.find( "select.notificationType" );
+            
+            var $receivesChoice             = $mailNotificationBloc.find('div.receiveChoice');
+            var $radioNo                    = $receivesChoice.find( "input[type=radio][id$=0]" );
+            var $radioYes                   = $receivesChoice.find( "input[type=radio][id$=1]" );
+            
+            var $notificationChoiceBloc     = $mailNotificationBloc.find( "div.notificationChoiceBloc" );
+            var $buttonYes                  = $notificationChoiceBloc.find( "button.yes" );
+            var $buttonNo                   = $notificationChoiceBloc.find( "button.no" );
+            
+            //On cache le label
+            $mailNotificationBloc.parent().find( "label:first" ) .hide();
+
+            //On cache le select
+            $selectNotificationType.hide();
+            var label = $selectNotificationType.find("option:selected").html();
+            switch( $selectNotificationType.find("option:selected").html() ) {
+                case 'friend_request':
+                    label = "Confirmation d'ami";
+                    break;
+                    
+                case 'ask_friend_request':
+                    label = "Demande d'ami";
+                    break;
+                    
+                case 'message':
+                    label = "Message reçu";
+                    break;
+                    
+                case 'comment':
+                    label = "Commentaire";
+                    break;
+                    
+                case 'vote':
+                    label = "Vote sur une publication";
+                    break;
+                    
+                case 'share':
+                    label = "Partage de publication";
+                    break;
+                    
+                case 'league':
+                    label = "Changement de ligue";
+                    break;
+                    
+                case 'validation_activity':
+                    label = "Validation d'activité";
+                    break;
+                    
+                case 'invitation_event':
+                    label = "Invitation à un événement";
+                    break;
+                    
+                case 'edit':
+                    label = "Mise à jour d'un article";
+                    break;
+                    
+                case 'trophy':
+                    label = "Déclenchement de trophés";
+                    break;
+                    
+                case 'mustBeValidated':
+                    label = "Activité à valider";
+                    break;
+                    
+                case 'mustBeValidatedEvent':
+                    label = "Evénement à valider";
+                    break;
+                    
+                case 'warning':
+                    label = "Signalement";
+                    break;
+                    
+                case 'teamComposition':
+                    label = "Composition d'équipe";
+                    break;
+                    
+                case 'eventParticipation':
+                    label = "Participation à un événement";
+                    break;
+                    
+                case 'club':
+                    label = "Acceptation dans un club";
+                    break;
+                
+                case 'eventCreation':
+                    label = "Création d'événement";
+                    break;
+                
+                case 'tournament':
+                    label = "Gestion de tournoi";
+                    break;
+                    
+                case 'user':
+                    label = "Modification de user";
+                    break;
+                    
+            }
+            $mailNotificationBloc.find( "label.control-label" ).html( label );
+            
+            //On cache les radio button
+            $receivesChoice.hide();
+            
+            if( $radioYes.is(':checked') ) {
+                $buttonYes.addClass( "active" );
+            } else {
+                if( $radioNo.is(':checked') ) {
+                    $buttonNo.addClass( "active" );
+                }
+            }
+            
+            $buttonYes.click(function() {
+                $( this ).parent().parent().find( "div.receiveChoice" ).find( "input[type=radio][id$=1]" ).attr( "checked", "checked" );
+                $( this ).parent().find( "button.no" ).removeClass( "active" );
+                $( this ).addClass( "active" );
+                
+            });
+            
+            $buttonNo.click(function() {
+                $( this ).parent().parent().find( "div.receiveChoice" ).find( "input[type=radio][id$=0]" ).attr( "checked", "checked" );
+                $( this ).parent().find( "button.yes" ).removeClass( "active" );
+                $( this ).addClass( "active" );
+            });
+        </script>
+    {% endspaceless %}
+{% endblock %}
+        
+{% block receivesWeeklyEmail_widget %}
+    {% spaceless %}
+        <div {{ block('widget_container_attributes') }} class="weeklyMailNotificationBloc">
+            
+            <div class="notificationChoiceBloc input-prepend">
+                <span class="name add-on" style="width:80%">Recevoir</span>
+                <button class="btn yes" type="button" style="width:9%;border-color:grey;">Oui</button><button class="btn no" type="button" style="width:9%;border-color:grey;">Non</button>
+            </div>
+            {{ form_widget(form.receivesWeeklyEmail, { attr: { "class": "receiveWeeklyChoice" } }) }}
+        {{ form_rest(form) }}
+        </div>
+        <script type="text/javascript">
+            var containerIdStr              = '{{ block('widget_container_attributes') }}';
+            var containerId                 = containerIdStr.substring(4, containerIdStr.length -1);
+                
+            var $weeklyNotificationBloc     = $("div#"+ containerId +".weeklyMailNotificationBloc");
+            
+            var $receivesWeeklyChoice       = $weeklyNotificationBloc.find('div.receiveWeeklyChoice');
+            var $radioNo                    = $receivesWeeklyChoice.find( "input[type=radio][id$=0]" );
+            var $radioYes                   = $receivesWeeklyChoice.find( "input[type=radio][id$=1]" );
+            
+            var $notificationChoiceBloc     = $weeklyNotificationBloc.find( "div.notificationChoiceBloc" );
+            var $buttonYes                  = $notificationChoiceBloc.find( "button.yes" );
+            var $buttonNo                   = $notificationChoiceBloc.find( "button.no" );
+            
+            //On cache les radio button
+            $receivesWeeklyChoice.hide();
+            
+            if( $radioYes.is(':checked') ) {
+                $buttonYes.addClass( "active" );
+            } else {
+                if( $radioNo.is(':checked') ) {
+                    $buttonNo.addClass( "active" );
+                }
+            }
+            
+            $buttonYes.click(function() {console.log("clickyes");
+                console.log( $( this ) );
+                $( this ).parent().parent().find( "div.receiveWeeklyChoice" ).find( "input[type=radio][id$=1]" ).attr( "checked", "checked" );
+                $( this ).parent().find( "button.no" ).removeClass( "active" );
+                $( this ).addClass( "active" );
+                
+            });
+            
+            $buttonNo.click(function() {console.log("clickno");
+                $( this ).parent().parent().find( "div.receiveWeeklyChoice" ).find( "input[type=radio][id$=0]" ).attr( "checked", "checked" );
+                $( this ).parent().find( "button.yes" ).removeClass( "active" );
+                $( this ).addClass( "active" );
+            });
+        </script>
+{% endspaceless %}
+{% endblock %}

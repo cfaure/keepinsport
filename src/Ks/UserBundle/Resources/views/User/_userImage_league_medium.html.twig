@@ -1,0 +1,60 @@
+{% if user_league_category is defined and user_league_category is not null %}
+    {% set leagueClass = user_league_category %}
+{% else %}
+    {% set leagueClass = "other" %}
+{% endif %}
+
+{% if displayStars is not defined %}
+    {% set displayStars = "yes" %}
+{% endif %}
+<div class="userAvatarBloc userAvatarMediumBloc {{ leagueClass }}" style="">
+    {% set withCustomTooltip = false %}
+    {% if withCustomTooltip is defined and not withCustomTooltip %}
+        {% set tooltipElements = "title="~ user_username %}
+    {% else %}
+        {% set tooltipElements = "rel=tooltip title="~ user_username %}
+    {% endif %}
+
+    {% if withBubble is defined and not withBubble %}
+        {% set withBubble = false %}
+    {% else %}
+        {% set withBubble = true %}
+    {% endif %}
+
+    {#% render 'KsUserBundle:User:bubbleInfos' with {'userId' : user_id } %#}
+
+    <div style="border:1px solid white">
+        {% include 'KsUserBundle:User:_userImage_medium.html.twig' with { 'user_id' : user_id, 'user_imageName': user_imageName, 'user_league' : user_league_category } %}
+    </div>
+    {% if user_league_stars is defined and user_id != "1" and displayStars =='yes' %}
+        {% if leagueClass != "other" %}
+            <center>
+            {% if user_league_stars is defined %} 
+                {% if user_league_stars == 1 %} 
+                    <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i>
+                {% elseif user_league_stars == 2 %} 
+                    <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star-empty"></i>
+                {% elseif user_league_stars == 3 %} 
+                    <i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i><i class="glyphicon glyphicon-star"></i>
+                {% else %}
+                    <i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i><i class="glyphicon glyphicon-star-empty"></i>
+                {% endif %}
+            {% endif %}
+            {% if isCoach is defined and isCoach == 1 and user_id != 7 %}
+                <span class="label label-primary"><b>COACH</b></span>
+            {% else %}
+                {% if pack_id is defined and isActive is defined and isActive == 1 %} 
+                    {% if pack_id == 1 %}
+                        <span class="label label-elite"><b>ELITE</b></span>
+                    {% elseif pack_id == 2 %}
+                        <span class="label label-premium"><b>PREMIUM</b></span>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+            </center>
+        {% else %}
+             {#<img src="{{ asset('bundles/ksleague/img/nutella.png') }}" alt="Chocolate" rel="tooltip" title="Ligue nutella" data-placement="right" width="30"/>#}
+        {% endif %}
+    {% endif %}
+</div>
+            

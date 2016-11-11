@@ -1,0 +1,82 @@
+<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+     {{ 'users.label'|trans }}
+    <b class="caret"></b>
+</a>
+<ul class="dropdown-menu">
+    <li><a href="{{ path('ks_user_communityDynamicList', {'userId' : app.user.id }) }}">{{ 'user.my_friends'|trans }} </a></li>
+    {#<li><a rel="searchUsers" href="#">Rechercher des sportifs</a></li>#}
+    <li><a href="{{ path('ks_sportifs_all') }}">Rechercher</a></li>
+    {#<li><a href="{{ path('ks_sportifs_all') }}">Tous les sportifs</a></li>#}
+    {#<li class="nav-header" style="text-transform:none">Tous les sportifs</li>#}
+    {% if couldInvit is defined and couldInvit %}
+        <li ><a href="{{ path('ksFriends_invite')}}">Inviter un sportif (e-mail)</a></li>
+        <li class="nav-header" style="text-transform:none">Inviter un sportif (Gmail)</li>
+    {% else %}
+        <li class="nav-header" style="text-transform:none">Inviter un sportif (e-mail)</li>
+        <li class="nav-header" style="text-transform:none">Inviter un sportif (Gmail)</li>
+    {% endif %}
+</ul>
+
+
+
+<script type="text/javascript">
+    
+    function attachSearchUserEvent(elt) {
+        var searchUsersModal = $("#searchUsersModal");
+        var messagesBloc = searchUsersModal.find('.messages');
+        var formSearchUsers = searchUsersModal.find('#formSearchUsers');
+        var inputSearchFriends = formSearchUsers.find("input.inputSearchFriends");
+        var usersSearchResultsBloc = searchUsersModal.find('.usersSearchResults');
+        var loader = searchUsersModal.find('.loader');
+        var searchButton = searchUsersModal.find('a.search');
+        var cancelButton = searchUsersModal.find('a.cancel');
+ 
+        elt.click(function(e) {
+            cancelButton.html("Annuler");
+            searchButton.show();
+            loader.hide();
+            messagesBloc.hide();
+            usersSearchResultsBloc.hide();
+            
+            if ($("li.dropdown").hasClass("open")) {
+                $("li.dropdown").removeClass("open");
+            }
+
+            var searchFriends = function() {
+                $('div.error_list').remove();
+                $.post(formSearchUsers.attr('action'), formSearchUsers.serialize(), function(response) {
+                    usersSearchResultsBloc.html(response.html);
+                    usersSearchResultsBloc.show();
+                }).error(function(xqr, error) {
+                    console.log("error " + error);
+                });
+            };
+            
+            formSearchUsers.submit(function(e) {
+                e.preventDefault();
+                searchFriends();
+            });
+            
+            var closeModal = function() {
+                searchUsersModal.modal('hide');
+            }
+
+            searchUsersModal.on('shown', function() {
+                inputSearchFriends.val("");
+                inputSearchFriends.focus();
+            });
+
+            /*searchUsersModal.on('hide', function() {
+                closeModal();
+            });*/
+
+            searchUsersModal.modal('show');
+            searchUsersModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                e.stopPropagation();
+            });
+            
+            return false;
+        });
+    }
+</script>
+ 

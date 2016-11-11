@@ -1,0 +1,103 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <style>
+        div.row {
+            margin-left: 0;
+        }
+    </style>
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+     <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+     <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+     <script type="text/javascript" src="{{ asset('bundles/ksclub/js/editPackage.js') }}"></script>
+     <script type="text/javascript">
+
+        $(document).ready(function() {
+             $('#membersTable').dataTable( {
+               "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+                "sPaginationType": "bootstrap",
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            } );
+        });
+           
+    </script>
+{% endblock %}
+
+{% block left_column %}
+    {% render "KsClubBundle:Club:leftColumn" with { 'clubId' : club.id } %}
+{% endblock %}    
+    
+{% block content %}
+    
+    {% render 'KsClubBundle:Club:package_modal' %}
+    
+    <h1 class="clubs">Liste des membres {#de {{ club.name }}#}</h1>
+    <div class="blocHeaderSeparator"></div>
+    
+    <div>
+        <a class="btn btn-clubs" href="{{ path('ksClub_public_profile', {'clubId' : club.id}) }}">
+            <i class="icon-backward"></i> Retour
+        </a>
+        <a class="btn btn-clubs" href="{{ path('ksClub_inviteFriends', {'clubId' : club.id }) }}">Inviter des amis</a>
+    </div>
+    <br/>
+    {% render 'KsLeagueBundle:League:clubMembersGraph' with {'clubId' : club.id } %}
+    <br/>
+    {#<table class="table table-bordered" id="membersTable">
+        <thead>
+            <tr>
+                <th>Utilisateur</th>
+                <th>Prénom</th>
+                <th>Nom</th>
+                <th>Ville</th>            
+                <th>Ligue</th>
+                <th>Clubs</th>
+                <th>Sports</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in members %}
+            <tr>
+                <td>
+                    {% if user.userDetail is defined and user.userDetail != null %}
+                        {% set user_imageName = user.userDetail.imageName %}
+                    {% else %}
+                        {% set user_imageName = null %}
+                    {% endif %}
+                    {% include 'KsUserBundle:User:_userImage_mini.html.twig' with { 'user_id' : user.id, 'user_imageName' : user_imageName }%}
+                    {{ user.username }}
+                    {% if user.firstName is not null and user.lastName is not null %}
+                        - {{ user.firstName }} {{ user.lastName }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% include 'KsLeagueBundle:League:_label.html.twig' with {'leagueLevel' : user.leagueLevel }%}
+                </td>
+                <td>
+                    <a class="btn btn-mini btn-clubs" title="{{ user.username }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                        <i class="icon-search icon-white"></i>
+                    </a>
+                    {% if club|is_manager( app.user.id ) %}
+                        <button type="button" class="btn btn-mini btn-danger" rel="tooltip" title="Supprimer" onclick="attachDeleteUserFromClubEvent('{{ club.id }}', '{{ user.id }}');" >
+                            <i class="icon-trash icon-white"></i>
+                        </button>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>#}
+    <div>
+        {% include 'KsUserBundle:User:_usersTable.html.twig' with { 'users' : users, 'club' : club } %}
+    </div>
+{% endblock %}

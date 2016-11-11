@@ -1,0 +1,16 @@
+<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+    <span style="border-bottom: solid 3px #f8c70b;">{{ 'club.label'|trans }}</span>
+    <b class="caret"></b>
+</a>
+<ul class="dropdown-menu">
+    {% for club in clubs %}
+            <li>
+            <a href="{{ path('ksClub_public_profile', {'clubId' : club.id }) }}">{{ club.name }}</a>
+            </li>
+    {% endfor %}
+    {#<li><a href="{{ path('ksClub_myClubs') }}">{{ 'users.my_clubs'|trans }}</a></li>#}
+    <li class="divider"></li>
+    <li><a href="{{ path('ksClub_all') }}">Rechercher un club</a></li>
+    <li><a href="{{ path('ksProfileClub_informations', {'clubId' : 'new', 'creationOrEdition' : 'creation'}) }}">Créer un club</a></li>
+    {#<li class="nav-header" style="text-transform:none">Mon club virtuel</li>#}
+</ul>

@@ -1,0 +1,24 @@
+<div class="shopAvatarBloc userAvatarMediumBloc other" style="">
+    <a class="imageLink" shopId="{{ shop.id }}" {% if shop.url_site_web %} target="_blank" href="{{ shop.url_site_web }}" {% endif %} rel="bubble" data-content='{% render 'KsShopBundle:Shop:bubbleInfos' with {'shopId' : shop.id } %}' {% if with_href is defined and with_href %} href="{{ path('KsContest_seasonShop', {'shopId': shop.id, 'delay' : 0}) }}" {% endif %} {% if with_tooltip is defined and with_tooltip %} rel="tooltip" title="{{ shop.name }}"{% endif %}>
+        <div style="border:1px solid black;position:relative">
+            {% if shop_imageName is defined and shop_imageName is not null %}
+                {% if shop.id is defined and shop.id is not null and asset('img/shops/' ~ shop.id ~ '/resize_128x128/' ~ shop_imageName)|issetImg %}
+                    <img class="shopImage" src="{{ asset('img/shops/' ~ shop.id ~ '/resize_128x128/' ~ shop_imageName) }}" />
+                {% elseif shop.id is defined and shop.id is not null and asset('img/shops/' ~ shop.id ~ '/original/' ~ shop_imageName)|issetImg %}
+                    <img class="shopImage" src="{{ asset('img/shops/' ~ shop.id ~ '/original/' ~ shop_imageName) }}"  />
+                {% else %}
+                <img class="shopImage" src="{{ asset('bundles/ksshop/images/shop_128x128.jpg') }}"  />
+                {% endif %}
+            {% else %}
+                <img class="shopImage" src="{{ asset('bundles/ksshop/images/shop_128x128.jpg') }}"  />
+                {% if with_legend_overlay is defined and with_legend_overlay %}
+                    <div class="imageLegend trunc" style="">
+                        <span class="text" style="">{{ shop.town }}</span>
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+        </div>
+    </a>
+</div>
+            

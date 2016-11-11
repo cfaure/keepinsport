@@ -1,0 +1,9 @@
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <span class="btn btn-mini btn-link link-sportif" rel="tooltip" title="{{ "actions.share"|trans }}" onclick="shareActivityEvent( {{ app.user.id }}, 'newsFeed', {{ activity.id }}, {% if shareFbEnabled  %}true{% else %}false{% endif %}, 'manuel' ) ">
+        <span class="glyphicon glyphicon-share"></span> {#{ "actions.share"|trans }#} 
+    </span>
+{% else %}
+    <span class="btn btn-mini btn-link link-sportif" rel="tooltip" title="{{ "actions.share"|trans }}" onclick="showInformation('{{ 'actions.login-required'|trans }}');">
+        <span class="glyphicon glyphicon-share"></span> {#{ "actions.share"|trans }#} 
+    </span>
+{% endif %}

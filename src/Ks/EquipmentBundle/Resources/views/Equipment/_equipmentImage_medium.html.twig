@@ -1,0 +1,23 @@
+<div class="equipmentAvatarBloc userAvatarMediumBloc other" style="">
+    <a class="imageLink" equipmentId="{{ equipment_id }}" rel="bubble" data-content='{% render 'KsEquipmentBundle:Equipment:bubbleInfos' with {'equipmentId' : equipment_id, 'creationOrEdition' : creationOrEdition} %}'>
+        <div>
+            {% if equipment_imageName is defined and equipment_imageName is not null and equipment_imageName !="" %}
+                {% if equipment_id is defined and equipment_id is not null and asset('img/equipments/' ~ equipment_id ~ '/resize_128x128/' ~ equipment_imageName)|issetImg %}
+                    <img class="equipmentImage" src="{{ asset('img/equipments/' ~ equipment_id ~ '/resize_128x128/' ~ equipment_imageName) }}" />
+                {% elseif equipment_id is defined and equipment_id is not null and asset('img/equipments/' ~ equipment_id ~ '/original/' ~ equipment_imageName)|issetImg %}
+                    <img class="equipmentImage" src="{{ asset('img/equipments/' ~ equipment_id ~ '/original/' ~ equipment_imageName) }}"  />
+                {% else %}
+                    <img class="equipmentImage" src="{{ asset('bundles/ksequipment/images/equipment_128x128.jpg') }}"  />
+                {% endif %}
+            {% else %}
+                <img class="equipmentImage" src="{{ asset('bundles/ksequipment/images/equipment_128x128.jpg') }}"  />
+                {% if with_legend_overlay is defined and with_legend_overlay %}
+                    <div class="imageLegend trunc" style="">
+                        <span class="text" style="">{{ equipment_name }}</span>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </a>
+</div>
+            

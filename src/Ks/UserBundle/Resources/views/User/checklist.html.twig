@@ -1,0 +1,164 @@
+{% extends "KsUserBundle::layout_3_9.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+
+<script type="text/javascript">
+    
+    $(document).ready(function() {
+        var timer, popover_parent;
+
+        $('.popover').live({
+            mouseover: function() {
+                clearTimeout(timer);
+            },
+            mouseleave: function() {
+                var self = this;
+                timer = setTimeout(function(){hidePopover(popover_parent)},300); 
+            }
+        });
+
+        $.each( $("#actionsBloc").find(".actionBloc .imageLink"), function(key, value) {
+            $( this ).popover({
+                placement: 'top',
+                offset: 15,
+                trigger: 'manual',
+                delay: { show: 350, hide: 350 },
+                html: true
+            });
+
+            $( this ).hover(
+                function() {
+                    var self = this;
+                    clearTimeout(timer);
+                    $('.popover').hide();
+                    popover_parent = self
+                    $(self).popover('show');            
+                }, 
+                function() {
+                    var self = this;
+                    timer = setTimeout(function(){hidePopover(self)},350);    
+                }
+            );
+        });
+        
+        
+    });
+</script>                    
+
+{% endblock %}
+    
+{% block content %}
+    
+    
+    <h1 class="sportif">{{'checklist.good-start'|trans}}</h1>
+    <div class="blocHeaderSeparator"></div>
+
+    <div class="alert alert-info">{{'checklist.message'|trans}} </div>
+    
+    <br/>
+    
+    <div id="actionsBloc" class ="row-fluid">
+        <div class="ksBloc thumbnail span6">
+            <h3 class="sportif">{{'checklist.actions-todo'|trans}}</h3>
+            <div class="blocHeaderSeparator"></div>
+            <ul class="checklist">
+                {% for checklistAction in checklistActions %}
+                    {% set href = "#" %}
+                    {% set bubble = false %}
+                    {% if checklistAction.code == "inviteFriends" %}
+                        {% set href = path('ksFriends_invite')  %} {#http://blog.keepinsport.com/bien-debuter-invite-tes-amis/#}
+                    {% elseif checklistAction.code == "paramService" %}
+                        {% set href = path('ks_set_services') %} {#http://blog.keepinsport.com/bien-debuter-parametrer-un-service-runkeeper-nike/" #}
+                    {% elseif checklistAction.code == "createClub" %}
+                        {% set href = path('ksClub_all') %} {#"http://blog.keepinsport.com/bien-debuter-creer-un-club-une-association-un-groupe-de-sportifs/"#}
+                    {% elseif checklistAction.code == "inviteFriendInClub" %}
+                        {% set href = path('ksClub_all') %} {#"http://blog.keepinsport.com/bien-debuter-creer-un-club-une-association-un-groupe-de-sportifs/"#}
+                    {% elseif checklistAction.code == "publishSportActivity" %}
+                        {% set href = path('ksSport_activitySessionForm', {'activityId' : 'new'}) %} {#"http://blog.keepinsport.com/bien-debuter-publier-une-activite-sportive/"#}
+                    {% elseif checklistAction.code == "publishStatusPhotoVideo" %}
+                        {% set href = path('ksActivity_activitiesList') %} {#"http://blog.keepinsport.com/bien-debuter-publier-un-statut-une-photo-une-video/"#}
+                    {% elseif checklistAction.code == "commentLikeShareActivity" %}
+                        {% set href = path('ksActivity_activitiesList') %} {#"http://blog.keepinsport.com/bien-debuter-commenter-aimer-partager-une-activite/"#}
+                    {% elseif checklistAction.code == "subscribeEvent" %}
+                        {% set href = path('ksWikisport_index') %} {#"http://blog.keepinsport.com/bien-debuter-sinscrire-a-un-evenement/"#}
+                    {% elseif checklistAction.code == "participateArticle" %}
+                        {% set href = path('ksWikisport_index') %} {#"http://blog.keepinsport.com/bien-debuter-participer-a-un-article/"#}
+                    {% elseif checklistAction.code == "expertMode" %}
+                        {% set href = "javascript:expertMode();" %}
+                    {% elseif checklistAction.code == "createShop" %}
+                        {% set href = path('ksShop_list') %}
+                    {% elseif checklistAction.code == "visitSeen" %}
+                        {% set href = path('ksActivity_activitiesList') %}
+                    {#% elseif checklistAction.code == "consultBlog" %}
+                        {% set href = "http://blog.keepinsport.com" %#}
+                    {% endif %}
+                    <li>
+                        {% if checklistAction.date is null %}
+                            <div class="actionBloc">
+                                <a href="{{ href }}" {% if bubble %} class="imageLink" rel="bubble" data-content= '{% include 'KsUserBundle:User:_bubbleChecklist.html.twig' %} {% endif %}'><i class="icon-check-empty"> </i>{{ checklistAction.label }}</a>
+                            </div>
+                        {% endif %}  
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="ksBloc thumbnail span6">
+            <h3 class="sportif">{{'checklist.actions-done'|trans}}</h3>
+            <div class="blocHeaderSeparator"></div>
+            <ul class="checklist">
+                {% for checklistAction in checklistActions %}
+                    {% set href = "#" %}
+                    {% set bubble = false %}
+                    {% if checklistAction.code == "inviteFriends" %}
+                        {% set href = path('ksFriends_invite')  %} {#http://blog.keepinsport.com/bien-debuter-invite-tes-amis/#}
+                    {% elseif checklistAction.code == "paramService" %}
+                        {% set href = path('ks_set_services') %} {#http://blog.keepinsport.com/bien-debuter-parametrer-un-service-runkeeper-nike/" #}
+                    {% elseif checklistAction.code == "createClub" %}
+                        {% set href = path('ksClub_all') %} {#"http://blog.keepinsport.com/bien-debuter-creer-un-club-une-association-un-groupe-de-sportifs/"#}
+                    {% elseif checklistAction.code == "inviteFriendInClub" %}
+                        {% set href = path('ksClub_all') %} {#"http://blog.keepinsport.com/bien-debuter-creer-un-club-une-association-un-groupe-de-sportifs/"#}
+                    {% elseif checklistAction.code == "publishSportActivity" %}
+                        {% set href = path('ksSport_activitySessionForm', {'activityId' : 'new'}) %} {#"http://blog.keepinsport.com/bien-debuter-publier-une-activite-sportive/"#}
+                    {% elseif checklistAction.code == "publishStatusPhotoVideo" %}
+                        {% set href = path('ksActivity_activitiesList') %} {#"http://blog.keepinsport.com/bien-debuter-publier-un-statut-une-photo-une-video/"#}
+                    {% elseif checklistAction.code == "commentLikeShareActivity" %}
+                        {% set href = path('ksActivity_activitiesList') %} {#"http://blog.keepinsport.com/bien-debuter-commenter-aimer-partager-une-activite/"#}
+                    {% elseif checklistAction.code == "subscribeEvent" %}
+                        {% set href = path('ksWikisport_index') %} {#"http://blog.keepinsport.com/bien-debuter-sinscrire-a-un-evenement/"#}
+                    {% elseif checklistAction.code == "participateArticle" %}
+                        {% set href = path('ksWikisport_index') %} {#"http://blog.keepinsport.com/bien-debuter-participer-a-un-article/"#}
+                    {% elseif checklistAction.code == "expertMode" %}
+                        {% set href = "javascript:expertMode();" %}
+                    {% elseif checklistAction.code == "createShop" %}
+                        {% set href = path('ksShop_list') %}
+                    {% elseif checklistAction.code == "visitSeen" %}
+                        {% set href = path('ksUser_unsetVisitSeen') %}
+                    {#% elseif checklistAction.code == "consultBlog" %}
+                        {% set href = "http://blog.keepinsport.com" %#}
+                    {% endif %}
+                    <li>
+                        {% if checklistAction.date is not null %}
+                            <div class="actionBloc">
+                                <a href="{{ href }}" {% if bubble %} class="imageLink" rel="bubble" data-content= '{% include 'KsUserBundle:User:_bubbleChecklist.html.twig' %} {% endif %}'><i class="icon-check"> </i><s>{{ checklistAction.label }}</s></a>
+                            </div>
+                        {% endif %}  
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    <center>
+        <img style="" src="{{ asset('img/Thématique.jpg') }}" />
+    </center>
+    
+{% endblock %}        

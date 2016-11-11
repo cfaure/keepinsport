@@ -1,0 +1,67 @@
+<div class="alert alert-info">{{'ffa.message'|trans}} </div>
+
+<div class="thumbnail">
+{% if activities|length > 0 %}
+    <form id="importFfaActivities" method="post" action="{{ path('ksActivity_importFfaActivities') }}">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Temps</th>
+                    <th>Classement</th>
+                    <th>Catégorie</th>
+                    <th>Import</th>
+                </tr>
+            </thead> 
+            <tbody>
+                {% for activity in activities %}
+                    <tr>
+                        <td>{{ activity.name }}</td>
+                        <td>{{ activity.date }}</td>
+                        <td>{{ activity.fullDesc }}</td>
+                        <td>{{ activity.duration }}</td>
+                        <td>{{ activity.rank }}</td>
+                        <td>{{ activity.category }}</td>
+                        <td>
+                            <input type="checkbox" name="ffaActivity[]" value="{{ activity.base64Datas }}" />
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <center>
+            <span class="btn btn-sportif" id="btnSave"><span class="icon-save"></span> {{ 'ffa.save'|trans }} </span>
+            <img id="saveLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none;">
+        </center>
+    </form>
+    <script type="text/javascript">
+        $('#btnSave').click(function(e) {
+            e.preventDefault();
+            $("#btnSave").addClass( "disabled" );
+            $("#saveLoader").css('visibility', 'visible');
+            $("#saveLoader").show();
+            $.post(
+                $('#importFfaActivities').attr('action'),
+                $('#importFfaActivities').serialize(),
+                function(response) {
+                    // TODO: faire comme pour les autres formulaires...
+                    if (response.urlToRedirect && response.numActivitiesCreated > 0) {
+                        feedbackMsg = response.numActivitiesCreated == 1 ?
+                            'Ton activité a été importée avec succès !'
+                            : response.numActivitiesCreated + " activités ont été importées avec succès !";
+                        //modalInfo(feedbackMsg);
+                        showInformation(feedbackMsg);
+                        window.location.href = response.urlToRedirect;
+                    } else {
+                        showInformation("Aucune activité n\'a été importée, merci de nous le signaler via les feedback !");
+                    }
+                }
+            );
+        });
+    </script>
+{% else %}
+    <p>Aucun résultat n'a été trouvé !</p>
+{% endif %}
+</div>

@@ -1,0 +1,119 @@
+<div class="pull-left">
+    <span>Filtrer : </span>
+    <span class="btn-group">
+        <button class="btn btn-mini">Type d'actualités</button>
+        <button data-toggle="dropdown" class="btn dropdown-toggle btn-mini"><span class="caret"></span></button>
+        <ul id="activityTypeList" class="dropdown-menu">
+            <li rel="all" class="active"><a href="#">Tous les types d'activités</a></li>
+            <li rel="session"><a href="#">Activités sportives</a></li>
+            <li rel="status"><a href="#">Statuts</a></li>
+            <li rel="photo"><a href="#">Photos</a></li>
+            <li rel="link"><a href="#">Liens et vidéos</a></li>
+            <li rel="abstract_activity"><a href="#">Partages</a></li>
+        </ul>
+    </span>
+</div>
+
+{% if sort is defined and sort %}
+<div class="pull-right" style="margin-bottom:10px;">
+    <span>Trier par : </span>
+    <a id="sortByModifiedAtButton" class="btn btn-mini active">Date de modification</a>
+    <a id="sortByIssuedAtButton" class="btn btn-mini">Date de création</a>
+</div>
+{% endif%}
+
+<br clear="all"/>
+
+<script type="text/javascript">
+    {# FIXME: code en double... et puis c'est trop compliqué pour ce qu'on fait! #}
+    var ajaxRequests = new Array();
+
+    $("#activityTypeList > li[rel!=options]").unbind();
+    $("#activityTypeList > li[rel!=options]").click(function(e) {
+        
+        liAll = $("#activityTypeList > li[rel=all]");
+        li = $( this );
+
+        //Si on a cliqué sur autre chose que "Tout"
+        if ( li.attr('rel') != liAll.attr('rel')) {
+            //on déselectionne "Tout"
+            if( liAll.hasClass('active') ) {
+                liAll.removeClass('active');
+            }
+
+            if( $( this ).hasClass('active') ) {
+                $( this ).removeClass('active');
+
+                //Si tout est déselectionné, on selectionne "Tout"
+                if ( $("#activityTypeList > li.active").size() == 0 ) {
+                    liAll.addClass('active');
+                }
+            } else {
+                $( this ).addClass('active');
+            }
+        } 
+        //on a cliqué sur "Tout"
+        else {
+            //On déselectionne les autres options
+            $("#activityTypeList > li[rel!=options]").each(function(key, value) {
+                if( $( this ).hasClass('active') ) {
+                    $( this ).removeClass('active');
+                }
+            });
+
+            liAll.addClass('active');
+
+        }
+
+        //on récupère les catégories selectionnées
+        activitiesTypes = getActivityTypesSelect();
+
+        document.location.href = Routing.generate('ksClub_public_profile', { 'clubId' : club.id });
+
+        e.preventDefault();
+    });
+    
+    //Gestion du tri
+    $("#sortByIssuedAtButton").click(function() {
+        $("#sortByIssuedAtButton").addClass( "active" );
+        $("#sortByModifiedAtButton").removeClass( "active" );
+
+        //on récupère les catégories selectionnées
+        activitiesTypes = getActivityTypesSelect();
+
+        $('#activitiesBlockList').html('');
+        for ( var i = 0; i < ajaxRequests.length; i++) {
+            ajaxRequests[i].abort();
+        }
+        ajaxRequests = new Array();
+
+        ajaxRequests.push( loadClubActivities( "{{ club.id }}", 0, activitiesTypes, false ) );
+    });
+
+    $("#sortByModifiedAtButton").click(function() {
+        $("#sortByModifiedAtButton").addClass( "active" );
+        $("#sortByIssuedAtButton").removeClass( "active" );
+
+        //on récupère les catégories selectionnées
+        activitiesTypes = getActivityTypesSelect();
+
+        $('#activitiesBlockList').html('');
+        for (var i = 0; i < ajaxRequests.length; i++) {
+            ajaxRequests[i].abort();
+        }
+        ajaxRequests = new Array();
+        ajaxRequests.push( loadClubActivities( "{{ club.id }}", 0, activitiesTypes, true ) );
+    });
+        
+    
+    function getActivityTypesSelect() {
+        activitiesTypes = new Array();
+        $("#activityTypeList > li[rel!=options]").each(function(key, value) {
+            if ($(this).hasClass('active') && $(this).attr('rel') != 'all') {
+                activitiesTypes.push($(this).attr("rel"));
+            }
+        });
+        return activitiesTypes;
+    }
+
+</script>

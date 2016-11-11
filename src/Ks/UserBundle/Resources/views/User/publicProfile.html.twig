@@ -1,0 +1,409 @@
+{% extends "KsUserBundle::layout_full.html.twig" %}
+
+{% block title %}
+	{{ parent() }} - {{ profileUser.username }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksactivity/css/style.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('js/timelinr/css/style.css') }}" />
+    
+    {# zoom sur photos #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('swipebox/source/swipebox.css') }}" />
+    
+    <link rel="stylesheet" type="text/css" href="{{ asset('jOrgChart/jquery.jOrgChart.css') }}" />
+    
+    {# JQuery sliders #}
+    <link rel="stylesheet" href="{{asset('bundles/ksactivity/css/slider.css')}}">
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    
+    {# JQuery sliders #}
+    <script src="{{ asset('bundles/ksactivity/js/jquery-slider.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/index.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/functions.js') }}"></script>
+    {#<script type="text/javascript" src="{{ asset('bundles/ksactivity/js/jquery.mousewheel.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/plugin.scrollbar.js') }}"></script>#}
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/scripts.js') }}"></script>
+    {#<script type="text/javascript" src="{{ asset('js/timelinr/js/jquery.timelinr-0.9.5.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/timeline/jquery.masonry.min.js') }}"></script>#}
+    <script src="{{ asset('js/jquery.elastic.source.js') }}"></script>
+    
+    {# organigrammes #}
+    <script src="{{ asset('jOrgChart/jquery.jOrgChart.js') }}"></script>
+    
+    {# zoom sur photos #}
+    <script src="{{ asset('swipebox/source/jquery.swipebox.min.js') }}"></script>
+    
+    {# Précharger les ressources #}
+    <script src="{{ asset('plugins/canvasquery.min.js') }}"></script>
+    <script src="{{ asset('plugins/simploader.js') }}"></script>
+    <script src="{{ asset('plugins/PreloadJS-release_v0.3.1/lib/preloadjs-0.3.1.min.js') }}"></script>
+    
+    {# canvas #}
+    <script src="{{ asset('bundles/kscanvasdrawing/js/functions.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/accessory.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/perso.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/sky.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/cloud.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/landscape.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/equipments.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/clothing.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/initialize.js') }}"></script>
+    <script type="text/javascript">
+        if( !isCanvasSupported ) {
+            alert( "Met ton naviguateur internet à jour pour profiter de toutes les fonctionalités du sites" );
+        }
+            
+        $(document).ready(function() {
+            traceEvolutionBySaisonGraph("evolutionBySeason", "{{ profileUser.id }}", false);
+            $("#godsonsList").jOrgChart({
+                chartElement : '#godsonsChart',
+                dragAndDrop  : false
+            });
+            
+            /*
+             
+             var handleComplete = function() {
+                activitiesTypes = getActivityTypesSelect();
+                fromUsers = getFromUsersSelect();
+                loadActivities(0, activitiesTypes, fromUsers, null, null, new Boolean(true));
+            }
+                    
+            var queue = new createjs.LoadQueue(false);
+            queue.addEventListener("complete", handleComplete);
+            
+            queue.loadManifest([
+                "{{ asset('bundles/kscanvasdrawing/images/sun.png') }}", 
+                "{{ asset('bundles/kscanvasdrawing/images/moon.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/wood_pannel.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/timer.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/road.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/mountain.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/mountains.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/campaign.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/beach.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/city.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/mountains.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/road.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/track.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/normal.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/clay.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/hard.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/musculation/room.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/swimming/pool_indoor_short.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/football/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/basketball/field.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/skate/ramp.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/ski/ski_station.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/golf/field.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/combat/ring.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/bike/road_bike/without_frame.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/bike/mountain_bike/without_frame.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/tennis/racquet.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/clothing/zip.png') }}"
+            ]);
+            */
+        });
+    </script>
+{% endblock %}
+    
+{% block content %}
+    {% if profileUser.id != 1 and profileUser.username != "keepinsport" and profileUser.username != app.user.username %}
+        {% if profileUser.id != app.user.id %}    
+            {% if not friendWithMe and not isAwaitingRFResponse  and not mustGiveRFResponse %}
+                <a class="btn btn-mini btn-friends" rel="tooltip" title="Rentrer en relation avec {{ profileUser.username }}" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': profileUser.id }) }}">
+                    <i class="glyphicon glyphicon-plus icon-white"></i> Ajouter en ami
+                </a>
+            {% elseif isAwaitingRFResponse %}
+                <a class="btn btn-mini btn-friends" href="{{ path('ks_user_Cancel_the_friend_request', { 'user2Id': profileUser.id }) }}">
+                    <i class="icon-ban-circle icon-white"></i> Annuler la demande de mise en relation
+                </a>
+            
+            {% elseif mustGiveRFResponse %}
+                <a class="btn btn-mini btn-friends" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': profileUser.id }) }}">
+                    <i class="icon-ok icon-white"></i> Accepter la mise en relation
+                </a>
+                <a class="btn btn-mini btn-friends" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': profileUser.id }) }}">
+                    <i class="icon-remove icon-white"></i> Refuser la mise en relation
+                </a>
+            {% else %}
+                <a class="btn btn-mini btn-danger" href="{{ path('ks_user_Revoke_a_friend', { 'user2Id': profileUser.id }) }}">
+                    <i class="icon-remove icon-white"></i> Supprimer l'ami
+                </a>
+            {% endif %}          
+            <hr />
+        {% endif %}
+    {% endif %}
+    
+    
+    <div class="row-fluid">
+        <div class="span4 public-right-bloc">
+            {% if profileUser.username == app.user.username %}
+                <a class="btn btn-sportif input-block-level" style="margin-bottom:10px" href="">
+                    <span class="glyphicon glyphicon-pencil"></span> {{ "actions.edit-profil"|trans }}
+                </a>
+            {% endif %}
+            <div class="rightColumnBloc thumbnail">
+                <h3 class="{% if profileUser == app.user %}sportif {% else %}friends{% endif %}">{{ profileUser.username }}</h3>
+                <div class="blocHeaderSeparator"></div>
+                {% if profileUser.userDetail is defined and profileUser.userDetail != null %}
+                    {% set user_imageName = profileUser.userDetail.imageName %}
+                {% else %}
+                    {% set user_imageName = null %}
+                {% endif %}
+                
+                {% set imageName = null %}
+                {% if profileUser.userDetail is not null %}
+                    {% set imageName = profileUser.userDetail.imageName %}
+                {% endif %}
+                
+                <center>
+                {% include 'KsUserBundle:User:_userImage_league_big.html.twig' with {
+                    'user_id' : profileUser.id, 
+                    'user_username' : profileUser.username, 
+                    'user_imageName': imageName, 
+                    'user_league_category' : profileUser.leagueLevel.category.label, 
+                    'user_league_stars' : profileUser.leagueLevel.starNumber
+                } %}
+                </center>
+                {#% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : profileUser.id, 'user_imageName': user_imageName } %#}
+
+                {% if profileUser.userDetail is defined and profileUser.userDetail is not null %}
+                    <div style="text-align:center">
+                    {{ profileUser.userDetail.firstname ~ " " ~ profileUser.userDetail.lastname }}
+                    </div>
+                {% endif %}
+
+
+
+                {% if profileUser.userDetail is defined and profileUser.userDetail is not null %}
+                    {% if profileUser.userDetail.bornedAt %}
+                        <p><b>{{ "user.age.label"|trans }} : </b> {{ "user.age.value"|trans( { "%age%" : profileUser.userDetail.bornedAt|age }) }}</p>
+                    {% endif %}
+
+                    <p><b>{{ "user.location.label"|trans }} :</b> {{ profileUser.userDetail.town }}</p>
+                    <p><b>{{ "user.sports.label"|trans }} :</b>
+                    {% if profileUser.userDetail.sports|length > 0 %}
+                        <br/>
+                        <ul>
+                        {% for sport in profileUser.userDetail.sports %}
+                            <li>{{ sport.label }}</li>
+                        {#<a rel="tooltip" title="{{ sport.label }}">
+                            {% if asset('img/sports/' ~ sport.codeSport ~ '.png')|issetImg %}
+                                <img width="60px" src="{{ asset('img/sports/' ~ sport.codeSport ~ '.png') }}"/>
+                            {% else %}
+                                <img width="60px" src="{{ asset('img/sports/running.png') }}"/>
+                            {% endif %}
+                        </a>#}
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        -
+                    {% endif %}
+                    </p>
+                    {#<p><b>{{ "user.objectives.label"|trans }} :</b> -</p> #}
+                {% else %}
+                    <p><a href="{{ path('userdetail_new') }}">{{ 'user.newProfil.label'|trans }}</a></p>
+                {% endif %}
+            </div>
+            <div class="rightColumnBloc thumbnail">
+
+                <h3 class="friends">
+                    {{ 'menu.my-friends'|trans }} ({{ friends|length}})
+                    {#{ 'user.friendsNumber'|trans( { "%friendsNumber%" : friends|length } ) }#}
+                    <a class="btn btn-friends btn-small pull-right" href="{{ path('ks_user_communityDynamicList', {'userId' : profileUser.id }) }}">
+                        <i class="icon-search icon-white"></i>
+                    </a>
+                </h3>  
+                {#
+                <div class="blocHeaderSeparator"></div>
+                {% render 'KsLeagueBundle:League:communityGraph'  with {'userId' : profileUser.id} %}
+                #}
+                <div class="blocHeaderSeparator"></div>
+                {% for key, friend in friends %}
+                    <a class="imageLink" href="{{ path('ks_user_public_profile', { 'username': friend.username }) }}" rel="tooltip" title="{{ friend.username }}">
+
+                     {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : friend.id, 'user_imageName': friend.imageName is defined and friend.imageName is not null ? friend.imageName : null } %}
+                    {#% if friend.imageName is not defined or friend.imageName is null %}
+                        <img src="{{ asset('bundles/ksuser/images/no_avatar.png') }}" style="margin-bottom:4px"/>
+                    {% else %}
+                        <img src="{{ asset('uploads/images/users/resize_48x48/' ~ friend.imageName) }}" style="margin-bottom:4px"/>
+                    {% endif %#}
+                    </a>
+                {% endfor %}
+            </div>
+                
+            <div class="rightColumnBloc thumbnail">
+                <h3 class="clubs">{{ 'menu.clubs'|trans }}</h3> 
+                <div class="blocHeaderSeparator"></div>
+                <ul>
+                {% for key, clubHasUsers in clubs %}
+                    <li><a href="{{ path('ksClub_public_profile', { 'clubId': clubHasUsers.club.id }) }}">{{ clubHasUsers.club.name }}</a></li>
+                {% endfor %}   
+                </ul>
+            </div>
+        </div>     
+   
+        <div class="span8 public-left-bloc">
+            {#<div id="showcase">{% include 'KsTrophyBundle:Trophy:_showcase.html.twig' with {'showcaseUser' : profileUser} %}</div>#}
+
+            {#<div class="rightColumnBloc thumbnail">
+                <h3 class="{% if profileUser == app.user %}sportif {% else %}friends{% endif %}">{{ 'user.saisons.actual'|trans }}</h3>
+                <div class="blocHeaderSeparator"></div>
+
+                <center>
+                    Ligue {% include 'KsLeagueBundle:League:_label.html.twig' with {'leagueLevel' : profileUser.leagueLevel} %} - 
+                    {{ profileUser.myPoints|total_points }} points -  
+                    Inscrit depuis le {{ profileUser.inscribedAt|date('d/m/Y') }}
+                </center>
+                <br/>
+
+                <div id="lastActivities">
+                    <b>{{ "user.activities.last_activities"|trans }} :</b>
+                    <ul>
+                        {% for key, activitySession in lastActivitiesSession %}
+                            {% if activitySession.sport is not null %}
+                                {% set activitySessionLabel = activitySession.sport.label %}
+                                <li>
+                                    <a href="{{ path('ksActivity_showActivity', { 'activityId' : activitySession.id }) }}">
+                                        {{ activitySession.issuedAt|date('d/m/Y') }} - {{ activitySessionLabel }} {{ activitySession.duration|date('H:i') }} ({{ 'activity.pointsNumber'|trans( { "%points%" : activitySession.points|of(profileUser) } ) }})
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}    
+                    </ul>
+                </div>
+            </div>#}
+            <div class="thumbnail ksBloc">
+                 <h3 class="{% if profileUser == app.user %}sportif {% else %}friends{% endif %}">{{ "titles.all-godsons"|trans }}</h3>
+                <div class="blocHeaderSeparator"></div>
+                
+                {% if godsons|length > 0 %}
+                <ul id="godsonsList" style="display:none">
+                    <li>
+                        {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                            'user_id' : userH.id, 
+                            'user_username' : userH.username, 
+                            'user_imageName': userH.imageName, 
+                            'user_league_category' : userH.leagueCategoryLabel, 
+                            'user_league_stars' : userH.leagueLevelStarNumber,
+                            'withBubble'     : true
+                        } %}
+                        <ul>
+                        {% for godson in godsons %} 
+                            <li>
+                                {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                    'user_id' : godson.infos.id, 
+                                    'user_username' : godson.infos.username, 
+                                    'user_imageName': godson.infos.imageName, 
+                                    'user_league_category' : godson.infos.leagueCategoryLabel, 
+                                    'user_league_stars' : godson.infos.leagueLevelStarNumber,
+                                    'withBubble'     : true
+                                } %}
+                                <ul>
+                                {% for littleGodson in godson.godsons %} 
+                                     <li>
+                                     {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                        'user_id' : littleGodson.id, 
+                                        'user_username' : littleGodson.username, 
+                                        'user_imageName': littleGodson.imageName, 
+                                        'user_league_category' : littleGodson.leagueCategoryLabel, 
+                                        'user_league_stars' : littleGodson.leagueLevelStarNumber,
+                                        'withBubble'     : true
+                                    } %}
+                                    </li>
+                                {% endfor %}
+                                </ul>
+                            </li>    
+                        {% endfor %}
+                        </ul>
+                </ul>
+                <div id="godsonsChart" class="orgChart"></div>
+                <br clear="all"/>
+                {% else %}
+                    {{ "titles.no-godsons"|trans }}
+                {% endif %}
+            </div>
+            <div class="thumbnail rightColumnBloc">
+                <a href="{{ path('ksDashboard_statistics', {'id': profileUser.id }) }}" class="btn btn-small pull-right {% if profileUser == app.user %}btn-sportif {% else %}btn-friends{% endif %}" >
+                    <i class="icon-search icon-white "></i>
+                </a>
+                <h3 class="{% if profileUser == app.user %}sportif {% else %}friends{% endif %}">{{ "titles.season-evolution"|trans }}</h3>
+                <div class="blocHeaderSeparator"></div>
+                <div class="evolutionBySeason">
+                    <center>
+                        <img id="evolutionBySeasonLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"/>
+                    </center>
+                    <div id="evolutionBySeasonContainer"></div>
+                </div>
+            </div>
+            
+            
+            {#% include 'KsActivityBundle:Activity:_activityTypeChoiceForm.html.twig' with {'user' : profileUser} %#}
+    
+            <div class="ksBloc thumbnail">
+                {% render "KsActivityBundle:Activity:lastActivitiesFromUser" with {
+                    'userId'        : profileUser.id,
+                    'nbActivities'  : 5} %}
+            </div>    
+                
+            {#
+            <br/>
+
+            <div id="activitiesBlockList"></div>
+
+            <br clear="all" />
+
+            <div align="center" id="newActivitiesLoading" style="display:none">
+                <img src="{{ asset('img/loader_ks_57.gif') }}" alt="Loading" />
+            </div>
+            
+            <a id="bLoadMoreActivities" class="btn {% if profileUser == app.user %}btn-sportif {% else %}btn-friends{% endif %}" style="width:95%"><i class="icon-repeat icon-white"></i> {{ "news-feed.more-news"|trans }}</a>
+            <br/><br/>
+            
+            <div id="blocInfoFinish" class="alert alert-info">
+                <strong>{{ "news-feed.pull-up"|trans }}</strong> {{ "news-feed.no-more-news"|trans }}
+            </div>
+            #}
+        </div> 
+    </div>    
+<style>
+     .thumbnail legend   {
+         color : #0088CC;
+         font-size:13px;
+         text-align:center;
+         font-weight: bold;
+     }
+     
+     table.showcase td, table.showcase td:hover{
+        padding:0px;
+        background-color: white;
+    }
+</style>   
+
+<script type="text/javascript"> 
+    
+    {#% set content = "" %}
+    {% for key, points in profileUser.myPoints %} 
+        {% set content = content ~ points.activitySession.issuedAt|date('d/m/Y')  ~ "-" ~  points.activitySession.sport.label ~ " " ~ points.activitySession.duration|date('H:i') ~ " " ~ points|of(profileUser) ~ "<br />"  %}          
+    {% endfor %}  
+    $("#popover-pointsDetails").attr('data-content', '{{ content }}');
+    $("#popover-pointsDetails").popover(); #}
+
+    //on récupère les catégories selectionnées
+    //activitiesTypes = getActivityTypesSelect();
+
+    //on récupère les from users selectionnés
+    //fromUsers = getFromUsersSelect();
+    //loadActivities(0, activitiesTypes, fromUsers);
+</script>
+
+{% endblock %}

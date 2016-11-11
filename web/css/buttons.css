@@ -1,0 +1,216 @@
+/* 
+    Document   : buttons
+    Created on : 18 janv. 2013, 16:41:33
+    Author     : Cédric Delpoux
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/*.btn {
+    font-family: Lobster;
+}*/
+.btn-sportif.active,
+.btn-wikisport.active,
+.btn-shops.active,
+.btn-clubs.active,
+.btn-friends.active {
+  color: rgba(255, 255, 255, 0.75);
+}
+.btn-sportif {
+  	
+  color: #ffffff;
+  /*text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);*/
+  background: #1d89c8;
+  /*background-image: -moz-linear-gradient(top, #1787c7, #126899);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#1787c7), to(#126899));
+  background-image: -webkit-linear-gradient(top, #1787c7, #126899);
+  background-image: -o-linear-gradient(top, #1787c7, #126899);
+  background-image: linear-gradient(to bottom, #1787c7, #126899);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff1787c7', endColorstr='#ff126899', GradientType=0);
+  border-color: #126899 #126899 #0a3955;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #126899;*/
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+  /*filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);*/
+}
+.btn-sportif:hover,
+.btn-sportif:focus,
+.btn-sportif:active,
+.btn-sportif.active,
+.btn-sportif.disabled,
+.btn-sportif[disabled] {
+  color: #ffffff;
+  background-color: #126899;
+  *background-color: #0f5882;
+}
+.btn-sportif:active,
+.btn-sportif.active {
+  background-color: #0c496c \9;
+}
+
+.btn-group.open button.btn-sportif {
+    background-color: #126899;
+}
+
+.link-sportif {
+    color : #157bb5
+}
+.link-sportif:hover {
+    color : #126899
+}
+
+.btn-wikisport {
+  color: #ffffff;
+/*  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);*/
+  background-color: #1d89c8;
+/*  background-image: -moz-linear-gradient(top, #db2033, #af1929);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#db2033), to(#af1929));
+  background-image: -webkit-linear-gradient(top, #db2033, #af1929);
+  background-image: -o-linear-gradient(top, #db2033, #af1929);
+  background-image: linear-gradient(to bottom, #db2033, #af1929);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffdb2033', endColorstr='#ffaf1929', GradientType=0);
+  border-color: #af1929 #af1929 #6c1019;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #af1929;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+  /*filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);*/
+}
+.btn-wikisport:hover,
+.btn-wikisport:focus,
+.btn-wikisport:active,
+.btn-wikisport.active,
+.btn-wikisport.disabled,
+.btn-wikisport[disabled] {
+  color: #ffffff;
+  background-color: #139cec;
+  *background-color: #139cec;
+}
+.btn-wikisport:active,
+.btn-wikisport.active {
+  background-color: #139cec \9;
+}
+
+.link-wikisport {
+    color : #c91d2f
+}
+.link-wikisport:hover {
+    color : #af1929
+}
+
+.btn-shops {
+  color: #000000;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+  background-color: #FFFFFF;
+  background-image: -moz-linear-gradient(top, #FFFFFF, #F8F8F8);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FFFFFF), to(#F8F8F8));
+  background-image: -webkit-linear-gradient(top, #FFFFFF, #F8F8F8);
+  background-image: -o-linear-gradient(top, #FFFFFF, #F8F8F8);
+  background-image: linear-gradient(to bottom, #FFFFFF, #F8F8F8);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff1787c7', endColorstr='#ff126899', GradientType=0);
+  border-color: #000000 #000000 #000000;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #000000;
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
+}
+.btn-shops:hover,
+.btn-shops:focus,
+.btn-shops:active,
+.btn-shops.active,
+.btn-shops.disabled,
+.btn-shops[disabled] {
+  color: #000000;
+  background-color: #F8F8F8;
+  *background-color: #F8F8F8;
+}
+.btn-shops:active,
+.btn-shops.active {
+  background-color: #F8F8F8;
+}
+
+.btn-clubs {
+  color: #ffffff;
+/*  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);*/
+  background-color: #e6b809;
+/*  background-image: -moz-linear-gradient(top, #f8c70b, #caa206);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f8c70b), to(#caa206));
+  background-image: -webkit-linear-gradient(top, #f8c70b, #caa206);
+  background-image: -o-linear-gradient(top, #f8c70b, #caa206);
+  background-image: linear-gradient(to bottom, #f8c70b, #caa206);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff8c70b', endColorstr='#ffcaa206', GradientType=0);
+  border-color: #caa206 #caa206 #806604;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #caa206;
+ 
+
+  filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);*/
+}
+.btn-clubs:hover,
+.btn-clubs:focus,
+.btn-clubs:active,
+.btn-clubs.active,
+.btn-clubs.disabled,
+.btn-clubs[disabled] {
+  color: #ffffff;
+  background-color: #caa206;
+  *background-color: #b18e05;
+}
+.btn-clubs:active,
+.btn-clubs.active {
+  background-color: #997a04 \9;
+}
+
+.link-clubs {
+    color : #e6b809
+}
+.link-clubs:hover {
+    color : #caa206
+}
+
+.btn-friends {
+  color: #ffffff;
+ /* text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);*/
+  background-color: #109042!important;
+  border:0 solid #000!important;
+  /*background-image: -moz-linear-gradient(top, #12a24a, #00ca51);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#12a24a), to(#00ca51));
+  background-image: -webkit-linear-gradient(top, #12a24a, #00ca51);
+  background-image: -o-linear-gradient(top, #12a24a, #00ca51);
+  background-image: linear-gradient(to bottom, #12a24a, #00ca51);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff12a24a', endColorstr='#ff00ca51', GradientType=0);
+  border-color: #00ca51 #00ca51 #052f16;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  *background-color: #00ca51;*/
+  /* Darken IE7 buttons by default so they stand out more given they won't have borders */
+
+  /*filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);*/
+}
+.btn-friends:hover,
+.btn-friends:focus,
+.btn-friends:active,
+.btn-friends.active,
+.btn-friends.disabled,
+.btn-friends[disabled] {
+  color: #ffffff;
+  background-color: #00ca51;
+  *background-color: #0a5d2b;
+}
+.btn-friends:active,
+.btn-friends.active {
+  background-color: #084620 \9;
+}
+
+.link-friends {
+    color : #109042
+}
+.link-friends:hover {
+    color : #00ca51
+}

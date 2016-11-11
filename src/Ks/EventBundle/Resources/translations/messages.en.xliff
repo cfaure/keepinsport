@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>event.list</source>
+                <target>Events</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>event.name</source>
+                <target>Name</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>event.author</source>
+                <target>Author</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>event.content</source>
+                <target>Content</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>event.creationDate</source>
+                <target>Creation date</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>event.lastModificationDate</source>
+                <target>Last modification date</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>event.add</source>
+                <target>Add event</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>event.show</source>
+                <target>Show</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>event.edit</source>
+                <target>Edit</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>event.delete</source>
+                <target>Delete</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>event.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>event.listEvents</source>
+                <target>Here is the list of events</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

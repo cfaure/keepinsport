@@ -1,0 +1,9 @@
+{% block content %}
+
+    {% set redirectUri = url('ksSetServiceRunkeeper') %}
+    <a class="btn btn-primary"
+        href="{{ runkeeperRegisterUrl(redirectUri) }}">
+        {{ 'users.sync-rk'|trans }}
+    </a>
+    
+{% endblock %}

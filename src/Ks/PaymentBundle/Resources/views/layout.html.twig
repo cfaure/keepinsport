@@ -1,0 +1,27 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+
+{# NOTE CF: visiblement il y a un pb avec ce layout :| #}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper">
+        <div class="container">
+            <h1 class="title">Récapitulatif de votre commande</h1>
+            <div class="content">
+                {% block inner_content %}
+                {% endblock inner_content %}
+            </div>
+        </div>
+    </div>
+{% endblock body %}

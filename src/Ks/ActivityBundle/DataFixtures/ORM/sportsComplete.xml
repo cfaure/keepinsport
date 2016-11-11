@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!-- was: <?xml version="1.0" encoding="UTF-EOE" standalone="yes"?> -->
+<ks_sport_list xml:lang="fr">
+   <ks_sport>
+      <name>Football</name>
+      <site>http://www.fff.fr</site>
+      <typeCode>TS</typeCode>
+   </ks_sport>
+    <ks_sport>
+      <name>Tennis</name>
+      <site>http://www.fft.fr</site>
+      <typeCode>TS</typeCode>
+   </ks_sport>
+    <ks_sport>
+      <name>Equitation</name>
+      <site>http://www.ffe.com</site>
+   </ks_sport>
+    <ks_sport>
+      <name>Judo</name>
+      <site>http://www.ffjudo.com</site>
+   </ks_sport>
+    <ks_sport>
+      <name>Basket ball</name>
+      <site>http://www.ffbb.com</site>
+      <typeCode>TS</typeCode>
+   </ks_sport>
+     <ks_sport>
+      <name>Golf</name>
+      <site>http://www.ffgolf.org</site>
+   </ks_sport>
+    <ks_sport>
+      <name>Handball</name>
+      <site>http://www.ff-handball.org</site>
+      <typeCode>TS</typeCode>
+   </ks_sport>  
+   <ks_sport>
+      <name>Rugby</name>
+      <site>http://www.ffr.fr</site>
+      <typeCode>TS</typeCode>
+   </ks_sport>
+    <ks_sport>
+      <name>Canoe Kayak</name>
+      <site>http://www.ffck.org</site>
+   </ks_sport>
+    <ks_sport>
+      <name>Pétanque</name>
+      <site>http://www.ffpjp.info</site>
+      <typeCode>TS</typeCode>
+   </ks_sport>
+    <ks_sport>
+      <name>Voile</name>
+      <site>http://www.ffvoile.fr/ffv/web/</site>
+   </ks_sport>
+    <ks_sport>
+      <name>Natation</name>
+      <site>http://www.ffnatation.fr</site>
+   </ks_sport>
+   <ks_sport>
+      <name>Sports sous-marins</name>
+      <site> </site>
+   </ks_sport>
+    <ks_sport>
+      <name>Gymnastique</name>
+      <site>http://www.ffgym.com</site>
+   </ks_sport>
+    <ks_sport>
+      <name>Randonnée</name>
+      <site> </site>
+      <typeCode>EOE</typeCode>
+   </ks_sport>
+    <ks_sport>
+      <name>Karaté</name>
+      <site>http://www.ffkarate.fr</site>
+   </ks_sport>
+    <ks_sport>
+      <name>Athlétisme</name>
+      <site>http://www.athle.org</site>
+      <typeCode>EOE</typeCode>
+   </ks_sport>
+   <ks_sport>
+      <name>Tennis de table</name>
+      <site>http://www.fftt.com</site>
+   </ks_sport>
+    <ks_sport>
+      <name>Badminton</name>
+      <site> </site>
+   </ks_sport>
+    <ks_sport>
+      <name>Ski</name>
+      <site>http://www.ffs.fr</site>
+    </ks_sport>  
+</ks_sport_list>

@@ -1,0 +1,6 @@
+{# if is_granted("ROLE_USER") }
+    {% include '::_header_auth.html.twig' %}
+{% else %}
+    {% include '::_header_no_auth.html.twig' %}
+{% endif #}
+{% include '::_header_auth.html.twig' with {'isGranted': is_granted("ROLE_USER")} %}

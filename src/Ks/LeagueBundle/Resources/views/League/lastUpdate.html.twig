@@ -1,0 +1,86 @@
+{% extends "KsLeagueBundle::layout.html.twig" %}
+    
+{% block javascripts %}
+    {{ parent() }}
+
+{% endblock %}
+   
+{% block title %}
+	{{ parent() }} - {{ 'league.label'|trans }}
+{% endblock %}
+    
+{% block content %}
+    <center><h2>Dernière mise à jour</h2></center>
+    <br/>
+    {% if historic.isWeeklyUpdate %}
+        {% set caption = "Mise à jour hebdomadaire, le " ~ historic.updatedAt|date('d/m/Y H:i:s') %}
+    {% elseif historic.isSeasonUpdate %}
+        {% set caption = "Mise à jour de fin de saison, le " ~ historic.updatedAt|date('d/m/Y H:i:s') %}
+    {% else %}
+        {% set caption = "Mise à jour, le " ~ historic.updatedAt|date('d/m/Y H:i:s') %}
+    {% endif %}
+    <table class="table table-bordered table-hover">
+        <caption>{{ caption }}</caption>
+        <thead>
+            <tr class="success">
+                <td>Sportif</td>
+                <td>Ligue avant changement</td>
+                <td>Ligue après changement</td>
+                <td>Résultat</td>
+            </tr>
+        </thead>
+        <tbody>
+    {% for leagueUpdate in leagueUpdates %}
+        {% set resultUpdate = leagueUpdate.oldLeague.rank - leagueUpdate.newLeague.rank %}
+        {% if resultUpdate > 0 %}
+            {% set class = "success" %}
+        {% elseif resultUpdate < 0 %}
+            {% set class = "error" %}
+        {% else %}
+            {% set class = "" %}
+        {% endif %}
+        <tr class="{{ class }}">
+            <td>{{ leagueUpdate.user.username }}</td>
+            <td>
+                {{ leagueUpdate.oldLeague.category.label|trans|capitalize }} 
+                {% if leagueUpdate.oldLeague.starNumber > 0 %}                 
+                    {% for i in range(1, leagueUpdate.oldLeague.starNumber) %} 
+                        ★
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <td>
+                {{ leagueUpdate.newLeague.category.label|trans|capitalize }} 
+                {% if leagueUpdate.newLeague.starNumber > 0 %} 
+                   
+                    {% for i in range(1, leagueUpdate.newLeague.starNumber) %} 
+                        ★
+                    {% endfor %}
+                {% endif %}
+            </td>
+            <td>
+                {% if resultUpdate > 0 %}
+                    <img src="{{ asset('bundles/ksleague/images/chart_up_green.png') }}"/>
+                    + {{ leagueUpdate.oldLeague.rank - leagueUpdate.newLeague.rank }}
+                {% elseif resultUpdate < 0 %}
+                    <img src="{{ asset('bundles/ksleague/images/chart_down_red.png') }}"/>
+                    - {{ leagueUpdate.newLeague.rank - leagueUpdate.oldLeague.rank }}
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+    <style>
+
+    </style>
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+            
+        });
+
+    </script>
+{% endblock %}

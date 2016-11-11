@@ -1,0 +1,55 @@
+<div style="color: black;min-width:250px;font-size:12px;">
+    <h3 class="shops">
+        {{ shop.name }} {% if shop.webShop %} </br> ({{ 'shops.web-shop'|trans }}) {% endif %}
+    </h3>
+    <hr style="margin:0"/>
+    <p>
+        <u>{{ 'shops.town'|trans }} :</u> {{ shop.town }}
+    </p>
+    <p>
+        <u>{{ 'shops.address'|trans }} :</u> {{ shop.address }}
+    </p>
+    <p>
+        <u>{{ 'shops.contact'|trans }} :</u> {{ shop.tel_number }}  {{ shop.email }}
+    </p>
+    <p>
+        <u>{{ 'shops.sports'|trans }} :</u>
+        {% if shop.sports|length > 0 %}
+            {{ shop.sports|join(', ') }}
+        {% else %}
+            -
+        {% endif %}
+    </p>
+    {% if shop.conditions|length > 0 %}
+        <p>
+            <u>{{ 'shops.conditions'|trans }} :</u>
+            {{ shop.conditions }}
+        </p>
+    {% endif %}
+    <hr style="margin:0"/>
+    <div style="text-align: center;">
+        {#
+        {% if shop.status %}
+            <a class="btn btn-mini btn-shops" rel="tooltip" title="{{ 'actions.show'|trans }}" target="_blank" href="{{ shop.url_site_web }}">
+                <i class="icon-search icon-white"></i> 
+            </a>
+        {% endif %}
+        #}
+        {#shop.conditions|length > 0 and#}
+        {#% if app.user.id == '1' %#}
+            <a class="btn btn-mini btn-shops" rel="tooltip" title="{{ 'actions.show'|trans }}" href="{{ path('KsContest_seasonShop', {'shopId': shop.id, 'delay' : 0}) }}">
+                <i class="icon-search icon-white"></i> 
+            </a>
+        {#% endif %#}
+        {% if shop.user_id == userId or app.user.id == '1'%}
+            <a class="btn btn-mini btn-shops" rel="tooltip" title="{{ 'actions.edit'|trans }}" onclick="attachEditShopEvent({{ shop.id }});">
+                <i class="glyphicon glyphicon-pencil icon-white"></i>
+            </a>
+            {% if shop.numVotes == 0 %}
+                <a class="btn btn-mini btn-shops" rel="tooltip" title="{{ 'actions.delete'|trans }}" onclick="attachDeleteShopEvent({{ shop.id }});">
+                    <i class="icon-trash icon-white"></i>
+                </a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>

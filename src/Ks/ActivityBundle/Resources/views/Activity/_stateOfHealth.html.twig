@@ -1,0 +1,9 @@
+{% if activity.stateOfHealth_name is not null %}
+    <a rel="tooltip" title="{{ activity.stateOfHealth_name }}">
+        <img width="32px" class="imgStateOfHealth" title="{{ activity.stateOfHealth_name }}" src="{{ asset('bundles/ksactivity/images/health/' ~ activity.stateOfHealth_code ~ '.png') }}"/>
+    </a>
+{% else %}
+    <a rel="tooltip" title="Etat de forme indéfini">
+        <img width="32px" class="imgStateOfHealth" title="Etat de forme indéfini" src="{{ asset('bundles/ksactivity/images/health/undefined.png') }}"/>
+    </a>
+{% endif %}

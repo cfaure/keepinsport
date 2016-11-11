@@ -1,0 +1,139 @@
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "KsUserBundle::layout_full.html.twig" %}
+{% else %}
+    {% set extends = "KsUserBundle::layout_3_9.html.twig" %}    
+{% endif %}
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/autosuggest.gmap.js') }}"></script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        {% include 'KsUserBundle:Profile:_breadcrumb.html.twig' with {'step': 2, 'creationOrEdition' : creationOrEdition} %}
+        {% set submitButtonText = 'users.next_step'|trans %}
+    {% else %}
+        <h1 class="sportif">{{ 'menu.my-profile'|trans }}</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ks_user_public_profile', {'username' : app.user.username}) }}">
+                    <span class="avatarBloc">
+                        {% set user_imageName = null %}
+                        {% if app.user.userDetail is not null %}
+                            {% set user_imageName = app.user.userDetail.imageName %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                 {% include 'KsUserBundle:Profile:_buttons.html.twig' with{'creationOrEdition' : creationOrEdition } %}
+            </div>
+        </div>
+        <br/>
+        {% set submitButtonText = 'users.save'|trans %}
+    {% endif %}
+        
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="sportif">{{'users.my_address'|trans}}</h3>
+        <div class="blocHeaderSeparator"></div>
+        
+        <form id="formAdress" class="form-horizontal" action="{{ path('ksProfile_adresses', {'creationOrEdition' : creationOrEdition}) }}" method="post" {{ form_enctype(form) }}>
+            <div class="alert alert-info">{{'users.message_page_edition_adresse1'|trans}}</div>
+            <center>
+                <div>
+                    <!-- Génération du label. -->
+                    {#{ form_label(form.userDetail.full_address, 'users.profil_full_address') }#}
+
+                    <!-- Affichage des erreurs pour ce champ précis. -->
+                    {{ form_errors(form.userDetail.full_address ) }}
+
+                    <!-- Génération de l'input. -->
+                    {{ form_widget(form.userDetail.full_address) }}
+                    <br clear="all"/>
+                    <br clear="all"/>
+                </div>
+                {{ google_map_container(map) }}
+                {{ google_map_js(map) }}
+                {{ google_map_css(map) }}
+            </center>
+
+            <div>
+                <!-- Génération du label. -->
+                {{ form_label(form.userDetail.country_area, 'users.profil_country_area') }}
+
+                <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                {{ form_errors(form.userDetail.country_area ) }}
+
+                <!-- Génération de l'input. -->
+                {{ form_widget(form.userDetail.country_area) }}
+            </div> 
+
+            <div>
+                <!-- Génération du label. -->
+                {{ form_label(form.userDetail.country_code,  'users.profil_country_code' ) }}
+
+                <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                {{ form_errors(form.userDetail.country_code ) }}
+
+                <!-- Génération de l'input. -->
+                {{ form_widget(form.userDetail.country_code) }}
+            </div>
+
+            <div>
+                <!-- Génération du label. -->
+                {{ form_label(form.userDetail.town, 'users.profil_town' ) }}
+
+                <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                {{ form_errors(form.userDetail.town ) }}
+
+                <!-- Génération de l'input. -->
+                {{ form_widget(form.userDetail.town) }}
+            </div> 
+
+            <div>
+                <!-- Génération du label. -->
+                {{ form_label(form.userDetail.longitude, 'users.profil_longitude' ) }}
+
+                <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                {{ form_errors(form.userDetail.longitude ) }}
+
+                <!-- Génération de l'input. -->
+                {{ form_widget(form.userDetail.longitude, { attr: { class:"longitude"} }) }}
+            </div>    
+
+            <div>
+                <!-- Génération du label. -->
+                {{ form_label(form.userDetail.latitude, 'users.profil_latitude' ) }}
+
+                <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                {{ form_errors(form.userDetail.latitude ) }}
+
+                <!-- Génération de l'input. -->
+                {{ form_widget(form.userDetail.latitude, { attr: { class:"latitude"} }) }}
+            </div>
+            <br clear="all"/>
+            <div class="alert alert-info">{{'users.message_page_edition_adresse2'|trans}} </div>
+
+            {{ form_rest(form) }}
+
+            <input type="submit" class=" btn btn-sportif pull-right" value="{{ submitButtonText }}"/>
+            <br clear="all"/>
+        </form>
+    </div> 
+
+{% endblock %}

@@ -1,0 +1,68 @@
+@font-face{
+  font-family:'VDS';
+  src : url('../font/VDS_New.ttf') ;
+    font-weight:normal;
+  font-style:norma
+}
+
+
+
+#bodyBloc {
+    background-image: url("../img/perso_sports.png");
+    /*background-attachment:absolute;*/
+    background-position:20% -90px;
+    /*background-size:contain;*/
+    background-repeat: no-repeat;
+}
+
+.generalConditionLinksBloc, .generalConditionLinksBloc a {
+    color: white;
+    text-align: center;
+}
+
+form input.input-block-level {
+    margin-bottom:6px;
+}
+
+.form-horizontal .control-group {
+    margin-bottom: 5px;
+}
+
+.carousel-indicators li {
+    background-color : rgba(0, 0, 0, 0.3);
+}
+
+.carousel-indicators li.active {
+    background-color : rgba(0, 0, 0, 0.85);
+}
+
+.carousel-caption {
+    font-variant: small-caps;
+    font-size: 25px;
+    font-weight: bold;
+    text-align: right;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.85);
+}
+
+.valign {
+  display:block;
+  position:absolute;
+  top: 50%;
+  height: 9px;
+  margin-top: -0.5em;
+}
+
+.box {
+    background: none repeat scroll 0 0 0474dd;
+    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5) inset;
+    border: none;
+    font-family: VDS;
+    font-size:16px;
+    /*padding: 10px 20px 20px;*/
+    color: white;
+    font-weight:normal;
+}
+
+.vds {
+    font-family: VDS;
+}

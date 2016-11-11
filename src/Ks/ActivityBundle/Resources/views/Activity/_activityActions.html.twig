@@ -1,0 +1,73 @@
+<span> 
+    <center>
+        {% include 'KsActivityBundle:Activity:_shareFacebookJs.html.twig' with { 'activity': activity } %}
+        {% include 'KsActivityBundle:Comment:_commentLink.html.twig' %}
+
+        {% if isLight is not defined or not isLight %}
+            {#% if activity.sport_codeSport is defined and activity.sport_codeSport is not null %}
+                {% include 'KsActivityBundle:Activity:_shareFacebookButton.html.twig' with { 'activity': activity } %}
+            {% endif %#}
+
+            {% if not (connectedActivity is defined and connectedActivity is not null and connectedActivity.type == "article") %}
+                <span id="shareBloc-{{ activity.id }}" class="actionsButtonBloc">
+                    {% if connectedActivity is not null %}
+                        {% set activityToBeShare = connectedActivity %}
+                    {% else %}
+                        {% set activityToBeShare = activity %}
+                    {% endif %}
+                    {% set shareFbEnabled = activity.sport_codeSport is defined and activity.sport_codeSport is not null ? true : false %}
+                    {% include 'KsActivityBundle:Activity:_shareLink.html.twig' with {'activity': activityToBeShare, "shareFbEnabled" : shareFbEnabled } %}
+                </span>
+            {% endif %}
+
+            {% if activity.source == 'Garmin' %}
+                {% include 'KsActivityBundle:Activity:_downloadLink.html.twig' with {'activity': activityToBeShare, "shareFbEnabled" : shareFbEnabled } %}
+            {% endif %}
+            
+            <span id="subscriptionBloc-{{ activity.id }}" class="actionsButtonBloc">
+                {% include 'KsActivityBundle:Activity:_subscriptionLink.html.twig' %}
+            </span>
+
+        {% endif %}
+
+        <span class="actionsButtonBloc">
+            {% include 'KsActivityBundle:Activity:_voteLink.html.twig' with {'isLight' : isLight}%}
+        </span>
+
+        {#% if isLight is not defined or not isLight %}
+            <span id="warnBloc-{{ activity.id }}" class="actionsButtonBloc">
+                {% include 'KsActivityBundle:Activity:_warnLink.html.twig' %}
+            </span>
+        {% endif %#}
+        {% set isClubManager = false %}
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% if clubManagers is defined %}
+                {% for user in clubManagers %}
+                    {% if user.id == app.user.id %}
+                        {% set isClubManager = true %}
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endif %}
+
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            {% if (activity.type == "session_endurance_under_water" or activity.type == "session_endurance_on_earth" or activity.type == "session_team_sport" or activity.type == "session") and ( activity.user_id == app.user.id or app.user.id == '1' or app.user.id == '7' or isClubManager )  %}
+                <a href="{{ path('ksSport_activitySessionForm', {'activityId' : activity.id}) }}" rel="tooltip" title="{{ "actions.edit"|trans }}" type="button" class="btn btn-mini btn-link link-sportif">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                </a>        
+            {% endif %}
+            {% if ( activity.user_id is defined and activity.user_id is not null and activity.user_id == app.user.id ) or isClubManager or app.user.id == '1' or app.user.id == '7' %}
+                <span type="button" class="btn btn-mini btn-link link-sportif" rel="tooltip" title="{{ "actions.delete"|trans }}" onclick="attachDeleteActivityEvent({{ activity.id }});" >
+                    <i class="glyphicon glyphicon-trash"></i>
+                </span>
+            {% endif %}
+        {% else %}
+            <a rel="tooltip" title="{{ "actions.edit"|trans }}" type="button" class="btn btn-mini btn-link link-sportif" onclick="showInformation('{{ 'actions.login-required'|trans }}');">
+                <i class="glyphicon glyphicon-pencil"></i>
+            </a>
+            <span type="button" class="btn btn-mini btn-link link-sportif" rel="tooltip" title="{{ "actions.delete"|trans }}" onclick="showInformation('{{ 'actions.login-required'|trans }}');">
+                <i class="glyphicon glyphicon-trash"></i>
+            </span>
+        {% endif %}
+    </center> 
+</span>

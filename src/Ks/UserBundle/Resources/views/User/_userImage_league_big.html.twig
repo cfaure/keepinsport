@@ -1,0 +1,39 @@
+{% if user_league_category is defined and user_league_category is not null %}
+    {% set leagueClass = user_league_category %}
+{% else %}
+    {% set leagueClass = "other" %}
+{% endif %}
+<div class="userAvatarBigBloc {{ leagueClass }}">
+    {#<span class="userBubble">#}
+        <a class="imageLink" rel="tooltip" title="{{ user_username }}" userId="{{ user_id }}" href="{{ path('ks_user_public_profile', { 'username' : user_username }) }}">
+            <div style="border:1px solid white">
+                {% include 'KsUserBundle:User:_userImage_big.html.twig' with { 'user_id' : user_id, 'user_imageName': user_imageName, 'user_league' : user_league_category } %}
+            </div>
+        </a>
+        {#<span class="bubble bubbleInLeagueBloc">
+        {% if is_granted("ROLE_USER") %}
+            {% render "KsUserBundle:User:bubbleInfos" with { 'userId' : user_id } %} 
+        {% endif %}    
+        </span>
+    </span>#}
+    {% if user_league_stars is defined and user_id != "1" %} 
+        {% if leagueClass != "other" %}
+            <span style="font-size:0.7em;">
+            {% if user_league_stars is defined %} 
+                {% if user_league_stars == 1 %} 
+                    <i class="icon-star"></i><i class="icon-star-empty"></i><i class="icon-star-empty"></i>
+                {% elseif user_league_stars == 2 %} 
+                    <i class="icon-star"></i><i class="icon-star"></i><i class="icon-star-empty"></i>
+                {% elseif user_league_stars == 3 %} 
+                    <i class="icon-star"></i><i class="icon-star"></i><i class="icon-star"></i>
+                {% else %}
+                    <i class="icon-star-empty"></i><i class="icon-star-empty"></i><i class="icon-star-empty"></i>
+                {% endif %}
+            {% endif %}
+            </span>
+        {% else %}
+             <img src="{{ asset('bundles/ksleague/img/nutella.png') }}" alt="Chocolate" rel="tooltip" title="Ligue nutella" data-placement="right"/>
+        {% endif %}
+    {% endif %}
+</div>
+            

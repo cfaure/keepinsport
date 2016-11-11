@@ -1,0 +1,101 @@
+<table class="table table-striped leaguesUsersTable {{ leagueCategoryLabel }}" >
+    <h3>{{ ("leagues." ~ leagueCategoryLabel)|trans|upper }} ({{ users|length }})</h3>
+    <thead class="tableHeader">
+        <tr class="success">
+            <td>#</td>
+            <td>{{ 'titles.sportman'|trans }}</td>
+            <td>
+                <center>
+                    {% if context == 'contest' %} 
+                        {% if delay < 0 %} 
+                            {{ 'shops.winners'|trans }}
+                        {% else %}
+                            {{ 'shops.chance'|trans }}
+                        {% endif %}
+                    {% else %} 
+                        {{ 'titles.points'|trans }}
+                    {% endif %}
+                </center>
+            </td>
+            {% if context == 'contest' and delay < 0 %}
+                <td>
+                    <center>{{ 'shops.shop'|trans }}</center>
+                </td>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, user in users %}
+            <tr>
+                <td>{{ key + 1 }}</td>
+                <td>
+                    {% include 'KsUserBundle:User:_userImage_league.html.twig' with {
+                        'withBubble' : true,
+                        'user_id' : user.id, 
+                        'user_username' : user.username, 
+                        'user_imageName': user.imageName, 
+                        'user_league_category' : user.leagueCategoryLabel,
+                        'user_league_stars' : user.leagueLevelStarNumber,
+                        'pack_id' : user.pack_id,
+                        'isActive' : user.isActive,
+                        'isCoach' : user.isCoach,
+                    } %}
+                </td>
+                <td>
+                    <center>
+                        <div class="nom-sportif">
+                            {{ user.username }}
+                            {% if context == 'contest' %} 
+                                {% if delay < 0 %}
+                                    {{ 'shops.has-won'|trans }} : 
+                                {% else %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </center>
+                    {% if leagueCategoryLabel == 'nutella' %}
+                        -
+                    {% else %}
+                        {% if context == 'contest' %}
+                            <center>
+                                {% if delay < 0 %} 
+                                    <span class="label label-{{ leagueCategoryLabel }}"> {{ user.gift }} </span>
+                                    <span style="font-size:0.8em">
+                                        ({{ ("months." ~ user.month )|trans }}  / {{ user.year }})
+                                    </span>
+                                    <br clear="all"/>
+                                    <br clear="all"/>
+                                    <span class="icon-quote-left"></span> {{ user.sentence }} <span class="icon-quote-right"></span>
+                                {% else %}
+                                    {% if user.chance is defined %}
+                                        <span class="label label-{{ leagueCategoryLabel }}">
+                                            {{ user.chance }}% <br/>({{ user.points }} points)
+                                        </span>
+                                    {% endif %}
+                                {% endif %}
+                            </center>
+                        {% else %}
+                            {% if user.points !=0 %} <span class="label label-{{ leagueCategoryLabel }}">{{ user.points }} points</span>{#<button type="button" class="btn btn-default btn-xs" title="">{{ user.points }} points</button>#}
+                            {% else %} <span class="label label-danger">{{ user.points }} points</span>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                    <br/>
+                </td>
+                {% if context == 'contest' and delay < 0 %}
+                    <td>
+                        {% set shop = user.shop %}
+                        {% include 'KsShopBundle:Shop:_shopImage_medium.html.twig' with { 
+                            'userId' : app.user.id,
+                            'shop_Id' : user.shop.id,
+                            'shop_imageName' : user.shop.avatar,
+                            'with_legend_overlay' : true,
+                            'with_href' : true,
+                            'with_tooltip' : true
+                        } %}
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

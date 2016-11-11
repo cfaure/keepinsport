@@ -1,0 +1,1678 @@
+{% extends "::layout_V2.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('V2/css/jquery.steps.css') }}">    
+    <style>
+        .radioLabel.label {
+            padding-left: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=places"></script>
+    <script type="text/javascript" src="{{ asset('V2/js/jquery.steps.js') }}"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            {% if edit %}
+                $("#headerV2").css("background-color","#fff");
+            {% else %}
+                $("#headerV2").css("background-color","#000");
+            {% endif %}
+            
+            {% if app.user.userDetail is defined and app.user.userDetail is not null %}
+                {% for sport in app.user.userDetail.sports %}
+                    {% if sport.sport is defined %}
+                        {% set sport = sport.sport %}
+                    {% endif %} 
+                    $("#sportCb_{{ sport.id }}").attr("checked", "checked");
+                    //$("#sportCb_{{ sport.id }}").iCheck("check");
+                {% endfor %}
+            {% endif %}
+        });
+    </script>
+    
+    {# onglet equipment #}
+    <script type="text/javascript" src="{{ asset('plugins/spectrum/spectrum.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksequipment/js/editEquipment.js') }}"></script>
+    <script>
+        var stringToBoolean = function(string){
+            switch(string.toLowerCase()){
+                    case "true": case "yes": case "1": return true;
+                    case "false": case "no": case "0": case null: return false;
+                    default: return Boolean(string);
+            }
+        }
+        
+        function attachAddOnEquipmentEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            else {
+                                showInformation("Cet équipement a bien été ajouté à ta liste !", "sportif");
+                                //$("#equipmentBloc").html('');
+                                //searchEquipments( 0, nbEquipmentsToLoadLimit );
+                                $( elt ).parent().html(data.addLink);
+                            }
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        
+        function attachDeleteEquipmentEvent(equipmentId, intCreationOrEdition) {
+            var callback = function() {
+                $.get(
+                    Routing.generate('ksEquipment_delete', {'equipmentId' : equipmentId}),
+                    function(data) {
+                        if (data.responseDelete == -1) modalInfo(data.errorMessage);
+                        else {
+                            showInformation("Ton matériel a bien été supprimé !<br> Rafraichissement en cours...", "sportif");
+                            $creationOrEdition = (intCreationOrEdition == 1 ? 'creation' : 'edition');
+                            document.location.href = Routing.generate('ksProfile_equipment', {'creationOrEdition' : $creationOrEdition})
+                            //$("#equipmentBloc").html(''); searchEquipments( 0, nbEquipmentsToLoadLimit ); FIXME FMO : ce rafraichissement donne un bug si on crée 2 équipements à la suite au niveau de l'image à importer :(
+                        }
+                    }
+                )
+            };
+
+            var message = "Tu es sur le point de supprimer ce matériel (action irréversible)<br/>Es-tu sûr de vouloir continuer ?";
+
+            askConfirmation(message, 'sportif', callback, null);
+            return false;
+        }
+        
+        function attachWishOnEquipmentEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.addLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        function attachRemoveWishOnEquipmentEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.addLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        
+        function attachEditEquipmentEvent(equipmentId) {
+            editEquipment(equipmentId);
+        }
+        
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            function refreshData() {
+            //Appeler sur click delete du fileupload div
+            }
+            
+            $('.fileUploadForm').fileupload({
+                acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+                maxNumberOfFiles : 1,
+                autoUpload: true
+            }).bind('fileuploaddone', function (e, data) {
+                setTimeout(function() {
+                    $(".fileuploadTable").show();
+                    //on récupère les photos téléchargées
+                    var uploadedPhotos = new Array();
+
+                    $.each($("tr.template-download"), function(key, templateDownload) {
+                        //console.log($( this ).attr("imgName"));
+                        uploadedPhotos.push( $( this ).attr("imgName") );
+                    });
+
+                    $.post(
+                        Routing.generate('ksProfile_changeAvatar'), 
+                        { 
+                            "uploadedPhotos" : uploadedPhotos
+                        },
+                        function(response) {
+                            if( response.response == 1 ) {
+                                $('.fileUploadForm').fileupload({
+                                    acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+                                    maxNumberOfFiles : 1,
+                                    autoUpload: true
+                                });
+                                $(".addFileButton").removeClass("disabled");
+                                $(".filesInputDl").removeClass("disabled");
+                                $(".filesInputDl").prop('disabled', false);
+                                //console.log(response.html);
+                                $(".avatarBloc").html(response.html);
+                                $("tr.template-download").html("");
+                                $(".fileuploadTable").hide();
+                            }
+                        }
+                    );
+                },1000);
+            });
+                
+            $("#body").addClass("home inscription2"); //pour activer le css correspondant
+            
+            $('#ProfileInformationsType_userDetail_bornedAt').prop('type', 'date'); //FIXME : pas réussi à faire sans cette rustine...
+            
+            $("#paymentPremiumBtn").click(function() {
+                if (!$("#paymentPremiumBtn").hasClass("disabled")) {
+                    $("#paymentPremiumBtn").addClass("disabled");
+                    addUserAction('payer', 'premium', false);
+                    var callbackYes = function () {
+                        $.post(
+                            Routing.generate('ksUser_setPremium'), 
+                            {
+                            },
+                            function(response) {
+                                if( response.response == 1 ) showInformation('{{ 'profile.premium-successful'|trans }}');
+                                else showInformation('{{ 'profile.premium-update'|trans }}');
+                                document.location.href = Routing.generate('ksAgenda_index', {"id" : {{ app.user.id }}});
+                            }
+                        );
+                    }
+                    var callbackNo = function () {
+                        //showInformation('{{ 'profile.premium-successful'|trans }}');
+                    };
+                    askConfirmation("{{ 'profile.ask-for-premium'|trans|raw }}", 'sportif', callbackYes, callbackNo);
+                }
+                $("#paymentPremiumBtn").removeClass("disabled");
+            });
+                        
+            $("#saveStep").click(function() {
+                //$currentStep = $("#form-etape-2").steps('getCurrentStep');
+                //if ($currentStep.title == 'Mes informations') $("#form-etape-2").steps('next');
+                $save = true;
+                $next = false;
+                $("#form-etape-2").steps('next');
+            });
+            
+            $edit = {{ edit }} == 1 ? true : false;
+            $save = false;
+            $next = false;
+            $("#form-etape-2").steps({
+                headerTag: "h3",
+                bodyTag: "section",
+                transitionEffect: "slideLeft",
+                saveState: true,
+                enableAllSteps: $edit,
+                onStepChanging : function(event, currentIndex, priorIndex) {
+                    //console.log(currentIndex);
+                    //console.log("edit="+$edit);
+                    //console.log("save="+$save);
+                    if (!$next && (!$edit || $save)) {
+                        if ( currentIndex == 0) {
+                            $("#alert").html("");
+                            $("#saveLoader").show();
+                            $("#saveStep").addClass("disabled");
+                            if ($("#fInformationsForm").valid()) {
+                                $.post(
+                                    Routing.generate('ksProfile_saveInformations'), 
+                                    $("#fInformationsForm").serialize(),
+                                    function(response) {
+                                        if (response.response == 1) {
+                                            $("#alert").addClass("alert alert-success");
+                                            $("#alert").html(response.message);
+                                            $next = true;
+                                            if (!$save) $("#form-etape-2").steps('next');
+                                        }
+                                        else {
+                                            $("#alert").addClass("alert alert-error");
+                                            $("#alert").html(response.errors[0]);
+                                        }
+                                        $("#saveLoader").hide();
+                                        $("#saveStep").removeClass("disabled");
+                                    }
+                                );
+                            }
+                            else {
+                                $("#saveLoader").hide();
+                                $("#saveStep").removeClass("disabled");
+                            }
+                        }
+                        else if ( currentIndex == 1) {
+                            $("#alert").html("");
+                            $("#saveLoader").show();
+                            $("#saveStep").addClass("disabled");
+                            if ($("#fAddressForm").valid()) {
+                                $.post(
+                                    Routing.generate('ksProfile_saveAddress'), 
+                                    $("#fAddressForm").serialize(),
+                                    function(response) {
+                                        if (response.response == 1) {
+                                            $("#alert").addClass("alert alert-success");
+                                            $("#alert").html(response.message);
+                                            $next = true;
+                                            if (!$save) $("#form-etape-2").steps('next');
+                                        }
+                                        else {
+                                            $("#alert").addClass("alert alert-error");
+                                            $("#alert").html(response.errors[0]);
+                                        }
+                                        $("#saveLoader").hide();
+                                        $("#saveStep").removeClass("disabled");
+                                    }
+                                );
+                            }
+                            else {
+                                $("#saveLoader").hide();
+                                $("#saveStep").removeClass("disabled");
+                            }
+                        }
+                        else if ( currentIndex == 2) {
+                            $("#alert").html("");
+                            $("#saveLoader").show();
+                            $("#saveStep").addClass("disabled");
+                            if ($("#fSportsForm").valid()) {
+                                
+                                var selectSports = $(".selectSports");
+                                var sportsSelected = selectSports.val() != null ? selectSports.val() : new Array();
+                                {% for sport in sports %}
+                                    if ($("#sportCb_{{ sport.id }}").is(":checked")) sportsSelected.push({{ sport.id }});
+                                    else sportsSelected.remove({{ sport.id }});
+                                {% endfor %}
+                                selectSports.val(sportsSelected);
+                                
+                                $.post(
+                                    Routing.generate('ksProfile_saveSports'), 
+                                    $("#fSportsForm").serialize(),
+                                    function(response) {
+                                        if (response.response == 1) {
+                                            $("#alert").addClass("alert alert-success");
+                                            $("#alert").html(response.message);
+                                            $next = true;
+                                            if (!$save) $("#form-etape-2").steps('next');
+                                        }
+                                        else {
+                                            $("#alert").addClass("alert alert-error");
+                                            $("#alert").html(response.errors[0]);
+                                        }
+                                        $("#saveLoader").hide();
+                                        $("#saveStep").removeClass("disabled");
+                                    }
+                                );
+                            }
+                            else {
+                                $("#alert").html("");
+                                $("#saveLoader").hide();
+                                $("#saveStep").removeClass("disabled");
+                            }
+                        }
+                        else return true;
+                    }
+                    else {//cas ou on a forcé un next avec $("#form-etape-2").steps('next');
+                        $next = false;
+                        return true;
+                    }
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) { 
+                    //console.log(currentIndex);
+                    if ($edit && currentIndex == 3) $("#saveStep").hide();
+                    else if ($edit && currentIndex != 3) $("#saveStep").show();
+                    
+                    if (currentIndex == 1) {
+                        $("#autocomplete").val($("#ProfileAdressesType_userDetail_full_address").val());
+                        
+                        var location = new google.maps.LatLng($("#fAddressForm").find(".latitude").val(), $("#fAddressForm").find(".longitude").val());
+                        map = new google.maps.Map(
+                        document.getElementById("map_canvas"), {
+                            mapTypeId: google.maps.MapTypeId.ROADMAP,
+                            center: location,
+                            zoom : 10,
+                        });
+
+                        marker = new google.maps.Marker({
+                            map     : map,
+                            position: location,
+                            draggable : false
+                        });
+
+                        marker.setPosition(location);
+                        map.setCenter(location);
+                        
+                        var dragFunction = function (event) {
+                            geocoder.geocode({'latLng': marker.getPosition()}, function(results, status) {
+                                if (status == google.maps.GeocoderStatus.OK) {
+                                    if (results[0]) {
+                                        //console.log(results[0]);
+                                        $("input[id$=latitude]").val(marker.getPosition().lat());
+                                        $("input[id$=longitude]").val(marker.getPosition().lng());
+                                        $("input[id$=country_area]").val(results[0].area);
+                                        $("input[id$=country_code]").val(results[0].countryCode);
+                                        $("input[id$=town]").val(results[0].town);
+                                        $("input[id$=full_address]").val(results[0].formatted_address);
+                                        $("input[id$=adress_name]").val(results[0].formatted_address);
+                                    }
+                                }
+                            }
+                        )};
+                        
+                        geocoder = new google.maps.Geocoder();
+
+                        //on cache les champs et les labels
+                        $("input[id$=longitude]").css("display","none");
+                        $("label[for$=longitude]").css("display","none");
+                        $("input[id$=latitude]").css("display","none");
+                        $("label[for$=latitude]").css("display","none");
+                        $("input[id$=town]").css("display","none");
+                        $("label[for$=town]").css("display","none");
+                        $("input[id$=country_area]").css("display","none");
+                        $("label[for$=country_area]").css("display","none");
+                        $("input[id$=country_code]").css("display","none");
+                        $("label[for$=country_code]").css("display","none");
+                        $("input[id$=full_address]").css("display","none");
+                        $("label[for$=full_address]").css("display","none");
+                        
+                        var autocomplete, marker;
+                        autocomplete = new google.maps.places.Autocomplete(
+                            /** @type {HTMLInputElement} */(document.getElementById('autocomplete')),
+                            { types: ['geocode'] });
+                        google.maps.event.addListener(autocomplete, 'place_changed', function() {
+                            fillInAddress();
+                            var place = autocomplete.getPlace();
+                            map = new google.maps.Map(document.getElementById("map_canvas"), { mapTypeId: google.maps.MapTypeId.ROADMAP, zoom : 10});
+        
+                            if (place.geometry.viewport) {
+                               map.fitBounds(place.geometry.viewport);
+                            } else {
+                               map.setCenter(place.geometry.location);
+                               map.setZoom(17);
+                            }
+                            marker = new google.maps.Marker({
+                                map     : map,
+                                position: place.geometry.location,
+                                draggable : false
+                            });
+                            marker.setPosition(place.geometry.location);
+                            $("input[id$=latitude]").val(marker.getPosition().lat());
+                            $("input[id$=longitude]").val(marker.getPosition().lng());
+                            $("input[id$=full_address]").val($("#autocomplete").val());
+                        });
+                        
+                        //google.maps.event.addListener(marker, 'drag', dragFunction, false); BUG !
+                        
+                        var componentForm = {
+                            street_number: 'short_name',
+                            route: 'long_name',
+                            locality: 'long_name',
+                            administrative_area_level_1: 'short_name',
+                            country: 'long_name',
+                            postal_code: 'short_name'
+                        };
+                        
+                        function fillInAddress() {
+                            // Get the place details from the autocomplete object.
+                            var place = autocomplete.getPlace();
+                            
+                            $("input[id$=town]").val("");
+                            $("input[id$=country_area]").val("");
+                            $("input[id$=country_code]").val("");
+                            
+                            // Get each component of the address from the place details
+                            // and fill the corresponding field on the sportsForm.
+                            for (var i = 0; i < place.address_components.length; i++) {
+                                var addressType = place.address_components[i].types[0];
+                                if (componentForm[addressType]) {
+                                    var val = place.address_components[i][componentForm[addressType]];
+                                    if (addressType == 'locality') $("input[id$=town]").val(val);
+                                    if (addressType == 'administrative_area_level_1') $("input[id$=country_area]").val(val);
+                                    if (addressType == 'country') $("input[id$=country_code]").val(val);
+                                }
+                            }
+                        }
+                    }
+                    else if (currentIndex == 2) {
+                        $('input').iCheck({
+                            checkboxClass: 'icheckbox_flat-blue',
+                            radioClass: 'iradio_flat-blue'
+                        });
+                        
+                        $('#sportsTable').DataTable({
+                            "retrieve": true,
+                            "bPaginate": false,
+                            "bFilter": false,
+                            "bInfo": false,
+                            //"fnDrawCallback" : function() {makeDraggable();}, //FMO : obligatoire car sinon seuls les sports cochés ou décochés de l'onglet courant uniquement sont pris en compte !
+                            "aoColumns": [null, { "bSortable": false }],
+                            "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+                        });
+                    }
+                    else if (currentIndex == 3) {
+                        $('input').iCheck({
+                            checkboxClass: 'icheckbox_flat-blue',
+                            radioClass: 'iradio_flat-blue'
+                        });
+                        
+                        $('.fileUploadForm').fileupload({
+                            acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+                            maxNumberOfFiles : 1,
+                            autoUpload: true
+                        });
+
+                        //Bouton pour créer un nouveau matériel
+                        $("#newButton").click(function() {
+                            editEquipment();
+                        }); 
+
+                        $("#searchInput").keyup( function () {
+                                $("#equipmentBloc").html('');
+                                searchEquipments( 0, nbEquipmentsToLoadLimit );
+                        });
+
+                        $("#filters").find("button").click(function() {
+                            $("#equipmentBloc").html('');
+
+                            //On attend 100 millisecondes car la classe active du bouton n'est pas encore setté
+                            //cf. http://stackoverflow.com/questions/13237238/twitter-bootstrap-checkbox-button-value-changed-after-click-event
+                            setTimeout(function() {
+                                searchEquipments( 0, nbEquipmentsToLoadLimit );
+                            },100);
+                        });
+
+                        $('input[type=checkbox][name=cdAllEquipments]').on('ifChanged', function(event){
+                            $("#equipmentBloc").html('');
+                            searchEquipments( 0, nbEquipmentsToLoadLimit );
+                        });
+
+                        $('input[type=checkbox][name=cbMySports]').on('ifChanged', function(event){
+                            $("#equipmentBloc").html('');
+                            searchEquipments( 0, nbEquipmentsToLoadLimit );
+                        });
+
+                        $('input[type=checkbox][name=cbWebEquipments]').on('ifChanged', function(event){
+                            $("#equipmentBloc").html('');
+                            searchEquipments( 0, nbEquipmentsToLoadLimit );
+                        });
+
+                        //On lance la recherche après le chargement
+                        searchEquipments( 0, nbEquipmentsToLoadLimit );
+
+                        {% if edit == false %}
+                            $('input[type=checkbox][name=cdAllEquipments]').iCheck('check');
+                        {% endif %}
+                    }
+                    else if (currentIndex == 4) {
+                        $('input').iCheck({
+                            checkboxClass: 'icheckbox_flat-blue',
+                            radioClass: 'iradio_flat-blue'
+                        });
+                        $("#saveStep").hide();
+                    }
+                },
+                onFinished: function (event, currentIndex) { 
+                    //console.log("finish");
+                    $("#saveLoader").show();
+                    $("#saveStep").addClass("disabled");
+                    //if ($("#fQuestionnaireForm").valid()) {
+                        //console.log("valid");
+                        $.post(
+                            Routing.generate('ksProfile_saveQuestionnaire'), 
+                            $("#fQuestionnaireForm").serialize(),
+                            function(response) {
+                                if (response.response == 1) {
+                                    $("#alert").addClass("alert alert-success");
+                                    $("#alert").html(response.message);
+                                    document.location.href = Routing.generate('ksAgenda_index', {"id" : {{ app.user.id }}});
+                                }
+                                else {
+                                    $("#alert").addClass("alert alert-error");
+                                    $("#alert").html(response.errors[0]);
+                                    //console.log("KO");
+                                }
+                                $("#saveLoader").hide();
+                                $("#saveStep").removeClass("disabled");
+                            }
+                        );
+                    //}
+                },
+                labels: {
+                    cancel: "Annuler",
+                    current: "Ongle actuel :",
+                    pagination: "Pagination",
+                    finish:  "{% if edit == true %} Enregistrer {% else %} Terminer {% endif %}",
+                    next:  "{% if edit == true %} Suivant {% else %} Suivant {% endif %}",
+                    previous: "Précédent",
+                    loading: "Chargement ..."
+                }
+            });
+            
+            $("#fInformationsForm").validate({
+                rules: {
+                    'username':"required",
+                    'ProfileInformationsType[userDetail][firstname]': "required",
+                    'ProfileInformationsType[userDetail][lastname]': "required",
+                    'ProfileInformationsType[email]': {
+                        required: true,
+                        email: true
+                    },
+                    'ProfileInformationsType[userDetail][bornedAt]': {
+                        required: false
+                    },
+                    'ProfileInformationsType[userDetail][weight]': "required",
+                    'ProfileInformationsType[userDetail][height]': "required",
+                    oldPassword: {
+                        required: false,
+                    },
+                    newPassword: {
+                        required: false,
+                        minlength: 5
+                    },
+                    newPasswordRepeat: {
+                        equalTo: "#newPassword"
+                    }
+                },
+
+                // Specify the validation error messages
+                messages: {
+                    'username': "Merci de renseigner ton nom d'utilisateur",
+                    'ProfileInformationsType[userDetail][firstname]': "Merci de renseigner ton prénom",
+                    'ProfileInformationsType[userDetail][lastname]': "Merci de renseigner ton nom",
+                    oldPassword: {
+                    },
+                    newPassword: {
+                        minlength: "Ton mot de passe doit faire au moins 5 caractères !",
+                    },
+                    newPasswordRepeat: {
+                        minlength: "Ton mot de passe doit faire au moins 5 caractères !",
+                        equalTo: "Les 2 mot de passe rentrés ne sont pas les mêmes !"
+                    },
+                    'ProfileInformationsType[email]': "Merci de rentrer une adresse mail valide",
+                    'ProfileInformationsType[userDetail][weight]' : "Merci de renseigner ton poids en kg",
+                    'ProfileInformationsType[userDetail][height]' : "Merci de renseigner ta taille en cm",
+                    'ProfileInformationsType[userDetail][bornedAt]' : "Merci de préciser ta date de naissance"
+                },
+
+                submitHandler: function(form) {
+                    form.submit();
+                }
+            });
+        });
+    </script>
+{% endblock %}        
+
+{% block title %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block body %}
+    {% render 'KsEquipmentBundle:Equipment:new_modal' %}
+    <!--WRAPPER-->
+    <div class="wrapper"> 
+        <!--bloc1-->
+        <div class="bloc1">
+            <div class="container">
+                {% if edit == false %}
+                    <h1>Félicitations {{ app.user.username }}, ton compte est maintenant activé.<br/><span>Merci de compléter les informations suivantes pour profiter pleinement du site !</span> </h1>
+                {% else %}
+                    <h1 class="title {% if app.user.isAllowedPackElite %}elite{% elseif app.user.isAllowedPackPremium %}premium{% else %}defis{% endif %}">
+                        Mon compte {% if app.user.isAllowedPackElite %}ELITE{% elseif app.user.isAllowedPackPremium %}PREMIUM{% else %}DEFIS{% endif %}
+                    </h1>
+                {% endif %}
+                <img class="accroche desktop" src="{{ asset('V2/images/accroche-bloc1-inscription.png') }}">
+                <span class="avatarBloc">
+                    {% include 'KsUserBundle:User:_userImage_medium.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                </span>
+                <!-- Form -->
+                <div class="container-bloc">
+                    
+                    {% if edit %}
+                        <div class="jqueryFileUpload">
+                            {% include 'KsImageBundle::index.html.twig' with {'uploadDirName' : 'users', 'context' : 'change-avatar'} %}
+                        </div>
+                    {% endif %}
+                    
+                    <div id="form-etape-2">
+                        <br/><center><div id="alert" class=""></div></center>
+                        <h3>Mes informations</h3>
+                        {% if choosenPack is defined and choosenPack is not null %}
+                            {% if choosenPack == 'elite' %}
+                                <div class="col-md-2">
+                                </div>
+                                <div class="col-md-8 pack">
+                                    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+                                        <div class="carousel-inner">
+                                            <div class="item active">
+                                                <h3 class="rouge">Récapitulatif de mon futur pack !</h3>
+                                                <div class="col-md-12 pack-table">
+                                                    <ul class="col-md-7">
+                                                        <li class="title title-pack rouge"><img src="{{ asset('V2/images/icon-elite.png') }}" title="Pack Elite"> Pack Elite</li>
+                                                        <li class="content">
+                                                            <ul>
+                                                                <li class="rouge"><b>Coaching sur mesure avec {{ choosenCoach|upper }}</b></li>
+                                                                <li>Import complet de l'historique de mes entraînements</li>
+                                                                <li>Synchronisation automatique de mes activités</li>
+                                                                <li>Accès au module de statistiques avancées</li>
+                                                                {% if choosenWatch is defined and choosenWatch is not null and choosenWatch != 'no' %}
+                                                                    <br>
+                                                                    <li><center><img src="{{ asset('V2/images/montre-' ~ choosenWatch ~ '-carrousel.png') }}" alt=""> <b>{{ choosenWatch }}</b></center></li>
+                                                                {% else %}
+                                                                    <br>
+                                                                    <center>
+                                                                        <span style="font-size: 1.3em!important" class="label label-gold">15% offert sur l'achat d'une montre !</span>
+                                                                    </center>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                {% endif %}
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="col-md-5">
+                                                        <li class="title title-paiement rouge">{{ choosenCoach|upper }}</li>
+                                                        <li class="content">
+                                                            {% if choosenPackOffer is defined and choosenPackOffer is not null %}
+                                                                <div class="radio">
+                                                                    <label class="">
+                                                                        <div class="iradio_flat-blue checked" style="position: relative;"><input type="radio" name="optionsRadios1" id="optionsRadios1" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">{{ choosenPackOffer }}</span></span> 
+                                                                    </label>
+                                                                </div>
+                                                            {% endif %}
+                                                                <br>
+                                                                <br>
+                                                            {% if choosenWatchOffer is defined and choosenWatchOffer is not null and choosenWatchOffer != 'default' %}
+                                                                <div class="radio">
+                                                                    <label class="">
+                                                                        <div class="iradio_flat-blue checked" style="position: relative;"><input type="radio" name="optionsRadios2" id="optionsRadios1" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">{{ choosenWatchOffer }}</span></span> 
+                                                                    </label>
+                                                                </div>
+                                                            {% endif %}
+                                                            <br>
+                                                            <center>
+                                                                <a type="button" class="btn btn-success {% if edit != 1 %}disabled{% endif %}" onclick="addUserAction('payer', 'elite', false);showInformation('Ta demande a bien été prise en compte, ton futur coach va te contacter par mail dès que tu auras rempli ton questionnaire coach (onglet n°5), à très vite :)');">PAYER CE PACK !</a>
+                                                                <br>
+                                                                <br>
+                                                                <a type="button" class="btn btn-primary {% if edit != 1 %}disabled{% endif %}" href="{{ path('ksOffers') }}">Modifier mon pack</a>
+                                                            </center>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!--/Carrousel-->
+                                    <br>
+                                    <br>
+                                    <br>
+                                </div>
+                                <div class="col-md-2">
+                                </div>
+                            {% endif %}
+                            {% if choosenPack == 'premium' %}
+                                <div class="col-md-2">
+                                </div>
+                                <div class="col-md-8 pack">
+                                    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <div class="item active">
+                                                <h3 class="vert">Récapitulatif de mon futur pack !</h3>
+                                                <div class="col-md-12 pack-table">
+                                                    <ul class="col-md-7">
+                                                        <li class="title title-pack vert"><img src="{{ asset('V2/images/icon-premium.png') }}" title="Pack Premium"> Pack Premium</li>
+                                                        <li class="content">
+                                                            <ul>
+                                                                <li class="vert"><b>Accès au module de plan d'entrainements clés en main</b></li>
+                                                                <li class="vert"><b>Import complet de l'historique de mes entraînements</b></li>
+                                                                <li>Synchronisation automatique de mes activités</li>
+                                                                <li>Accès au module de statistiques avancées</li>
+                                                                {% if choosenWatch is defined and choosenWatch is not null and choosenWatch != 'no' %}
+                                                                    <br>
+                                                                    <li><center><img src="{{ asset('V2/images/montre-' ~ choosenWatch ~ '-carrousel.png') }}" alt=""> <b>{{ choosenWatch }}</b></center></li>
+                                                                {% else %}
+                                                                    <br>
+                                                                    <center>
+                                                                        <span style="font-size: 1.3em!important" class="label label-gold">15% offert sur l'achat d'une montre !</span>
+                                                                    </center>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                {% endif %}
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="col-md-5">
+                                                        <li class="title title-paiement vert"></li>
+                                                        <li class="content">           
+                                                            {% if choosenPackOffer is defined and choosenPackOffer is not null %}
+                                                                {% if choosenPackOffer == 'default' %}{% endif %}
+                                                                <div class="radio">
+                                                                    <label class="">
+                                                                        <div class="iradio_flat-blue checked" style="position: relative;"><input type="radio" name="optionsRadios1" id="optionsRadios1" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">{{ choosenPackOffer }}</span></span> 
+                                                                    </label>
+                                                                </div>
+                                                            {% endif %}
+                                                                <br>
+                                                                <br>
+                                                            {% if choosenWatchOffer is defined and choosenWatchOffer is not null and choosenWatchOffer != 'default' %}
+                                                                <div class="radio">
+                                                                    <label class="">
+                                                                        <div class="iradio_flat-blue checked" style="position: relative;"><input type="radio" name="optionsRadios2" id="optionsRadios1" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">{{ choosenWatchOffer }}</span></span> 
+                                                                    </label>
+                                                                </div>
+                                                            {% endif %}
+                                                            <br>
+                                                            <center>
+                                                                <a id="paymentPremiumBtn" type="button" class="btn btn-success {% if edit != 1 %}disabled{% endif %}" onclick="showInformation('{{ 'profile.premium-update'|trans }}')">PAYER CE PACK !</a> 
+                                                            </center>
+                                                            <br>
+                                                            <center>
+                                                                <a type="button" class="btn btn-primary {% if edit != 1 %}disabled{% endif %}" href="{{ path('ksOffers') }}">Modifier mon pack</a>
+                                                            </center>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!--/Carrousel-->
+                                    <br>
+                                    <br>
+                                    <br>
+                                </div>
+                                <div class="col-md-2">
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            {% if edit != 0 and not app.user.isAllowedPackElite and not app.user.isAllowedPackPremium %}
+                                <div class="col-md-2">
+                                </div>
+                                <div class="col-md-8 pack">
+                                    <div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+                                        <div class="carousel-inner">
+                                            <div class="item active">
+                                                <h3 class="rouge">Tu veux bénéficier du suivi sur-mesure d’un coach professionnel ?</h3>
+                                                <div class="col-md-12 pack-table">
+                                                    <ul class="col-md-7">
+                                                        <li class="title title-pack rouge"><img src="{{ asset('V2/images/icon-elite.png') }}" title="Pack Elite"> Pack Elite</li>
+                                                        <li class="content">
+                                                            <ul>
+                                                                <li class="rouge"><b>Coaching sur mesure avec un professionnel</b></li>
+                                                                <li>Import complet de l'historique de mes entraînements</li>
+                                                                <li>Synchronisation automatique de mes activités</li>
+                                                                <li>Accès au module de statistiques avancées</li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="col-md-5">
+                                                        <li class="title title-paiement rouge">Tarifs selon le coach</li>
+                                                        <li class="content">           
+                                                            <div class="radio">
+                                                                <label class="">
+                                                                    <div class="iradio_flat-blue checked" style="position: relative;"><input type="radio" name="optionsRadios" id="optionsRadios1" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">90€/mois </span>sur 1 an
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio">
+                                                                <label class=""> 
+                                                                    <div class="iradio_flat-blue" style="position: relative;"><input type="radio" name="optionsRadios" id="optionsRadios2" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">100€/mois </span>sur 3 mois
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio">
+                                                                <label class=""> 
+                                                                    <div class="iradio_flat-blue" style="position: relative;"><input type="radio" name="optionsRadios" id="optionsRadios2" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">110€/mois </span>sur 1 mois
+                                                                </label>
+                                                            </div>
+                                                            <br>
+                                                            <a type="button" class="btn btn-primary" href="{{ path('ksOffers') }}">JE VEUX EN VOIR PLUS !</a>
+                                                            {#<a type="button" class="btn btn-primary" onclick="showInformation('Bientôt disponible !');">JE VEUX EN VOIR PLUS !</a>#}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div class="item">
+                                                <h3 class="vert">Tu veux bénéficier d'outils perfectionnés ?</h3>
+                                                <div class="col-md-12 pack-table">
+                                                    <ul class="col-md-7">
+                                                        <li class="title title-pack vert"><img src="{{ asset('V2/images/icon-premium.png') }}" title="Pack Premium"> Pack Premium</li>
+                                                        <li class="content">
+                                                            <ul>
+                                                                <li class="vert"><b>Accès au module de plan d'entrainements clés en main</b></li>
+                                                                <li class="vert"><b>Import complet de l'historique de mes entraînements</b></li>
+                                                                <li>Synchronisation automatique de mes activités</li>
+                                                                <li>Accès au module de statistiques avancées</li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                    <ul class="col-md-5">
+                                                        <li class="title title-paiement vert">A partir de 5€/mois</li>
+                                                        <li class="content">           
+                                                            <div class="radio">
+                                                                <label class="">
+                                                                    <div class="iradio_flat-blue checked" style="position: relative;"><input type="radio" name="optionsRadios" id="optionsRadios1" checked="" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">5€/mois</span><span style="font-size: 0.9em"> (1 mois <b>gratuit !</b>)</span>
+                                                                </label>
+                                                            </div>
+                                                            <div class="radio">
+                                                                <label class=""> 
+                                                                    <div class="iradio_flat-blue" style="position: relative;"><input type="radio" name="optionsRadios" id="optionsRadios2" style="position: absolute; opacity: 0;"><ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div><span class="bleu">50€/an</span><span style="font-size: 0.9em">(2 mois <b>offerts !</b>)</span>
+                                                                </label>
+                                                            </div>
+                                                            <br>
+                                                            <a type="button" class="btn btn-primary" href="{{ path('ksOffers') }}">JE VEUX EN VOIR PLUS !</a>
+                                                            {#<a type="button" class="btn btn-primary" onclick="showInformation('Bientôt disponible !');">JE VEUX EN VOIR PLUS !</a>#}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Indicators -->
+                                        <ol class="carousel-indicators">
+                                            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                                            <li data-target="#myCarousel" data-slide-to="1" class=""></li>   
+                                        </ol>
+                                    </div><!--/Carrousel-->
+                                    <br>
+                                    <br>
+                                    <br>
+                                </div>
+                                <div class="col-md-2">
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                        <section>
+                            <!--carousel-->
+                            {#<div id="myCarousel" class="carousel slide" data-ride="carousel">
+
+                                <div class="carousel-inner">
+                                    <div class="item active">
+                                        <h3 class="rouge">Tu veux bÃ©nÃ©ficier du suivi dâ€™un coach professionnel ?</h3>
+                                        <div class="col-md-12 pack-table">
+                                            <ul class="col-md-7">
+                                                <li class="title title-pack rouge"><img src="{{ asset('V2/images/icon-elite.png') }}" title="Pack Elite" /> Pack Elite</li>
+                                                <li class="content">
+                                                    <ul>
+                                                        <li>accÃ¨s au module de statistiques avancÃ©es</li>
+                                                        <li>historique de mes activitÃ©s sportives </li>
+                                                        <li>plans d'entrainements clÃ©s en main</li>
+                                                        <li>module comparateur de sÃ©ance</li>
+                                                        <li class="rouge">coaching sur mesure avec un coach professionnel</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                            <ul class="col-md-5">
+                                                <li class="title title-paiement rouge">Paiement initial de 49â‚¬</li>
+                                                <li class="content">           
+                                                    <div class="radio">
+                                                        <label>
+                                                            <input type="radio" name="optionsRadios" id="optionsRadios1" checked><span class="bleu">105â‚¬</span>/mois pendant <span class="bleu">1 an</span> 
+                                                        </label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label> 
+                                                            <input type="radio" name="optionsRadios" id="optionsRadios2"><span class="bleu">95â‚¬</span>/mois pendant <span class="bleu">6 mois</span> 
+                                                        </label>
+                                                    </div>
+                                                    <br/>
+                                                    <button type="button" class="btn btn-primary">JE CHOISI CE PACK !</button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <h3 class="vert">Tu veux bÃ©nÃ©ficier de statistiques personnalisÃ©es ?</h3>
+                                        <div class="col-md-12 pack-table">
+                                            <ul class="col-md-7">
+                                                <li class="title title-pack vert"><img src="{{ asset('V2/images/icon-premium.png') }}" title="Pack Premium" /> Pack Premium</li>
+                                                <li class="content">
+                                                    <ul>
+                                                        <li>accÃ¨s au module de statistiques avancÃ©es</li>
+                                                        <li>historique de mes activitÃ©s sportives </li>
+                                                        <li>plans d'entrainements clÃ©s en main</li>
+                                                        <li>module comparateur de sÃ©ance</li>
+                                                        <li class="vert">coaching sur mesure avec un coach professionnel</li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                            <ul class="col-md-5">
+                                                <li class="title title-paiement vert">Paiement initial de 29â‚¬</li>
+                                                <li class="content">           
+                                                    <div class="radio">
+                                                        <label>
+                                                            <input type="radio" name="optionsRadios" id="optionsRadios1" checked><span class="bleu">105â‚¬</span>/mois pendant <span class="bleu">1 an</span> 
+                                                        </label>
+                                                    </div>
+                                                    <div class="radio">
+                                                        <label> 
+                                                            <input type="radio" name="optionsRadios" id="optionsRadios2"><span class="bleu">95â‚¬</span>/mois pendant <span class="bleu">6 mois</span> 
+                                                        </label>
+                                                    </div>
+                                                    <br/>
+                                                    <button type="button" class="btn btn-primary">JE CHOISI CE PACK !</button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Indicators -->
+                                <ol class="carousel-indicators">
+                                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                                    <li data-target="#myCarousel" data-slide-to="1"></li>   
+                                </ol>
+                            </div><!--/Carrousel-->#}
+                            
+                            <form id="fInformationsForm" class="form-horizontal" action="" method="post" {{ form_enctype(informationsForm) }}>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="username">Nom d'utilisateur<span class="text-info"></span></label>
+                                            <div class="controls">
+                                                <input type="text" name="username" value="{{ app.user.username }}" id="username" class="form-control"/>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.firstname, 'users.profil_firstname', {'attr': {'class' : 'control-label'} }) }}
+                                                <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.firstname, {attr : {class: "form-control"} }) }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.lastname, 'users.profil_lastname', {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.lastname, {attr : {class: "form-control"} }) }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.email, 'Email' , {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.email, {attr : {class: "form-control"} }) }}
+                                            </div>
+                                        </div>        
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.bornedAt, 'users.profil_borned_at', {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.bornedAt, { attr: { class:"form-control"} }) }}    
+                                            </div>
+                                        </div>
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.weight, 'users.profil_weight', {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.weight, { attr: { class:"form-control"} }) }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.height, 'users.profil_height' , {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.height, { attr: { class:"form-control"} }) }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.sexe, 'users.profil_sexe' , {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.sexe, { attr: { class:"form-control"} }) }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.HRRest, 'hr.rest'|trans , {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.HRRest, { attr: { class:"form-control"} }) }}
+                                            </div>
+                                        </div>
+                                            
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.HRMax, 'hr.max'|trans , {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.HRMax, { attr: { class:"form-control"} }) }}
+                                            </div>
+                                        </div>    
+                                            
+                                        <div class="control-group">
+                                            {{ form_label(informationsForm.userDetail.VMASpeed, 'coaching.VMASpeed'|trans , {'attr': {'class' : 'control-label'} }) }}
+                                            <div class="controls">
+                                                {{ form_widget(informationsForm.userDetail.VMASpeed, { attr: { class:"form-control"} }) }}
+                                            </div>
+                                        </div>
+                                        
+                                        {% if informationsForm.godFather %}
+                                            
+                                            <div class="control-group">
+                                                {{ form_label(informationsForm.godFather, 'Parrain' , {'attr': {'class' : 'control-label'} }) }}
+                                                <div class="controls">
+                                                    {{ form_widget(informationsForm.godFather, { attr: { class:"form-control"} }) }}
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                {% if edit %}
+                                    <div class="row">                                    
+                                        <div class="col-md-6">
+                                            <div class="control-group">
+                                                <label class="control-label" for="oldPassword">Ancien mot de passe</label>
+                                                <div class="controls">
+                                                   <input type="text" name="oldPassword" id="oldPassword" class="form-control"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="control-group">
+                                                <label class="control-label" for="newPassword">Nouveau mot de passe</label>
+                                                <div class="controls">
+                                                   <input type="text" name="newPassword" value="" id="newPassword" class="form-control"/>
+                                                </div>
+                                            </div>
+
+                                            <div class="control-group">
+                                                <label class="control-label" for="newPasswordRepeat">Répéter</label>
+                                                <div class="controls">
+                                                   <input type="text" name="newPasswordRepeat" value="" id="newPasswordRepeat" class="form-control"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                                {{ form_rest(informationsForm) }}
+                            </form>
+                            {#<div class="mentions"> : obligatoire<br/> : recommandé pour le calcul automatique des points </div>#}
+                        </section>
+
+                        <h3>Mon adresse</h3>
+                        <section class="adresse">
+                            {#<div class="alert alert-info">{{'users.message_page_edition_adresse1'|trans}}</div>#}
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon"><span class="glyphicon glyphicon-globe"></span></div>
+                                    <input class="form-control" id="autocomplete" type="text" placeholder="Mon adresse">
+                                </div>
+                            </div>
+                                
+                            <form id="fAddressForm" class="form-horizontal" action="{" method="post" {{ form_enctype(addressForm) }}>
+                                <center>
+                                    <div>
+                                        <!-- Génération du label. -->
+                                        {{ form_label(addressForm.userDetail.full_address, 'users.profil_full_address') }}
+
+                                        <!-- Affichage des erreurs pour ce champ précis. -->
+                                        {{ form_errors(addressForm.userDetail.full_address ) }}
+
+                                        <!-- Génération de l'input. -->
+                                        {{ form_widget(addressForm.userDetail.full_address) }}
+                                        <br clear="all"/>
+                                        <br clear="all"/>
+                                    </div>
+                                    {{ google_map_container(map) }}
+                                    {{ google_map_css(map) }}
+                                </center>
+
+                                <div>
+                                    <!-- Génération du label. -->
+                                    {{ form_label(addressForm.userDetail.country_area, 'users.profil_country_area') }}
+
+                                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                                    {{ form_errors(addressForm.userDetail.country_area ) }}
+
+                                    <!-- Génération de l'input. -->
+                                    {{ form_widget(addressForm.userDetail.country_area) }}
+                                </div> 
+
+                                <div>
+                                    <!-- Génération du label. -->
+                                    {{ form_label(addressForm.userDetail.country_code,  'users.profil_country_code' ) }}
+
+                                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                                    {{ form_errors(addressForm.userDetail.country_code ) }}
+
+                                    <!-- Génération de l'input. -->
+                                    {{ form_widget(addressForm.userDetail.country_code) }}
+                                </div>
+
+                                <div>
+                                    <!-- Génération du label. -->
+                                    {{ form_label(addressForm.userDetail.town, 'users.profil_town' ) }}
+
+                                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                                    {{ form_errors(addressForm.userDetail.town ) }}
+
+                                    <!-- Génération de l'input. -->
+                                    {{ form_widget(addressForm.userDetail.town) }}
+                                </div> 
+
+                                <div>
+                                    <!-- Génération du label. -->
+                                    {{ form_label(addressForm.userDetail.longitude, 'users.profil_longitude' ) }}
+
+                                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                                    {{ form_errors(addressForm.userDetail.longitude ) }}
+
+                                    <!-- Génération de l'input. -->
+                                    {{ form_widget(addressForm.userDetail.longitude, { attr: { class:"longitude"} }) }}
+                                </div>    
+
+                                <div>
+                                    <!-- Génération du label. -->
+                                    {{ form_label(addressForm.userDetail.latitude, 'users.profil_latitude' ) }}
+
+                                    <!-- Affichage des erreurs pour ce champ pr�cis. -->
+                                    {{ form_errors(addressForm.userDetail.latitude ) }}
+
+                                    <!-- Génération de l'input. -->
+                                    {{ form_widget(addressForm.userDetail.latitude, { attr: { class:"latitude"} }) }}
+                                </div>
+                                <br clear="all"/>
+                                <div class="alert alert-info">{{'users.message_page_edition_adresse2'|trans}} </div>
+
+                                {{ form_rest(addressForm) }}
+                            </form>
+                        </section>
+
+                        <h3>Mes sports</h3>
+                        <section>
+                            <form id="fSportsForm" class="form-horizontal" action="" method="post" {{ form_enctype(sportsForm) }}>
+                                <div class="control-group">
+                                    {{ form_label(sportsForm.userDetail.description, 'users.my_sport_goals'|trans, {'attr': {'class' : 'control-label'} }) }}
+                                    <div class="controls">
+                                        {{ form_widget(sportsForm.userDetail.description, {'attr': {'class' : 'form-control', 'style' : 'resize: none;width:98%'} }) }}
+                                    </div>
+                                </div>
+                                
+                                <div class="control-group">
+                                    {{ form_label(sportsForm.userDetail.sports, 'users.my_favorite_sports'|trans, {'attr': {'class' : 'control-label'} }) }}
+                                    <div class="controls">
+                                        {{ form_widget(sportsForm.userDetail.sports, { attr: {class : "selectSports", style: "display:none"} } ) }}
+
+                                        <table id="sportsTable" class="table table-bordered table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <td>Sport</td>
+                                                    <td>Sélection</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for sport in sports %}
+                                                    {% if asset('V2/images/sports/' ~ sport.codeSport ~ '.png')|issetImg %}
+                                                        <tr>
+                                                            <td style="background-image: url('{{ asset('V2/images/sports/' ~ sport.codeSport ~ '.png') }}'); background-repeat: no-repeat;height: 20px;padding-left:30px;padding-top:13px">
+                                                                {{ ("sports." ~ sport.codeSport)|trans }}     
+                                                            </td>
+                                                            <td>
+                                                                <input class="sportCb" id="sportCb_{{ sport.id }}" type="checkbox" sportId="{{ sport.id }}"/>
+                                                            </td>
+                                                        </tr>
+                                                     {% endif %}
+                                                {% endfor %}
+                                            </tbody>
+                                        </table> 
+                                    </div>
+                                </div>
+                                {{ form_rest(sportsForm) }}
+                                <div class="alert alert-info">{{'users.message_page_edition_sports'|trans}} </div>
+                            </form>
+                        </section>
+                        
+                        <h3>Mon équipement</h3>
+                        <section>
+                            <div class="alert alert-info">{{'equipment.message_page_edition_equipement'|trans}} </div>
+                            <div class="row-fluid">
+                                <div class="col-md-6">
+                                    <div class="input-prepend pull-left">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+                                                <input id="searchInput" class="form-control" type="text" rel="tooltip" title="{{ 'equipment.search-by'|trans }}" placeholder="{{ 'equipment.search-tooltip'|trans }}">
+                                            </div>
+                                        </div> 
+
+                                    </div>
+                                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                        
+                                        <label class="pull-left" style="margin-top:2px;margin-left:30px">
+                                            <span class="pull-left" style="margin-right:2px">
+                                                <div>
+                                                    <input type="checkbox" name="cdAllEquipments">
+                                                </div>
+                                            </span>
+                                            <span class="pull-left">{{ 'equipment.all-equipment'|trans }}</span>
+                                        </label>
+                                        
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6" style="text-align:right">
+                                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                        <span id="newButton" class="btn btn-success" style="margin-left:25px"> + {{ 'equipment.new-equipment'|trans }}</span>
+                                    {% endif %}
+                                </div>        
+                            </div>
+                            
+                            <br clear="all"/>
+
+                            <div id="equipmentBloc">
+                            </div>
+                            <br clear="all"/>
+                            <center><img id="moreResultsLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none"></center>
+                            <br clear="all"/>
+                            
+                            <div id="scrollForMoreResultsBloc"class="alert"  style="display:none">
+                                <center>{{ 'equipment.more-equipment'|trans }}  (<span class="nb"></span> {{ 'equipment.missing'|trans }}) <img style="height:20px" src="{{ asset('img/scroll_brown.png') }}" alt="scroll"></center>
+                            </div>
+                            <div id="searchOverBloc" class="alert alert-info"  style="display:none">
+                                <center>{{ 'equipment.all-equipments-loaded'|trans }}</center>
+                            </div>
+                            <div id="0searchOverBloc" class="alert alert-info"  style="display:none">
+                                <center>{{ 'equipment.no-match'|trans }}</center>
+                            </div>
+                        </section>
+
+                        <h3>Questionnaire Coach</h3>
+                        <section>
+                            <form id="fQuestionnaireForm" class="form-horizontal" action="" method="post" {{ form_enctype(questionnaireForm) }}>
+                                <div class="panel-group" id="accordion">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> <span class="number">1</span> Informations complémentaires</a> </h4>
+                                        </div>
+                                        <div id="collapseOne" class="panel-collapse collapse in">
+                                            <div class="panel-body">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Téléphone</label>
+                                                            {{ form_widget(questionnaireForm.userDetail.phone, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Profession</label>
+                                                            {{ form_widget(questionnaireForm.userDetail.occupation, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Impératifs familiaux ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.familyConstraint, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Contraintes professionnelles ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.occupationConstraint, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Personne à contacter en cas d'urgence</label>
+                                                            {{ form_widget(questionnaireForm.userDetail.contactEmergency, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseTwo"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"> <span class="number">2</span> Santé </a> </h4>
+                                        </div>
+                                        <div id="collapseTwo" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Es-tu suivi médicalement</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.medicalFollow) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Si oui, penses tu être bien entouré médicalement ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.medicalFollowingOK) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Médecin du sport ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.sportDoctor) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Ostéo ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.osteo) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Kiné ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.kine) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Podo ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.podo) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Actuellement sous traitement :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.medicalMonitoring) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Allergies :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.allergies) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>As-tu fait un test d'effort récemment ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.effortTest) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Informations supplémentaires </label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.medicalMisc, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseThree"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                                        </div>
+                                    </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"> <span class="number">3</span> Matériel </a> </h4>
+                                        </div>
+                                        <div id="collapseThree" class="panel-collapse collapse">
+                                            <div class="panel-body"> 
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Chaussures :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.shoes, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Sac :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.bags, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Cardio :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.HR, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Vélo :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.bikes, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>               
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Autres</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.equipmentMisc, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Licencié :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.license, { attr: {class : "", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                </div>                  
+                                            </div>
+                                            <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseFour"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                                        </div>
+                                    </div><!--Fin panneau-->
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour"> <span class="number">4</span> Passé sportif </a> </h4>
+                                        </div>
+                                        <div id="collapseFour" class="panel-collapse collapse">
+                                            <div class="panel-body"> 
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Sports pratiqués :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.mySports, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Niveau :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.sportLevel, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Palmarès :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.achievement, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Blessures :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.injuries, { attr: {class : "", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Si oui, soigner de quelles manières ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.injuriesTreat, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseFive"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                                        </div>
+                                    </div><!--Fin panneau-->
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"> <span class="number">5</span> Présent </a> </h4>
+                                        </div>
+                                        <div id="collapseFive" class="panel-collapse collapse">
+                                            <div class="panel-body"> 
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Nombre d'heures d'entraînement par semaine :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.workoutHours, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Entraînement croisé ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.crossWorkout, { attr: {class : "", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Si oui, quelles activités ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.crossWorkouts, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>De quelle manière est ton entraînement actuellement ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.workoutDesc, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Semaine type :</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.workoutWeek, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Points forts</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.strongPoints, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Point faibles ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.weakPoints, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Blessures récurrentes ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.regularInjuries, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <a data-toggle="collapse" data-parent="#accordion" class="suite" href="#collapseSix"><i class="glyphicon glyphicon-chevron-right"></i> Suite</a>
+                                        </div>
+                                    </div><!--Fin panneau-->
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix"> <span class="number">6</span> A propos du coaching </a> </h4>
+                                        </div>
+                                        <div id="collapseSix" class="panel-collapse collapse">
+                                            <div class="panel-body"> 
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>As-tu un coach ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.gotCoach, { attr: {class : "", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Si non, en souhaites tu un ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.wantCoach, { attr: {class : "", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Si oui, pourquoi ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.whyCoach, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Qu'est ce qui pourraient t'empêcher de réaliser tes objectifs ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.goalsImpediment, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Parmi ceux-ci, peut on en supprimer ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.goalsImpedimentDrop, { attr: {class : "", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Si oui, comment ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.goalsImpedimentManage, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="controls">
+                                                            <label>Si tu devais lister les priorités dans ta vie, à quel rang placerais tu tes objectifs sportifs ?</label>
+                                                            <br/>
+                                                            {{ form_widget(questionnaireForm.userDetail.goalsRank, { attr: {class : "form-control", style: ""} } ) }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!--fin panneau-->
+                                </div>
+                                {{ form_rest(questionnaireForm) }}
+                            </form>
+                        </section>
+                    </div>
+                </div><!--/form-->
+                {% if edit == true %}
+                    <div class="row-fluid">
+                        <div class="col-md-12">
+                            <img id="saveLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none">
+                            <span id="saveStep" class="btn btn-success">Enregistrer</span>
+                        </div>
+                    </div>
+                {% endif %}
+            </div><!--/.container-->
+        </div><!--/bloc1-->
+        
+    </div>
+<!--END WRAPPER-->
+{% endblock %}
+
+        

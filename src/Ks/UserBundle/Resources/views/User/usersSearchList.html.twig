@@ -1,0 +1,107 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %} 
+     {% if string != ""  %}
+         {% if users != null  %}
+        {{ 'users.listUsersSearch'|trans }} <span class="italic">{{ string }}</span> 
+        <table id="userList" class="records_list">
+            <thead>
+                <tr>
+                    {% if userDetailInfos %}
+                        <th>{{ 'users.profil_lastname'|trans }}</th>
+                        <th>{{ 'users.profil_firstname'|trans }}</th>
+                        <th>{{ 'users.profil_proximite_km'|trans }}</th>
+                    {% endif %}
+                    <th>{{ 'users.username'|trans }}</th>
+                    <th>{{ 'users.last_login'|trans }}</th>
+                    <th>{{ 'users.actions'|trans }}</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for key, user in users %}
+                <tr> 
+                     {% if userDetailInfos %}
+                        {% if user.userDetail != null  %}
+                            <td>{{ user.userDetail.firstname }} </td>
+                            <td>{{ user.userDetail.lastname }}</td>
+                        {% endif %}
+                        {% if user.proximite != null  %}
+                            <td>{{ user.proximite }} </td>
+                        {% endif %} 
+                    {% endif %}    
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.lastLogin|date('d/m/Y H:i:s') }}</td>
+                    <td>
+                        {% if user.id != 1 and user.username != "keepinsport" %}
+                            {% if aUsers %}
+                            <ul>
+                                {% if not aUsers[key]['friendWithMe'] and not aUsers[key]['isAwaitingRequestFriendResponse']  and not aUsers[key]['mustGiveRequestFriendResponse'] %}
+                                    {% if user.id != connectedUserId %}
+                                        <li>                 
+                                            <a class="toggleConfirm" title="{{ 'modal.ask_friend_request_modal_title'|trans }}{{ user.username }}" confirm_message="{{ 'modal.ask_friend_request_confirmation_message'|trans }}{{ user.username }}" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': user.id }) }}">
+                                                {{ 'users.ask_a_friend'|trans }}
+                                            </a>
+                                        </li>
+
+                                    {% endif %}
+                                {% else %}
+                                    {% if aUsers[key]['mustGiveRequestFriendResponse'] %}
+                                        <li>
+                                            <a class="toggleConfirm" title="{{ 'modal.accept_a_friend_request_modal_title'|trans }}{{ user.username }}" confirm_message="{{ 'modal.accept_a_friend_request_confirmation_message'|trans }}{{ user.username }}" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': user.id }) }}">
+                                                {{ 'users.accept_a_friend_request'|trans }}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="toggleConfirm" title="{{ 'modal.refuse_a_friend_request_modal_title'|trans }}{{ user.username }}" confirm_message="{{ 'modal.refuse_a_friend_request_confirmation_message'|trans }}{{ user.username }}" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': user.id }) }}">
+                                                {{ 'users.refuse_a_friend_request'|trans }}
+                                            </a>
+                                        </li>
+                                    {% elseif aUsers[key]['isAwaitingRequestFriendResponse'] %}
+                                        {{ 'users.friend_request_awaiting'|trans }}<br/>
+                                        <li>
+                                            <a class="toggleConfirm" title="{{ 'modal.cancel_the_friend_request_modal_title'|trans }}{{ user.username }}" confirm_message="{{ 'modal.cancel_the_friend_request_confirmation_message'|trans }}{{ user.username }}" href="{{ path('ks_user_Cancel_the_friend_request', { 'user2Id': user.id }) }}">
+                                                {{ 'users.cancel_the_friend_request'|trans }}
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a class="toggleConfirm" title="{{ 'modal.revoke_a_friend_request_modal_title'|trans }}{{ user.username }}" confirm_message="{{ 'modal.revoke_a_friend_request_confirmation_message'|trans }}{{ user.username }}" href="{{ path('ks_user_Revoke_a_friend', { 'user2Id': user.id }) }}">
+                                                {{ 'users.revoke_a_friend'|trans }}
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                {% endif %}
+                            </ul>
+                            {% endif %}  
+                        {% endif%}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p class="alert alert-info">
+            {{ 'users.search_nousers'|trans }}    
+            <p>   
+               <div>
+                    <a href="{{ path('ksFriends_invite') }}">
+                        {{ 'users.send_an_invit_to_friend_by_mail'|trans }}
+                    </a>
+               </div>  
+                <div>
+                    <a href="https://accounts.google.com/o/oauth2/auth?client_id=221396145208.apps.googleusercontent.com&amp;redirect_uri=http://local.keepinsport.com/app_dev.php/ks/send_an_invit_to_friend_by_address_book&amp;scope=https://www.google.com/m8/feeds/&amp;response_type=code">  
+                       {{ 'users.send_an_invit_to_friend_by_address_book'|trans }}
+                    </a>
+                </div>             
+        {% endif %}  
+    {% else %}
+        <p class="warning">
+           {{ 'users.search_nostring'|trans }}    
+        <p>    
+    {% endif %}    
+</script>
+{% endblock %}

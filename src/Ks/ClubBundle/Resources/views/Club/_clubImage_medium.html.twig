@@ -1,0 +1,7 @@
+{% if club_avatar is not defined or club_avatar is null or not asset('img/clubs/' ~ club_id ~ '/original/' ~ club_avatar)|issetImg %}
+    <img style="" src="{{ asset('bundles/ksclub/images/no_avatar_ks_128x128.png') }}" alt="Pas d'avatar" />
+{% else %}
+    {#<img class="userImage" src="{{ asset('uploads/images/clubs/' ~ club_id ~ '/resize_48x48/' ~ club_avatar) }}" alt="{{ club_name}}" />#}
+    <img src="{{ asset('img/clubs/' ~ club_id ~ '/original/' ~ club_avatar) }}" alt="{{ club_name}}" />
+{% endif %}
+

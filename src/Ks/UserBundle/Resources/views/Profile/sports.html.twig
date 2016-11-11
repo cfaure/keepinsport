@@ -1,0 +1,228 @@
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "KsUserBundle::layout_full.html.twig" %}
+{% else %}
+    {% set extends = "KsUserBundle::layout_3_9.html.twig" %}    
+{% endif %}
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/createNewSport.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+             $('#sportsTable').dataTable({
+                 "aoColumns": [
+                    null,
+                    { "bSortable": false }
+                ],
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });
+            
+            $("#newButton").click(function() {
+                createNewSport("{{ creationOrEdition }}");
+            });
+        });
+    </script>
+    <script type="text/javascript">
+                
+        $(function() {
+            var previous = $("#sportsTable").text();
+            $check = function() {
+                if ($("#sportsTable").text() != previous) {
+                    refreshTable();
+                }
+                previous = $("#sportsTable").text();        
+            }
+            setInterval(function() { $check(); }, 500);
+        });
+
+        function refreshTable() {
+            {% for sport in app.user.userDetail.sports %}
+                {% if sport.sport is defined %}
+                    {% set sport = sport.sport %}
+                {% endif %} 
+                $("#sportCb_{{ sport.id }}").attr("checked", "checked");
+            {% endfor %}
+            $(".sportCb").click(function() {
+                var selectSports = $(".selectSports");
+                var sportId = $( this ).attr("sportId");
+                var sportsSelected = selectSports.val() != null ? selectSports.val() : new Array();
+                if ( $( this ).is(':checked') ) {                                  
+                    sportsSelected.push(sportId);          
+                } else {
+                    sportsSelected.remove(sportId);
+                }
+                selectSports.val(sportsSelected);
+            });
+            /*
+             * obligatoire le submit() pour bien sauvegarder toutes les modifs effectuées en cours de route
+             * Exemple s'il recherche un sport, qu'il coche ou décoche des sports et 
+             * qu'il refait une nouvelle recherche il ne faut pas perdre les choix précédents !
+             */
+            $("#ksProfile_sports").submit(); 
+        }
+    
+        $(document).ready(function() {
+            {% for sport in app.user.userDetail.sports %}
+                {% if sport.sport is defined %}
+                    {% set sport = sport.sport %}
+                {% endif %} 
+                $("#sportCb_{{ sport.id }}").attr("checked", "checked");
+            {% endfor %}
+            $(".sportCb").click(function() {
+                var selectSports = $(".selectSports");
+                var sportId = $( this ).attr("sportId");
+                var sportsSelected = selectSports.val() != null ? selectSports.val() : new Array();
+                if ( $( this ).is(':checked') ) {                                  
+                    sportsSelected.push(sportId);          
+                } else {
+                    sportsSelected.remove(sportId);
+                }
+                selectSports.val(sportsSelected);
+            });    
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+    {% render 'KsUserBundle:Profile:new_modal' %}
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        {% include 'KsUserBundle:Profile:_breadcrumb.html.twig' with {'step': 4, 'creationOrEdition' : creationOrEdition} %}
+        {% set submitButtonText = "Etape suivante" %}
+    {% else %}
+        <h1 class="sportif">{{ 'menu.my-profile'|trans }}</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ks_user_public_profile', {'username' : app.user.username}) }}">
+                    <span class="avatarBloc">
+                        {% set user_imageName = null %}
+                        {% if app.user.userDetail is not null %}
+                            {% set user_imageName = app.user.userDetail.imageName %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                 {% include 'KsUserBundle:Profile:_buttons.html.twig' with{'creationOrEdition' : creationOrEdition } %}
+            </div>
+        </div>
+        <br/>
+        {% set submitButtonText = 'users.save'|trans %}
+    {% endif %}
+    
+    <div class="blocHeaderSeparator"></div>
+    
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="sportif">{{'users.my_sports'|trans}}</h3>
+        <div class="blocHeaderSeparator"></div>
+        
+        <form name="ksProfile_sports" class="form-horizontal" action="{{ path('ksProfile_sports', {'creationOrEdition' : creationOrEdition}) }}" method="post" {{ form_enctype(form) }}>
+            <div class="control-group {% if post %}{% if errors.userDetail.description is defined and errors.userDetail.description is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.userDetail.description, 'users.my_sport_goals'|trans, {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.userDetail.description, {'attr': {'style' : 'resize: none;width:98%'} }) }}
+                    <span class="help-inline">
+                        {% if errors.userDetail.description is defined and errors.userDetail.description is not null %}
+                            {% for key, error in errors.userDetail.description %}
+                                {{ error }}
+                                {% if key < errors.userDetail.description|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+            <div class="control-group {% if post %}{% if errors.userDetail.sports is defined and errors.userDetail.sports is not null %}error{% else %} success{% endif %}{% endif %}">
+                {{ form_label(form.userDetail.sports, 'users.my_favorite_sports'|trans, {'attr': {'class' : 'control-label'} }) }}
+                <div class="controls">
+                    {{ form_widget(form.userDetail.sports, { attr: {class : "selectSports", style: "display:none"} } ) }}
+
+                    <table id="sportsTable" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <td>Sport</td>
+                                <td>Sélection</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sport in sports %}
+                                {% if asset('V2/images/sports/' ~ sport.codeSport ~ '.png')|issetImg %}
+                                    <tr>
+                                        <td style="background-image: url('{{ asset('V2/images/sports/' ~ sport.codeSport ~ '.png') }}'); background-repeat: no-repeat;height: 20px;padding-left:30px;padding-top:13px">
+                                            {{ ("sports." ~ sport.codeSport)|trans }}     
+                                        </td>
+                                        <td>
+                                            <input class="sportCb" id="sportCb_{{ sport.id }}" type="checkbox" sportId="{{ sport.id }}"/>
+                                        </td>
+                                    </tr>
+                                 {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table> 
+                    
+                    {#    
+                    <table class="table table-bordered">
+                        {% for sport in sports %}
+                            {% if asset('V2/images/sports/' ~ sport.codeSport ~ '.png')|issetImg %}
+                        <tr>
+                            <td style="background-image: url('{{ asset('V2/images/sports/' ~ sport.codeSport ~ '.png') }}'); background-repeat: no-repeat;height: 20px;padding-left:30px;padding-top:13px">
+                                {{ ("sports." ~ sport.codeSport)|trans }}     
+                            </td>
+                            <td><input class="sportCb" id="sportCb_{{ sport.id }}" type="checkbox" sportId="{{ sport.id }}"/></td>
+                        </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                    <span class="help-inline">
+                        {% if errors.userDetail.sports is defined and errors.userDetail.sports is not null %}
+                            {% for key, error in errors.userDetail.sports %}
+                                {{ error }}
+                                {% if key < errors.userDetail.sports|length - 1 %}<br>{% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </span>
+                    #}
+                </div>
+            </div>
+            {#FIXME : j'ai laissé ce code qui permet d'avoir un bouton pour ouvrir une modal pour gestion d'envoi de mails
+                mais je n'arrive pas à récupérer le sport rentré pour l'envoyer par mail. En attendant la proposition de sport se fera
+                avec le feedback#}
+            
+
+            <br clear="all"/>
+            <br clear="all"/>
+            <input type="submit" class=" btn btn-sportif pull-right" value="{{ submitButtonText }}"/>
+            <br clear="all"/>
+            <br clear="all"/>
+            
+            {{ form_rest(form) }}
+
+            <div class="alert alert-info">{{'users.message_page_edition_sports'|trans}} </div>
+        </form> 
+        
+            {#% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <span id="newButton" class="btn btn-sportif pull-right" rel="tooltip" title="Pour rendre dispo un nouveau sport avec son logo" >
+                    <i class="glyphicon glyphicon-plus"></i> Proposer un nouveau sport
+                </span>
+                <br clear="all"/>
+            {% endif %#}
+        
+    </div>
+{% endblock %}
+        
+        

@@ -1,0 +1,9 @@
+{% if shop_imageName is defined and shop_imageName is not null %}
+    {% if shop_id is defined and shop_id is not null and asset('img/shops/' ~ shop_id ~ '/resize_48x48/' ~ shop_imageName)|issetImg %}
+        <img class="shopImage" src="{{ asset('img/shops/' ~ shop_id ~ '/resize_512x512/' ~ shop_imageName) }}" alt="Avatar Keepinsport" />
+    {% else %}
+        <img class="shopImage" src="{{ asset('bundles/ksshop/images/no_avatar_ks_48x48.png') }}" alt="Pas d'avatar" />
+    {% endif %}
+{% else %}
+    {# <img class="shopImage" src="{{ asset('bundles/ksshop/images/shop_128x128.jpg') }}" alt="Pas d'avatar" /> #}
+{% endif %}

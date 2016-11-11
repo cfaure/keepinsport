@@ -1,0 +1,109 @@
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        //On déselectionne toutes les options
+        $("#friendsSelect").val("");
+
+        $("#bSendInviteByMail").click(function() {
+            var $controlGroup   = $("#sendInviteByMailControlGroup");
+            var $helInline      = $controlGroup.find("span.help-inline");
+
+            if( !$("#bSendInviteByMail").hasClass("disabled") ) {
+                $("#bSendInviteByMail").addClass("disabled");
+                $("#sendInviteByMailLoader").show();
+
+                $controlGroup.removeClass("success");
+                $controlGroup.removeClass("error");
+                $helInline.html("");
+
+                $.post(
+                    Routing.generate('ksClub_sendInviteByMail', { "clubId" : {{ clubInfos.id }} }), 
+                    {
+                        'email' : $("#inputMail").val()
+                    },
+                    function(response) {
+                        if( response.response == 1 ) {
+                            $controlGroup.addClass("success");
+                            $("#inputMail").val("");
+                        } else {
+                            $controlGroup.addClass("error");
+                        }
+
+                        $helInline.html(response.message);
+
+                        $("#bSendInviteByMail").removeClass("disabled");
+                        $("#sendInviteByMailLoader").hide();
+                    }
+                );
+             }
+        });
+
+        $("#bSendInviteByNotif").click(function() {
+            var $controlGroup   = $("#sendInviteByNotifControlGroup");
+            var $helInline      = $controlGroup.find("span.help-inline");
+
+             if( !$("#bSendInviteByNotif").hasClass("disabled") ) {
+                $("#bSendInviteByNotif").addClass("disabled");
+                $("#sendInviteByNotifLoader").show();
+
+                $controlGroup.removeClass("success");
+                $controlGroup.removeClass("error");
+                $helInline.html("");
+
+                //var userIds = $("select.users").val() != null ? $("select.users").val() : new Array();
+                var userIds = $("#friendsSelect").val() != null ? $("#friendsSelect").val() : new Array();
+                $.post(
+                    Routing.generate('ksClub_sendInviteByNotif', { "clubId" : {{ clubInfos.id }} }), 
+                    { 
+                        'userIds' : userIds
+                    },
+                    function(response) {
+                        if( response.response == 1 ) {
+                            $controlGroup.addClass("success");
+                            $("#friendsSelect").val("");
+                        } else {
+                            $controlGroup.addClass("error");
+                        }
+
+                        $helInline.html(response.message);
+
+                        $("#bSendInviteByNotif").removeClass("disabled");
+                        $("#sendInviteByNotifLoader").hide();
+                    }
+                );
+             }
+        });
+    });
+</script>
+
+
+<div id="sendInviteByMailControlGroup" class="control-group">
+    <label class="control-label">Envoyer une Invitation par mail</label>
+    <div class="controls">
+        <input id="inputMail" type="text" class=""/>
+        <a id="bSendInviteByMail" class="btn btn-clubs">
+            <i class="icon-envelope icon-white"></i>
+        </a>
+        <img id="sendInviteByMailLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none">
+        <span class="help-inline"></span>
+    </div>
+</div>
+<div id="sendInviteByNotifControlGroup" class="control-group">
+    <label class="control-label">Envoyer une Invitation</label>
+
+    <div class="controls">
+        {#{ form_widget(form.users) }#}
+        <select id="friendsSelect" multiple="multiple">
+            {% for user in friends %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+        <a id="bSendInviteByNotif" class="btn btn-clubs">
+            <i class="glyphicon glyphicon-plus icon-white"></i>
+        </a>
+        <img id="sendInviteByNotifLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none">
+        <span class="help-inline">
+    </div>
+</div>
+           
+            

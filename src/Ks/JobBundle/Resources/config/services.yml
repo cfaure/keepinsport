@@ -1,0 +1,4 @@
+services:
+    ks_job.background_process:
+        class: Ks\JobBundle\Service\BackgroundProcess
+        arguments: [@doctrine]

@@ -1,0 +1,33 @@
+{% if comment.ll_categoryLabel is defined and comment.ll_categoryLabel is not null %}
+    {% set leagueClass = comment.ll_categoryLabel %}
+{% else %}
+    {% set leagueClass = "other" %}
+{% endif %}
+<div class="userAvatarBloc {{ leagueClass }}"  style="margin-top:5px">
+    {% set withCustomTooltip = false %}
+    {% if withCustomTooltip is defined and not withCustomTooltip %}
+        {% set tooltipElements = "title="~ comment.user_username %}
+    {% else %}
+        {% set tooltipElements = "rel=tooltip title="~ comment.user_username %}
+    {% endif %}
+
+    {% if withBubble is defined and not withBubble %}
+        {% set withBubble = false %}
+    {% else %}
+        {% set withBubble = true %}
+    {% endif %}
+
+    <a class="imageLink"  href="{{ path('ks_user_public_profile', { 'username' : comment.user_username }) }}" {% if withBubble %}rel="bubble" data-placement="{% if bubblePlacement is defined %}{{ bubblePlacement }}{% else %}top{% endif %}" data-content='{% render 'KsUserBundle:User:bubbleInfos' with {'userId' : comment.user_id } %}{% endif %}'>
+        {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : comment.user_id, 'user_imageName': comment.user_imageName} %}
+    </a>
+    {#<div style="font-size:0.7em;">
+        <span>{{ comment.ll_categoryLabel|trans }}</span>
+        {% if comment.ll_starNumber > 0 %} 
+            <div style="position:relative; display:inline-block; top:-6px">
+            {% for i in range(1, comment.ll_starNumber) %} 
+                ★
+            {% endfor %}
+            </div>
+        {% endif %}
+    </div>#}
+</div>

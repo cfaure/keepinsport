@@ -1,0 +1,55 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>{{ 'users.club_add_a_member'|trans }}</h1>
+
+<form action="{{ path('ks_member_create') }}" method="post" {{ form_enctype(form) }}>
+    
+    <div>
+        <!-- Génération du label. -->
+        {{ form_label(form.lastname, 'users.member_lastname' ) }}
+
+        <!-- Affichage des erreurs pour ce champ précis. -->
+        {{ form_errors(form.lastname ) }}
+
+        <!-- Génération de l'input. -->
+        {{ form_widget(form.lastname ) }}
+    </div> 
+    
+     
+    
+    <div>
+       <!-- Génération du label. -->
+        {{ form_label(form.firstname, 'users.member_firstname') }}
+
+        <!-- Affichage des erreurs pour ce champ précis. -->
+        {{ form_errors(form.firstname ) }}
+
+        <!-- Génération de l'input. -->
+        {{ form_widget(form.firstname ) }}
+    </div> 
+    
+    {{ form_widget(form._token) }}
+    
+    <input type="hidden" value="{{ idClub }}" name="idClub">
+    
+    <p>
+        <input type="submit" value="{{'users.profil_create_label'|trans}}">
+    </p>
+    
+</form>
+
+<ul class="record_actions">
+    <li>
+        <a href="{{ path('ks_member', { 'idClub': idClub }) }}">
+            Back to the list
+        </a>
+    </li>
+</ul>
+
+{% endblock %}

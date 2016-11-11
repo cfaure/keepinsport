@@ -1,0 +1,21 @@
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    {% if activity.id|is_subscribed(app.user.id) %}
+        <a class="btn" rel="tooltip" title="{{ "actions.subscribe"|trans }}" rel2="unsubscribeTrigger-{{ activity.id }}" href="{{ path('ksActivity_unsubscribeOnActivity', {'activityId': activity.id}) }}">
+            <s><i class="glyphicon glyphicon-star"></i> {#{ "actions.subscribe"|trans }#}</s>
+        </a> 
+    {% else %}
+        <a class="btn" rel="tooltip" title="{{ "actions.subscribe"|trans }}" rel2="subscribeTrigger-{{ activity.id }}" href="{{ path('ksActivity_subscribeOnActivity', {'activityId': activity.id}) }}">
+            <i class="glyphicon glyphicon-star-empty"></i> {#{ "actions.subscribe"|trans }#}
+        </a>
+    {% endif %}
+{% else %}
+    <a class="btn" rel="tooltip" title="{{ "actions.subscribe"|trans }}" onclick="showInformation('{{ 'actions.login-required'|trans }}');">
+        <i class="glyphicon glyphicon-star-empty"></i> {#{ "actions.subscribe"|trans }#}
+    </a>
+{% endif %}
+ 
+<script type="text/javascript">
+    attachSubscribeOnActivityEvent($('a[rel2="subscribeTrigger-{{ activity.id }}"]'));
+    attachUnsubscribeOnActivityEvent($('a[rel2="unsubscribeTrigger-{{ activity.id }}"]'));
+    $("a[rel2*={{ activity.id }}]").tooltip();
+</script>

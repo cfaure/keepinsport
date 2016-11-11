@@ -1,0 +1,165 @@
+<form id="podiumForm" class="" method="post" action="{{ path('ksTournament_updatePodium', {'id' : tournament.id }) }}" {{ form_enctype(form) }} novalidate="novalidate">
+    <div class="ksBloc thumbnail">
+        <h3 class="clubs">Premier</h3>
+        <div class="blocHeaderSeparator"></div>
+        <label class="pull-left">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="firstUserSubscribed" value="1" {% if tournament.firstUser is not null %}checked{% endif %}></span>
+            <span class="pull-left" >Membre du club {{ tournament.club.name }}</span>
+        </label>
+        <label class="pull-left" style="margin-left:10px">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="firstUserSubscribed" value="0" {% if tournament.firstUser is null %}checked{% endif %}></span>
+            <span class="pull-left">Invité</span>
+        </label>
+        <br clear="all"/>
+            
+        {{ form_widget(form.firstUser) }} 
+        {{ form_widget(form.firstUsername) }} 
+    </div>
+        
+    <div class="ksBloc thumbnail">
+        <h3 class="clubs">Second</h3>
+        <div class="blocHeaderSeparator"></div>
+        <label class="pull-left">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="secondUserSubscribed" value="1" {% if tournament.secondUser is not null %}checked{% endif %}></span>
+            <span class="pull-left" >Membre du club {{ tournament.club.name }}</span>
+        </label>
+        <label class="pull-left" style="margin-left:10px">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="secondUserSubscribed" value="0" {% if tournament.secondUser is null %}checked{% endif %}></span>
+            <span class="pull-left">Invité</span>
+        </label>
+        <br clear="all"/>
+        
+        {{ form_widget(form.secondUser) }} 
+        {{ form_widget(form.secondUsername) }} 
+    </div>
+     
+    <div class="ksBloc thumbnail">
+        <h3 class="clubs">Troisième</h3>
+        <div class="blocHeaderSeparator"></div>
+        <label class="pull-left">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="thirdUserSubscribed" value="1" {% if tournament.thirdUser is not null %}checked{% endif %}></span>
+            <span class="pull-left" >Membre du club {{ tournament.club.name }}</span>
+        </label>
+        <label class="pull-left" style="margin-left:10px">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="thirdUserSubscribed" value="0" {% if tournament.thirdUser is null %}checked{% endif %}></span>
+            <span class="pull-left">Invité</span>
+        </label>
+        <br clear="all"/>
+        
+        {{ form_widget(form.thirdUser) }} 
+        {{ form_widget(form.thirdUsername) }} 
+    </div>
+        
+    {{ form_rest(form) }}
+</form>
+
+<script type="text/javascript">
+    $form           = $("#podiumForm");
+    $firstUser      = $form.find(".firstUser");
+    $secondUser     = $form.find(".secondUser");
+    $thirdUser      = $form.find(".thirdUser");
+    $firstUsername  = $form.find(".firstUsername");
+    $secondUsername = $form.find(".secondUsername");
+    $thirdUsername  = $form.find(".thirdUsername");
+    $firstSubscribed  = $form.find("input[type=radio][name=firstUserSubscribed][value=1]");
+    $firstNotSubscribed  = $form.find("input[type=radio][name=firstUserSubscribed][value=0]");
+    $secondSubscribed = $form.find("input[type=radio][name=secondUserSubscribed][value=1]");
+    $secondNotSubscribed  = $form.find("input[type=radio][name=secondUserSubscribed][value=0]");
+    $thirdSubscribed  = $form.find("input[type=radio][name=thirdUserSubscribed][value=1]");
+    $thirdNotSubscribed  = $form.find("input[type=radio][name=thirdUserSubscribed][value=0]");
+    
+    $firstSubscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    $firstNotSubscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    $secondSubscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    $secondNotSubscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    $thirdSubscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    $thirdNotSubscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    
+    //initialisation firstUser
+    if ( $firstUser.val() != "" ) {
+        $firstUser.show();
+        $firstUsername.hide();
+        $firstSubscribed.attr("checked", "checked");
+    }
+    else {
+        $firstUser.hide();
+        $firstUsername.show();
+        $firstNotSubscribed.attr("checked", "checked");
+    }
+    
+    //initialisation secondUser
+    if ( $secondUser.val() != "" ) {
+        $secondUser.show();
+        $secondUsername.hide();
+        $secondSubscribed.attr("checked", "checked");
+    }
+    else {
+        $secondUser.hide();
+        $secondUsername.show();
+        $secondNotSubscribed.attr("checked", "checked");
+    }
+    
+    //initialisation thirdUser
+    if ( $thirdUser.val() != "" ) {
+        $thirdUser.show();
+        $thirdUsername.hide();
+        $thirdSubscribed.attr("checked", "checked");
+    }
+    else {
+        $thirdUser.hide();
+        $thirdUsername.show();
+        $thirdNotSubscribed.attr("checked", "checked");
+    }
+    
+    //L'utilisateur est inscrit sur Keepinsport
+    $firstSubscribed.on('ifChecked', function(event){
+        $firstUser.show();
+        $firstUsername.hide();
+    });
+    
+    //L'utilisateur n'est pas inscrit sur Keepinsport
+    $firstNotSubscribed.on('ifChecked', function(event){
+        $firstUser.hide();
+        $firstUsername.show();
+        $firstUser.val("");
+    });
+    
+    //L'utilisateur est inscrit sur Keepinsport
+    $secondSubscribed.on('ifChecked', function(event){
+        $secondUser.show();
+        $secondUsername.hide();
+    });
+    
+    //L'utilisateur n'est pas inscrit sur Keepinsport
+    $secondNotSubscribed.on('ifChecked', function(event){
+        $secondUser.hide();
+        $secondUsername.show();
+        $secondUser.val("");
+    });
+    
+    //L'utilisateur est inscrit sur Keepinsport
+    $thirdSubscribed.on('ifChecked', function(event){
+        $thirdUser.show();
+        $thirdUsername.hide();
+    });
+    
+    //L'utilisateur n'est pas inscrit sur Keepinsport
+    $thirdNotSubscribed.on('ifChecked', function(event){
+        $thirdUser.hide();
+        $thirdUsername.show();
+        $thirdUser.val("");
+    });
+    
+</script>

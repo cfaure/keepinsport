@@ -1,0 +1,35 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+
+
+{% block content %}
+
+<script type="text/javascript">
+    function showLoader() {
+        $("#detailsAnalysisLoader").show();
+        $("#message_GPX_processed").show();
+    }
+</script>
+
+<h1>{{ 'users.import_GPX'|trans }}</h1>
+</br>
+<form action="{{ path('ks_user_upload_gpx_file') }}" method="post" {{ form_enctype(form) }} onsubmit="showLoader();">
+    {{ form_widget(form.sport) }}
+    {{ form_widget(form.file) }}
+    {{ form_rest(form) }}
+    </br>
+    <input type="submit" class="btn btn-primary" value="{{'users.send_GPX_file'|trans}}">
+</form>
+
+</br>
+<center>
+    <img id="detailsAnalysisLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none"/>
+</center>
+</br>
+<div style="display:none" id="message_GPX_processed" class="alert alert-info">{{'users.message_GPX_processed'|trans}} </div>
+
+{% endblock %}

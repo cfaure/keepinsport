@@ -1,0 +1,27 @@
+{% if isLight is not defined or not isLight %}
+    {% set isLightStr = "" %}
+{% else %}
+    {% set isLightStr = "-light" %}
+{% endif %}
+{% if equipment.user_id != userId or allEquipments %}
+    <a class="btn btn-success btn-xs" rel="tooltip" title="{{ 'equipment.add-link'|trans }}" rel2="addOnEquipmentTrigger-{{ equipment.id }}{{ isLightStr }}" href="{{ path('ksEquipment_addOnEquipment', {'equipmentId': equipment.id}) }}">
+        <i class="glyphicon glyphicon-plus"></i> {{ "equipment.add"|trans }}
+    </a>
+    {% if equipment.userHasWished == true %}
+        <a class="btn btn-danger btn-xs" rel="tooltip" title="Clique pour enlever ton souhait sur cet équipement !" rel2="removeWishOnEquipmentTrigger-{{ equipment.id }}{{ isLightStr }}" href="{{ path('ksEquipment_removeWishOnEquipment', {'equipmentId': equipment.id}) }}">
+            <s><i class="glyphicon glyphicon-thumbs-up"></i> ({{ equipment.numWishes}})</s>
+        </a>
+    {% else %}
+         <a class="btn btn-primary btn-xs" rel="tooltip" title="Clique pour préciser que tu souhaiterais avoir cet équipement !" rel2="wishOnEquipmentTrigger-{{ equipment.id }}{{ isLightStr }}" href="{{ path('ksEquipment_wishOnEquipment', {'equipmentId': equipment.id}) }}">
+             <i class="glyphicon glyphicon-thumbs-up"></i> ({{ equipment.numWishes }})
+         </a>
+    {% endif %}
+{% else %}
+    </br>
+{% endif %}
+
+<script type="text/javascript">
+    attachAddOnEquipmentEvent($('a[rel2="addOnEquipmentTrigger-{{ equipment.id }}{{ isLightStr }}"]'));
+    attachWishOnEquipmentEvent($('a[rel2="wishOnEquipmentTrigger-{{ equipment.id }}{{ isLightStr }}"]'));
+    attachRemoveWishOnEquipmentEvent($('a[rel2="removeWishOnEquipmentTrigger-{{ equipment.id }}{{ isLightStr }}"]'));
+</script>

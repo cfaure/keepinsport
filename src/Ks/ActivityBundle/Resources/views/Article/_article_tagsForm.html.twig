@@ -1,0 +1,42 @@
+{#% for key, element in articleElements %}
+    <h2>{{ element.title }}</h2>
+    <hr/>
+    {% for key, paragraph in element.paragraphs %}
+        <p>{{ paragraph }}</p>
+    {% endfor %}
+    <hr/>
+{% endfor %#}
+
+<select id="selectTags" data-placeholder="Entrez des mots clés" class="chzn-select" multiple style="width:100%;">
+    {#<option value=""></option> #}
+    {% set i = 0 %}
+    {% for key, tag in tags %}
+        {% if articleTags|has_tag(tag) %}
+            <option key="{{ i }}" value="{{ tag.id }}" selected="selected">{{ tag.label }}</option>
+            {% set i = i + 1 %}
+        {% else %}
+            {% if not tag.isCategory %}
+                <option key="{{ i }}" value="{{ tag.id }}">{{ tag.label }}</option>
+                {% set i = i + 1 %}
+            {% endif %}
+        {% endif %}
+        
+    {% endfor %}
+</select>
+<script type="text/javascript">
+    $("#selectTags").chosen({addTag:true});
+    //On ellève la croix lorsque le tag est une catégory
+    {% for key, tagId in articleTags %}
+        {% set findTag = tags|get_tag(tagId) %}
+        {% if findTag.find and findTag.tag.isCategory %}
+            key = $("#selectTags option[value={{ findTag.tag.id }}]").attr("key")
+            $("#selectTags_chzn_c_" + key +" > a.search-choice-close").remove();
+            
+        {% endif %}
+    {% endfor %}
+        
+        
+        
+
+</script>
+    

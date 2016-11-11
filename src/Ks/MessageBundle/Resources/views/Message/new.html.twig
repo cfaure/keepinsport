@@ -1,0 +1,125 @@
+{% extends "KsMessageBundle::layout.html.twig" %}
+
+{% block title %}
+    Messages
+{% endblock %}
+  
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("message"); //pour activer le css correspondant
+            
+            $("#messageType_toUsers").select2();
+            {% if toUser is defined and toUser is not null %}
+                {% set action = path('ksMessage_send') %}
+                $("#messageType_toUsers").select2("val", {{ toUser.id }} );
+            {% endif %}
+                
+            {% if toUsers is defined and toUsers is not null %}
+                var ids = '{{ toUsers }}';
+                toUsersIds = ids.split(",");
+                $("#messageType_toUsers").select2("val", toUsersIds );
+            {% endif %}
+            
+            $("#submitButton").click(function() {
+                if( !$("#submitButton").hasClass("disabled") ) {
+                    
+                }
+            });
+            
+            $("#mailBoxButton").click(function() {
+                if( !$("#mailBoxButton").hasClass("disabled") ) {
+                    $("#mailBoxButton").addClass("disabled");
+                    document.location.href=Routing.generate('ksMessage_box', { "numPage" :  1  });
+                }
+            });
+            
+            $("#statusForm").validate({
+                rules: {
+                    'messageType[subject]': {
+                        required: true
+                    },
+                    'messageType[content]': {
+                        required: true
+                    },
+                    'messageType[toUsers][]': {
+                        required: true
+                    }
+                },
+
+                // Specify the validation error messages
+                messages: {
+                    'messageType[subject]': "Merci de choisir un sujet pour ton mail",
+                    'messageType[content]': "Message obligatoire !",
+                    'messageType[toUsers][]': "Destinataire(s) obligatoire(s) !"
+                },
+
+                submitHandler: function(form) {
+                    form.submit();
+                    $("#loaderKS").show();
+                    $("#submitButton").addClass("disabled");
+                }
+            });
+       });
+    </script>
+{% endblock %}
+    
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block content %}
+    <!--WRAPPER-->
+    <div class="wrapper"> 
+        <!--bloc1-->
+        <div class="bloc1">
+            <div class="container">
+                <h1 class="title {% if app.user.isAllowedPackElite %}elite{% elseif app.user.isAllowedPackPremium %}premium{% else %}defis{% endif %}">
+                    {{ 'coaching.new-message'|trans }} 
+                    {% if toUser is defined and toUser is not null %} {{ 'coaching.for'|trans }} {{ toUser.username }} {% endif %}
+                    {% if toUsers is defined and toUsers is not null %} {{ 'coaching.for-all-members'|trans }} {% endif %}
+                </h1>
+                <div class="bloc1-nav">
+                    <ul class="nav nav-pills navbar-left">
+                        <li rel="tooltip" title="{{ "actions.write-message"|trans }}"><a href="{{ path('ksMessage_new') }}"><span class="glyphicon glyphicon-pencil"></span></a></li>
+                    </ul>
+                    <ul class="navbar-right">
+                        <button id="mailBoxButton" type="button" class="btn btn-success"><span class="glyphicon glyphicon-envelope"></span> Boite de réception</button>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!---BLOC2---->
+        <div class="bloc2">
+            <div class="container">
+                <div class="col-md-12">
+                    {% set action = path('ksMessage_send') %}
+                    {% if toUsers is defined and toUsers is not null %} {% set action = path('ksMessage_send_club', {'clubId' : clubId }) %} {% endif %}
+                    <form id="statusForm" action="{{ action }}"  method="post" enctype="multipart/form-data" novalidate="novalidate" >
+                        <table class="table table-striped">
+                            <tr>
+                                <td>{{ form_widget(form.subject, { attr: {class: "form-control"} }) }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ form_widget(form.content, { attr: {rows: 5, class: "form-control", value: "", style: "height: 100px; resize: none;"} }) }}</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ form_widget(form.toUsers, { attr: { "data-placeholder": 'coaching.to-users'|trans , class:"multiple-users-select2", style: "width:100%;"} }) }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <img style="display:none" id="loaderKS" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+                                    <button id="submitButton" type="submit" class="btn btn-success pull-right">Valider</button>
+                                </td>
+                            </tr>
+                            {{ form_rest(form) }}
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

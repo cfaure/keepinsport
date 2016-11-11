@@ -1,0 +1,6 @@
+<div rel="commentContainer-{{ activity.id }}">
+    {% for comment in activity.comments %}
+        {% include 'KsActivityBundle:Comment:_comment_mail.html.twig' with {'comment': comment} %}
+        <br clear="both"/>
+    {% endfor %}
+</div>

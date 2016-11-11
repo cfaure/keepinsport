@@ -1,0 +1,313 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+
+{% block title %}
+    Competitions
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('V2/css/fullcalendar.css') }}" type="text/css" />
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('V2/js/fullcalendar.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksevent/js/scripts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/wikisport.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap-multiselect.js') }}"></script>
+    
+    <script type="text/javascript">
+        function startIntro() {
+            var intro = introJs();
+            intro.setOptions({
+                steps: [
+                    { 
+                        intro: "{{ 'visit.competitions-start'|trans|raw }}"
+                    },
+                    {
+                        element: '#filters',
+                        intro: "{{ 'visit.competitions-filters'|trans|raw }}",
+                        position: 'bottom'
+                    },
+                    {
+                        element: '#s2id_searchSelectDesktop',
+                        intro: "{{ 'visit.competitions-search'|trans|raw }}",
+                        position: 'bottom'
+                    },
+                    {
+                        intro: "{{ 'visit.competitions-detail'|trans|raw }}",
+                    },
+                    {
+                        intro: "{{ 'visit.competitions-subscribe'|trans|raw }}",
+                    }
+                ]
+            });
+            
+            intro.start();
+        }
+        
+        $(document).ready(function() {
+            {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                $("#headerV2").css("background-color","#000");
+            {% endif %}
+                
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and user is defined and user is not null and not app.user.isAllowedPackElite %}
+                $('input').iCheck({
+                    checkboxClass: 'icheckbox_flat-blue',
+                    radioClass: 'iradio_flat-blue'
+                });
+            {% endif %}
+
+            $("#body").addClass("dashboard"); //pour activer le css correspondant
+            
+            var eventsRegions = new Array();
+            var eventsDistances = new Array();
+            
+            var ajax = null;
+            
+            var calendar = $('#agenda').fullCalendar({
+                header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'year,month'
+                },
+                {% render 'KsUserBundle:Translation:loadFullCalendar_translations' %}
+                firstDay : 1, //Le premier jour est un lundi
+                selectable: true,
+                defaultView: 'year',
+                selectHelper: false,
+                weekNumbers: false,
+                editable: false,
+                events: function(start, end, callback) {
+                    if( ajax ) ajax.abort();
+                    //console.log(start);
+                    //console.log(end);
+                    $('#nbCompetitions').html('<center><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" /></center>');
+                    ajax = $.post(
+                        Routing.generate('ksAgenda_getEvents', {'id' : 1}),
+                        {
+                            "start"                     : Math.round(start.getTime() / 1000),
+                            "end"                       : Math.round(end.getTime() / 1000),
+                            "competitionsOnly"          : true,
+                            "eventsRegions[]"           : eventsRegions,
+                            "eventsDistances[]"         : eventsDistances
+                        },
+                        function(events) {
+                            ajax = null;
+                            /*
+                            events = [];
+                            events.push({
+                                title: "2015-01-01",
+                                sport_code:'running',
+                                start: "2015-01-01 00:00:00"
+                            });
+                            events.push({
+                                title: "2015-05-01",
+                                sport_code:'running',
+                                start: "2015-05-01 00:00:00"
+                            });
+                            events.push({
+                                title: "2015-02-01",
+                                sport_code:'running',
+                                start: "2015-02-01 00:00:00"
+                            });
+                            events.push({
+                                title: "2015-02-01 BIS",
+                                sport_code:'running',
+                                start: "2015-02-01 00:00:00"
+                            });
+                            events.push({
+                                title: "2015-08-02",
+                                sport_code:'running',
+                                start: "2015-08-02 00:00:00"
+                            });
+                            $.each( events, function(index, item){
+                                //events[index]['_start'] = item['start'].substring(0,10);
+                                console.log(events[index]['start']);
+                            });
+                            console.log(events);
+                            */
+                            callback(events);
+                            $('#nbCompetitions').html("<center><b>" + events.length + "</b> {{ 'competitions.competitions-with-filters'|trans }}" + "</center>");
+                            
+                            /*$.each( $('.fc-event'), function(index, item){
+                                $( this ).css('top', '+=25');
+                            });*/
+                        }
+                    );
+                },
+                eventRender: function(event, eventElement) {
+                    eventElement.addClass('red');
+                    
+                    $header = "<div id='header_" + event.id + "'>";
+                    
+                    view = calendar.fullCalendar('getView');
+                    //Sport
+                    if ( event.sport_code && event.sport_code != 'empty') {
+                        $header += "<img class='" + (view.name == 'year' ? "img-sport" : "") + " pull-left' src='{{ asset('V2/images/sports/') }}" + event.sport_code + ".png') }}'/>";
+                    }
+                    
+                    eventElement.find('.fc-event-inner').prepend($header);
+                },
+                
+                eventMouseover: function(event, jsEvent, view) {
+                    var contenuSeance="";
+                    
+                    var lieu = "";
+                    if (event.country_code == 'FR') lieu = '--- FRANCE ---';
+                    else if (event.country_code == 'RE') lieu = '--- REUNION ---';
+                    else if (event.full_adress) lieu = '--- ' + event.full_adress + ' ---';
+                    else lieu = '--- INCONNU ---';
+                    
+                    contenuSeance += "\
+                        <div id='tooltip'>\
+                            <p>\
+                                <center>\
+                                    <span style='font-size:1.4em'>" + event.title + "</span><br>" + lieu + "<br><br>\
+                                    {#<span class='glyphicon glyphicon-time' title='{{ 'activity.duration'|trans }}'></span>&nbsp;" + (event.eventDuration ? event.eventDuration : (event.coachingDuration ? event.coachingDuration : '-')) + "\#}\
+                                    &nbsp;&nbsp;&nbsp;<span class='glyphicon glyphicon-road' title='{{ 'activity.distance'|trans }}'></span>&nbsp;" + (event.eventDistance ? Math.trunc(event.eventDistance) : (event.coachingDistance ? Math.trunc(event.coachingDistance) : '-')) +"\
+                                </center>\
+                            </p>\
+                            <p>\
+                                <center>\
+                                    <span class='glyphicon glyphicon-circle-arrow-up' title='D+'></span>&nbsp;+" + (event.eventElevationGain ? event.eventElevationGain : (event.coachingElevationGain ? event.coachingElevationGain : '-')) + "\
+                                    &nbsp;&nbsp;&nbsp;<span class='glyphicon glyphicon-circle-arrow-down' title='D-'></span>&nbsp;-" + (event.eventElevationLost ? event.eventElevationLost : (event.coachingElevationLost ? event.coachingElevationLost : '-'))  + "\
+                                </center>\
+                            </p>";
+                    
+                    contenuSeance += "</p></div>";
+                    var tooltip = '<div class="tooltipevent">' + contenuSeance +'</div>';
+                    
+                    if (contenuSeance != "") $("body").append(tooltip);
+                    
+                    $(this).mouseover(function(e) {
+                        $(this).css('z-index', 10000);
+                        $('.tooltipevent').fadeIn('500');
+                        $('.tooltipevent').fadeTo('10', 1.9);
+                    }).mousemove(function(e) {
+                        $('.tooltipevent').css('top', e.pageY + 25);
+                        $('.tooltipevent').css('left', e.pageX - 90);
+                    });
+                },
+                
+		eventMouseout: function(event,jsEvent) {
+                    $(this).css('z-index', 8);
+                    $('.tooltipevent').remove();
+		},
+                
+                eventClick: function(event) {
+                    if (event.eventCompetition) window.open(Routing.generate('ksActivity_showActivity', {'activityId' : event.eventCompetition}), '_blank');
+                    else console.log(event.id + " : event.eventCompetition IS NULL !");
+                }
+            });
+            
+            //FMO : gestion bug affichage fullcalendar selon les navigateurs...
+            if (!!navigator.userAgent.match(/Version\/[\d\.]+.*Safari/)) {
+                $('#gutter1').remove();
+                $('#gutter2').remove();
+            }
+            else {
+                if (navigator.userAgent.indexOf('Firefox')) {
+                    $('#gutter1').hide();
+                    $('#gutter2').hide();
+                }
+                if (navigator.userAgent.indexOf('Chrome') || navigator.userAgent.indexOf('MSIE')) {
+                    $('#gutter1').hide();
+                    $('#gutter2').hide();
+                }
+            }
+            
+            calendar.fullCalendar('refetchEvents');
+            
+            //filtre type
+            $("#eventsRegionSelect").multiselect({
+                buttonClass: 'btn btn-link',
+                buttonText: function(options) {
+                    if (options.length == 0) {
+                        return '{{ 'competitions.region'|trans }} <b class="caret"></b>';
+                    }else {
+                        var selected = '';
+                        options.each(function() {
+                            selected += $(this).text() + ', ';
+                        });
+                        return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                    }
+                },
+                onChange:function(element, checked){
+                    eventsRegions = $("#eventsRegionSelect").val();
+                    calendar.fullCalendar('refetchEvents');
+                    //reDrawGraph();
+                }
+            });
+            
+            //filtre distance
+            $("#distance").slider();
+            $("#distance").on("slide", function(slideEvt) {
+                //console.log(slideEvt.value);
+                eventsDistances = slideEvt.value;
+                calendar.fullCalendar('refetchEvents');
+            });
+            
+            $("#launchVisitButton").click(function() {
+                if (!$("#launchVisitButton").hasClass("disabled")) {
+                    startIntro(); 
+                }
+            });
+            
+            {% if competitionsSeenPreference is defined and competitionsSeenPreference|length == 0 or competitionsSeenPreference[0]['date'] is defined and competitionsSeenPreference[0]['date'] is null %}
+                startIntro();
+                {% if user.id != 1 %}
+                    $.ajax({
+                        url: Routing.generate('ksUser_setCompetitionsSeen'),
+                        type: "POST",
+                        success: function (data) {
+                        }
+                    });
+                {% endif %}
+            {% endif %}
+        });
+    </script>
+{% endblock %}
+    
+{% block body %}
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <!--bloc1-->
+        <div class="bloc1" id="bloc1">
+            <div class="container">
+                <h1 class="title elite"> Competitions
+                </h1>
+                <div class="bloc1-nav" id="filters">
+                    <ul class="nav nav-pills navbar-left icons">
+                        <li id="launchVisitButton"><a class="glyphicon glyphicon-question-sign" rel="tooltip" title="{{ 'visit.launch-visit'|trans }}"></a></li>
+                    </ul>
+                    <div class="btn-group pull-left">
+                        <select id="eventsRegionSelect" name="eventsRegionSelect[]" multiple="multiple">
+                            <option value="FR">{{ 'competitions.FR'|trans }}</option>
+                            <option value="RE">{{ 'competitions.RE'|trans }}</option>
+                            <option value="UNKNOWN">{{ 'competitions.UNKNOWN'|trans }}</option>
+                        </select>
+                    </div>
+                    <div class="btn-group pull-let" style="padding-top:7px">
+                        <span>
+                            <b>0km</b> <input id="distance" type="text" class="span2" value="" data-slider-min="0" data-slider-max="200" data-slider-step="5" data-slider-value="[10,180]"/> <b>200km</b>
+                        </span>
+                    </div>
+                </div>
+            </div><!--/.container-->
+        </div><!--/bloc1-->
+
+        <!--bloc2-->
+        <div class="bloc3" id="bloc3">
+            <div class="container">
+                <div class="content">
+                    <div class="container no-clear">
+                        <div id="nbCompetitions" class="alert alert-warning"></div>
+                        <div id="agenda" class="fc">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--/bloc2-->
+    </div>
+{% endblock body %}

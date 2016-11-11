@@ -1,0 +1,40 @@
+{% extends "KsEventBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block ks_event_content %}
+
+    <div>
+        <form action="{{ path('ksevent_editerEvent', { 'idEvent': event.id }) }}" method="post" {{ form_enctype(form) }}>
+
+            <!-- Les erreurs générales du formulaire. -->
+            {{ form_errors(form) }}
+
+            <div>
+                <!-- Génération du label. -->
+                {{ form_label(form.name, "nom de l'événement") }}
+
+                <!-- Affichage des erreurs pour ce champ précis. -->
+                {{ form_errors(form.name) }}
+
+                <!-- Génération de l'input. -->
+                {{ form_widget(form.name) }}
+            </div>
+
+            <!-- Idem pour un autre champ. -->
+            <div>
+                {{ form_label(form.content, "Description de l'événement") }}
+                {{ form_errors(form.content) }}
+                {{ form_widget(form.content) }}
+            </div>
+
+            <!-- Génération des champs pas encore écrits. -->
+            {{ form_rest(form) }}
+
+            <input type="submit" value="Editer l'événement"/>
+        </form>
+    </div>
+
+{% endblock %}

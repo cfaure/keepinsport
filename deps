@@ -1,0 +1,138 @@
+[symfony]
+    git=git://github.com/symfony/symfony.git
+    version=v2.0.12
+
+[twig]
+    git=git://github.com/fabpot/Twig.git
+    version=v1.6.2
+
+[monolog]
+    git=git://github.com/Seldaek/monolog.git
+    version=1.0.2
+
+[doctrine-common]
+    git=git://github.com/doctrine/common.git
+    version=2.1.4
+
+[doctrine-dbal]
+    git=git://github.com/doctrine/dbal.git
+    version=2.1.6
+
+[doctrine]
+    git=git://github.com/doctrine/doctrine2.git
+    version=2.1.6
+
+[swiftmailer]
+    git=git://github.com/swiftmailer/swiftmailer.git
+    version=v4.1.5
+
+[assetic]
+    git=git://github.com/kriswallsmith/assetic.git
+    version=v1.0.3
+
+[twig-extensions]
+    git=git://github.com/fabpot/Twig-extensions.git
+
+[metadata]
+    git=git://github.com/schmittjoh/metadata.git
+    version=1.0.0
+
+[SensioFrameworkExtraBundle]
+    git=git://github.com/sensio/SensioFrameworkExtraBundle.git
+    target=/bundles/Sensio/Bundle/FrameworkExtraBundle
+    version=origin/2.0
+
+[JMSSecurityExtraBundle]
+    git=git://github.com/schmittjoh/JMSSecurityExtraBundle.git
+    target=/bundles/JMS/SecurityExtraBundle
+    version=origin/1.0.x
+
+[SensioDistributionBundle]
+    git=git://github.com/sensio/SensioDistributionBundle.git
+    target=/bundles/Sensio/Bundle/DistributionBundle
+    version=origin/2.0
+
+[SensioGeneratorBundle]
+    git=git://github.com/sensio/SensioGeneratorBundle.git
+    target=/bundles/Sensio/Bundle/GeneratorBundle
+    version=origin/2.0
+
+[AsseticBundle]
+    git=git://github.com/symfony/AsseticBundle.git
+    target=/bundles/Symfony/Bundle/AsseticBundle
+    version=v1.0.1
+
+[FOSUserBundle]
+    git=git://github.com/FriendsOfSymfony/FOSUserBundle.git
+    target=bundles/FOS/UserBundle
+    version=1.2.0
+
+[doctrine-fixtures]
+    git=http://github.com/doctrine/data-fixtures.git
+
+[DoctrineFixturesBundle]
+    git=http://github.com/doctrine/DoctrineFixturesBundle.git
+    target=/bundles/Symfony/Bundle/DoctrineFixturesBundle
+    version=origin/2.0
+
+[LexikMaintenanceBundle]
+    git=git://github.com/lexik/LexikMaintenanceBundle.git
+    target=bundles/Lexik/Bundle/MaintenanceBundle
+
+[Imagine]
+    git=git://github.com/avalanche123/Imagine.git
+    target=imagine
+
+[AvalancheImagineBundle]
+    git=git://github.com/avalanche123/AvalancheImagineBundle.git
+    target=bundles/Avalanche/Bundle/ImagineBundle
+
+[FOSJsRoutingBundle]
+    git=git://github.com/FriendsOfSymfony/FOSJsRoutingBundle.git
+    target=/bundles/FOS/JsRoutingBundle
+	
+[buzz]
+    git=git://github.com/kriswallsmith/Buzz.git
+
+[geocoder]
+    git=git://github.com/willdurand/Geocoder.git
+
+[IvoryGoogleMapBundle]
+    git=git://github.com/egeloen/IvoryGoogleMapBundle.git
+    target=/bundles/Ivory/GoogleMapBundle
+    version=1.0.0
+
+[ivory-google-map]
+    git=git://github.com/egeloen/ivory-google-map.git
+
+[FOSFacebookBundle]
+    git=git://github.com/FriendsOfSymfony/FOSFacebookBundle.git
+    target=/bundles/FOS/FacebookBundle
+    version=origin/2.0
+
+[FOSGoogleBundle]
+    git=git://github.com/bitgandtter/FOSGoogleBundle.git
+    target=/bundles/FOS/GoogleBundle
+    version="dev-master"
+
+[FOSTwitterBundle]
+    git=git://github.com/FriendsOfSymfony/FOSTwitterBundle.git
+    target=/bundles/FOS/TwitterBundle
+
+[FacebookSDK]
+    git=git://github.com/facebook/facebook-php-sdk.git
+    target=/facebook-sdk
+
+[GenemuFormBundle]
+    git=git://github.com/genemu/GenemuFormBundle.git
+    target=bundles/Genemu/Bundle/FormBundle
+
+
+[VichUploaderBundle]
+    git=git://github.com/dustin10/VichUploaderBundle.git
+    target=/bundles/Vich/UploaderBundle
+
+[UploadBundle]
+    git=git://github.com/Pixy/UploadBundle.git
+    target=/bundles/Bold/ImageBundle
+

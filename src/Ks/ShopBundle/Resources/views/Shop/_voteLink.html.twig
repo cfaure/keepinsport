@@ -1,0 +1,19 @@
+{% if isLight is not defined or not isLight %}
+    {% set isLightStr = "" %}
+{% else %}
+    {% set isLightStr = "-light" %}
+{% endif %}
+{% if shop.userHasVoted == true %}
+    <a class="btn btn-mini btn-link link-sportif" rel="tooltip" title="Clique pour enlever ton vote pour ce magasin !" rel2="removeVoteOnShopTrigger-{{ shop.id }}{{ isLightStr }}" href="{{ path('ksShop_removeVoteOnShop', {'shopId': shop.id}) }}">
+        <s><i class="glyphicon glyphicon-thumbs-up"></i> {{ "actions.vote"|trans }} ({{ shop.numVotes}})</s>
+    </a>
+{% else %}
+     <a class="btn btn-mini btn-link link-sportif" rel="tooltip" title="Clique pour voter pour ce magasin !" rel2="voteOnShopTrigger-{{ shop.id }}{{ isLightStr }}" href="{{ path('ksShop_voteOnShop', {'shopId': shop.id}) }}">
+         <i class="glyphicon glyphicon-thumbs-up"></i> {{ "actions.vote"|trans }} ({{ shop.numVotes }})
+     </a>
+{% endif %}
+
+<script type="text/javascript">
+    attachVoteOnShopEvent($('a[rel2="voteOnShopTrigger-{{ shop.id }}{{ isLightStr }}"]'));
+    attachRemoveVoteOnShopEvent($('a[rel2="removeVoteOnShopTrigger-{{ shop.id }}{{ isLightStr }}"]'));
+</script>

@@ -1,0 +1,58 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block left_column %}
+    {% render "KsClubBundle:Club:leftColumn" with { 'clubId' : club.id } %}
+{% endblock %}
+
+{% block content %}
+    <h1 class="clubs">Liste des équipes du club {{ club.name }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Label</th>
+                <th>Membres</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for team in teams %}
+            <tr>
+                <td>{{ team.label }}</td>
+                <td>
+                    {% for teamHasUser in team.users %}
+                        <a rel="tooltip" title="{{ teamHasUser.user.username }}" href="{{ path('ks_user_public_profile', { 'username' : teamHasUser.user.username }) }}">
+                            {% if teamHasUser.user.userDetail is defined and teamHasUser.user.userDetail != null %}
+                                {% set user_imageName = teamHasUser.user.userDetail.imageName %}
+                            {% else %}
+                                {% set user_imageName = null %}
+                            {% endif %}
+                            {% include 'KsUserBundle:User:_userImage.html.twig' with {' user_imageName' :  user_imageName }%}
+                        </a>
+                        
+                    {% endfor %}
+                </td>
+                <td>
+                    <a class="btn btn-clubs btn-mini" href="{{ path('ksTeam_show', { 'teamId': team.id }) }}"><i class="icon-search icon-white"></i></a>
+                    <a class="btn btn-clubs btn-mini"  href="{{ path('ksTeam_edit', { 'id': team.id }) }}"><i class="glyphicon glyphicon-pencil icon-white"></i></a>
+                     <a class="btn btn-danger btn-mini" rel="tooltip" title="Supprimer" href="{{ path('ksTeam_delete', { 'id': team.id }) }}">
+                        <i class="icon-remove icon-white"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-clubs" href="{{ path('KsClub_newTeam', { 'clubId': club.id }) }}">
+        <i class="glyphicon glyphicon-plus icon-white"></i> Créer une nouvelle équipe
+    </a>
+    
+    <a class="btn" href="{{ path('ksClub_public_profile', {'clubId' : club.id}) }}">
+        <i class="icon-backward"></i> Retour
+    </a>
+{% endblock %}

@@ -1,0 +1,5 @@
+{% if activity.points[0] is defined %}
+    {{ activity.user.myPoints|total_points }} <span style="font-size:0.8em">(+{{ activity.points|of(activity.user) }} points gagnés)</span>
+{% else %}
+    {{ activity.user.myPoints|total_points }} 
+{% endif %}

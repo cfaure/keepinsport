@@ -1,0 +1,52 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Club'|trans }}
+{% endblock %}
+    
+{% block content %}
+
+<h1 class="clubs">{{ 'users.club_list_team'|trans }} : {{ club.name }}</h1>
+<div class="blocHeaderSeparator"></div>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>{{ 'users.club_team_label'|trans }}</th>
+            <th>{{ 'users.club_list_team_member'|trans }}</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for team in teams %}
+        <tr>
+            <td>{{ team.label }}</td>
+            <td><ul>
+                    {% for member in team.members %}
+                        <li>
+                             <a href="{{ path('ks_member_edit',  { 'id': member.member.id , 'idClub': club.id } ) }}">{{ member.member }}</a>
+                        </li>
+                   {% endfor %}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('ksTeam_edit',  { 'id': team.id , 'idClub': club.id } ) }}"> {{ 'crud.edit'|trans }}</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        
+        <a href="{{ path('KsClub_newTeam', { 'clubId': club.id }) }}">
+            {{ 'users.club_create_team'|trans }}
+        </a>
+    </li>
+</ul>
+
+{% endblock %}

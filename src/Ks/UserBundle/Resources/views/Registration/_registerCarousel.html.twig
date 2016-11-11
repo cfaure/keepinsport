@@ -1,0 +1,100 @@
+<div class="bloc2">
+    <div class="row">
+    <!-- Carousel -->
+        <div class="col-md-8">
+            <div id="myCarousel" class="carousel slide desktop" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% set key = 0 %}
+                    {% set first = 0 %}
+                    {% for citation in citations %}
+                        {% if citation.user is defined and citation.user is not null %}
+                            {% if key % 4 == 0 and first == 0%}
+                                <div class="item active">
+                                    <div class="container2">
+                                {% set first = 1 %}
+                            {% elseif key % 4 == 0 and first == 1 %}
+                                    </div>
+                                </div>
+                                <div class="item">
+                                    <div class="container2">
+                            {% endif %}
+                                        <div class="col-md-3">
+                                            <span class="pull">
+                                                <span class="media-object">
+                                                    {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                                        'user_id' : citation.user.id, 
+                                                        'user_username' : citation.user.username, 
+                                                        'user_imageName': citation.user.imageName, 
+                                                        'user_league_category' : citation.user.leagueCategoryLabel, 
+                                                        'user_league_stars' : citation.user.leagueLevelStarNumber,
+                                                        'withBubble' : false
+                                                    } %}
+                                                </span>
+                                            </span><!--/pull-->
+                                            <div class="testimony">
+                                                <span class="guillemet">“</span> {{ citation.text }} <span class="guillemet">”</span>
+                                            </div>
+                                            <div class="name-testimony" style="font-size: 0.8em">
+                                                <i>{{ citation.user.firstName }}, ligue {{ ("leagues." ~ citation.user.leagueCategoryLabel)|trans }} {{ citation.user.leagueLevelStarNumber }} {{ "leagues.stars-number"|transchoice(citation.user.leagueLevelStarNumber) }}</i>
+                                            </div>      
+                                        </div>
+                        {% endif %}
+                        {% set key = key + 1 %}
+                    {% endfor %}
+                                    </div>
+                                </div>
+                </div>
+                <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div>	<!--/ Carousel Desktop-->	
+
+            <!--Carousel Mobile-->
+            <div id="myCarousel2" class="carousel slide mobile" data-ride="carousel">
+                <div class="carousel-inner">
+                    {% set key =0 %}
+                    {% for citation in citations %}
+                        {% if citation.user is defined and citation.user is not null %}
+                            {% if key == 0 %}
+                                <div class="item active">
+                            {% else %}
+                                <div class="item">
+                            {% endif %}
+                                    <div class="col-md-3">
+                                        <span class="pull">
+                                            <span class="media-object">
+                                                {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                                    'user_id' : citation.user.id, 
+                                                    'user_username' : citation.user.username, 
+                                                    'user_imageName': citation.user.imageName, 
+                                                    'user_league_category' : citation.user.leagueCategoryLabel, 
+                                                    'user_league_stars' : citation.user.leagueLevelStarNumber,
+                                                    'withBubble' : false
+                                                } %}
+                                            </span>
+                                        </span><!--/pull-->
+                                        <div class="testimony">
+                                            <span class="guillemet">“</span> {{ citation.text }} <span class="guillemet">”</span>
+                                        </div>
+                                        <div class="name-testimony" style="font-size: 0.8em">
+                                            <i>{{ citation.user.firstName }}, ligue {{ ("leagues." ~ citation.user.leagueCategoryLabel)|trans }} {{ citation.user.leagueLevelStarNumber }} {{ "leagues.stars-number"|transchoice(citation.user.leagueLevelStarNumber) }}</i>
+                                        </div>
+                                    </div>
+                            </div>
+                            {% set key = key + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <a class="left carousel-control" href="#myCarousel2" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                <a class="right carousel-control" href="#myCarousel2" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+            </div>	<!--/ Carousel Mobile-->	 
+        </div>
+        <div class="col-md-4 bloclogo">
+            <img src="{{ asset('V2/images/mini-logo-white.png') }}" />
+            <p>Fais un tour sur le site et découvre tous les outils pour booster tes performances !</p>	
+            {#<a href="{{ path('ksActivity_activitiesList') }}" type="button" class="btn btn-success">Découvre Keepinsport</a>#}
+            <br/>
+            <br/>
+            <img src="{{ asset('V2/images/mini-logo-partenaire-white.png') }}" />
+        </div>
+    </div><!--/.row-->
+</div><!--/bloc2-->

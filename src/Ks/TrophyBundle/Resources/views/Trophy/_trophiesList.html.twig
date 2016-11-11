@@ -1,0 +1,104 @@
+{{ 'trophies.label'|trans }}
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>{{ 'trophies.category'|trans }}</th>
+            <th>{{ 'trophies.label'|trans }}</th>
+            <!--<th>{{ 'trophies.points'|trans }}</th>-->
+            <th>{{ 'trophies.isUnlocked'|trans }}</th>
+            <th>{{ 'trophies.unlockedAt'|trans }}</th>
+            {% if user == app.user %}
+                <th>{{ 'trophies.actions'|trans }}</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+    {% for key, trophy in trophies %}
+        <tr>
+            <td>{{ trophy.category.label }}</td>
+            <td>{{ trophy.label }}</td>
+            <!--<td>{{ trophy.pointsNumber }}</td>-->
+            <td>
+                {% if trophy.isUnlocked == 1 %}
+                    <span class="icon-ok"></span>
+                {% else %}
+                    <span class="icon-remove"></span>
+                {% endif %}
+            </td>              
+            <td>
+                {% if trophy.unlockedAt is not null %}
+                    {{ trophy.unlockedAt|date('d/m/Y H:i:s') }}
+                {% endif %}
+            </td>
+            {% if user == app.user %}
+                <td id="actionsOnTrophy{{ trophy.id }}Bloc">
+                    {% if trophy.isUnlocked == 1 %}
+                        {% if not trophy.isAlreadyInShowcase %}
+                            <input class="bExpose" trophyId="{{ trophy.id }}" type="button" value="exposer"/>
+                        {% else %}
+                            <input class="bTakeOfFromShowcase" trophyId="{{ trophy.id }}" type="button" value="retirer de la vitrine"/>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $("input[type=button][class=bExpose]").click(function() {
+        var trophyId = $(this).attr('trophyId');
+        exposeTrophy(trophyId);
+    });
+    
+    $("input[type=button][class=bTakeOfFromShowcase]").click(function() {
+        var trophyId = $(this).attr('trophyId');
+        takeOfFromShowcase(trophyId);
+    });
+    
+    function exposeTrophy(trophyId) {
+        //var trophyId = $(button).attr('trophyId');
+        
+        $.post(Routing.generate('ksActivity_exposeTrophyInMyShowcase', {'trophyId' : trophyId}), form.serialize(), function(data) {
+            if( data.exposeResponse == 1 ) {
+                $("#showcase").html(data.html);
+                
+                var newBoutton = $("<input>", { type : "button", 
+                                                trophyId : trophyId, 
+                                                value : "retirer de la vitrine"
+                                              }).addClass("bTakeOfFromShowcase")
+                                            .click(function() { takeOfFromShowcase(trophyId) });
+
+                $("#actionsOnTrophy"+trophyId+"Bloc").html(newBoutton);
+            } else {
+                showInformation( data.errorMessage );
+            }
+        }).fail(function(jqXHR, textStatus) {
+            console.log("error " + textStatus);
+        }); 
+    }
+    
+    function takeOfFromShowcase(trophyId) {
+        //var trophyId = $(button).attr('trophyId');
+    
+        $.post(Routing.generate('ksActivity_takeOfFromShowcase', {'trophyId' : trophyId}), form.serialize(), function(data) {
+            if( data.takeOfResponse == 1 ) {
+                $("#showcase").html(data.html);
+
+                var newBoutton = $("<input>", { type : "button", 
+                                                trophyId : trophyId, 
+                                                value : "exposer"
+                                              }).addClass("bExpose")
+                                            .click(function() { exposeTrophy(trophyId) });
+                                            
+                $("#actionsOnTrophy"+trophyId+"Bloc").html(newBoutton);
+            } else {
+                showInformation( data.errorMessage );
+            }
+        }).fail(function(jqXHR, textStatus) {
+            console.log("error " + textStatus);
+        });
+    }
+ 
+</script>

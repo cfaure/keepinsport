@@ -1,0 +1,180 @@
+.dropdown-menu {
+    background-color: #FEFEFE;
+    border-radius: 3px 3px 3px 3px;
+}
+.dropdown-menu > li.dropdown-heading {
+    background: none repeat scroll 0 0 #314679;
+    border-radius: 0 0 0 0;
+    display: block;
+    height: 30px;
+    margin: -5px 0 0;
+    padding: 10px 10px 15px;
+}
+.dropdown-menu > li.dropdown-heading .title {
+    line-height: 30px;
+    margin: 0;
+    padding: 0;
+}
+.dropdown-menu > li > .menu-header {
+    /*background-color: #1787C7;*/
+    font-size: 12px;
+    height: 30px;
+    line-height: 30px;
+    margin: 0px 0 0;
+    padding: 0 10px;
+}
+.dropdown-menu > li > .menu-header > .title {
+    /*color: #FEFEFE;*/
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 30px;
+    margin: 0;
+    padding: 0;
+}
+.dropdown-menu > li > .menu-header > a {
+    /*color: #FEFEFE;*/
+}
+.dropdown-menu .media {
+    color: #565656;
+    font-size: 12px;
+    margin: 6px 6px 0;
+}
+.dropdown-menu .media-heading {
+    font-family: 'RobotoBoldCondensed',Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.1;
+}
+.dropdown-menu .media-heading a {
+    color: #EE5F5B;
+    text-shadow: none;
+    text-transform: uppercase;
+}
+.dropdown-menu .media-body {
+    white-space: normal;
+}
+/*.dropdown-menu .media-object img {
+    height: 40px;
+    width: 40px;
+}*/
+.dropdown-menu .accordion {
+    margin-bottom: -5px;
+}
+.dropdown-menu .accordion-group {
+    border: medium none;
+    border-radius: 0 0 0 0;
+    margin-bottom: 0;
+}
+.dropdown-menu .accordion-group .accordion-heading {
+    background-color: #E2E2E2;
+    background-image: linear-gradient(to bottom, #EEEEEE, #E2E2E2);
+    background-repeat: repeat-x;
+    border-bottom: 1px solid #CCCCCC;
+    border-top: 1px solid #EEEEEE;
+}
+.dropdown-menu .accordion-group:first-child .accordion-heading {
+    border-top-color: #CCCCCC;
+}
+.dropdown-menu .accordion-group .accordion-heading .accordion-toggle {
+    color: #EE5F5B;
+    text-shadow: none;
+}
+.dropdown-menu .accordion-group .accordion-heading .accordion-toggle:hover {
+    text-decoration: none;
+}
+.dropdown-menu .accordion-group .accordion-inner {
+    border-bottom: 1px solid #CCCCCC;
+    border-top: medium none;
+    margin: 0;
+    padding: 0;
+}
+.dropdown-menu .accordion-group .accordion-inner.menu-listing a {
+    background-color: #FBFBFB;
+    border-bottom: 1px solid #EDEDED;
+    color: #777777;
+    display: block;
+    float: none;
+    line-height: 40px;
+    padding-left: 20px;
+    text-shadow: none;
+}
+.dropdown-menu .accordion-group .accordion-inner.menu-listing a:hover {
+    color: #232323;
+    text-decoration: none;
+}
+.dropdown-menu .accordion-group .accordion-inner.menu-listing a:last-child {
+    border-bottom: medium none;
+}
+.ctabs {
+    clear: both;
+    margin: 0;
+    min-height: 270px;
+    position: relative;
+}
+.ctab {
+    float: left;
+}
+.ctab label {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #E2E2E2;
+    background-image: linear-gradient(to bottom, #EEEEEE, #E2E2E2);
+    background-repeat: repeat-x;
+    border-color: #CCCCCC #CCCCCC -moz-use-text-color;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 1px medium;
+    color: #232323;
+    font-size: 12px;
+    left: 1px;
+    line-height: 35px;
+    margin-left: -1px;
+    padding: 0 10px;
+    position: relative;
+}
+.ctab [type="radio"] {
+    display: none;
+}
+.ctab .content {
+    background-color: #FFFFFF;
+    border-top: 1px solid #CCCCCC;
+    bottom: 0;
+    left: 0;
+    padding: 20px;
+    position: absolute;
+    right: 0;
+    top: 35px;
+}
+.ctab [type="radio"]:checked ~ label {
+    background-color: #FFFFFF;
+    background-image: none;
+    z-index: 2;
+}
+.ctab [type="radio"]:checked ~ label ~ .content {
+    z-index: 1;
+}
+.ctab .content .media {
+    border-bottom: 1px solid #CCCCCC;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+}
+.ctab .content .media:last-child {
+    border-bottom: medium none;
+    margin-bottom: 0;
+}
+.ctab .content .media-heading {
+    font-size: 18px;
+    line-height: 1;
+    margin: 0;
+}
+.ctab .content small {
+    display: block;
+    font-size: 11px;
+    line-height: 1;
+}
+.dropdown-1 .dropdown-menu, .dropdown-2 .dropdown-menu, .dropdown-3 .dropdown-menu {
+    border-radius: 0 0 0 0;
+    width: 300px;
+}

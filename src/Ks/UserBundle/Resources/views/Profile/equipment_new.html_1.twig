@@ -1,0 +1,131 @@
+{#% form_theme form 'KsUserBundle:Profile:collection_equipment_layout.html.twig' %#}
+
+        
+{% if creationOrEdition is defined and creationOrEdition == "creation" %}
+    {% set extends = "::light.html.twig" %}
+{% else %}
+    {% set extends = "KsUserBundle::layout.html.twig" %}
+{% endif %}
+
+{% extends extends %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('plugins/spectrum/spectrum.css') }}" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('plugins/spectrum/spectrum.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/perso.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/sky.js') }}"></script>
+    {#<script src="{{ asset('bundles/kscanvasdrawing/js/index.js') }}"></script> #}
+    <script src="{{ asset('bundles/kscanvasdrawing/js/cloud.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {  
+            var equipmentsNb = '{{ form.equipments | length }}';
+            $('#add-equipment').click(function() {
+
+                /*var equipmentsTable = $('#equipments-table');
+                var newWidget = equipmentsTable.attr('data-prototype');
+                newWidget = newWidget.replace(/\$\$name\$\$/g, equipmentsNb);
+                equipmentsTable.append(newWidget);*/
+                
+                var equipmentsBloc = $('#equipmentsBloc');
+                var newWidget = equipmentsBloc.attr('data-prototype');
+                newWidget = newWidget.replace(/\$\$name\$\$/g, equipmentsNb);
+                
+                //newWidget = newWidget.replace('/\<div\>/g', '<td>');
+                //newWidget = newWidget.replace('/\<\/div\>/g', '</td>');
+
+                // create a new list element and add it to our list
+                var newTr = $('<div></div>').html(newWidget);
+                equipmentsBloc.append(newTr);
+                equipmentsNb++;
+            });
+            $('#remove-last-equipment').click(function() {
+                /*var equipmentsTable = $('#equipments-table');
+                equipmentsTable.find("tbody").find("tr").last().remove();*/
+                var equipmentsBloc = $('#equipmentsBloc');
+                equipmentsBloc.children().last().remove();
+                equipmentsNb--;
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %} 
+    {% if creationOrEdition is defined and creationOrEdition == "creation" %}
+        {% include 'KsUserBundle:Profile:_breadcrumb.html.twig' with {'step': 7, 'creationOrEdition' : creationOrEdition} %}
+        {% set submitButtonText = "Etape suivante" %}
+    {% else %}
+        <h1 class="sportif">Edition</h1>
+        <div class="blocHeaderSeparator"></div>
+        <div class="row-fluid">
+            <div class="span2">
+                <a class="imageLink" href="{{ path('ks_user_public_profile', {'username' : app.user.username}) }}">
+                    <span class="avatarBloc">
+                        {% set user_imageName = null %}
+                        {% if app.user.userDetail is not null %}
+                            {% set user_imageName = app.user.userDetail.imageName %}
+                        {% endif %}
+                        {% include 'KsUserBundle:User:_userImage.html.twig' with{ 'user_id' : app.user.id, 'user_imageName': user_imageName } %}
+                    </span>
+                </a>
+            </div>
+            <div>
+                 {% include 'KsUserBundle:Profile:_buttons.html.twig' with{'creationOrEdition' : creationOrEdition } %}
+            </div>
+        </div>
+        <br/>
+        
+    <br/>
+
+        {% set submitButtonText = "Enregistrer" %}
+    {% endif %}
+        
+    <div class="thumbnail rightColumnBloc">
+        <h3 class="sportif">Mon Matériel</h3>
+        <div class="blocHeaderSeparator"></div>
+        <form action="{{ path('ksProfile_equipment', {'creationOrEdition' : creationOrEdition}) }}" method="post" {{ form_enctype(form) }}>
+            
+            {#<table id="equipments-table" data-prototype="{{ form_widget(form.equipments.vars.prototype) | e }}">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for numField, equipmentField in form.equipments %}
+                    <tr {{ block('widget_container_attributes') }}>
+                        <td>{{ form_widget(equipmentField.type) }}</td>
+                        <td>{{ form_widget(equipmentField.sports) }}</td>
+                        <td>{{ form_widget(equipmentField.label) }}</td>
+                        <td>{{ form_widget(equipmentField.weight) }}</td>
+                        <td>{{ form_widget(equipmentField.primaryColor) }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>#}
+            <div id="equipmentsBloc" data-prototype="{{ form_widget(form.equipments.vars.prototype) | e }}">
+                {% for numField, equipmentField in form.equipments %}
+                    {{ form_widget(equipmentField) }}
+                {% endfor %}
+            </div>
+            <span class="btn btn-sportif btn-mini" id="add-equipment">Ajouter un équipement</span>
+            <span class="btn btn-sportif btn-mini" id="remove-last-equipment">Enlever le dernier équipement</span>
+                        
+            {{ form_rest(form) }}
+            <input type="submit" class=" btn btn-sportif pull-right" value="{{ submitButtonText }}"/>
+        </form>                
+    </div> 
+
+{% endblock %}

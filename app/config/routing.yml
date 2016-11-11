@@ -1,0 +1,354 @@
+KsPaymentBundle:
+    resource: "@KsPaymentBundle/Controller/"
+    type:     annotation
+    prefix:   /payment
+
+KsCoachingBundle:
+    resource: "@KsCoachingBundle/Controller/"
+    type:     annotation
+    prefix:   /coaching
+
+KsEquipmentBundle:
+    resource: "@KsEquipmentBundle/Controller/EquipmentController.php"
+    type:     annotation
+    prefix:   /
+
+KsShopBundle:
+    resource: "@KsShopBundle/Controller/ShopController.php"
+    type:     annotation
+    prefix:   /shops
+
+KsEvolution:
+    resource: "@KsEvolutionBundle/Controller/EvolutionController.php"
+    type:     annotation
+    prefix:   /evolutions
+
+_login:
+  pattern: /
+  defaults: { _controller: KsUserBundle:Security:login }
+
+KsUser:
+    resource: "@KsUserBundle/Controller/UserController.php"
+    type:     annotation
+    prefix:   /
+    
+KsInvitationEmailBeta:
+    resource: "@KsUserBundle/Controller/InvitationEmailBetaController.php"
+    type:     annotation
+    prefix:   /invits_beta   
+    
+KsUserService:
+    resource: "@KsUserBundle/Controller/ServiceController.php"
+    type:     annotation
+    prefix:   /service
+    
+KsUser_friend:
+    resource: "@KsUserBundle/Controller/FriendController.php"
+    type:     annotation
+    prefix:   /friends
+    
+KsUser_translation:
+    resource: "@KsUserBundle/Controller/TranslationController.php"
+    type:     annotation
+    prefix:   /translations
+    
+KsUser_equipment:
+    resource: "@KsUserBundle/Controller/EquipmentController.php"
+    type:     annotation
+    prefix:   /equipments
+    
+KsJobBundle:
+    resource: "@KsJobBundle/Controller/"
+    type:     annotation
+    prefix:   /job
+        
+# Notification Bundle
+KsNotification:
+    resource: "@KsNotificationBundle/Controller/NotificationController.php"
+    type:     annotation
+    prefix:   /notifications   
+    
+
+# Club Bundle
+KsClubBundle_club:
+    resource: "@KsClubBundle/Controller/ClubController.php"
+    type:     annotation
+    prefix:   /clubs
+    
+KsClubBundle_profile:
+    resource: "@KsClubBundle/Controller/ProfileController.php"
+    type:     annotation
+    prefix:   /clubs/profile
+
+KsClubBundle_activities:
+    resource: "@KsClubBundle/Controller/ActivityController.php"
+    type:     annotation
+    prefix:   /clubs/activities
+    
+KsClubBundle_clubAdmin:
+    resource: "@KsClubBundle/Controller/ClubAdminController.php"
+    type:     annotation
+    prefix:   /clubs/clubAdmin
+ 
+KsClubBundle_members:
+    resource: "@KsClubBundle/Controller/MemberController.php"
+    type:     annotation
+    prefix:   /member 
+
+KsClubBundle_teams:
+    resource: "@KsClubBundle/Controller/TeamController.php"
+    type:     annotation
+    prefix:   /teams 
+    
+KsClubBundle_teamCompositions:
+    resource: "@KsClubBundle/Controller/TeamCompositionController.php"
+    type:     annotation
+    prefix:   /team_activity
+ 
+
+#EventBundle
+KsEventBundle:
+    resource: "@KsEventBundle/Controller/EventController.php"
+    type:     annotation
+    prefix:   /events
+    
+KsEventClubBundle:
+    resource: "@KsEventBundle/Controller/EventClubController.php"
+    type:     annotation
+    prefix:   /clubs_events
+    
+#KsNotification_crud:
+#    resource: "@KsNotificationBundle/Resources/config/routing/notification.yml"
+#    prefix:   /ks/notifications/crud
+    
+
+KsUserBundle_userdetail_admin:
+    resource: "@KsUserBundle/Resources/config/routing/userdetailadmin.yml"
+    prefix:   /userdetail/admin
+    
+#KsUserBundle_userdetail:
+#    resource: "@KsUserBundle/Resources/config/routing/userdetail.yml"
+#    prefix:   /ks/profil
+
+
+KsUserBundle_userdetail:
+    resource: "@KsUserBundle/Controller/UserDetailController.php"
+    type:     annotation
+    prefix:   /profil
+    
+KsUserBundle_profile:
+    resource: "@KsUserBundle/Controller/ProfileController.php"
+    type:     annotation
+    prefix:   /profile
+    
+KsUserBundle_sportifs:
+    resource: "@KsUserBundle/Controller/SportmanController.php"
+    type:     annotation
+    prefix:   /sportsmen
+
+# Bundle Event 
+#KsEventBundle:
+#    resource: "@KsEventBundle/Resources/config/routing.yml"
+#    prefix:   /ks/event 
+    
+# Bundle Activity
+KsActivityBundle:
+    resource: "@KsActivityBundle/Controller/ActivityController.php"
+    type:     annotation
+    prefix:   /activities
+    
+KsActivityBundle_garmin:
+    resource: "@KsActivityBundle/Controller/GarminController.php"
+    type:     annotation
+    prefix:   /garmin
+    
+KsActivityBundle_polar:
+    resource: "@KsActivityBundle/Controller/PolarController.php"
+    type:     annotation
+    prefix:   /polar
+    
+KsActivityBundle_comments:
+    resource: "@KsActivityBundle/Controller/CommentController.php"
+    type:     annotation
+    prefix:   /comments
+
+KsActivityBundle_sports:
+    resource: "@KsActivityBundle/Controller/SportController.php"
+    type:     annotation
+    prefix:   /sports
+    
+KsActivityBundle_articles:
+    resource: "@KsActivityBundle/Controller/ArticleController.php"
+    type:     annotation
+    prefix:   /articles
+    
+KsActivityBundle_wikisport:
+    resource: "@KsActivityBundle/Controller/WikisportController.php"
+    type:     annotation
+    prefix:   /wikisport
+    
+KsActivityBundle_nike:
+    resource: "@KsActivityBundle/Controller/NikeController.php"
+    type:     annotation
+    prefix:   /nike
+    
+KsActivityBundle_endomondo:
+    resource: "@KsActivityBundle/Controller/EndomondoController.php"
+    type:     annotation
+    prefix:   /endomondo
+    
+KsActivityBundle_sportsmenSearch:
+    resource: "@KsActivityBundle/Controller/SportsmenSearchController.php"
+    type:     annotation
+    prefix:   /sportsmen_search
+    
+KsActivityBundle_tests:
+    resource: "@KsActivityBundle/Controller/TestController.php"
+    type:     annotation
+    prefix:   /tests
+    
+KsActivityBundle_sportsActivities:
+    resource: "@KsActivityBundle/Controller/SportingActivityController.php"
+    type:     annotation
+    prefix:   /sportingActivities  
+    
+KsImageBundle:
+    resource: "@KsImageBundle/Controller/ImageController.php"
+    type:     annotation
+    prefix:   /ks/images
+    
+KsLeagueBundle:
+    resource: "@KsLeagueBundle/Controller/LeagueController.php"
+    type:     annotation
+    prefix:   /leagues
+
+fos_user_security:
+    resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+    prefix: /
+
+#fos_user_profile:
+#    resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
+#    prefix: /FOS_profile
+
+ks_user_register:
+    resource: "@KsUserBundle/Resources/config/routing/registration.xml"
+    prefix: /register
+
+fos_user_resetting:
+    resource: "@FOSUserBundle/Resources/config/routing/resetting.xml"
+    prefix: /resetting
+
+fos_user_change_password:
+    resource: "@FOSUserBundle/Resources/config/routing/change_password.xml"
+    prefix: /change-password
+
+  
+_imagine:
+    resource: .
+    type:     imagine
+   
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+    prefix: /fos_js_routing
+#_google_secured:
+    #pattern: /secured/
+    #defaults: { _controller: KsActivityBundle:Activity:activitiesList }
+          
+_security_login:
+    pattern:   /login
+    
+_security_check:
+    pattern:  /login_check
+    
+_security_logout:
+    pattern:  /logout
+    
+_security_check_facebook:
+    pattern:  /login_check_facebook
+#    defaults: { _controller: KsUserBundle:Default:loginCheckFacebook }
+    
+_security_logout_facebook:
+    pattern:  /logout_facebook
+#    defaults: { _controller: KsUserBundle:Default:logoutFacebook }
+    
+#_googleLogin:
+    #pattern:  /google/login
+    #defaults: { _controller: KsUserBundle:Security:googleLogin }
+    
+#_secured:
+#    pattern: /ks/
+#    defaults: { _controller: KsActivityBundle:Activity:activitiesList }
+    
+#wiki:
+#    resource: "@GitWikiBundle/Resources/config/routing.xml"
+#    prefix:   ks/wiki
+
+#wiki:
+#    resource: "@GitWikiBundle/Controller/WikiController.php"
+#    type:     annotation
+ #   prefix:   ks/wiki
+ 
+# Bundle Message
+KsMessageBundle:
+    resource: "@KsMessageBundle/Controller/MessageController.php"
+    type:     annotation
+    prefix:   /messages
+    
+# Bundle Dashboard
+KsDashboardBundle:
+    resource: "@KsDashboardBundle/Controller/DashboardController.php"
+    type:     annotation
+    prefix:   /dashboard
+    
+# Bundle Agenda
+KsAgendaBundle:
+    resource: "@KsAgendaBundle/Controller/AgendaController.php"
+    type:     annotation
+    prefix:   /agenda
+    
+KsAgendClubBundle:
+    resource: "@KsAgendaBundle/Controller/AgendaClubController.php"
+    type:     annotation
+    prefix:   /club_agenda
+  
+# Bundle Contest
+KsContestBundle:
+    resource: "@KsContestBundle/Controller/ContestController.php"
+    type:     annotation
+    prefix:   /contests
+    
+# Bundle Tournament
+KsTournamentBundle:
+    resource: "@KsTournamentBundle/Controller/TournamentController.php"
+    type:     annotation
+    prefix:   /tournaments
+    
+KsTournamentMatchBundle:
+    resource: "@KsTournamentBundle/Controller/MatchController.php"
+    type:     annotation
+    prefix:   /tournament_matchs
+    
+KsTournamentActivityBundle:
+    resource: "@KsTournamentBundle/Controller/ActivityController.php"
+    type:     annotation
+    prefix:   /tournament_activities
+    
+#Bundle search
+KsSearchBundle:
+    resource: "@KsSearchBundle/Controller/SearchController.php"
+    type:     annotation
+    prefix:   /search
+    
+#Bundle trophy
+KsTrophyBundle:
+    resource: "@KsTrophyBundle/Controller/TrophyController.php"
+    type:     annotation
+    prefix:   /trophies
+    
+#Bundle canvas drawing
+KsCanvasDrawingBundle:
+    resource: "@KsCanvasDrawingBundle/Controller/CanvasDrawingController.php"
+    type:     annotation
+    prefix:   /canvas_drawings
+
+

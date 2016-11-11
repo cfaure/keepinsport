@@ -1,0 +1,170 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block left_column %}
+    {% render "KsClubBundle:Club:leftColumn" with { 'clubId' : club.id } %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/yellow.css') }}" type="text/css" />
+{% endblock %}
+  
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('iCheck/jquery.icheck.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+            var createTournament = function( ) {
+                
+                var $tournamentFormModal = $("#tournamentFormModal");
+                
+                //Le corp de la fenêtre
+                var $modalBody              = $tournamentFormModal.find("div.modal-body");
+                var $messagesBloc           = $modalBody.find('.messages');
+                var $loaderBody             = $modalBody.find('.loader');
+                var $form                   = $modalBody.find("form");
+                var $title                  = $form.find(".title");
+
+                //Le pied de la fenêtre
+                var $modalFooter            = $tournamentFormModal.find("div.modal-footer");
+                var $createButton           = $modalFooter.find('.create');
+                var $cancelButton           = $modalFooter.find('.cancel');
+                var $loaderFooter           = $modalFooter.find('img.loader');
+                
+                var closeModal = function() {
+                    $tournamentFormModal.modal('hide');
+                }
+                
+                $messagesBloc.html("");
+                $messagesBloc.hide();
+                
+                if( $title.val() == "" ) {
+                    $messagesBloc.html("Choisis un titre pour ton tournoi.");
+                    $messagesBloc.addClass("alert alert-error");
+                    $messagesBloc.show();
+                } else {
+                    var participantsNumber = $form.find("input[type=radio][name=participantsNumber]:checked").val();
+
+                    $form.attr('action', Routing.generate('ksClubAdmin_createTournament', {'clubId' : {{ club.id }}, 'nbParticipants' : participantsNumber} ));
+                    $form.submit();
+                }
+            };
+            
+            function showTournamentFormModal(  ) {
+                var $tournamentFormModal = $("#tournamentFormModal");
+                
+                //Le corp de la fenêtre
+                var $modalBody              = $tournamentFormModal.find("div.modal-body");
+                var $messagesBloc           = $modalBody.find('.messages');
+                var $loaderBody             = $modalBody.find('.loader');
+                var $form                   = $modalBody.find("form");
+
+                //Le pied de la fenêtre
+                var $modalFooter            = $tournamentFormModal.find("div.modal-footer");
+                var $createButton           = $modalFooter.find('.create');
+                var $cancelButton           = $modalFooter.find('.cancel');
+                var $loaderFooter           = $modalFooter.find('img.loader');
+
+               //On efface toutes les popover
+                $("div.popover.in").removeClass("in"); 
+                
+                //$loaderBody.show();
+                $loaderFooter.hide();
+                $createButton.show();
+                $cancelButton.html("Fermer");
+                $messagesBloc.html("");
+                $messagesBloc.hide();
+
+                    
+                $createButton.unbind();
+                $createButton.on("click", createTournament); 
+
+                //On affiche la fenêtre
+                $tournamentFormModal.modal('show'); 
+
+                $tournamentFormModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+
+            }
+            
+            $("#createTournamentButton").on("click", showTournamentFormModal);
+        });
+    </script>
+{% endblock %}
+    
+{% block content %}
+
+<h1 class="clubs">Tournois {{ club.name }}</h1>
+<div class="blocHeaderSeparator"></div>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Date de début</th>
+            <th>Date de fin</th>
+            <th>Nombre de participants</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+    {% for tournament in tournaments %}
+        <tr>
+            <td>{{ tournament.title }}</td>
+            <td>{% if tournament.startDate %}{{ tournament.startDate|date('Y-m-d H:i:s') }}{% endif%}</td>
+            <td>{% if tournament.endDate %}{{ tournament.endDate|date('Y-m-d H:i:s') }}{% endif%}</td>
+            <td>
+                {% if tournament.rounds[0] is defined %}
+                    {{ ( tournament.rounds[0].matches|length ) *2 }}
+                {% endif %}
+            </td>
+            <td>
+                <a class="btn btn-clubs btn-mini" href="{{ path('ksTournament_show', { 'id': tournament.id }) }}"><i class="icon-search icon-white"></i></a>
+                {% if club|is_manager( app.user.id ) %}
+                    <a class="btn btn-danger btn-mini" href="{{ path('ksTournament_delete', { 'id': tournament.id }) }}"><i class="icon-remove icon-white"></i></a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+         
+    </tbody>
+</table>
+
+<a class="btn" href="{{ path('ksClub_public_profile', {'clubId' : club.id}) }}">
+    <i class="icon-backward"></i> Retour
+</a>
+
+
+<div id="tournamentFormModal" class='modal hide fade'>
+    <div class='modal-header'>
+        <a class='close' data-dismiss='modal'>&times;</a>
+        <h3 class="clubs">Création d'un tournoi</h3>
+    </div>
+    <div class='modal-body'>
+        <center class="loader" style="display:none">
+            <img  src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+        </center>
+        <div class="messages"></div>
+        {% include 'KsTournamentBundle:Tournament:_tournamentForm.html.twig' with { 'clubId' : club.id, 'form' : tournamentForm } %}
+    </div>
+    <div class='modal-footer'>
+        <img class="loader pull-left" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+        <span class='cancel btn' data-dismiss='modal' >Annuler</span>
+        <span class='create btn btn-clubs'>Créer</span>
+    </div>
+</div>
+
+{% if club|is_manager( app.user.id ) %}
+    <span id ="createTournamentButton" class="btn btn-clubs" href="{{ path('ksClub_public_profile', {'clubId' : club.id}) }}">
+        <span style="-webkit-transform: rotate(90deg); -moz-transform: rotate(90deg);"><i class="icon-sitemap" ></i></span> Créer un tournoi
+    </span>
+{% endif %}
+
+{% endblock %}
+

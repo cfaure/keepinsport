@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<ks_article_tags xml:lang="fr">
+    <ks_tag>
+        <label>Article</label>
+        <isCategory>1</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Evénement Sportif</label>
+        <isCategory>1</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Programme Entrainement</label>
+        <isCategory>1</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Conseil en nutrition</label>
+        <isCategory>1</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Matériel</label>
+        <isCategory>1</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Divers</label>
+        <isCategory>1</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Sport collectif</label>
+        <isCategory>0</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Sport individuel</label>
+        <isCategory>0</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Running</label>
+        <isCategory>0</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Football</label>
+        <isCategory>0</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Rugby</label>
+        <isCategory>0</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>Jeux olympiques</label>
+        <isCategory>0</isCategory>
+    </ks_tag>
+    <ks_tag>
+        <label>2012</label>
+        <isCategory>0</isCategory>
+    </ks_tag>
+</ks_article_tags>

@@ -1,0 +1,643 @@
+{% extends "::layout_V2.html.twig" %}
+
+{% block title %}
+	Keepinsport - Wikisport
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksactivity/js/wikisport.js') }}"></script>
+    <script type="text/javascript">
+        var averageNotes = new Array(); //Utilisé pour la gestion des notes des événéments de type compét
+        
+        $(document).ready(function() {
+            {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                $("#headerV2").css("background-color","#000");
+            {% endif %}
+                
+            $("#body").addClass("wikisport"); //pour activer le css correspondant
+            
+            $('table.articlesCategoriesTable').dataTable({
+                //"sDom": "<'row-fluid'<'span3'l><'span3'f>r>t<'row-fluid'<'span12'p>>",
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bSort": true,
+                "bInfo": false,
+                "bAutoWidth": false,
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %},
+                "fnDrawCallback" : function() {displayNotes();} //Obligatoire pour garder les fonctions javascripts actives lorsqu'on change de page du dataTable
+            });
+            
+            function displayNotes() {
+                //FMO : FIXME du grand nimp !! code en triple, 2 fois ici et 1 fois sur _note.html.twig....la flemme de passer tout ça en js :(
+                {% for key, category in articlesCategories %}
+                    {% if key == 2 %}
+                        {% for article in subscriptions[ category.id ] %}
+                            $("#signs_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.signsNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+                            $("#food_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.foodNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+                            $("#promoters_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.promotersNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+                            $("#trace_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.traceNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+                            $("#awards_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.awardsNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+
+                            averageNotes[{{ article.activity.id }}] = new Array("signs", "food", "promoters", "trace", "awards");
+                            averageNotes[{{ article.activity.id }}]['signs'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['signs']['average'] = {{ article.activity.signsNote }};
+                            averageNotes[{{ article.activity.id }}]['food'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['food']['average'] = {{ article.activity.foodNote }};
+                            averageNotes[{{ article.activity.id }}]['promoters'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['promoters']['average'] = {{ article.activity.promotersNote }};
+                            averageNotes[{{ article.activity.id }}]['trace'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['trace']['average'] = {{ article.activity.traceNote }};
+                            averageNotes[{{ article.activity.id }}]['awards'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['awards']['average'] = {{ article.activity.awardsNote }};
+
+                            $("#myNotesBtn_{{ article.activity.id }}").click(function() {
+                                if (!$("#myNotesBtn_{{ article.activity.id}}").hasClass('disabled')) {
+                                    $("#myNotesBtn_{{ article.activity.id}}").addClass('disabled');
+                                    $("#loader_{{ article.activity.id }}").show();
+
+                                    //Sauvegarde des précédentes moyennes pour corriger bug affichage
+                                    averageNotes[{{ article.activity.id }}]['signs']['average']     = $("#signs_{{ article.activity.id }}").raty('score');
+                                    averageNotes[{{ article.activity.id }}]['food']['average']      = $("#food_{{ article.activity.id }}").raty('score');
+                                    averageNotes[{{ article.activity.id }}]['promoters']['average'] = $("#promoters_{{ article.activity.id }}").raty('score');
+                                    averageNotes[{{ article.activity.id }}]['trace']['average']     = $("#trace_{{ article.activity.id }}").raty('score');
+                                    averageNotes[{{ article.activity.id }}]['awards']['average']    = $("#awards_{{ article.activity.id }}").raty('score');
+
+                                    $.get(
+                                        Routing.generate('ksActivity_getMyNoteOnActivity', { 'activityId' : {{ article.activity.id }} }),
+                                        function(response) {
+                                            if (response.code == 1) {
+                                                $("#signs_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#signs_{{ article.activity.id }}").raty('score', response.notes['signs']['myVal']);
+                                                $("#food_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#food_{{ article.activity.id }}").raty('score', response.notes['food']['myVal']);
+                                                $("#promoters_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#promoters_{{ article.activity.id }}").raty('score', response.notes['promoters']['myVal']);
+                                                $("#trace_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#trace_{{ article.activity.id }}").raty('score', response.notes['trace']['myVal']);
+                                                $("#awards_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#awards_{{ article.activity.id }}").raty('score', response.notes['awards']['myVal']);
+                                            }
+                                            else {
+                                                $("#signs_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#signs_{{ article.activity.id }}").raty('score', 0);
+                                                $("#food_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#food_{{ article.activity.id }}").raty('score', 0);
+                                                $("#promoters_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#promoters_{{ article.activity.id }}").raty('score', 0);
+                                                $("#trace_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#trace_{{ article.activity.id }}").raty('score', 0);
+                                                $("#awards_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#awards_{{ article.activity.id }}").raty('score', 0);
+                                            }
+                                            $("#cancelBtn_{{ article.activity.id}}").show();
+                                            $("#cancelBtn_{{ article.activity.id}}").removeClass("disabled");
+                                            $("#publishBtn_{{ article.activity.id }}").show();
+                                            $("#myNotesBtn_{{ article.activity.id }}").hide();
+                                            $("#loader_{{ article.activity.id }}").hide();
+                                        }
+                                    );
+                                }
+                            });
+
+                            $("#publishBtn_{{ article.activity.id }}").click(function() {
+                                if (!$("#publishBtn_{{ article.activity.id}}").hasClass('disabled')) {
+                                    $("#publishBtn_{{ article.activity.id}}").addClass('disabled');
+                                    $("#loader_{{ article.activity.id }}").show();
+                                    $.post(
+                                        Routing.generate('ksActivity_noteOnActivity', { 'activityId' : {{ article.activity.id }} }),
+                                        {
+                                            "signs"     : $("#signs_{{ article.activity.id }}").raty('score'),
+                                            "food"      : $("#food_{{ article.activity.id }}").raty('score'),
+                                            "promoters" : $("#promoters_{{ article.activity.id }}").raty('score'),
+                                            "trace"     : $("#trace_{{ article.activity.id }}").raty('score'),
+                                            "awards"    : $("#awards_{{ article.activity.id }}").raty('score')
+                                        },
+                                        function(response) {
+                                            if (response.code == -1) showInformation(response.error);
+                                            else {
+                                                showInformation("{{ 'wikisport.notes-saved-successfully'|trans }}");
+                                            }
+                                            $("#signs_{{ article.activity.id }}").raty('score', response.notes['signs']['average']);
+                                            $("#signs_{{ article.activity.id }}").raty('readOnly', true);
+                                            $("#food_{{ article.activity.id }}").raty('score', response.notes['food']['average']);
+                                            $("#food_{{ article.activity.id }}").raty('readOnly', true);
+                                            $("#promoters_{{ article.activity.id }}").raty('score', response.notes['promoters']['average']);
+                                            $("#promoters_{{ article.activity.id }}").raty('readOnly', true);
+                                            $("#trace_{{ article.activity.id }}").raty('score', response.notes['trace']['average']);
+                                            $("#trace_{{ article.activity.id }}").raty('readOnly', true);
+                                            $("#awards_{{ article.activity.id }}").raty('score', response.notes['awards']['average']);
+                                            $("#awards_{{ article.activity.id }}").raty('readOnly', true);
+
+                                            $("#publishBtn_{{ article.activity.id}}").removeClass('disabled');
+                                            $("#publishBtn_{{ article.activity.id }}").hide();
+                                            $("#myNotesBtn_{{ article.activity.id }}").show();
+                                            $("#myNotesBtn_{{ article.activity.id}}").removeClass('disabled');
+                                            $("#cancelBtn_{{ article.activity.id}}").hide();
+                                            $("#loader_{{ article.activity.id }}").hide();
+                                        }
+                                    )
+                                }
+                            });
+
+                            $("#cancelBtn_{{ article.activity.id}}").click(function() {
+                                if (!$("#cancelBtn_{{ article.activity.id}}").hasClass('disabled')) {
+                                    $("#cancelBtn_{{ article.activity.id}}").addClass('disabled');
+                                    $("#signs_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['signs']['average']);
+                                    $("#signs_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#food_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['food']['average']);
+                                    $("#food_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#promoters_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['promoters']['average']);
+                                    $("#promoters_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#trace_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['trace']['average']);
+                                    $("#trace_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#awards_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['awards']['average']);
+                                    $("#awards_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#publishBtn_{{ article.activity.id }}").hide();
+                                    $("#myNotesBtn_{{ article.activity.id }}").show();
+                                    $("#myNotesBtn_{{ article.activity.id}}").removeClass('disabled');
+                                    $("#cancelBtn_{{ article.activity.id}}").hide();
+                                }
+                            });
+                        {% endfor %}
+                        {% for article in articles[ category.id ] %}
+                            $("#signs_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.signsNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+                            $("#food_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.foodNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+                            $("#promoters_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.promotersNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+                            $("#trace_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.traceNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+                            $("#awards_{{ article.activity.id }}").raty(
+                                { 'path'        : '{{ asset('V2/images') }}',
+                                  'half'        : true,
+                                  'hints'       : ['Horrible', 'Médiocre', 'Moyen', 'Très bon', 'Excellent'],
+                                  'score'       : '{{ article.activity.awardsNote }}',
+                                  'readOnly'    : true,
+                                }
+                            );
+
+                            averageNotes[{{ article.activity.id }}] = new Array("signs", "food", "promoters", "trace", "awards");
+                            averageNotes[{{ article.activity.id }}]['signs'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['signs']['average'] = {{ article.activity.signsNote }};
+                            averageNotes[{{ article.activity.id }}]['food'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['food']['average'] = {{ article.activity.foodNote }};
+                            averageNotes[{{ article.activity.id }}]['promoters'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['promoters']['average'] = {{ article.activity.promotersNote }};
+                            averageNotes[{{ article.activity.id }}]['trace'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['trace']['average'] = {{ article.activity.traceNote }};
+                            averageNotes[{{ article.activity.id }}]['awards'] = new Array();
+                            averageNotes[{{ article.activity.id }}]['awards']['average'] = {{ article.activity.awardsNote }};
+
+                            $("#myNotesBtn_{{ article.activity.id }}").click(function() {
+                                if (!$("#myNotesBtn_{{ article.activity.id}}").hasClass('disabled')) {
+                                    $("#myNotesBtn_{{ article.activity.id}}").addClass('disabled');
+                                    $("#loader_{{ article.activity.id }}").show();
+
+                                    //Sauvegarde des précédentes moyennes pour corriger bug affichage
+                                    averageNotes[{{ article.activity.id }}]['signs']['average']     = $("#signs_{{ article.activity.id }}").raty('score');
+                                    averageNotes[{{ article.activity.id }}]['food']['average']      = $("#food_{{ article.activity.id }}").raty('score');
+                                    averageNotes[{{ article.activity.id }}]['promoters']['average'] = $("#promoters_{{ article.activity.id }}").raty('score');
+                                    averageNotes[{{ article.activity.id }}]['trace']['average']     = $("#trace_{{ article.activity.id }}").raty('score');
+                                    averageNotes[{{ article.activity.id }}]['awards']['average']    = $("#awards_{{ article.activity.id }}").raty('score');
+
+                                    $.get(
+                                        Routing.generate('ksActivity_getMyNoteOnActivity', { 'activityId' : {{ article.activity.id }} }),
+                                        function(response) {
+                                            if (response.code == 1) {
+                                                $("#signs_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#signs_{{ article.activity.id }}").raty('score', response.notes['signs']['myVal']);
+                                                $("#food_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#food_{{ article.activity.id }}").raty('score', response.notes['food']['myVal']);
+                                                $("#promoters_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#promoters_{{ article.activity.id }}").raty('score', response.notes['promoters']['myVal']);
+                                                $("#trace_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#trace_{{ article.activity.id }}").raty('score', response.notes['trace']['myVal']);
+                                                $("#awards_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#awards_{{ article.activity.id }}").raty('score', response.notes['awards']['myVal']);
+                                            }
+                                            else {
+                                                $("#signs_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#signs_{{ article.activity.id }}").raty('score', 0);
+                                                $("#food_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#food_{{ article.activity.id }}").raty('score', 0);
+                                                $("#promoters_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#promoters_{{ article.activity.id }}").raty('score', 0);
+                                                $("#trace_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#trace_{{ article.activity.id }}").raty('score', 0);
+                                                $("#awards_{{ article.activity.id }}").raty('readOnly', false);
+                                                $("#awards_{{ article.activity.id }}").raty('score', 0);
+                                            }
+                                            $("#cancelBtn_{{ article.activity.id}}").show();
+                                            $("#cancelBtn_{{ article.activity.id}}").removeClass("disabled");
+                                            $("#publishBtn_{{ article.activity.id }}").show();
+                                            $("#myNotesBtn_{{ article.activity.id }}").hide();
+                                            $("#loader_{{ article.activity.id }}").hide();
+                                        }
+                                    );
+                                }
+                            });
+
+                            $("#publishBtn_{{ article.activity.id }}").click(function() {
+                                if (!$("#publishBtn_{{ article.activity.id}}").hasClass('disabled')) {
+                                    $("#publishBtn_{{ article.activity.id}}").addClass('disabled');
+                                    $("#loader_{{ article.activity.id }}").show();
+                                    $.post(
+                                        Routing.generate('ksActivity_noteOnActivity', { 'activityId' : {{ article.activity.id }} }),
+                                        {
+                                            "signs"     : $("#signs_{{ article.activity.id }}").raty('score'),
+                                            "food"      : $("#food_{{ article.activity.id }}").raty('score'),
+                                            "promoters" : $("#promoters_{{ article.activity.id }}").raty('score'),
+                                            "trace"     : $("#trace_{{ article.activity.id }}").raty('score'),
+                                            "awards"    : $("#awards_{{ article.activity.id }}").raty('score')
+                                        },
+                                        function(response) {
+                                            if (response.code == -1) showInformation(response.error);
+                                            else {
+                                                showInformation("{{ 'wikisport.notes-saved-successfully'|trans }}");
+                                            }
+                                            $("#signs_{{ article.activity.id }}").raty('score', response.notes['signs']['average']);
+                                            $("#signs_{{ article.activity.id }}").raty('readOnly', true);
+                                            $("#food_{{ article.activity.id }}").raty('score', response.notes['food']['average']);
+                                            $("#food_{{ article.activity.id }}").raty('readOnly', true);
+                                            $("#promoters_{{ article.activity.id }}").raty('score', response.notes['promoters']['average']);
+                                            $("#promoters_{{ article.activity.id }}").raty('readOnly', true);
+                                            $("#trace_{{ article.activity.id }}").raty('score', response.notes['trace']['average']);
+                                            $("#trace_{{ article.activity.id }}").raty('readOnly', true);
+                                            $("#awards_{{ article.activity.id }}").raty('score', response.notes['awards']['average']);
+                                            $("#awards_{{ article.activity.id }}").raty('readOnly', true);
+
+                                            $("#publishBtn_{{ article.activity.id}}").removeClass('disabled');
+                                            $("#publishBtn_{{ article.activity.id }}").hide();
+                                            $("#myNotesBtn_{{ article.activity.id }}").show();
+                                            $("#myNotesBtn_{{ article.activity.id}}").removeClass('disabled');
+                                            $("#cancelBtn_{{ article.activity.id}}").hide();
+                                            $("#loader_{{ article.activity.id }}").hide();
+                                        }
+                                    )
+                                }
+                            });
+
+                            $("#cancelBtn_{{ article.activity.id}}").click(function() {
+                                if (!$("#cancelBtn_{{ article.activity.id}}").hasClass('disabled')) {
+                                    $("#cancelBtn_{{ article.activity.id}}").addClass('disabled');
+                                    $("#signs_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['signs']['average']);
+                                    $("#signs_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#food_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['food']['average']);
+                                    $("#food_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#promoters_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['promoters']['average']);
+                                    $("#promoters_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#trace_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['trace']['average']);
+                                    $("#trace_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#awards_{{ article.activity.id }}").raty('score', averageNotes[{{ article.activity.id }}]['awards']['average']);
+                                    $("#awards_{{ article.activity.id }}").raty('readOnly', true);
+                                    $("#publishBtn_{{ article.activity.id }}").hide();
+                                    $("#myNotesBtn_{{ article.activity.id }}").show();
+                                    $("#myNotesBtn_{{ article.activity.id}}").removeClass('disabled');
+                                    $("#cancelBtn_{{ article.activity.id}}").hide();
+                                }
+                            });
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            }
+            
+            $(".newArticleButton").click(function() {
+                //console.log($( this ).attr('data-categoryId' ));
+                createNewArticle( $( this ).attr('data-categoryId' ) );
+            });
+            
+            var $filter_all              = $("input[type=radio][name=articlesFilter][value=all]");
+            var $filter_subscriptions    = $("input[type=radio][name=articlesFilter][value=subscriptions]");
+            
+            $filter_all.iCheck({
+                radioClass: 'iradio_flat-blue'
+            });
+            $filter_all.on('ifChecked', function(event){
+                $("div.all_articles").show();
+                $("div.my_subscriptions").hide();
+            });
+            $filter_subscriptions.iCheck({
+                radioClass: 'iradio_flat-blue'
+            });
+            $filter_subscriptions.on('ifChecked', function(event){
+                $("div.all_articles").hide();
+                $("div.my_subscriptions").show();
+            });
+            
+            //$filter_all.iCheck('check');
+
+            //$("#articlesTabs").tab();
+            //$('#articlesTabs a:first').tab('show');
+        });
+    </script>
+{% endblock %}
+    
+{% block body %}
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <div class="bloc1">
+            <div class="container">
+                <h1 class="title premium">Wikisport</h1>
+                <!--Radio button-->
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    <div class="bloc1-nav checkbox">   
+                        <div class="radiobutton-wikisport">
+                            <label class="radio-inline">
+                                <input type="radio" name="articlesFilter" id="inlineRadio1" value="all" checked>
+                                {{ 'article.all-articles'|trans }} </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="articlesFilter" id="inlineRadio2" value="subscriptions">
+                                {{ 'article.my-subscriptions'|trans }} </label>
+                        </div>
+                    </div>
+                {% else %}
+                    <br><br><br>
+                {% endif %}
+                <br clear="all"/>
+            </div>
+            <div class="bloc2">
+                <div class="container">
+                    <ul class="nav nav-tabs" id="tabwikisport" role="tablist">
+                        {% for key, category in articlesCategories %}
+                            <li {% if key == 2 %}class="active"{% endif %}>
+                                <a href="#category{{ category.id }}" role="tab" data-toggle="tab">{{ category.label }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                        
+                    <div id="articlesTabs" class="tab-content">
+                        {% for key, category in articlesCategories %}
+                            <div class="tab-pane{% if key == 2 %} active{% endif %} table-responsive" id="category{{ category.id }}" data-category-id="{{ category.id }}" >
+                                {# {% render 'KsActivityBundle:Wikisport:new_modal' with { 'articleTagId' : category.id } %} #}
+                                <div class="all_articles">
+                                    <table  class="table table-bordered table-striped articlesCategoriesTable">
+                                        {#<caption>{{ category.label }}</caption>#}
+                                        <thead>
+                                            <tr>
+                                                <td>{{ "titles.title"|trans }}</td>
+                                                {% if key == 4 %}
+                                                    <td>{{ "equipment.brand"|trans }}</td>
+                                                    <td>{{ "equipment.photo"|trans }}</td>
+                                                {% endif %}
+                                                {% if key == 2 %}
+                                                    <td>{{ "coaching.owner"|trans }}</td>
+                                                    {#<td>{{ "coaching.votes"|trans }}</td>#}
+                                                    <td class="col-md-4">{{ "coaching.description"|trans }}</td>
+                                                    <td>{{ "coaching.users"|trans }}</td>
+                                                    <td>{{ "coaching.weeks"|trans }}</td>
+                                                    <td>{{ "coaching.duration"|trans }}</td>
+                                                {% endif %}
+                                                {% if key == 1 %}
+                                                    <td class="col-md-3">{{ "titles.votes"|trans }}</td>
+                                                    <td>{{ "article.location"|trans }}</td>
+                                                    <td>{{ "coaching.date"|trans }}</td>
+                                                    <td>{{ "coaching.distance"|trans }}</td>
+                                                    <td>{{ "coaching.elevationGain"|trans }}</td>
+                                                    <td>{{ "coaching.elevationLost"|trans }}</td>
+                                                {% endif %}   
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for article in articles[ category.id ] %}
+                                                <tr>
+                                                    <td>
+                                                        {{ article.activity.label }}
+                                                        <br><br>
+                                                        <center>
+                                                            <a class="btn btn-success" rel="tooltip" title="" data-original-title="{{ 'actions.show'|trans }}" href="{{ path('ksWikisport_show', { 'id' : article.activity.id }) }}"><span class="glyphicon glyphicon-search"></span></a>
+                                                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                                                {% if article.activity.isPublic == '1' or article.activity.user_id == userId or userId == '1' %}
+                                                                    <a class="btn btn-primary" rel="tooltip" title="" data-original-title="{{ 'actions.edit'|trans }}" href="{{ path('ksWikisport_edit', { 'id' : article.activity.id }) }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                                {% else %}
+                                                                    <a class="btn btn-primary disabled" rel="tooltip" title="{{ 'article.private-article'|trans }}" ><span class="glyphicon glyphicon-pencil"></span></a>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </center>
+                                                    </td>
+                                                    {% if key == 4 %}
+                                                        <td> {{ article.equipment.brand }} </td>
+                                                        <td> 
+                                                            {#% include 'KsEquipmentBundle:Equipment:_equipmentImage_medium.html.twig' with { 
+                                                                'equipment_id'          : article.equipment.id,
+                                                                'equipment_name'        : article.equipment.name,
+                                                                'equipment_imageName'   : article.equipment.avatar,
+                                                                'with_legend_overlay'   : true,
+                                                                'creationOrEdition'     : 'edition'
+                                                            } %#}
+                                                        </td>
+                                                    {% endif %}
+                                                    {% if key == 2 %}
+                                                        <td>
+                                                            <center>
+                                                                {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                                                    'user_id' : article.users[0][0].id, 
+                                                                    'user_username' : article.users[0][0].username, 
+                                                                    'user_imageName': article.users[0][0].imageName, 
+                                                                    'user_league_category' : article.users[0][0].leagueCategoryLabel, 
+                                                                    'user_league_stars' : article.users[0][0].leagueLevelStarNumber
+                                                                } %}
+                                                            </center>
+                                                        </td>
+                                                        <td>{{ article.activity.description|raw }}</td>
+                                                        <td>{{ article.users|length }}</td>
+                                                        <td>{{ article.weeks|length }}</td>
+                                                        <td>{{ article.duration }}</td>
+                                                    {% endif %}
+                                                    {% if key == 1 %}
+                                                        <td class="col-md-4">
+                                                            {% include 'KsActivityBundle:Wikisport:_notes.html.twig' with {
+                                                                'activityId'    : article.activity.id,
+                                                                'signsNote'     : article.activity.signsNote,
+                                                                'foodNote'      : article.activity.foodNote,
+                                                                'promotersNote' : article.activity.promotersNote,
+                                                                'traceNote'     : article.activity.traceNote,
+                                                                'awardsNote'    : article.activity.awardsNote
+                                                             } %}
+                                                        </td>
+                                                        <td><span rel="tooltip" title="{{ article.activity.place_fullAdress }}">{{ article.activity.place_country_code }} {% if article.activity.place_town_label is not null and article.activity.place_town_label != ''%} ({{ article.activity.place_town_label }}){% endif %}</span></td>
+                                                        <td>{{ article.activity.issuedAt|date('d/m/y') }}</td>
+                                                        <td>{% if article.activity.distance is not null %} {{ article.activity.distance}} km {% endif %}</td>
+                                                        <td>{% if article.activity.elevationGain is not null %} {{ article.activity.elevationGain}} m {% endif %}</td>
+                                                        <td>{% if article.activity.elevationLost is not null %} {{ article.activity.elevationLost}} m {% endif %}</td>
+                                                    {% endif %}
+                                                </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                <div class="my_subscriptions" style="display:none">
+                                    <table  class="table table-bordered table-striped articlesCategoriesTable">
+                                        {#<caption>{{ category.label }}</caption>#}
+                                        <thead>
+                                            <tr>
+                                                <td> {{ "titles.title"|trans }} </td>
+                                                {% if key == 4 %}
+                                                    <td>{{ "equipment.brand"|trans }}</td>
+                                                    <td>{{ "equipment.photo"|trans }}</td>
+                                                {% endif %}
+                                                {% if key == 2 %}
+                                                    <td>{{ "coaching.owner"|trans }}</td>
+                                                    {#<td>{{ "coaching.votes"|trans }}</td>#}
+                                                    <td class="col-md-4">{{ "coaching.description"|trans }}</td>
+                                                    <td>{{ "coaching.users"|trans }}</td>
+                                                    <td>{{ "coaching.weeks"|trans }}</td>
+                                                    <td>{{ "coaching.duration"|trans }}</td>
+                                                {% endif %}
+                                                {% if key == 1 %}
+                                                    <td class="col-md-3">{{ "titles.votes"|trans }}</td>
+                                                    <td>{{ "article.location"|trans }}</td>
+                                                    <td>{{ "coaching.date"|trans }}</td>
+                                                    <td>{{ "coaching.distance"|trans }}</td>
+                                                    <td>{{ "coaching.elevationGain"|trans }}</td>
+                                                    <td>{{ "coaching.elevationLost"|trans }}</td>
+                                                {% endif %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for article in subscriptions[ category.id ] %}
+                                                <tr>
+                                                    <td>
+                                                        {{ article.activity.label }}
+                                                        <br><br>
+                                                        <center>
+                                                            <a class="btn btn-success" rel="tooltip" title="" data-original-title="{{ 'actions.show'|trans }}" href="{{ path('ksWikisport_show', { 'id' : article.activity.id }) }}"><span class="glyphicon glyphicon-search"></span></a>
+                                                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                                                {% if article.activity.isPublic == '1' or article.activity.user_id == userId or userId == '1' %}
+                                                                    <a class="btn btn-primary" rel="tooltip" title="" data-original-title="{{ 'actions.edit'|trans }}" href="{{ path('ksWikisport_edit', { 'id' : article.activity.id }) }}"><span class="glyphicon glyphicon-pencil"></span></a>
+                                                                {% else %}
+                                                                    <a class="btn btn-primary disabled" rel="tooltip" title="{{ 'article.private-article'|trans }}" ><span class="glyphicon glyphicon-pencil"></span></a>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        </center>
+                                                    </td>
+                                                    {% if key == 4 %}
+                                                        <td> {{ article.equipment.brand }} </td>
+                                                        <td> 
+                                                            {#% include 'KsEquipmentBundle:Equipment:_equipmentImage_medium.html.twig' with { 
+                                                                'equipment_id'          : article.equipment.id,
+                                                                'equipment_name'        : article.equipment.name,
+                                                                'equipment_imageName'   : article.equipment.avatar,
+                                                                'with_legend_overlay'   : true,
+                                                                'creationOrEdition'     : 'edition'
+                                                            } %#}
+                                                        </td>
+                                                    {% endif %}
+                                                    {% if key == 2 %}
+                                                        <td>
+                                                            <center>
+                                                                {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                                                    'user_id' : article.users[0][0].id, 
+                                                                    'user_username' : article.users[0][0].username, 
+                                                                    'user_imageName': article.users[0][0].imageName, 
+                                                                    'user_league_category' : article.users[0][0].leagueCategoryLabel, 
+                                                                    'user_league_stars' : article.users[0][0].leagueLevelStarNumber
+                                                                } %}
+                                                            </center>
+                                                        </td>
+                                                        <td>{{ article.activity.description|raw }}</td>
+                                                        <td>{{ article.users|length }}</td>
+                                                        <td>{#{{ article.weeks|length }}#}</td>
+                                                        <td>{#{ article.duration }#}</td>
+                                                    {% endif %}
+                                                    {% if key == 1 %}
+                                                        <td class="col-md-4">
+                                                            {% include 'KsActivityBundle:Wikisport:_notes.html.twig' with {
+                                                                'activityId'    : article.activity.id,
+                                                                'signsNote'     : article.activity.signsNote,
+                                                                'foodNote'      : article.activity.foodNote,
+                                                                'promotersNote' : article.activity.promotersNote,
+                                                                'traceNote'     : article.activity.traceNote,
+                                                                'awardsNote'    : article.activity.awardsNote
+                                                             } %}
+                                                        </td>
+                                                        <td><span rel="tooltip" title="{{ article.activity.place_fullAdress }}">{{ article.activity.place_country_code }} {% if article.activity.place_town_label is not null and article.activity.place_town_label != ''%} ({{ article.activity.place_town_label }}){% endif %}</span></td>
+                                                        <td>{{ article.activity.issuedAt|date('d/m/y') }}</td>
+                                                        <td>{% if article.activity.distance is not null %} {{ article.activity.distance}} km {% endif %}</td>
+                                                        <td>{% if article.activity.elevationGain is not null %} {{ article.activity.elevationGain}} m {% endif %}</td>
+                                                        <td>{% if article.activity.elevationLost is not null %} {{ article.activity.elevationLost}} m {% endif %}</td>
+                                                    {% endif %}
+                                                </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!--span class="btn btn-wikisport newArticleButton pull-right" data-categoryID="{{ category.id }}" rel="tooltip" title="{{ 'article.new'|trans }} {{ category.label }}" >
+                                    <i class="glyphicon glyphicon-plus"></i> {{ 'article.new'|trans }} {{ category.label }}
+                                </span-->
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock body %}

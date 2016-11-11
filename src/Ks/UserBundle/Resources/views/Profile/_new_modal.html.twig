@@ -1,0 +1,29 @@
+<div id="newSport_modal" class='modal hide fade'>
+    <div class='modal-header'>
+        <a class='close' data-dismiss='modal'>&times;</a>
+        <h3 class="profile">Proposition d'un nouveau sport à l'équipe Keepinsport</h3>
+    </div>
+    <div class='modal-body'>
+        <form  method="post" {{ form_enctype(form) }}>
+            {#<div class="input-prepend input-append categoryBloc">
+                <span class="add-on" style="margin-right:-5px">Catégorie du nouvel article</span>
+                <select class="selectCategory" style="margin-bottom:0">
+                    {% for category in articleCategories %}
+                        <option value="{{ category.id }}" >{{ category.label }}</option>
+                    {% endfor %}
+                </select>
+            </div>#}
+
+            {{ form_label(form.label, "titles.title"|trans) }}
+            {{ form_widget(form.label, { attr: { class:"sportLabel input-block-level"} }) }}
+
+            {{ form_rest(form) }}  
+        </form>
+        <div class="errorsBloc"></div>
+        <div class="messagesBloc"></div>
+    </div>
+    <div class='modal-footer'>
+        <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+        <a href='#' class='create btn btn-wikisport'>Proposer</a>
+    </div>
+</div>

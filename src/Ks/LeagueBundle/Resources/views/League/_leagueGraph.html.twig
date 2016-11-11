@@ -1,0 +1,188 @@
+{#<a class="btn btn-primary btn-small pull-right" href="{{ path('ks_user_communityDynamicList', {'userId' : user.id}) }}">
+        <i class="icon-search icon-white"></i>
+    </a>
+<b>
+    Communauté <br/>(novembre 2012)
+    
+</b> 
+<div class="blocHeaderSeparator"></div>#}
+    {#<div class="downArrow"></div>#}
+
+<div id="container" style=" height: 150px; "></div>
+
+<style>
+     table.communityLeagueSmallGraph td, table.communityLeagueSmallGraph td:hover{
+        padding:0px;
+    }
+</style>
+<script type="text/javascript">
+
+    //$(document).ready(function() {
+        var colors = ["#e8b419", "#dddcd9", "#d16909", "#844306"];
+        
+        var datas = new Array();
+        {% for leagueLevel in leagueLevels %}
+            {% if leagueLevel.label != "nothing" and leagueLevel.label != "chocolate" %}
+                {% if leagueLevel.category.label == "gold" %}
+                    var color = colors[0];
+                {% elseif leagueLevel.category.label == "silver" %}
+                    var color = colors[1];
+                {% elseif leagueLevel.category.label == "bronze" %}
+                    var color = colors[2];
+                {% else %}
+                    var color = colors[3];
+                {% endif %}
+                datas.push( 
+                    {   y : {{ nbUsersByLeagueLevels[leagueLevel.id] }}, 
+                        color : color,
+                        starNumber : {{ leagueLevel.starNumber }}
+                       /*marker: {
+                           symbol : 'triangle'
+                            //symbool : 'url(http://cdn1.iconfinder.com/data/icons/diagona/icon/10/032.png)'
+                            //symbool: "url('{{ asset('bundles/ksactivity/images/star.png') }}')"
+                        }*/
+                    }
+                );
+             {% endif %}
+        {% endfor %}
+
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'column',
+                margin: [ 0, 50, 0, 50]
+            },
+            title: false/*{
+                text: '{{ 'activity.my_community'|trans }}'
+            }*/,
+            xAxis: {
+                categories: [
+                    //'Pas de ligue',
+                    //'Chocolat',
+                    '{{ "leagues.bronze"|trans }}',
+                    '{{ "leagues.bronze"|trans }} 1',
+                    '{{ "leagues.bronze"|trans }} 2',
+                    '{{ "leagues.bronze"|trans }} 3',
+                    '{{ "leagues.silver"|trans }}',
+                    '{{ "leagues.silver"|trans }} 1',
+                    '{{ "leagues.silver"|trans }} 2',
+                    '{{ "leagues.silver"|trans }} 3',
+                    '{{ "leagues.gold"|trans }}',
+                    '{{ "leagues.gold"|trans }} 1',
+                    '{{ "leagues.gold"|trans }} 2',
+                    '{{ "leagues.gold"|trans }} 3'                    
+                ],
+                labels: {
+                    rotation: -45,
+                    align: 'right',
+                    style: {
+                        font: 'normal 13px Verdana, sans-serif'
+                    }
+                },
+                /*minorTickLength : 5,
+                minorTickInterval : 10,
+                minorTickWidth : 10,
+                minPadding : 10,*/
+                //tickPixelInterval : 0.1
+                //gridLineWidth : 3
+                title: false,
+                labels : true,
+                //opposite : true
+                /*showFirstLabel : false,
+                showLastLabel : false*/
+                lineWidth: 0
+            },
+            yAxis: {
+                min: 0,
+                title: false,
+                labels : true,/*{
+                    text: 'Population'
+                }*/
+                title: {
+				text: '{{ "titles.sportsmen-number"|trans }}'
+			},
+                /*plotLines: [{
+                        value: 0,
+                        width: 0,
+                        color: '#FFFFFF'
+                }]*/
+                lineWidth: 0
+            },
+            plotOptions: {
+                column: {
+                    dataLabels: {
+                        enabled: true,
+                        /*formatter: function() {
+                            return "a";
+                        }*/
+                    }
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                formatter: function() {//for (var x in this.point.category) { alert(x) }
+                    return this.point.category + ' : '+ Highcharts.numberFormat(this.y, 0);
+                }
+            },
+            series: [{
+                lineWidth : 0,
+                /* name: 'Population',
+               data: [ {y: 55.11,  color: colors[3]},
+                        {y: 34.4,   color: colors[2]}, 
+                        {y: 21.8,   color: colors[2]}, 
+                        {y: 20.1,   color: colors[2]}, 
+                        {y: 20,     color: colors[2]}, 
+                        {y: 19.6,   color: colors[1]}, 
+                        {y: 19.5,   color: colors[1]}, 
+                        {y: 19.1,   color: colors[1]}, 
+                        {y: 18.4,   color: colors[1]}, 
+                        {y: 18,     color: colors[0]},
+                        {y: 17.3,   color: colors[0]}, 
+                        {y: 16.8,   color: colors[0]}, 
+                        {y: 15,     color: colors[0]}],*/
+                data : datas,
+                dataLabels: {
+                    enabled: true,
+                    rotation: 90,
+                    color: '#FFFFFF',
+                    align: 'right',
+                    x: -9,
+                    y: 30,
+                    formatter: function() {
+                        //for (var x in this) { alert(x) }
+                        var stars = "";
+                        switch(this.x){
+                            case 3:
+                            case 7:
+                            case 11:
+                                stars = "★"
+                                break;
+                            case 4:
+                            case 8:
+                            case 12:
+                                stars = "★★"
+                                break;
+                            case 5:
+                            case 9:
+                            case 13:
+                                stars = "★★★"
+                                break;
+                            break;
+                        }
+                        return stars;
+                    },
+                    style: {
+                        font: 'normal 10px Verdana, sans-serif',
+                        color : 'yellow'
+                    }
+                },
+                groupPadding: 0,
+                pointPadding: 0
+            }],
+            credits : {enabled:false}
+        });
+    //});
+
+</script>

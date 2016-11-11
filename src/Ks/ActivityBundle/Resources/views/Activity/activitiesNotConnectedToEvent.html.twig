@@ -1,0 +1,164 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+        });
+    </script>
+{% endblock %}
+    
+{% block filAriane %}{% endblock %}
+    
+{% block activity_content %}
+    Tu as <b>{{ activities|length }}</b> activité{% if activities|length > 0 %}s{% endif %} non liée{% if activities|length > 0 %}s{% endif %} à ton agenda.
+    <br/><br/>
+    
+    {% if activities|length > 0 %}
+        <div class="thumbnail">
+            <b>Actions sur les activités selectionnées : </b>
+            <a class="btn btn-small btn-primary connectSelectedActivitiesToNewEvent" eventTypeId="{{ event_training.id }}" href="#">Ces activités sont des entrainements</a>
+            <a class="btn btn-small btn-primary connectSelectedActivitiesToNewEvent" eventTypeId="{{ event_competition.id }}" href="#">Ces activités sont des compétitions</a>
+        </div>
+
+        <br/>
+
+        <table  class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th><input class="selectAllCb" type="checkbox"/></th>
+                    <th>Date</th>
+                    <th>Sport</th>
+                    <th>Infos</th>
+                    <th>Actions</th>
+                    <th>Lier à un nouvel événement</th>
+                    {#<th>Lier à un événement existant</th>#}
+                </tr>
+            </thead>
+            <tbody>
+            {% for key, activity in activities %}
+                <tr>
+                    <td><input class="activityCb" activityId="{{ activity.id }}" type="checkbox"/></td>
+                    <td>{{ activity.issuedAt|date("d/m/y h:i:s") }}</td>
+                    <td>{{ activity.sport }}</td>
+                    <td>
+                        {% if activity.sport is not null %}
+                        {% include 'KsActivityBundle:Activity:_infosBloc.html.twig' with {'activity': activity } %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-small btn-primary" href="{{ path('ksActivity_showActivity', { 'activityId': activity.id }) }}">Voir l'activité</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-small btn-primary connectSelectedActivitiesToNewEvent" eventTypeId="{{ event_training.id }}" activityId="{{ activity.id }}" href="#">Entrainement</a>
+                        <a class="btn btn-small btn-primary connectSelectedActivitiesToNewEvent" eventTypeId="{{ event_competition.id }}" activityId="{{ activity.id }}" href="#">Compétition</a>
+                    </td>
+                    {#<td>
+                        <form id="connectActivityToEventForm_{{ activity.id }}" class="connectActivityToEventForm" action="" activityId="{{ activity.id }}" method="post" {{ form_enctype(eventsForms[activity.id]) }} novalidate="novalidate">
+                            {{ form_widget(eventsForms[activity.id].event, { attr: { class: "selectEvent"} }) }}
+                            {{ form_rest(eventsForms[activity.id]) }}
+                            <input type="submit" class="btn btn-small btn-primary" value="Lier"/>
+                        </form>
+                    </td>#}
+                </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th><input class="selectAllCb" type="checkbox"/></th>
+                    <th>Date</th>
+                    <th>Sport</th>
+                    <th>Infos</th>
+                    <th>Actions</th>
+                    <th>Lier à un nouvel événement</th>
+                    {#<th>Lier à un événement existant</th>#}
+                </tr>
+            </tfoot>
+        </table>
+
+        <br/>
+
+        <div class="thumbnail">
+            <b>Actions sur les activités selectionnées : </b>
+            <a class="btn btn-small btn-primary connectSelectedActivitiesToNewEvent" eventTypeId="{{ event_training.id }}" href="#">Ces activités sont des entrainements</a>
+            <a class="btn btn-small btn-primary connectSelectedActivitiesToNewEvent" eventTypeId="{{ event_competition.id }}" href="#">Ces activités sont des compétitions</a>
+        </div>
+    {% endif %}
+    
+    <script type="text/javascript">
+        $( ".connectActivityToEventForm" ).submit(function() {
+            var activityId = $( this ).attr('activityId');
+            var eventId = $( this ).find("select.selectEvent").val();
+            
+            if( eventId == null ) return false;
+            
+            $( this ).attr( "action", Routing.generate('ksActivity_connectToExistantEvent', {'activityId' : activityId, 'eventId' : eventId }) )
+        });
+        
+        /*$("input.activityCb").click(function() {
+            var $cb = $( this );
+            if( ! $cb.attr('checked') ) {
+                 $cb.attr("checked", "checked");
+            } else {
+                $cb.removeAttr("checked");
+            }
+        });*/
+        
+        $("input.selectAllCb").click(function() {
+            var inputSelectAll = $( this );
+            $.each($("input.activityCb"), function (key, cb) {
+                if( inputSelectAll.attr('checked') ) {
+                    $( cb ).attr("checked", "checked");
+                } else {
+                    $( cb ).removeAttr("checked");
+                }
+            });
+        });
+        
+        $("a.connectSelectedActivitiesToNewEvent").click(function(e) {
+            var eventTypeId = $( this ).attr("eventTypeId");
+            var activityId = $( this ).attr('activityId');
+            var selectedActivitiesId = new Array();
+            
+            if( activityId === undefined ) {
+                $.each($("input:checked.activityCb"), function (key, cb) {
+                    selectedActivitiesId.push($( cb ).attr("activityId") );
+                });
+            } else {
+                selectedActivitiesId.push( activityId );
+            }
+            
+            if( selectedActivitiesId.length > 0 ) {
+            
+                $.post(
+                    Routing.generate('ksActivity_connectToNewEvent', {'eventTypeId' : eventTypeId }), 
+                    {
+                        "activitiesId" : selectedActivitiesId
+                    }, 
+                    function(response) {
+                        if( response.urlToRedirect ) {
+                            window.location.href = response.urlToRedirect;
+                        } else {
+                            console.log(response);
+                        }
+                    }
+                );
+            } else {
+                modalInfo("Aucune activité sélectionnée");
+            }
+            
+            e.preventDefault();
+        });
+        
+    </script>
+{% endblock %}

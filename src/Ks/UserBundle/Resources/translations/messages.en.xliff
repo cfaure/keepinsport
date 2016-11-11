@@ -1,0 +1,441 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>users.label</source>
+                <target>Sportsmens</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>users.username</source>
+                <target>Pseudonyme</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>users.email</source>
+                <target>Email</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>users.last_login</source>
+                <target>Last login date</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>users.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>users.add</source>
+                <target>Add</target>
+            </trans-unit>
+             <trans-unit id="7">
+                <source>users.ask_a_friend</source>
+                <target>Ask a friend</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>users.listUsers</source>
+                <target>Here is the list of users</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>user.flash.ask_a_friend.error</source>
+                <target>You are already friends with this person</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>user.flash.ask_a_friend.success</source>
+                <target>You are now friends with that person</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>users.revoke_a_friend</source>
+                <target>Revoke from my friend list</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>users.listUsersSearch</source>
+                <target>Users for :</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>users.accept_a_friend_request</source>
+                <target>Accept the friend request</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>users.search_nostring</source>
+                <target> You must enter a key when you search </target>
+            </trans-unit>
+             <trans-unit id="15">
+                <source>users.search_nousers</source>
+                <target> Sorry we don't find users for this key</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>users.friend_request_awaiting</source>
+                <target>Friend Request awaiting</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>users.cancel_the_friend_request</source>
+                <target>Cancel the friend request</target>
+            </trans-unit> 
+            <trans-unit id="18">
+                <source>users.refuse_a_friend_request</source>
+                <target>Refuse the friend request</target>
+            </trans-unit>
+            
+            
+            <trans-unit id="54">
+                <source>users.search</source>
+                <target>Search</target>
+            </trans-unit>
+            <trans-unit id="55">
+                <source>modal.close</source>
+                <target>Close</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>modal.confirm</source>
+                <target>Confirm</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>modal.ask_friend_request_confirmation_message</source>
+                <target>You are about to ask the user as a friend %user%</target>
+            </trans-unit>
+            <trans-unit id="58">
+                <source>modal.ask_friend_request_modal_title</source>
+                <target>Ask the user as a friend %user%</target>
+            </trans-unit>
+            <trans-unit id="59">
+                <source>modal.accept_a_friend_request_confirmation_message</source>
+                <target>You are about to accept the user as a friend %user%</target>
+            </trans-unit>
+            <trans-unit id="60">
+                <source>modal.accept_a_friend_request_modal_title</source>
+                <target>Accept the user as a friend %user%</target>
+            </trans-unit>
+            <trans-unit id="61">
+                <source>modal.refuse_a_friend_request_confirmation_message</source>
+                <target>You are about to deny the user as a friend %user%</target>
+            </trans-unit>
+            <trans-unit id="62">
+                <source>modal.refuse_a_friend_request_modal_title</source>
+                <target>Deny user friend %user%</target>
+            </trans-unit>
+            <trans-unit id="63">
+                <source>modal.cancel_the_friend_request_confirmation_message</source>
+                <target>You are about to cancel the friend request sent to the user %user%</target>
+            </trans-unit>
+            <trans-unit id="64">
+                <source>modal.cancel_the_friend_request_modal_title</source>
+                <target>Cancel the friend request sent to the user %user%</target>
+            </trans-unit>
+            <trans-unit id="65">
+                <source>modal.revoke_a_friend_request_confirmation_message</source>
+                <target>You are about to withdraw from your friends list the user %user%</target>
+            </trans-unit>
+            <trans-unit id="66">
+                <source>modal.revoke_a_friend_request_modal_title</source>
+                <target>Remove from my friends list the user %user%</target>
+            </trans-unit>
+            
+            
+            
+            <trans-unit id="71">
+                <source>user.flash.ask_a_friend.success</source>
+                <target>The friend request has been sent</target>
+            </trans-unit>
+            <trans-unit id="72">
+                <source>user.flash.cancel_a_friend_request.success</source>
+                <target>The friend request has been canceled</target>
+            </trans-unit>
+            <trans-unit id="73">
+                <source>user.flash.refuse_a_friend_request.success</source>
+                <target>The friend request has been denied</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>user.flash.cancel_a_friend_request.error.is_not_awaiting_friend_request_response</source>
+                <target>The friend request is no longer valid.</target>
+            </trans-unit>
+            <trans-unit id="75">
+                <source>user.flash.accept_a_friend.success</source>
+                <target>The friend request was successfully accepted.</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>user.flash.revoke_a_friend.success</source>
+                <target>You have removed your friend list.</target>
+            </trans-unit>
+            
+            <trans-unit id="77">
+                <source>ks.welcome_to_the_home_page</source>
+                <target>Welcome to the home page</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>ks.connect_your_runkeeper_profile</source>
+                <target>Connect your runkeeper profile</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>ks.choose_language</source>
+                <target>Choose language</target>
+            </trans-unit>
+            
+            <trans-unit id="80">
+                <source>user.rankingOfMyCommunity</source>
+                <target>Ranking</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>user.username</source>
+                <target>User name</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>user.points</source>
+                <target>Points</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>user.leagueLevel</source>
+                <target>League</target>
+            </trans-unit>
+            
+            <trans-unit id="118">
+                <source>users.notFriendWhithHim</source>
+                <target>You are in a relationship whith %username%</target>
+            </trans-unit>
+            <trans-unit id="119">
+                <source>users.friendWhithHim</source>
+                <target>You are in a relationship whith %username%</target>
+            </trans-unit>
+            <trans-unit id="120">
+                <source>user.flash.revoke_a_friend.error.are_not_friends</source>
+                <target>You are not friends</target>
+            </trans-unit>
+            <trans-unit id="121">
+                <source>user.newProfil.label</source>
+                <target>New profil</target>
+            </trans-unit>
+            
+            <trans-unit id="127">
+                <source>users.my_public_profile</source>
+                <target>My public profile</target>
+            </trans-unit>
+            <trans-unit id="131">
+                <source>user.my_activities.label</source>
+                <target>My activities</target>
+            </trans-unit>
+            <trans-unit id="132">
+                <source>user.my_profile.label</source>
+                <target>My profil</target>
+            </trans-unit>
+            <trans-unit id="133">
+                <source>user.show_my_public_profile</source>
+                <target>Show my public profile</target>
+            </trans-unit>
+            
+            <trans-unit id="241">
+                <source>users.message_page_edition_adresse1</source>
+                <target>Enter your home address below, in case Google doesn't know it choose your city, when it's selected you can zoom on the map and even drag the cursor manually to be more accurate !</target>
+           </trans-unit>
+           <trans-unit id="242">
+                <source>users.message_page_edition_adresse2</source>
+                <target>With your home address we'll help you to find sportsmen, clubs, or even shops closed to your place !</target>
+           </trans-unit>
+           <trans-unit id="243">
+                <source>users.message_page_edition_avatar</source>
+                <target>Your avatar is following you, choose the right one now !</target>
+           </trans-unit>
+           <trans-unit id="244">
+                <source>users.message_page_edition_sports</source>
+                <target>Choose your favorite sports here, they would be given when you will post activities !</target>
+           </trans-unit>
+           <trans-unit id="245">
+                <source>users.edit</source>
+                <target>Edit</target>
+           </trans-unit>
+           <trans-unit id="246">
+                <source>users.my_sports</source>
+                <target>My sports</target>
+           </trans-unit>
+           <trans-unit id="247">
+                <source>users.my_sport_goals</source>
+                <target>My goals :</target>
+           </trans-unit>
+           <trans-unit id="248">
+                <source>users.save</source>
+                <target>Save</target>
+           </trans-unit>
+           <trans-unit id="249">
+                <source>users.my_favorite_sports</source>
+                <target>My favorite sports :</target>
+           </trans-unit>
+           <trans-unit id="250">
+                <source>users.my_daily_notifications</source>
+                <target>Setup for daily mails (on friends' activities posts)</target>
+           </trans-unit>
+           <trans-unit id="251">
+                <source>users.my_notifications</source>
+                <target>Setup for automatic mails</target>
+           </trans-unit>
+           <trans-unit id="252">
+                <source>users.yes</source>
+                <target>Yes</target>
+           </trans-unit>
+           <trans-unit id="253">
+                <source>users.no</source>
+                <target>No</target>
+           </trans-unit>
+           <trans-unit id="254">
+                <source>users.my_informations</source>
+                <target>My informations</target>
+           </trans-unit>
+           <trans-unit id="255">
+                <source>users.my_address</source>
+                <target>My address</target>
+           </trans-unit>
+           <trans-unit id="256">
+                <source>users.my_avatar</source>
+                <target>My avatar</target>
+           </trans-unit>
+           <trans-unit id="257">
+                <source>users.my_mails</source>
+                <target>My notifications</target>
+           </trans-unit>
+           <trans-unit id="258">
+                <source>users.my_buddy</source>
+                <target>My buddy</target>
+           </trans-unit>
+           <trans-unit id="259">
+                <source>users.my_equipement</source>
+                <target>My equipement</target>
+           </trans-unit>
+           <trans-unit id="260">
+                <source>users.friends_confirmed</source>
+                <target>Confirmation d'ami</target>
+           </trans-unit>
+           <trans-unit id="261">
+                <source>users.friends_request</source>
+                <target>Demande d'ami</target>
+           </trans-unit>
+           <trans-unit id="262">
+                <source>users.mail_received</source>
+                <target>Message reçu</target>
+           </trans-unit>
+           <trans-unit id="263">
+                <source>users.Commentaire</source>
+                <target>Comment</target>
+           </trans-unit>
+           <trans-unit id="264">
+                <source>users.post_vote</source>
+                <target>Vote sur une publication</target>
+           </trans-unit>
+           <trans-unit id="265">
+                <source>users.share_post</source>
+                <target>Partage d'une publication</target>
+           </trans-unit>
+           <trans-unit id="266">
+                <source>users.league_changes</source>
+                <target>Changement de ligue</target>
+           </trans-unit>
+           <trans-unit id="267">
+                <source>users.activity_validated</source>
+                <target>Validation d'activité</target>
+           </trans-unit>
+           <trans-unit id="268">
+                <source>users.event_request</source>
+                <target>Invitation à un événement</target>
+           </trans-unit>
+           <trans-unit id="269">
+                <source>users.article_update</source>
+                <target>Mise à jour d'un article</target>
+           </trans-unit>
+           <trans-unit id="270">
+                <source>users.trophee</source>
+                <target>Déclenchement d'un trophée</target>
+           </trans-unit>
+           <trans-unit id="271">
+                <source>users.activity_to_validate</source>
+                <target>Activité à valider</target>
+           </trans-unit>
+           <trans-unit id="272">
+                <source>users.event_to_validate</source>
+                <target>Evénement à valider</target>
+           </trans-unit>
+           <trans-unit id="273">
+                <source>users.team_composition</source>
+                <target>Composition d'équipe</target>
+           </trans-unit>
+           <trans-unit id="274">
+                <source>users.warning</source>
+                <target>Signalement</target>
+           </trans-unit>
+           <trans-unit id="275">
+                <source>users.event_participate</source>
+                <target>Participation à un événement</target>
+           </trans-unit>
+           <trans-unit id="276">
+                <source>users.club_acceptance</source>
+                <target>Acceptation dans un club</target>
+           </trans-unit>
+           <trans-unit id="277">
+                <source>users.event_creation</source>
+                <target>Création d'événement</target>
+           </trans-unit>
+           <trans-unit id="278">
+                <source>users.tournament_creation</source>
+                <target>Gestion de tournoi</target>
+           </trans-unit>
+           <trans-unit id="279">
+                <source>users.user_update</source>
+                <target>Modification d'utilisateur</target>
+           </trans-unit>                
+           <trans-unit id="280">
+                <source>users.my_friends</source>
+                <target>My friends</target>
+           </trans-unit>
+           <trans-unit id="282">
+                <source>users.next_step</source>
+                <target>Next step</target>
+           </trans-unit>
+           <trans-unit id="283">
+                <source>evolutions.my_evolutions</source>
+                <target>My votes</target>
+           </trans-unit>
+           <trans-unit id="284">
+                <source>evolutions.evolutions_site</source>
+                <target>Evolutions</target>
+           </trans-unit>
+           <trans-unit id="285">
+                <source>evolutions.max_votes_reached</source>
+                <target>You can't vote more than the maximum !</target>
+           </trans-unit>
+           <trans-unit id="286">
+                <source>evolutions.id</source>
+                <target>Id</target>
+           </trans-unit>
+           <trans-unit id="287">
+                <source>evolutions.descriptionShort</source>
+                <target>Label</target>
+           </trans-unit>
+           <trans-unit id="288">
+                <source>evolutions.release_date</source>
+                <target>Release date</target>
+           </trans-unit>
+           <trans-unit id="289">
+                <source>evolutions.creation_date</source>
+                <target>Creation date</target>
+           </trans-unit>
+           <trans-unit id="290">
+                <source>evolutions.votes</source>
+                <target>Votes</target>
+           </trans-unit>
+           <trans-unit id="291">
+                <source>evolutions.message_vote</source>
+                <target>We will work on new evolutions based on your votes, you can choose 5 among the list below (number of total votes are in bracket)</target>
+           </trans-unit>
+           <trans-unit id="292">
+                <source>evolutions.message_vote2</source>
+                <target>You can ask for other evolutions through our feedback below !</target>
+           </trans-unit>
+           <trans-unit id="293">
+                <source>users.message_page_edition_character</source>
+                <target>Your buddy stands on all your posted activities, take a look at your style now :)</target>
+           </trans-unit>
+           <trans-unit id="294">
+                <source>evolutions.description</source>
+                <target>Details</target>
+           </trans-unit>
+          <trans-unit id="295">
+              <source>ks.connect_your_strava_profile</source>
+              <target>Connect your Strava profile</target>
+          </trans-unit>
+        </body>
+    </file>
+</xliff>

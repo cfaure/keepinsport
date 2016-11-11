@@ -1,0 +1,8 @@
+<div class="comments-txt">
+    {% include 'KsActivityBundle:Comment:_comment_userImage_league.html.twig' %}
+    <i>{{ comment.comment|nl2br }}</i>
+    <div class="comments-date">
+        {{ comment.user_username ~ ', il y a ' ~ comment.commentedAt|created_ago_str['time'] ~ ' ' ~ ('time.' ~ comment.commentedAt|created_ago_str['unit'])|trans }} 
+    </div>
+    <hr/>
+</div>

@@ -1,0 +1,35 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('bundles/ksevent/js/scripts.js') }}"></script>
+{% endblock %}
+    
+{% block content %}
+
+<h1 class="clubs">{{ event.title }}</h1>
+<div class="blocHeaderSeparator"></div>
+
+{% include 'KsEventBundle:Event:_eventInfos.html.twig' with {'event': event, "participations" : participations } %}
+
+
+<a class="btn" href="{{ path('ksClub_events', {'clubId' : event.club_id}) }}">
+    <i class="icon-backward"></i> 
+    Retour
+</a>
+
+{% if isManager is defined and isManager %}
+    <a class="btn btn-clubs" href="{{ path('ksEventClub_edit', { 'id': event.id}) }}">
+        <i class="glyphicon glyphicon-pencil icon-white"></i> Editer
+    </a>
+    <a class="btn btn-danger" href="{{ path('ksEventClub_delete', { 'id': event.id}) }}">
+        <i class="icon-remove icon-white"></i> Supprimer
+    </a>
+{% else %}
+{% endif %}
+
+{% endblock %}

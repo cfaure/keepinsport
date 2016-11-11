@@ -1,0 +1,86 @@
+{#% block collection_widget %}
+{% spaceless %}
+    <tr {{ block('widget_container_attributes') }} class="test">
+        {{ block('collection_rows') }}
+        {{ form_rest(form) }}
+    </tr>
+{% endspaceless %}
+{% endblock collection_widget %}
+
+{% block collection_rows %}
+{% spaceless %}
+    {{ form_errors(form) }}
+    {% for child in form %}
+        <td> {{ form_row(child, {'attr':{'class':'collection-item'} }) }}</td>
+    {% endfor %}
+{% endspaceless %}
+{% endblock collection_rows %#}
+{#% block collection_widget %}
+{% spaceless %}
+    {% if prototype is defined %}
+        {% set attr = attr|merge({'data-prototype': form_row(prototype) }) %}
+    {% endif %}
+    {{ block('form_widget') }}
+{% endspaceless %}
+{% endblock collection_widget %#}
+
+{% block field_rows %}
+{% spaceless %}
+    {{ form_errors(form) }}
+{#{% set children = form.children %}
+    <td>{{ form_widget(children.type) }}</td>
+    <td>{{ form_widget(children.sports) }}</td>
+    <td>{{ form_widget(form.label) }}</td>
+    <td>{{ form_widget(form.weight) }}</td>
+    <td>{{ form_widget(form.primaryColor) }}</td>#}
+
+    {% if form|length > 0 %}
+        {% for name, child in form %}
+            {% if name != "user" %}
+                {% if name == "sports" or name == "weight"%}
+                    <td>
+                {% endif %}
+                {{ form_widget(child) }}{{ form_rest(child) }}
+                {% if name == "sports" %}
+                    {% render "KsActivityBundle:Sport:customSelectSports" with {"multiple": "0"} %}
+                {% endif %}
+                {% if name == "type" %}
+                    {% render "KsUserBundle:Equipment:customSelectEquipmentType" %}
+                {% endif %}
+                {% if name == "label" or name == "secondaryColor" %}
+                    </td>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        <td>
+            <span class="btn btn-mini btn-danger btn-remove-equipment">
+                <span class="icon-remove"></span>
+            </span>
+            <span style="display:none">
+                {{ form_rest(form) }}
+            </span>
+        </td>
+    {% endif %}
+    
+{% endspaceless %}
+{% endblock field_rows %}
+
+{% block form_widget %}
+{% spaceless %}
+    <tr {{ block('widget_container_attributes') }}>
+        {{ block('field_rows') }}
+        {{ form_rest(form) }}
+    </tr>
+{% endspaceless %}
+{% endblock form_widget %}
+    
+
+{% block collection_widget %}
+{% spaceless %}
+    {% if prototype is defined %}
+        {% set attr = attr|merge({'data-prototype': form_row(prototype) }) %}
+    {% endif %}
+    {{ block('form_widget') }}
+{% endspaceless %}
+{% endblock collection_widget %}
+    

@@ -1,0 +1,125 @@
+services:
+    ks_user.provider:
+        class: Ks\UserBundle\Security\User\Provider\UserProvider #Chemin vers le provider
+        public: false
+        arguments: ["@fos_user.user_manager"]
+        
+    ks_user.login_listener:
+        class: Ks\UserBundle\Listener\LoginListener
+        arguments: ["@security.context", "@doctrine", "@translator", "@ks_trophy.trophyService", "@service_container"]
+        tags:
+            - { name: kernel.event_listener, event: security.interactive_login }
+            
+    ks_user.success_authentication_handler:
+        class: Ks\UserBundle\Authentication\SuccessHandler
+        arguments: ["@security.context", "@doctrine", "@translator", "@ks_trophy.trophyService", "@service_container"]
+        tags:
+            - { name:'monolog.logger', channel:'secutity' }
+            
+    ks_user.twig.extension:
+        class: Ks\UserBundle\Twig\Extensions\KsUserExtension
+        tags:
+            - { name: twig.extension }
+            
+    ks_user.runkeeper:
+        class: Ks\UserBundle\Service\Runkeeper
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          - 7c152a43ad38470d85a064f38ae54d14
+          - 388c1753b50a4d2191087fec059fdf30
+          - https://runkeeper.com/apps/authorize
+          - https://runkeeper.com/apps/token
+    
+    ks_user.suunto:
+        class: Ks\UserBundle\Service\Suunto
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          - qmCP849josEevAPdko09124dghJLOpo6srRPIl7MrahSZ4z7HzguGgzyszI1uxF9
+    
+    ks_user.polar:
+        class: Ks\UserBundle\Service\Polar
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          
+    ks_user.strava:
+        class: Ks\UserBundle\Service\Strava
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          - 1212
+          - 1c593d5d281fc11b871fe66dcd067a448c758f66
+          - https://www.strava.com/oauth/authorize
+          - https://www.strava.com/oauth/token
+          
+    ks_user.endomondo:
+        class: Ks\UserBundle\Service\Endomondo
+        arguments:
+          - "@doctrine"
+          - "@ks_activity.importActivityService"
+    
+    ks_user.runraid:
+        class: Ks\UserBundle\Service\Runraid
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+    
+    ks_user.googlecontact:
+        class: Ks\UserBundle\Service\GoogleContact
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          - 221396145208.apps.googleusercontent.com
+          - re1Lk93uFBcfN-nOrXuwyMFU
+          - https://accounts.google.com/o/oauth2/token
+          - https://www.google.com/m8/feeds/contacts/default/full?max-results=1000&oauth_token=
+          - http://schemas.google.com/g/2005       
+
+    ks_facebook:
+        class: Ks\UserBundle\Security\User\Provider\FacebookProvider
+        arguments:
+            facebook: "@fos_facebook.api"
+            userManager: "@fos_user.user_manager"
+            validator: "@validator"
+            doctrine: "@doctrine"
+            container: "@service_container"
+     
+    #ks_google:
+        #class: Ks\UserBundle\Security\User\Provider\GoogleProvider
+        #arguments:
+            #googleApi: "@fos_google.api"
+            #userManager: "@fos_user.user_manager"
+            #validator: "@validator"
+            #doctrine: "@doctrine"
+            #container: "@service_container"
+ 
+    namer.userdetail_image:
+        class: Ks\UserBundle\Namer\Namer
+        tags:
+            - { name: namer }
+            
+    namergpx.gpx_file:
+        class: Ks\UserBundle\Namer\NamerGpx
+        tags:
+            - { name: namergpx }
+            
+    ks_user.gps_service:
+        class: Ks\ActivityBundle\Service\GpsService
+        tags:
+            -  { name: twig.extension }
+                 
+    ks.success_handler:
+        class:   Ks\UserBundle\Controller\SuccessHandler
+        arguments: ["@router"]
+        
+    ks.mailer:
+        class:   Ks\UserBundle\Entity\Mailer
+        arguments: ["@mailer","@router","@twig","","@service_container"]

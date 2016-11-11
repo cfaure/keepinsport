@@ -1,0 +1,236 @@
+<div class="">
+
+    {% set page = app.session.get('page') %}
+    {% if page != 'login' and page != 'register' %}
+        {% if is_granted("ROLE_USER") and app.user.id == 1%}
+            <div class=" ">
+                {% include 'KsActivityBundle:Activity:menu.html.twig' with {'isExpertMode': isExpertMode} %}
+                <script>
+                    attachPublishStatusEvent($(".statusBtn"));
+                    function attachPublishStatusEvent(elt) {
+                        var $publishStatusModal = $("#publishStatusModal");
+
+                        //Le corp de la fenêtre
+                        var $modalBody              = $publishStatusModal.find("div.modal-body");
+                        var $messagesBloc           = $modalBody.find('.messages');
+                        var $loader                 = $modalBody.find('.loader');
+                        var $statusForm             = $modalBody.find("form");
+                        var $descriptionTextarea    = $publishStatusModal.find(".status");
+                        var $checkboxIsImportant    = $statusForm.find("input[type=checkbox][name=isImportant]");
+                        var $buttonIsImportantYes   = $statusForm.find("button.isImportantYes");
+                        var $buttonIsImportantNo    = $statusForm.find("button.isImportantNo");
+
+                        //Le pied de la fenêtre
+                        var $modalFooter            = $publishStatusModal.find("div.modal-footer");
+                        var $publishButton          = $modalFooter.find('a.publish');
+                        var $cancelButton           = $modalFooter.find('a.cancel');
+                        var $loader                 = $modalFooter.find('img.loader');
+
+                        //Autres variables
+                        var initialValue = "";
+
+                        var closeModal = function() {
+                            $publishStatusModal.modal('hide');
+                            $descriptionTextarea.val(initialValue);
+                            $descriptionTextarea.html(initialValue);
+                            $statusForm.show();
+                            $messagesBloc.hide();
+                        };
+
+
+                        var publishStatus = function() {
+                            if( ! $publishButton.hasClass("disabled") ) {
+                                $publishButton.addClass("disabled");
+                                $messagesBloc.hide().removeClass("alert").removeClass("alert-error").removeClass("alert-info");
+                                $messagesBloc.html("");
+                                $loader.show();
+                                $.post(
+                                    $statusForm.attr('action'), 
+                                    $statusForm.serialize(),
+                                    function(response) {
+                                        if (response.publishResponse == 1) {
+                                            if ( $('#activitiesBlockList').size() > 0 ) {
+                                                $('#activitiesBlockList').prepend(response.html);
+
+                                                /* On incrémente l'offset des activités, vu qu'on vient d'en ajouter une au flux */
+                                                activitiesOffset = $('#activitiesBlockList').attr('data-offset');
+                                                $('#activitiesBlockList').attr('data-offset', parseInt(activitiesOffset) + 1);
+                                            }
+
+                                            $descriptionTextarea.html(initialValue);
+                                            $descriptionTextarea.val(initialValue);
+
+                                            $statusForm.hide();
+
+                                            $messagesBloc.addClass("alert alert-info").html("Le statut a bien été publié");
+                                            $messagesBloc.show();
+                                            $publishButton.hide();
+                                            $cancelButton.html("Fermer");
+
+                                            setTimeout(closeModal,2000);
+                                        } else {
+                                            $messagesBloc.addClass("alert alert-error");
+                                            $messagesBloc.html(response.errorMessage);
+
+                                            $.each(response.errors, function (fieldName, errors) {
+                                                $messagesBloc.append("<br/><u>" + fieldName +" :</u>");
+                                                var ul = "<ul>";
+                                                $.each(errors, function (key, error) {
+                                                    ul = ul + "<li>" + error + "</li>";
+                                                });
+                                                ul = ul + "</ul>";
+                                                $messagesBloc.append(ul);
+
+                                            });
+                                            $messagesBloc.show();
+                                        }
+                                        $publishButton.removeClass("disabled");
+                                        $loader.hide();
+                                    }
+                                ).fail(function(jqXHR, textStatus) {
+                                    console.log("error " + textStatus);
+                                });
+                            }
+                        };
+
+                        $publishButton.on('click', publishStatus);
+
+                        /*$descriptionTextarea.keypress(function(e) {
+                            if(e.which == 13) {
+                                publishStatus();
+                            }
+                        });*/
+
+                        elt.click(function(e) {
+
+                            $("div.popover.in").removeClass("in");
+
+                            $buttonIsImportantYes.click(function() {
+                                $( this ).addClass("active");
+                                $buttonIsImportantNo.removeClass("active");
+                                $checkboxIsImportant.attr("checked", "checked");
+                           });
+
+                           $buttonIsImportantNo.click(function() {
+                                $( this ).addClass("active");
+                                $buttonIsImportantYes.removeClass("active");
+                                $checkboxIsImportant.removeAttr("checked");
+                           });
+
+                            var pressedEnter = false;
+
+                            $publishStatusModal.on('shown', function() {
+                                $loader.hide();
+                                $messagesBloc.hide();
+                                $statusForm.show();                
+                                $loader.hide();
+                                $cancelButton.html("Annuler");
+                                $publishButton.show();
+                                $descriptionTextarea.val(initialValue);
+                                $descriptionTextarea.html(initialValue);
+                                $descriptionTextarea.focus();
+
+                            });
+
+                            /*$publishStatusModal.on('hide', function() {
+                                closeModal();
+                            });*/
+
+                            $publishStatusModal.modal('show');
+                            $publishStatusModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                                e.stopPropagation();
+                            });
+                            return false;
+                        });
+                    }
+                </script>
+            </div>
+        {% endif %}
+
+        <div class="">
+            {% render "KsActivityBundle:Activity:lastActivitiesFromKS" with { 'nbActivities' : 3 } %}
+        </div>
+        
+        {% if 1 == 0 %}
+            <div id="stepLeftColumnGifts" class="">
+                <a class="btn btn-friends btn-small pull-right" rel="tooltip" title="{{ "actions.show"|trans }}" href="{{ path('ksShop_list') }}">
+                    <i class="icon-search icon-white"></i>
+                </a>
+                <h3 class="friends">{{ 'titles.nearby-shops'|trans }}</h3>
+                <div class="blocHeaderSeparator"></div>
+                <center>
+                    {% render "KsActivityBundle:Activity:nearbyShops" with { 'nbShops' : 3 } %}
+                </center>
+            </div>
+        {% endif %}
+
+        {% if isExpertMode %}
+            {% if aActivitiesSuggest is defined and aActivitiesSuggest is not null and aActivitiesSuggest|length > 0 %}
+                <div class="">
+                    <a class="btn link-clubs btn-link pull-right" href="{{ path('ksSportsmenSearch_list') }}">
+                        <i class="icon-search icon-white"></i>
+                    </a>
+                    <h3 class="clubs">Recherche des partenaires</h3>
+                    <div class="blocHeaderSeparator"></div>
+                    {% include 'KsActivityBundle:SportsmenSearch:_around_me.html.twig' %}
+                </div>  
+            {% endif %} 
+
+            <div class="">
+                {% if is_granted("ROLE_USER") %}
+                <a class="btn btn-friends btn-small pull-right" rel="tooltip" title="{{ "actions.show"|trans }}" href="{{ path('ksAgenda_index', {'id' : app.user.id }) }}">
+                    <i class="icon-search icon-white"></i>
+                </a>
+                {% endif %}
+
+                <h3 class="friends">{{ 'titles.next-events'|trans }}</h3>
+                <div class="blocHeaderSeparator"></div>
+                {% render "KsEventBundle:Event:nextEvents" with { 'nbEvents' : 4 } %}
+            </div>
+    
+            <div class="thumbnail ksBloc visible-desktop">
+                <a class="btn btn-wikisport btn-small pull-right" rel="tooltip" title="{{ "actions.show"|trans }}" href="{{ path('KsEvolution_list') }}">
+                    <i class="icon-search icon-white"></i>
+                </a>
+                <h3 class="wikisport">{{ 'titles.next-evolutions'|trans }}</h3>        
+                <div class="blocHeaderSeparator"></div>
+                {% render "KsEvolutionBundle:Evolution:nextEvolutions" with { 'nbEvolutions' : 10 } %}
+            </div>
+
+            {# FMO : mis en commentaire le 17/02/14 car plante chez certains, mais pas tout le monde...même si browser identique !    
+            <div class="thumbnail ksBloc">
+                <span class="icon-rss pull-right" style="font-size:20px"></span>
+                <h3 class="friends">{{ 'titles.rss-flux'|trans }}</h3>
+                <div id="fluxRssEquipe" rss_num="3" rss_url="http://www.lequipe.fr/rss/actu_rss.xml">
+                    <div>
+                        <center>
+                            <img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+                        </center>
+                    </div>
+                </div>
+            </div>
+            #}
+
+            {#<div class="thumbnail ksBloc">
+                <h3 class="sportif">{{ 'titles.facebook'|trans }}</h3>
+                <div class="blocHeaderSeparator"></div>
+                <div class="fb-like-box" data-href="https://www.facebook.com/pages/Keepinsport/303227623023110?fref=ts" data-width="150" data-show-faces="false" data-stream="false" data-show-border="false" data-header="false"></div>
+            </div>#}
+
+            {#<div class="thumbnail ksBloc">
+                <h3 class="sportif">{{ 'titles.twitter'|trans }}</h3>
+                <div class="blocHeaderSeparator"></div>        
+            </div>#}
+
+        {% endif %}
+    {% endif %}
+    {% if 1 == 0 %}
+        <center> 
+            <div class="fb-like-box" data-href="https://www.facebook.com/pages/Keepinsport/303227623023110?fref=ts" data-width="150" data-show-faces="false" data-stream="false" data-show-border="false" data-header="false"></div>
+            </br>
+            </br>
+            <a href="https://twitter.com/Keepinsport" class="twitter-follow-button" data-show-count="false" data-lang="fr" data-size="large">Suivre Keepinsport</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>    
+        </center>
+    {% endif %}
+</div>

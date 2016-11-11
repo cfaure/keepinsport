@@ -1,0 +1,30 @@
+notificationtype:
+    pattern:  /
+    defaults: { _controller: "KsNotificationBundle:NotificationType:index" }
+
+notificationtype_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "KsNotificationBundle:NotificationType:show" }
+
+notificationtype_new:
+    pattern:  /new
+    defaults: { _controller: "KsNotificationBundle:NotificationType:new" }
+
+notificationtype_create:
+    pattern:  /create
+    defaults: { _controller: "KsNotificationBundle:NotificationType:create" }
+    requirements: { _method: post }
+
+notificationtype_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "KsNotificationBundle:NotificationType:edit" }
+
+notificationtype_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "KsNotificationBundle:NotificationType:update" }
+    requirements: { _method: post }
+
+notificationtype_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "KsNotificationBundle:NotificationType:delete" }
+    requirements: { _method: post }

@@ -1,0 +1,319 @@
+{% extends "KsActivityBundle::layout_3_6_3.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+        
+    <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-wysihtml5/src/bootstrap-wysihtml5.css') }}"/>
+     
+    {# zoom sur photos #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('swipebox/source/swipebox.css') }}" />   
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    {#<script type="text/javascript" src="{{ asset('js/timeline/jquery.masonry.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/jquery.ddslick.js') }}"></script>#}
+
+    {#<script src="{{ asset('bootstrap-wysihtml5/lib/js/wysihtml5-ced.js') }}"></script>
+    <script src="{{ asset('bootstrap-wysihtml5/src/bootstrap-wysihtml5.js') }}"></script>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="{{ asset('html5FileUpload/assets/js/jquery.filedrop.js') }}"></script>#}
+    {#<!--[if lt IE 9]>#}
+
+    {#<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>#}
+
+    {#<![endif]-->~#}
+
+    {#<script src="{{ asset('bundles/ksactivity/js/dndPhotos.js') }}"></script>#}
+    
+    {# zoom sur photos #}
+    <script src="{{ asset('swipebox/source/jquery.swipebox.min.js') }}"></script>    
+    <script src="{{ asset('js/rssReader.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ asset('js/bootstrap-multiselect.js') }}"></script>
+    
+    <script src="{{ asset('plugins/visible/jquery.visible.js') }}"></script>
+    
+    {# Précharger les ressources #}
+    <script src="{{ asset('plugins/canvasquery.min.js') }}"></script>
+    <script src="{{ asset('plugins/simploader.js') }}"></script>
+    <script src="{{ asset('plugins/PreloadJS-release_v0.3.1/lib/preloadjs-0.3.1.min.js') }}"></script>
+    
+    {# canvas #}
+    <script src="{{ asset('bundles/kscanvasdrawing/js/functions.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/accessory.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/perso.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/sky.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/cloud.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/landscape.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/equipments.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/clothing.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/initialize.js') }}"></script>
+    {#% javascripts output="js/compiled/canvas_drawings.js"
+        "plugins/canvasquery.min.js"
+        "plugins/simploader.js"
+        "plugins/PreloadJS-release_v0.3.1/lib/preloadjs-0.3.1.min.js"
+        "bundles/kscanvasdrawing/js/functions.js"
+        "bundles/kscanvasdrawing/js/accessory.js"
+        "bundles/kscanvasdrawing/js/perso.js"
+        "bundles/kscanvasdrawing/js/sky.js"
+        "bundles/kscanvasdrawing/js/cloud.js"
+        "bundles/kscanvasdrawing/js/landscape.js"
+        "bundles/kscanvasdrawing/js/equipments.js"
+        "bundles/kscanvasdrawing/js/clothing.js"
+        "bundles/kscanvasdrawing/js/initialize.js"
+    %}
+    <script type="text/javascript" charset="utf-8" src="{{ asset_url }}"></script>
+    {% endjavascripts %#}
+    
+    <script type="text/javascript">
+        
+        function startIntro(){
+            var intro = introJs();
+              intro.setOptions({
+                steps: [
+                  { 
+                    intro: "{{ 'visit.message1'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepHeader',
+                    intro: "{{ 'visit.message2'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  /*,
+                  {
+                    element: '#stepNotif',
+                    intro: "Toutes tes notifications sont là (messages reçus par le site et ceux des autres sportifs)",
+                    position: 'bottom'
+                  },*/
+                  {
+                    element: '#stepPublishActivity',
+                    intro: "{{ 'visit.message3'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepStats',
+                    intro: "{{ 'visit.message4'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepRanking',
+                    intro: "{{ 'visit.message5'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepGifts',
+                    intro: "{{ 'visit.message6'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepAgenda',
+                    intro: "{{ 'visit.message7'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#menuModeBtnDesktop',
+                    intro: "{{ 'visit.message8'|trans|raw }}",
+                    position: 'bottom',
+                    tooltipClass:'forMenuModeBtnDesktop'
+                  },
+                  {
+                    element: '#s2id_searchSelectDesktop',
+                    intro: "{{ 'visit.message9'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepProfil',
+                    intro: "{{ 'visit.message10'|trans|raw }}",
+                    position: 'left'
+                  },
+                  {
+                    element: '#stepNewsFeed',
+                    intro: "{{ 'visit.message11'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepLeftColumnGifts',
+                    intro: "{{ 'visit.message12'|trans|raw }}",
+                    position: 'right'
+                  },/*
+                  {
+                    element: '#step4',
+                    intro: "Ici défilent les dernières activités récemment publiées par la communauté, clique sur une d'elles pour voir le détail ;)",
+                    position: 'right'
+                  },*/
+                  {
+                    element: '#step5',
+                    intro: "{{ 'visit.message13'|trans|raw }}",
+                    position: 'top'
+                  },
+                  {
+                    element: '#stepRightColumnStart',
+                    intro: "{{ 'visit.message14'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    intro: "{{ 'visit.message15'|trans|raw }}",
+                    position: 'bottom'
+                  }
+
+                ]
+              });
+              intro.start();
+          }
+        
+        function modalInfo(message) {
+            $('#modalInfo .modal-body').html(message);
+            $('#modalInfo').modal('show');
+        }
+        
+        if( !isCanvasSupported ) {
+            alert( "Met ton naviguateur internet à jour pour profiter de toutes les fonctionalités du site !" );
+        }
+        
+        $(document).ready(function() {
+            
+            {% if visitSeenPreference is defined and visitSeenPreference|length == 0 %}
+                startIntro();
+                {% if user.id != 1 %}
+                    $.ajax({
+                        url: Routing.generate('ksUser_setVisitSeen'),
+                        type: "POST",
+                        success: function (data) {
+                        }
+                    });
+                {% endif %}
+            {% endif %}
+            
+            $("#blocInfoFinish").hide();
+            
+            $("a.linkActivityBloc").tooltip();
+            
+            $("#importantStatusBloc").find("button.close").click(function() {
+                var activityId = $( this ).attr("data-activityId");
+                $.post(Routing.generate('ksActivity_readImportantStatus', {'activityId' : activityId}), {});
+            });
+            
+            //On cré les liens dans la zone des statuts importants
+            var rgx = new RegExp('((https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])','ig');
+            if( $("#importantStatusBloc").size() > 0 ) {
+                $("#importantStatusBloc > span.content").html($("#importantStatusBloc > span.content").html().replace(rgx,"<a target='_blank' href='$1'>$1</a>"));
+            }
+            
+            //FMO : mis en commentaire le 17/02/14 car plante chez certains, mais pas tout le monde...même si browser identique !
+            //rssReader.init("fluxRssEquipe");
+            
+            //var handleComplete = function() {
+                activitiesTypes = getActivityTypesSelect();
+                fromUsers = getFromUsersSelect();
+                sports = getSportsSelect();
+                lastModified = $("input[name=sortBy][value=modificationDate]").is(":checked");
+                loadActivities(0, activitiesTypes, fromUsers, sports, lastModified);
+            //};
+                    
+            /*var queue = new createjs.LoadQueue(false);
+            queue.addEventListener("complete", handleComplete);
+            
+            queue.loadManifest([
+                "{{ asset('bundles/kscanvasdrawing/images/sun.png') }}", 
+                "{{ asset('bundles/kscanvasdrawing/images/moon.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/wood_pannel.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/timer.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/road.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/endurance/mountain.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/mountains.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/campaign.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/beach.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/city.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/mountains.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/road.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/nature/track.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/normal.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/clay.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/tennis/hard.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/musculation/room.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/swimming/pool_indoor_short.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/football/grass.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/basketball/field.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/skate/ramp.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/ski/ski_station.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/golf/field.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/landscapes/combat/ring.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/bike/road_bike/without_frame.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/bike/mountain_bike/without_frame.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/tennis/racquet.png') }}",
+                "{{ asset('bundles/kscanvasdrawing/images/clothing/zip.png') }}"
+            ]);*/
+        });
+    </script>
+{% endblock %}
+
+{% block left_column %}
+    {% render "KsActivityBundle:Activity:leftColumn" %}
+{% endblock %}  
+
+{% block center_column_content %}
+    {% if is_granted("ROLE_USER") %}
+        {#{% include 'KsActivityBundle:Activity:publishActivitiesForm.html.twig' with {
+            'user'                      : app.user,
+            'activityStatusForm'        : activityStatusForm,
+            'activitySportChoiceForm'   : activitySportChoiceForm,
+            'linkForm'                  : linkForm
+        } %}{#,'sportsmenSearchForm'       : sportsmenSearchForm#}
+    {% endif %}
+    
+    <div class="visible-desktop visible-tablet" style="margin-top:10px">
+        {% if importantStatus != false %}
+            <div id="importantStatusBloc" class="alert alert-info">
+                <button type="button" class="close" data-activityId="{{ importantStatus.id }}" data-dismiss="alert">×</button>
+                <span class="content">
+                    <strong>{{ importantStatus.statusFrom }} :</strong> </br> {{ importantStatus.description |nl2br }}
+                </span>
+            </div>
+        {% endif %}
+
+        {% include 'KsActivityBundle:Activity:_activitiesFilter.html.twig' with {
+            'newsFeedTypePreference'    : newsFeedTypePreference, 
+            'newsFeedFromPreference'    : newsFeedFromPreference, 
+            'newsFeedSportsPreference'  : newsFeedSportsPreference, 
+            'newsFeedSortPreference'    : newsFeedSortPreference, 
+            'activitiesType'            : true, 
+            'fromUsers'                 : true, 
+            'sports'                    : true, 
+            'activitySportChoiceForm'   : activitySportChoiceForm, 
+            'sort'                      : true, 
+            'user'                      : app.user
+        } %}
+        <br/>
+    </div>
+
+    
+    <div id="activitiesBlockList"></div>
+
+    <br clear="all" />
+    <div align="center" id="newActivitiesLoading">
+        <img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+    </div>
+    
+    <a id="bLoadMoreActivities" class="btn btn-sportif btn-block" style="width:100%;display:none">
+        <i class="icon-repeat icon-white"></i> {{ 'news-feed.more-news'|trans }}
+    </a>
+    
+    {# ancien block qui précisait que sur scroll on affiche plus d'activités
+    <div id="blocMoreActivitiesToLoad" class="alert" style="display:none">
+        <center>Voir plus d'activités <img style="height:20px" src="{{ asset('img/scroll_brown.png') }}" alt="scroll"></center>
+    </div>#}
+    
+    <div id="blocInfoFinish" class="alert alert-info" style="display:none">
+        <center>
+            {{ 'news-feed.no-more-news'|trans }} - <strong><a href="#body">{{ 'actions.go-top'|trans }}</a></strong>
+        </center>
+    </div>
+{% endblock %}

@@ -1,0 +1,94 @@
+<div class="modal fade" id="multipleChoicesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class='modal-header'>
+                <a class='close' data-dismiss='modal'>&times;</a>
+                <h3>{{ 'coaching.multiple-choices'|trans }}</h3>
+            </div>
+            <div class='modal-body'></div>
+            <div class='modal-footer'>
+                <img id="multipleChoicesModalLoader" src="{{ asset('img/loader_ks_16.gif') }}" style="display:none;">
+                <a class='button1 btn btn'></a>
+                <a class='button2 btn btn'></a>
+                <a class='button3 btn btn'></a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">    
+    function askMultipleChoices(message, button1Title, button2Title, button3Title, calendar, callbackButton1, callbackButton2, callbackButton3) {
+        
+        var multipleChoicesModal = $("#multipleChoicesModal");
+        var modalBody = multipleChoicesModal.find('.modal-body');
+        var cancelBtn = multipleChoicesModal.find('a.cancelBtn');
+        var button1 = multipleChoicesModal.find('a.button1');
+        var button2 = multipleChoicesModal.find('a.button2');
+        var button3 = multipleChoicesModal.find('a.button3');
+        
+        $("#multipleChoicesModalLoader").hide();
+        button1.removeClass("disabled");
+        button2.removeClass("disabled");
+        button3.removeClass("disabled");
+        
+        modalBody.html(message);
+        button1.html(button1Title);
+        button2.html(button2Title);
+        button3.html(button3Title);
+
+        var closeModal = function() {
+            modalBody.html("");
+            $("#multipleChoicesModal").modal('hide'); 
+        }
+
+        button1.unbind();
+        button1.click(function() {
+            if (!button1.hasClass("disabled")) {
+                button1.addClass("disabled");
+                button2.addClass("disabled");
+                button3.addClass("disabled");
+                $("#multipleChoicesModalLoader").show();
+                callbackButton1();
+            }
+        });
+        
+        button2.unbind();
+        button2.click(function() {
+            if (!button2.hasClass("disabled")) {
+                button1.addClass("disabled");
+                button2.addClass("disabled");
+                button3.addClass("disabled");
+                $("#multipleChoicesModalLoader").show();
+                callbackButton2();
+            }
+        });
+        
+        button3.unbind();
+        button3.click(function() {
+            {% if club is defined and club is not null and not clubIsCoach %}
+                $("#multipleChoicesModal").modal('hide');
+                showInformation('{{ 'coaching.not-available'|trans }}');
+            {% else %}
+                if (!button3.hasClass("disabled")) {
+                    button1.addClass("disabled");
+                    button2.addClass("disabled");
+                    button3.addClass("disabled");
+                    $("#multipleChoicesModalLoader").show();
+                    callbackButton3();
+                }
+            {% endif %}
+        });
+        
+        multipleChoicesModal.modal('show');
+        multipleChoicesModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+            e.stopPropagation();
+        });
+        
+        disableAgenda();
+        multipleChoicesModal.on('hidden.bs.modal', function (e) {
+            calendar.fullCalendar('refetchEvents');
+            $("#multipleChoicesModal").modal('hide');
+            setTimeout(enableAgenda, 1000);
+        });
+    }
+</script>

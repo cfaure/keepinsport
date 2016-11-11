@@ -1,0 +1,8 @@
+{% if context is not defined %}
+    {% set context = 'details' %}
+{% endif %}
+<div class="row">
+    <div id="activityBloc-{{ activity.id }}" class="col-md-12">
+        {% include 'KsActivityBundle:Activity:_activityBloc.html.twig' with {'context' : context }%}
+    </div>
+</div>

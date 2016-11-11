@@ -1,0 +1,64 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+    <h1>Liste des demande d'adhésion du club {{ club.name }} en attente</h1>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Avatar</th>
+                <th>Nom d'utilisateur</th>
+                <th>Ligue</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for clubHasUSer in clubHasUsers %}
+            {% set user = clubHasUSer.user %}
+            {% set club = clubHasUSer.club %}
+            <tr>
+                <td>
+                    {% if user.userDetail is defined and user.userDetail != null %}
+                        {% set user_imageName = user.userDetail.imageName %}
+                    {% else %}
+                        {% set user_imageName = null %}
+                    {% endif %}
+                    {% include 'KsUserBundle:User:_userImage.html.twig' with {' user_imageName' :  user_imageName }%}
+                </td>
+                <td>
+                    {{ user.username }}
+                    {% if user.userDetail is not null and user.userDetail.firstname is not null and user.userDetail.lastname is not null %}
+                       - {{ user.userdetail.firstname }} {{ user.userdetail.lastname }}
+                    {% endif %}
+                </td>
+                <td>
+                    <span>{{ user.leagueLevel.category.label|trans }}</span> 
+                    {% if user.leagueLevel.starNumber < 3 %} 
+                        {% for i in range(2, user.leagueLevel.starNumber) %} 
+                            <i class="icon-star-empty"></i>
+                        {% endfor %}
+                    {% endif %}
+                    {% if user.leagueLevel.starNumber > 0 %} 
+                        {% for i in range(0, 0) %} 
+                            <i class="icon-star"></i>
+                        {% endfor %}
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-clubs btn-mini" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">Profil public</a>
+                    <a class="btn btn-clubs btn-mini" href="{{ path('ksClubAdmin_acceptAnAskForMembershipInProgress', { 'clubId' : club.id, 'userId' : user.id }) }}">Accepter</a>
+                    <a class="btn btn-clubs btn-mini" href="{{ path('ksClubAdmin_refuseAnAskForMembershipInProgress', { 'clubId' : club.id, 'userId' : user.id }) }}">Refuser</a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+    <a class="btn" href="{{ path('ksClub_myClubs') }}">
+        <i class="icon-backward"></i> Mes Club 
+    </a>
+{% endblock %}

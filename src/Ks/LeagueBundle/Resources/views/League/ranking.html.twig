@@ -1,0 +1,129 @@
+{% extends "KsLeagueBundle::layout.html.twig" %}
+    
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("league"); //pour activer le css correspondant
+            
+            $.each($('table.leaguesUsersTable').find(".username"), function(key, value) {
+                var maxLength = 21;
+                var username =  $( this ).data("username");
+                if( username.length > maxLength ) {
+                    var truncatedUsername = username.substring(0, maxLength) + "...";
+                    $( this ).html( truncatedUsername );
+                }
+            });
+            
+             $('table.leaguesUsersTable').dataTable({
+                "sDom": "<'row'<'col-md-3'l><'col-md-3'f>r>t<'row'<'col-md-12'p>>",
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": false,
+                "bSort": false,
+                "bInfo": false,
+                "bAutoWidth": false,
+                "paging": true,
+                "pageLength": 30,
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });
+        });
+    </script>
+{% endblock %}
+   
+{% block title %}
+	{{ parent() }} - {{ 'league.label'|trans }}
+{% endblock %}
+    
+{% block body %}
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <div class="bloc1">
+            <div class="container">
+                <h1 class="title premium">{{ 'titles.direct-ranking'|trans }} {{ ("months." ~ ('now'|date("F")))|trans }} {{ 'now'|date("Y") }}</h1>
+            </div>
+        </div>
+        <div class="bloc3">
+            <div class="container">
+                {% include 'KsLeagueBundle:League:_ranking_working.html.twig' %}
+            </div>
+        </div>
+        <div class="bloc4">
+            <div class="container">
+                <h3 class="bleu">{{ 'titles.my-ranks'|trans }}</h3>
+                {# 'events.filters'|trans }} : 
+                {{ form_widget(countryForm.country) }}
+                {{ form_widget(regionForm.region) }}
+                {{ form_widget(townForm.town) #}
+
+                {% for key, user in leaguesUsers %}
+                    {#{{ key }} {{ user['username'] }}#}
+                {% endfor %}
+
+                {% if sportsUsers == null %}
+                    {{ 'titles.no-sport-selected'|trans }}
+                {% endif %}
+                
+                {% set sport = 0 %}
+                {% for codeSport, users in sportsUsers %}
+                    {% for key, user in users %}
+                        {% if user.id == app.user.id %}
+                            {% if sport == 0 %}
+                                <div class="row">
+                            {% endif %}
+                            {% set tooltip = 'KS' %}
+                            {% if country is not null %}
+                                {% for codeSportByCountry, usersByCountry in sportsUsersByCountry %}
+                                    {% if codeSportByCountry == codeSport %}
+                                        {% for keyByCountry, userByCountry in usersByCountry %}
+                                            {% if userByCountry.id == app.user.id %}
+                                                {% set rank = keyByCountry + 1 %}
+                                                {% set tooltip = country ~ ' : ' ~ rank ~ ' / ' ~ usersByCountry|length %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {% set tooltip = 'titles.address-missing'|trans %}
+                            {% endif %}
+                            <div class="col-md-3" rel="tooltip" title="{{ tooltip }}">
+                                <img class="pull-left" src='{{ asset('V2/images/sports/' ~ codeSport ~ '-black.png') }}'>
+                                <span style="padding-left:10px">
+                                    {{ ("sports." ~ codeSport)|trans }}
+                                    </br>
+                                    <b style="padding-left:20px">
+                                        {{ key + 1 }} / {{ users|length }}
+                                        {% set sport = sport +1 %}
+                                    </b>
+                                </span>
+                            </div>
+                        {% endif %}
+                    {% endfor %} 
+                    {% if sport == 4 %}
+                        </div>
+                        </br>
+                        {% set sport = 0 %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        <br/>
+        <div class="bloc3">
+            <div class="container">
+                {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                    {% include 'KsLeagueBundle:League:_my_rank.html.twig' %}
+                    <br/>
+                {% endif %}
+            </div>
+        </div>
+        <div class="bloc2">
+            <div class="container">
+                {% include 'KsLeagueBundle:League:_rankings.html.twig' with {'context' : 'ranking'} %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,4 @@
+<h3 class="title">{{ 'article.users'|trans }} </h3>
+<div class="users">
+    {% include 'KsEquipmentBundle:Equipment:_userUsesEquipmentLink.html.twig' with {'equipment': equipment, 'users' : users } %}
+</div>

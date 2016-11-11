@@ -1,0 +1,161 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksuser/js/autosuggest.gmap.js') }}"></script>
+{% endblock %}
+
+{% block title %}
+	{{ 'users.Keepinsport'|trans }} - {{ 'users.Club'|trans }}
+{% endblock %}
+    
+{% block content %}
+    <h1 class="clubs">{{ 'users.club_creation_titre'|trans }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    <form action="{{ path('admin_club_create') }}" method="post" {{ form_enctype(form) }}>
+
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.name, 'users.club_name' ) }}
+
+            <!-- Affichage des erreurs pour ce champ précis. -->
+            {{ form_errors(form.name) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.name) }}
+
+        </div>
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.adress_name, 'users.club_adress_name' ) }}
+
+            <!-- Affichage des erreurs pour ce champ précis. -->
+            {{ form_errors(form.adress_name) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.adress_name) }}
+
+        </div>
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.tel_number, 'users.club_tel_number' ) }}
+
+            <!-- Affichage des erreurs pour ce champ précis. -->
+            {{ form_errors(form.tel_number) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.tel_number) }}
+
+        </div> 
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.mobile_number, 'users.club_mobile_number' ) }}
+
+            <!-- Affichage des erreurs pour ce champ précis. -->
+            {{ form_errors(form.mobile_number) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.mobile_number) }}
+
+        </div> 
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.email, 'users.club_email' ) }}
+
+            <!-- Affichage des erreurs pour ce champ précis. -->
+            {{ form_errors(form.email) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.email) }}
+
+        </div> 
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.url_site_web, 'users.club_site' ) }}
+
+            <!-- Affichage des erreurs pour ce champ précis. -->
+            {{ form_errors(form.url_site_web) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.url_site_web) }}
+
+        </div>   
+
+
+        {{ google_map_container(map) }}
+        {{ google_map_js(map) }}
+        {{ google_map_css(map) }}   
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.country_area, 'users.profil_country_area') }}
+
+            <!-- Affichage des erreurs pour ce champ pr�cis. -->
+            {{ form_errors(form.country_area ) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.country_area) }}
+        </div> 
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.country_code,  'users.profil_country_code' ) }}
+
+            <!-- Affichage des erreurs pour ce champ pr�cis. -->
+            {{ form_errors(form.country_code ) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.country_code) }}
+        </div>
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.town, 'users.profil_town' ) }}
+
+            <!-- Affichage des erreurs pour ce champ pr�cis. -->
+            {{ form_errors(form.town ) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.town) }}
+        </div> 
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.longitude, 'users.profil_longitude' ) }}
+
+            <!-- Affichage des erreurs pour ce champ pr�cis. -->
+            {{ form_errors(form.longitude ) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.longitude) }}
+        </div>    
+
+        <div>
+            <!-- Génération du label. -->
+            {{ form_label(form.latitude, 'users.profil_latitude' ) }}
+
+            <!-- Affichage des erreurs pour ce champ pr�cis. -->
+            {{ form_errors(form.latitude ) }}
+
+            <!-- Génération de l'input. -->
+            {{ form_widget(form.latitude) }}
+        </div>   
+
+        {{ form_widget(form._token) }}
+
+        <p>
+            <input class="btn btn-clubs" type="submit" value="{{'users.profil_create_label'|trans}}">
+        </p>
+    </form>
+
+    <a class="btn" href="{{ path('ksClub_myClubs') }}">
+        <i class="icon-backward"></i> Retour
+    </a>
+
+{% endblock %}

@@ -1,0 +1,143 @@
+<form id="matchForm" class="" method="post" action="{{ path('ksTournamentMatch_updateMatch', {'id' : match.id }) }}" {{ form_enctype(form) }} novalidate="novalidate">
+    <div class="ksBloc thumbnail">
+        <h3 class="clubs">Sportif 1</h3>
+        <div class="blocHeaderSeparator"></div>
+
+        <label class="pull-left">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="user1Subscribed" value="1" {% if match.user1 is not null %}checked{% endif %}></span>
+            <span class="pull-left" >Membre du club {{ match.round.tournament.club.name }}</span>
+        </label>
+        <label class="pull-left" style="margin-left:10px">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="user1Subscribed" value="0" {% if match.user1 is null %}checked{% endif %}></span>
+            <span class="pull-left">Invité</span>
+        </label>
+        <br clear="all"/>
+        
+        {{ form_widget(form.user1) }} 
+        {{ form_widget(form.username1) }}
+        
+        <label class="pull-right">
+            <span class="pull-left" style="margin-right:5px">Vainqueur <span class="icon-trophy"></span></span>
+            <span class="pull-left" >{{ form_widget(form.user1Won) }}</span>
+        </label>
+    </div>
+        
+    <div class="ksBloc thumbnail">
+        <h3 class="clubs">Sportif 2</h3>
+        <div class="blocHeaderSeparator"></div>
+        
+        <label class="pull-left">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="user2Subscribed" value="1" {% if match.user2 is not null %}checked{% endif %}></span>
+            <span class="pull-left" >Membre du club {{ match.round.tournament.club.name }}</span>
+        </label>
+        <label class="pull-left" style="margin-left:10px">
+            <span class="pull-left" style="margin-right:5px"><input type="radio" name="user2Subscribed" value="0" {% if match.user2 is null %}checked{% endif %}></span>
+            <span class="pull-left">Invité</span>
+        </label>
+        <br clear="all"/>
+        
+        {{ form_widget(form.user2) }} 
+        {{ form_widget(form.username2) }} 
+        
+        <label class="pull-right">
+            <span class="pull-left" style="margin-right:5px">Vainqueur <span class="icon-trophy"></span></span>
+            <span class="pull-left" >{{ form_widget(form.user2Won) }}</span>
+        </label>
+    </div>
+    
+     <div class="ksBloc thumbnail">
+        <h3 class="clubs">Score</h3>
+        <div class="blocHeaderSeparator"></div>
+        {{ form_widget(form.score) }} 
+    </div>   
+        
+    {{ form_rest(form) }}
+</form>
+
+<script type="text/javascript">
+    $form       = $("#matchForm");
+    $user1      = $form.find(".user1");
+    $username1  = $form.find(".username1");
+    $user1Won   = $form.find(".user1Won");
+    $user1Subscribed  = $form.find("input[type=radio][name=user1Subscribed][value=1]");
+    $user1NotSubscribed  = $form.find("input[type=radio][name=user1Subscribed][value=0]");
+    
+    $user2      = $form.find(".user2");
+    $username2  = $form.find(".username2");
+    $user2Won   = $form.find(".user2Won");
+    $user2Subscribed = $form.find("input[type=radio][name=user2Subscribed][value=1]");
+    $user2NotSubscribed  = $form.find("input[type=radio][name=user2Subscribed][value=0]");
+    
+    //initialisation user1
+    if ( $user1.val() != "" ) {
+        $user1.show();
+        $username1.hide();
+        $user1Subscribed.attr("checked", "checked");
+    }
+    else {
+        $user1.hide();
+        $username1.show();
+        $user1NotSubscribed.attr("checked", "checked");
+    }
+    
+    $user1Subscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    $user1NotSubscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    
+    
+    //initialisation user2
+    if ( $user2.val() != "" ) {
+        $user2.show();
+        $username2.hide();
+        $user2Subscribed.attr("checked", "checked");
+    }
+    else {
+        $user2.hide();
+        $username2.show();
+        $user2NotSubscribed.attr("checked", "checked");
+    }
+    
+    $user2Subscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    $user2NotSubscribed.iCheck({
+        radioClass: 'iradio_square-yellow',
+    })
+    
+    //L'utilisateur est inscrit sur Keepinsport
+    $user1Subscribed.on('ifChecked', function(event){
+        $user1.show();
+        $username1.hide();
+    });
+    
+    //L'utilisateur n'est pas inscrit sur Keepinsport
+    $user1NotSubscribed.on('ifChecked', function(event){
+        $user1.hide();
+        $username1.show();
+        $user1.val("");
+    });
+    
+    //L'utilisateur est inscrit sur Keepinsport
+    $user2Subscribed.on('ifChecked', function(event){
+        $user2.show();
+        $username2.hide();
+    });
+    
+    //L'utilisateur n'est pas inscrit sur Keepinsport
+    $user2NotSubscribed.on('ifChecked', function(event){
+        $user2.hide();
+        $username2.show();
+        $user2.val("");
+    });
+    
+    $user1Won.iCheck({
+        checkboxClass: 'icheckbox_square-yellow',
+    })
+    
+    $user2Won.iCheck({
+        checkboxClass: 'icheckbox_square-yellow',
+    })
+</script>

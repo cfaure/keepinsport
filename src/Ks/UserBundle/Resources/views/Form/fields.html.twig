@@ -1,0 +1,49 @@
+{% block _ProfileEquipmentType_type_widget %}
+    {% spaceless %}
+        {#<div {{ block('widget_container_attributes') }}>#}
+        <span id="{{ id }}Container">    
+            {{ form_widget(form, { attr: { style: "display:none", class:"selectSports" } }) }}
+            {% render "KsActivityBundle:Sport:customSelectSports" with {"multiple": "0"} %}
+            {{ form_rest(form) }}
+        </span>
+
+        <script type="text/javascript">
+            $container      = $("#{{ id }}Container");
+            $select         = $("#{{ id }}");
+            $customSelect   = $container.find(".customSelectSports");
+            
+            //Sur mobile on affiche un select normal pour que l'os du mobile gère correctement 
+            if( document.body.clientWidth >= 963 ) { 
+                if( !$select.is(":disabled") ) {
+                    $customSelect.select2({
+                        placeholder: "{{ 'actions.select-sport'|trans }}",
+                        width : 250,
+                        //allowClear: true,
+                        formatResult: function(state) {
+                            var codeSport = state.element[0].getAttribute("codeSport");
+                            if (!codeSport) return state.text; 
+                            return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+                        },
+                    });
+                    //console.log($select);
+                    //console.log($select.find("option:selected"));
+                    //console.log($select.find("option:selected").val());
+                    //console.log($select.val());
+                    //alert($select.val());
+                    $customSelect.select2("val", "");
+                 } else {
+                     $customSelect.attr("disabled", "");
+                     $customSelect.addClass("disabled");
+                 }   
+            }
+            
+            $customSelect.change(function() { 
+                $select.val($( this ).val());
+                $select.change();
+            });
+            
+            
+        </script>
+
+    {% endspaceless %}
+{% endblock %}

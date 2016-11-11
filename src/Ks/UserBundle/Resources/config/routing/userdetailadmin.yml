@@ -1,0 +1,30 @@
+userdetail_admin:
+    pattern:  /
+    defaults: { _controller: "KsUserBundle:UserDetailAdmin:index" }
+
+userdetail_admin_show:
+    pattern:  /{id}/show
+    defaults: { _controller: "KsUserBundle:UserDetailAdmin:show" }
+
+userdetail_admin_new:
+    pattern:  /new
+    defaults: { _controller: "KsUserBundle:UserDetailAdmin:new" }
+
+userdetail_admin_create:
+    pattern:  /create
+    defaults: { _controller: "KsUserBundle:UserDetailAdmin:create" }
+    requirements: { _method: post }
+
+userdetail_admin_edit:
+    pattern:  /{id}/edit
+    defaults: { _controller: "KsUserBundle:UserDetailAdmin:edit" }
+
+userdetail_admin_update:
+    pattern:  /{id}/update
+    defaults: { _controller: "KsUserBundle:UserDetailAdmin:update" }
+    requirements: { _method: post }
+
+userdetail_admin_delete:
+    pattern:  /{id}/delete
+    defaults: { _controller: "KsUserBundle:UserDetailAdmin:delete" }
+    requirements: { _method: post }

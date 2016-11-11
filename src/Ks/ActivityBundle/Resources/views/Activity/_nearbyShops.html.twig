@@ -1,0 +1,48 @@
+{% if shops|length > 0 %}
+    <div id ="nearbyShop">
+        {% for shop in shops %}
+            <div class="row-fluid" style="margin-bottom:3px;">
+                <div class="span3" style="border : 3px solid #e8b419;">
+                    {% include 'KsShopBundle:Shop:_shopImage_medium.html.twig' with { 
+                        'userId' : app.user.id,
+                        'shop_Id' : shop.id,
+                        'shop_imageName' : shop.avatar,
+                        'with_legend_overlay' : true,
+                        'with_href' : true,
+                        'with_tooltip' : true
+                    } %}
+                </div>
+
+                <div class="span9">
+                    <a class="linkActivityBloc" rel="tooltip" title="{{ 'shops.conditions'|trans }}"  href="{{ path('KsContest_seasonShop', {'shopId': shop.id, 'delay' : 0}) }}">    
+                        <div {#class="activityBloc contentBloc"#}> 
+                            <div style="margin:3px 0 3px 15px;font-size:1em">    
+                                <div class="visible-desktop">
+                                    {{ shop.name }}
+                                        </br>
+                                    <i class="icon-map-marker"></i> 
+                                    {% if shop.address is not null %} 
+                                        {% if shop.town is not null %}
+                                            {{ shop.town }}
+                                        {% elseif activity.address is not null %}
+                                            {{ shop.address }}
+                                        {% endif %}
+                                    {% else %}
+                                         -
+                                    {% endif %}
+                                    {#<small class="muted">
+                                        {{ shop.proximity }} Km
+                                    </small>#}
+                                </div>
+                            </div>
+                        </div>
+                      </a>
+                </div>
+             </div>
+        {% endfor %}
+    </div>        
+    <div id="sliderFrame">
+        <div id="slider">
+        </div>
+    </div>
+{% endif %}

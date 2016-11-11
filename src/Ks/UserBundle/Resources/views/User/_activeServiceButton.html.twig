@@ -1,0 +1,14 @@
+{% if awaitingApproval is not defined %}
+    {% set awaitingApproval = false %}
+{% endif %}
+
+{% if service|isEnabled(user) %}
+    <button id="deactive_{{ service.name }}_Button" type="button" class="btn btn-danger"><span class="glyphicon glyphicon-remove-circle"></span> {{'users.disconnect'|trans}}</button>
+{% else %}
+    <button id="active_{{ service.name }}_Button" type="button" {% if awaitingApproval == 'true'%} rel="tooltip" title="{{ 'users.suunto-tooltip'|trans }}" {% endif %} class="{% if awaitingApproval == 'true'%} disabled {% endif %} btn btn-primary"><span class="glyphicon glyphicon-ok-circle"></span> {{'users.connect'|trans}}</button>
+{% endif %}
+    
+<script type="text/javascript">
+    attachDeactiveUserService($('#deactive_{{ service.name }}_Button'),"{{ service.id }}", "{{ user.id }}");
+    attachActiveUserService($('#active_{{ service.name }}_Button'),"{{ service.id }}", "{{ user.id }}");
+</script>

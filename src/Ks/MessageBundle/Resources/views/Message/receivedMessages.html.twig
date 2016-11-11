@@ -1,0 +1,106 @@
+{% extends "::layout_V2.html.twig" %}
+
+{% block title %}
+	Keepinsport - Messages
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksmessage/js/scripts.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("message"); //pour activer le css correspondant
+        });
+    </script>
+{% endblock %}    
+    
+{% block body %}
+    <!--WRAPPER-->
+    <div class="wrapper"> 
+        <!--bloc1-->
+        <div class="bloc1">
+            <div class="container">
+                <h1 class="title premium">Boite de réception</h1>
+                <div class="bloc1-nav">
+                    <ul class="nav nav-pills navbar-left">
+                        <li rel="tooltip" title="{{ "actions.write-message"|trans }}"><a href="{{ path('ksMessage_new') }}"><span class="glyphicon glyphicon-pencil"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!---BLOC2---->
+        <div class="bloc2">
+            <div class="container">
+                <div class="col-md-12">
+                    <table  class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                {#<th>Expéditeur</th>
+                                <th>Date</th>#}
+                                <th>{{ "titles.subject"|trans }}</th>
+                                <th>{{ "titles.participants"|trans }}</th>
+                                <th>{{ "titles.last-message"|trans }}</th>
+                                {#<th>Message</th>#}
+                                <th>{{ "titles.actions"|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for key, message in messages %}
+                            <tr>
+                                {#<td>{{ message.fromUser.username }}</td>
+                                <td>{{ message.sentAt|date('d/m/Y H:i:s') }}</td>#}
+                                <td>{{ message.subject}}</td>
+                                <td>
+                                    {% for user in message.toUsers %}
+                                        {% if user.id != app.user.id %}
+                                            <a rel="tooltip" title="{{ user.username }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                                                {% if user.userDetail is defined and user.userDetail != null %}
+                                                    {% set user_imageName = user.userDetail.imageName %}
+                                                {% else %}
+                                                    {% set user_imageName = null %}
+                                                {% endif %}
+                                                {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : user.id, 'user_imageName': user_imageName} %}
+                                            </a>
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                                {#<td>{{ message.content }}</td>#}
+                                <td>
+                                    {% if message.answers|length > 0 %}
+                                        {{ message.answers[message.answers|length - 1].sentAt|date('d/m/Y H:i:s') }}
+                                    {% else %}
+                                        {{ message.sentAt|date('d/m/Y H:i:s') }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if message.previousMessage is null %}
+                                        {% set firstMessage = message %}
+                                    {% else %}
+                                        {% set firstMessage = message.previousMessage %}
+                                    {% endif %}
+                                    <a class="btn btn-primary" rel="tooltip" title="{{ "actions.show"|trans }}" href="{{ path('ksMessage_show', { "id" : firstMessage.id }) }}">
+                                        <i class="glyphicon glyphicon-search"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-danger" rel="tooltip" title="{{ "actions.delete"|trans }}" onclick="attachDeleteMessageEvent({{ firstMessage.id }});" >
+                                        <i class="glyphicon glyphicon-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        <ul>
+                                {# On utilise la fonction range(a, b) qui crée un tableau de valeurs entre a et b #}
+                                {% for p in range(1, nb_pages) %}
+                                        <li{% if p == page %} class="active"{% endif %}>
+                                                <a href="{{ path('ksMessage_box', {'numPage': p}) }}">{{ p }}</a>
+                                        </li>
+                                {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div><!--/CONTAINER--> 
+        </div><!--/BLOC2-->
+    </div>
+{% endblock body %}

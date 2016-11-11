@@ -1,0 +1,571 @@
+<div id="article_elements">
+    
+    <!-- Form template-->
+    <div id="article_elements_template" class="thumbnail ksBloc">
+        <a id="article_elements_remove_current" class="btn btn-wikisport btn-small pull-right"><i class="icon-remove"></i></a>
+        <h3 class="wikisport">Section <span id="article_elements_label"></span></h3>
+        <div class="blocHeaderSeparator"></div>   
+
+
+        <input id="article_elements_#index#_title" name="article[elements][#index#][title]" class="input-block-level" placeholder="Titre" type="text" >
+
+        {#<label for="article_elements_#index#_title">Titre de l'élément <span id="article_elements_label"></span></label>
+        <input id="article_elements_#index#_title" name="article[elements][#index#][title]" type="text" size="50" maxlength="100" />
+        <a id="article_elements_remove_current"><i class="icon-remove"></i></a>#}
+
+        <!-- Embeded sheepIt Form -->
+        <div style="margin-left:50px; overflow:hidden;">
+            <div id="article_elements_#index#_paragraphs">
+
+                <!-- Nested form template-->
+                <div id="article_elements_#index#_paragraphs_template" class="thumbnail ksBloc">
+
+                        <a id="article_elements_#index#_paragraphs_remove_current" class="btn btn-wikisport btn-mini pull-right"><i class="icon-remove"></i></a>
+                        <h4 class="wikisport">Paragraphe <span id="article_elements_#index#_paragraphs_label"></span></h4>
+                        <div class="blocHeaderSeparator"></div>    
+
+                        <div id="article_elements_#index#_paragraphs_#index_paragraphs#_subtitle_template" class="">
+                            
+                            <input id="article_elements_#index#_paragraphs_#index_paragraphs#_subtitle" name="article[elements][#index#][paragraphs][subtitle]" class="subtitle" placeholder="Titre" type="text" style="width:90%">
+                            <a id="article_elements_#index#_paragraphs_#index_paragraphs#_subtitle_remove" class="btn btn-wikisport btn-mini"><span class="icon-remove"></span></a>
+                        </div>
+                        <a id="article_elements_#index#_paragraphs_#index_paragraphs#_subtitle_add" class="btn btn-mini btn-wikisport" style="margin-bottom:5px"><i class="glyphicon glyphicon-plus"></i>Ajouter un titre</a>
+                        
+                        <textarea id="article_elements_#index#_paragraphs_#index_paragraphs#_paragraph" placeholder="contenu" class="input-block-level" name="article[elements][#index#][paragraphs][#index_paragraphs#][paragraph]" style="resize: none;"></textarea>
+                        <div id="liste_#index#_paragraphs_#index_paragraphs#_paragraph"></div>
+   
+                </div>
+                <!-- /Nested form template-->
+
+                <!-- No forms template -->
+                <div id="article_elements_#index#_paragraphs_noforms_template"></div>
+                <!-- /No forms template-->
+
+                <br />
+
+                <!-- Controls -->
+                <div id="article_elements_#index#_paragraphs_controls" class="controls">
+                    <a id="article_elements_#index#_paragraphs_add" class="btn btn-wikisport btn-small"><i class="glyphicon glyphicon-plus icon-white"></i>Ajouter un paragraphe</a>
+                    {#% include 'KsActivityBundle:Article:_article_tableForm.html.twig'  with {'article' : article %#}
+                    {#<a id="article_elements_#index#_paragraphs_remove_last" class="btn btn-wikisport"><i class="icon-minus"></i>Effacer le dernier paragraphe</a>
+                    <a id="article_elements_#index#_paragraphs_remove_all" class="btn btn-wikisport"><i class="icon-remove"></i>Effacer tous les paragraphes</a>
+
+                    <div id="article_elements_#index#_paragraphs_add_n">
+                        <input id="article_elements_#index#_paragraphs_add_n_input" name="article[elements][#index#][paragraphs][add][n][input]" type="text" size="4" />
+                        <a id="article_elements_#index#_paragraphs_add_n_button" class="btn btn-wikisport">Ajouter</a>
+                    </div>#}
+                </div>
+                <!-- /Controls -->
+
+                <br />
+            </div>
+                
+            <div id="article_elements_#index#_tables">
+
+                <!-- Nested form template-->
+                <div id="article_elements_#index#_tables_template" class="thumbnail ksBloc">
+                    <a id="article_elements_#index#_tables_remove_current" class="btn btn-wikisport btn-mini pull-right"><i class="icon-remove"></i></a>
+                    <h4 class="wikisport">Tableau <span id="article_elements_#index#_tables_label"></span></h4>
+                    <div class="blocHeaderSeparator"></div>  
+
+                    <div id="article_elements_#index#_tables_#index_tables#_subtitle_template" class="">
+  
+                        <input id="article_elements_#index#_tables_#index_tables#_subtitle" name="article[tables][#index#][tables][subtitle]" class="subtitle" placeholder="Titre" type="text" style="width:90%">
+                        <a id="article_elements_#index#_tables_#index_tables#_subtitle_remove" class="btn btn-small btn-wikisport"><i class="icon-remove"></i></a>
+                    </div>
+                    <a id="article_elements_#index#_tables_#index_tables#_subtitle_add" class="btn btn-wikisport btn-mini" style="margin-bottom:5px"><i class="glyphicon glyphicon-plus"></i>Ajouter un titre</a>
+
+                    <table id="article_elements_#index#_tables_#index_tables#_table" name="article[elements][#index#][tables][#index_tables#][table]" class="table table-bordered articlesTables">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <a id="article_elements_#index#_tables_#index_tables#_row_add" class="btn btn-mini btn-wikisport" style="margin-bottom:5px"><i class="glyphicon glyphicon-plus"></i>Ajouter une ligne</a>
+                    <a id="article_elements_#index#_tables_#index_tables#_row_remove" class="btn btn-mini btn-wikisport" style="margin-bottom:5px"><i class="icon-minus"></i>Supprimer une ligne</a>
+                    <a id="article_elements_#index#_tables_#index_tables#_column_add" class="btn btn-mini btn-wikisport" style="margin-bottom:5px"><i class="glyphicon glyphicon-plus"></i>Ajouter une colonne</a>
+                    <a id="article_elements_#index#_tables_#index_tables#_column_remove" class="btn btn-mini btn-wikisport" style="margin-bottom:5px"><i class="icon-minus"></i>Supprimer une colonne</a>
+                </div>
+                <!-- /Nested form template-->
+
+                <!-- No forms template -->
+                <div id="article_elements_#index#_tables_noforms_template"></div>
+                <!-- /No forms template-->
+
+                <br />
+
+                <!-- Controls -->
+                <div id="article_elements_#index#_tables_controls" class="controls">
+                    <a id="article_elements_#index#_tables_add" class="btn btn-wikisport btn-small"><i class="glyphicon glyphicon-plus icon-white"></i>Ajouter un tableau</a>
+                </div>
+                <!-- /Controls -->
+
+                <br />
+            </div>
+        </div>
+        <!-- /Embeded sheepIt Form -->
+
+    </div>
+    <!-- /Form template -->
+
+    <!-- No forms template -->
+    <div id="article_elements_noforms_template"></div>
+    <!-- /No forms template -->
+
+    <!-- Controls -->
+    <div id="article_elements_controls" class="controls">
+        <a id="article_elements_add" class="btn btn-wikisport" style="float:left"><i class="glyphicon glyphicon-plus icon-white"></i>Ajouter une section</a>
+        
+        {#<a id="article_elements_remove_last" class="btn btn-wikisport" style="float:left"><i class="icon-minus"></i>Effacer le dernier élément</a>
+        <a id="article_elements_remove_all" class="btn btn-wikisport" style="float:left"><i class="icon-remove"></i>Effacer tous les éléments</a>
+
+        <div id="article_elements_add_n">
+            <input id="article_elements_add_n_input" type="text" size="4" style="float:left"/>
+            <a id="article_elements_add_n_button" class="btn btn-wikisport" style="float:left">Ajouter</a>
+        </div>#}
+    </div>
+    <!-- /Controls -->
+
+    <br clear="both" />
+</div>
+
+<style>
+    .sousParagraphBloc {
+        background-color:#F5F5F5; 
+        border-color:#B3B3B3;
+        border-radius : 10px;
+        margin-bottom: 10px;   
+        padding: 10px;
+    }
+    
+    .articlesTables thead {
+        color : white;
+    }
+    
+    .articlesTables thead tr {
+        background-color : #49AFCD;
+    }
+</style>
+
+<script type="text/javascript">
+    //On cré une liste d'articles pour l'autocompetion
+        var articlesList = [
+            {% for article in articles %}
+                {"id" : {{ article.id }}, "label" : "{{ article.label|raw }}", "link" : "{{ path('ksArticle_show', { 'articleId' : article.id } ) }}" },
+            {% endfor %}
+        ];
+
+        var editors = {};
+        
+         var elementsForm = $("#article_elements").sheepIt({
+            separator: '{#<div style="width:100%; border-top:2px solid #0088CC; margin: 10px 0px;"></div>#}',
+            allowRemoveLast: true,
+            allowRemoveCurrent: true,
+            allowRemoveAll: true,
+            allowAdd: true,
+            allowAddN: true,
+
+
+            // Limits
+            maxFormsCount: 10,
+            minFormsCount: 0,
+            iniFormsCount: {{ articleContent.elements|length }},
+            nestedForms: [
+                {
+                    id: 'article_elements_#index#_paragraphs',
+                    options: { 
+                        indexFormat: '#index_paragraphs#',
+                        minFormsCount: 0,
+                        maxFormsCount: 10,
+                        iniFormsCount: 0,
+                        separator : '',
+                        afterAdd: function(source, newForm) {
+                            var subtitleTemplate = newForm.find("div[id$=subtitle_template]");
+                            var addSubtitleButton = newForm.find("a[id$=subtitle_add]");
+                            var removeSubtitleButton = subtitleTemplate.find("a[id$=subtitle_remove]");
+                            var inputSubtitle = subtitleTemplate.find("input[id$=subtitle]");
+
+                            //Lors de l'ajout d'un sous titre
+                            addSubtitleButton.hide();
+                            removeSubtitleButton.click(function() { 
+                                subtitleTemplate.hide();
+                                addSubtitleButton.show();
+                            });
+
+                            //Lors de la suppression d'un sous titre
+                            addSubtitleButton.click(function() { 
+                                subtitleTemplate.show();
+                                addSubtitleButton.hide();
+                            });
+                            
+                            removeSubtitleButton.click();
+                        }
+                    }
+                }, {
+                    id: 'article_elements_#index#_tables',
+                    options: { 
+                        indexFormat: '#index_tables#',
+                        minFormsCount: 0,
+                        maxFormsCount: 10,
+                        iniFormsCount: 0,
+                        separator : '',
+                        afterAdd: function(source, newForm) {
+                            //----Sous titres
+                            var subtitleTemplate = newForm.find("div[id$=subtitle_template]");
+                            var addSubtitleButton = newForm.find("a[id$=subtitle_add]");
+                            var removeSubtitleButton = subtitleTemplate.find("a[id$=subtitle_remove]");
+                            var inputSubtitle = subtitleTemplate.find("input[id$=subtitle]");
+
+                            //Lors de l'ajout d'un sous titre
+                            addSubtitleButton.hide();
+                            removeSubtitleButton.click(function() { 
+                                subtitleTemplate.hide();
+                                addSubtitleButton.show();
+                            });
+
+                            //Lors de la suppression d'un sous titre
+                            addSubtitleButton.click(function() { 
+                                subtitleTemplate.show();
+                                addSubtitleButton.hide();
+                            });
+                            
+                            removeSubtitleButton.click();
+                            
+                            //----Tableaux
+                            var $table = newForm.find("table[id$=table]");
+                            var $thead = $table.find("thead");
+                            var $tbody = $table.find("tbody");
+                            var $addRowButton = newForm.find("a[id$=row_add]");
+                            var $removeRowButton = newForm.find("a[id$=row_remove]");
+                            var $addColumnButton = newForm.find("a[id$=column_add]");
+                            var $removeColumnButton = newForm.find("a[id$=column_remove]");
+                            
+                            //Lors de l'ajout d'une ligne dans le tableau
+                            $addRowButton.click(function() { 
+                                $tr = $("<tr>");
+                                
+                                //Find nb max td
+                                var maxTd = 0;
+                                
+                                $.each( $thead.find( "tr" ), function(key, tr) {
+                                    var nbTd = $( tr ).find( "td" ).size();
+                                    
+                                    if( nbTd > maxTd ) maxTd = nbTd;
+                                });
+                                
+                                $.each( $tbody.find( "tr" ), function(key, tr) {
+                                    var nbTd = $( tr ).find( "td" ).size();
+                                    
+                                    if( nbTd > maxTd ) maxTd = nbTd;
+                                });
+                                
+                                //Si il n'y a aucunes colonnes, on en ajoute au moins 1
+                                if ( maxTd < 1 ) maxTd = 1;
+                                
+                                for(i = 0; i < maxTd; i++) {
+                                    $tr.append( $( "<td>" ).append( 
+                                        $("<input>", { width: "98%" })
+                                            //.css("resize", "none")
+                                            .val("")
+                                        )
+                                    );
+                                }
+                                
+                                //On ajoute les colonnes qui manquent dans l'entête
+                                for(i = $thead.find( 'td' ).size(); i < maxTd; i++) {
+                                    $thead.find('tr').append( $( "<td>" ).append( 
+                                        $("<input>", { width: "98%" })
+                                            .val("")
+                                        )
+                                    );
+                                }
+                                
+                                $tbody.append( $tr );
+                            });
+                            
+                            //Lors de la suppression d'une ligne dans le tableau
+                            $removeRowButton.click(function() { 
+                                if( $tbody.find( "tr" ).size() > 1 ) {
+                                    $tbody.find( "tr:last" ).remove();
+                                } else {
+                                    modalInfo( "Impossible de supprimer la ligne. Le tableau doit au moins en avoir une." );
+                                }
+                            });
+                            
+                            //Lors de l'ajout d'une colonne dans le tableau
+                            $addColumnButton.click(function() { 
+                                //Ajout d'une colonne à l'entête
+                                $thead.find('tr').append( 
+                                    $( "<td>" ).append( $("<input>", { width: "98%" })
+                                        .val("")
+                                    )
+                                );
+                                    
+                                //Ajout d'une colonne au corps du tableau
+                                $tbody.find('tr').append( 
+                                    /*$( "<td>" ).append( $("<textarea>", { class: "description", width: "98%" })
+                                        .css("resize", "none")
+                                        .val("")
+                                    )*/
+                                    $( "<td>" ).append( $("<input>", { width: "98%" })
+                                        .val("")
+                                    )
+                                );
+                            });
+                            
+                            //Lors de la suppression d'une colonne dans le tableau
+                            $removeColumnButton.click(function() { 
+                                
+                                //Find nb max td
+                                var maxTd = 0;
+                                
+                                $.each( $tbody.find( "tr" ), function(key, tr) {
+                                    var nbTd = $( tr ).find( "td" ).size();
+                                    
+                                    if( nbTd > maxTd ) maxTd = nbTd;
+                                });
+                                
+                                if( maxTd > 1 ) {
+                                    $thead.find( 'tr' ).find( 'td:last' ).remove();
+                                    $tbody.find( 'tr' ).find( 'td:last' ).remove();
+
+                                    var maxTd = 0;
+                                    $.each( $tbody.find( "tr" ), function(key, tr) {
+                                        var nbTd = $( tr ).find( "td" ).size();
+
+                                        if( nbTd > maxTd ) maxTd = nbTd;
+                                    });
+
+                                    //Si il n'y a aucunes colonnes, on supprime les lignes vides
+                                    if ( maxTd < 1 ) {
+                                        //$thead.find( "tr" ).remove();
+                                        $tbody.find( "tr" ).remove();
+                                    }
+                                } else {
+                                    modalInfo( "Impossible de supprimer la colonne. Le tableau doit au moins en avoir une." );
+                                }
+                            });
+                            
+                            if ( $thead.find( 'tr' ).find( 'td' ).size() < 1 ) {
+                                $addColumnButton.click();
+                                $addRowButton.click();
+                            }
+                        }
+                    }
+                }
+            ],
+            afterAdd: function(source, newForm) {
+                var paragraphs = newForm.find("div[id$=paragraphs]");
+                var subtitleTemplate = paragraphs.find("div[id$=subtitle_template]");
+                var addSubtitleButton = paragraphs.find("a[id$=subtitle_add]");
+                var removeSubtitleButton = subtitleTemplate.find("a[id$=subtitle_remove]");
+                var inputSubtitle = subtitleTemplate.find("input[id$=subtitle]");
+                
+                //Lors de l'ajout d'un sous titre
+                addSubtitleButton.hide();
+                removeSubtitleButton.click(function() { 
+                    subtitleTemplate.hide();
+                    addSubtitleButton.show();
+                });
+                
+                //Lors de la suppression d'un sous titre
+                addSubtitleButton.click(function() { 
+                    subtitleTemplate.show();
+                    addSubtitleButton.hide();
+                });
+                
+                removeSubtitleButton.click();                
+            },
+        });
+        
+        //On rempli les elements
+        {% for key, element in articleContent.elements %}
+
+            $("#article_elements_{{ key }}_title").val("{{ element.title|addslashes|raw }}");
+            {% set nbParagraphs = 0 %}
+            {% set nbTables = 0 %}
+                    
+            {% for key2, tableOrParagraph in element.content %}
+                    
+                    
+                {% if tableOrParagraph["type"] == "paragraph" %}
+                    if ( $("#article_elements_{{ key }}_paragraphs_{{ key2 }}_paragraph").size() < 1 ) {
+                        $("#article_elements_{{ key }}_paragraphs_add").click();
+                    }
+                    {% if tableOrParagraph["subtitle"] is defined and  tableOrParagraph["subtitle"] != "" %}
+                        $("#article_elements_{{ key }}_paragraphs_{{ key2 }}_subtitle_add").click();
+                        $("#article_elements_{{ key }}_paragraphs_{{ key2 }}_subtitle").val('{{ tableOrParagraph["subtitle"]|addslashes|raw }}');
+                    {% endif %}
+                    $("#article_elements_{{ key }}_paragraphs_{{ key2 }}_paragraph").html('{{ tableOrParagraph["content"]|addslashes|raw }}');
+                    
+                    {% set nbParagraphs = nbParagraphs + 1 %}
+                {% else %}
+                    if ( $("#article_elements_{{ key }}_tables_{{ key2 }}_table").size() < 1 ) {
+                        $("#article_elements_{{ key }}_tables_add").click();
+                    }
+                    
+                    var $template =  $("#article_elements_{{ key }}_tables_template{{ nbTables }}");
+                    var $addSubtitleButton = $template.find("a[id$=subtitle_add]");
+                    var $subtitleTemplate = $template.find("div[id$=subtitle_template]");
+                    var $inputSubtitle = $subtitleTemplate.find("input[id$=subtitle]");
+                    var $table = $template.find( "table[id$=table]" );
+                    var $thead = $table.find("thead");
+                    var $tbody = $table.find("tbody");
+                    var $addRowButton = $template.find("a[id$=row_add]");
+                    var $addColumnButton = $template.find("a[id$=column_add]");
+                    
+                    {% if tableOrParagraph["subtitle"] is defined and  tableOrParagraph["subtitle"] != "" %}
+                        $addSubtitleButton.click();
+                        $inputSubtitle.val('{{ tableOrParagraph["subtitle"]|addslashes|raw }}');
+                    {% endif %}
+                    
+                    {% for iRow, row in tableOrParagraph["content"]["head"] %}
+                        {% if row|length > 1 %}
+                            {% for i in range(1, row|length - 1) %} 
+                                $addColumnButton.click();
+                            {% endfor %}   
+                        {% endif %}
+                        {% for iCol, col in row %}
+                            
+                            $th = $thead.find( "tr:nth-child({{ iRow + 1 }})" );
+                            $td = $th.find( "td:nth-child({{ iCol + 1 }})" );
+                            $input = $td.find( "input" );
+                            $input.val( "{{ col|raw }}" );
+                            
+                           
+                        {% endfor %}
+                    {% endfor %}
+                     
+                    {% if tableOrParagraph["content"]["body"]|length > 1 %}
+                        {% for i in range(1, tableOrParagraph["content"]["body"]|length - 1) %} 
+                            $addRowButton.click();
+                        {% endfor %}
+                    {% endif %}
+                    {% for iRow, row in tableOrParagraph["content"]["body"] %}
+                        
+                        {% for iCol, col in row %}
+                            $th = $tbody.find( "tr:nth-child({{ iRow + 1 }})" );
+                            $td = $th.find( "td:nth-child({{ iCol + 1 }})" );
+                            $textarea = $td.find( "input" );
+                            {#var content = "{{ col|addslashes|raw }}";#}
+                            $textarea.val( "{{ col|addslashes|raw }}" );
+                        {% endfor %}
+                    {% endfor %}
+                        
+                    
+                    
+                    {% set nbTables = nbTables + 1 %}
+                    {#$("#article_elements_{{ key }}_paragraphs_{{ key2 }}_paragraph").html('{{ tableOrParagraph["content"]|addslashes|raw }}');#}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        
+        $.each($('textarea[id*=article_elements]'), function(key, textarea) {
+            reg=/\[(\d+)\]/g;
+
+            tab=textarea.name.match(reg);
+            numElement = tab[0].substr(1, tab[0].length-2);
+            numParagraph = tab[1].substr(1, tab[1].length-2);
+            
+            $( textarea ).elastic();
+            
+            editors[ textarea.id ] = $( textarea ).wysihtml5({
+                articlesList        : articlesList,
+                idListePropositions : "liste_" + numElement + "_paragraphs_" + numParagraph + "_paragraph"
+            });       
+        });
+        
+        //On ajoute des événements sur les boutons d'ajout de paragraphes
+        $.each($('a[id*=_paragraphs_add]'), function(key, boutton) {
+            
+            regSansCrochets=/[(\d+)]/g;
+
+            tab=boutton.id.match(regSansCrochets);
+            
+            numElement = tab[0];
+            
+            //au click
+            $( this ).click(function() {
+                //Pour tout les nouveaux textarea, on leur associe la barre de formatage
+                $.each($('textarea[id*=article_elements_' + numElement + ']'), function(key, textarea) {
+                    //Si le textarea n'a pas déjà de barre de formatage
+                    //console.log(editors[$( textarea ).attr('id')]);
+                    if ( !editors[ textarea.id ] ) {
+                        tab=textarea.id.match( regSansCrochets );
+                        numParagraph = tab[1];
+
+                        //toolbarId = "toolbar_" + numElement + "_paragraphs_" + numParagraph +"_paragraph";
+                        $( textarea ).elastic();
+                        
+                        editors[ textarea.id ] = $( textarea ).wysihtml5({
+                            articlesList        : articlesList,
+                            idListePropositions : "liste_" + numElement + "_paragraphs_" + numParagraph + "_paragraph"
+                        });
+                    }
+                });
+            });
+        });
+        
+        //On ajoute des événements sur les boutons d'ajout d'éléments
+        $('a[id*=article_elements_add]').click(function() {
+            
+            //Le bloc qui vient d'être ajouté
+            div = $("div[id*=article_elements_template]:last")
+            elementId = div.attr("id");
+            
+             regSansCrochets=/[(\d+)]/g;
+            //regAvecCrochets=/\[(\d+)\]/g;
+
+            tab=elementId.match(regSansCrochets);
+            
+            numElement = tab[0];
+            
+            //Pour tout les nouveaux textarea, on leur associe la barre de formatage
+            $.each($('textarea[id*=article_elements_' + numElement + ']'), function(key, textarea) {
+                //Si le textarea n'a pas déjà de barre de formatage
+                //console.log(editors[$( textarea ).attr('id')]);
+                if ( !editors[ textarea.id ] ) {
+                    tab=textarea.id.match(regSansCrochets);
+                    numParagraph = tab[1];
+                    
+                    $( textarea ).elastic();
+
+                    editors[ textarea.id ] = $( textarea ).wysihtml5({
+                        articlesList        : articlesList,
+                        idListePropositions : "liste_" + numElement + "_paragraphs_" + numParagraph + "_paragraph"
+                    });
+                }
+            });
+            
+            //On ajoute des événements sur les boutons d'ajout de paragraphes
+            $.each($('a[id*=article_elements_' + numElement+ '_paragraphs_add]'), function(key, boutton) {
+            
+                regSansCrochets=/[(\d+)]/g;
+                //regAvecCrochets=/\[(\d+)\]/g;
+
+                tab=boutton.id.match(regSansCrochets);
+
+                numElement = tab[0];
+
+                //au click
+                $( this ).click(function() {
+                    //Pour tout les nouveaux textarea, on leur associe la barre de formatage
+                    $.each($('textarea[id*=article_elements_' + numElement + ']'), function(key, textarea) {
+                        //Si le textarea n'a pas déjà de barre de formatage
+                        //console.log(editors[$( textarea ).attr('id')]);
+                        if ( !editors[ textarea.id ] ) {
+                            tab=textarea.id.match(regSansCrochets);
+                            numParagraph = tab[1];
+                            
+                            $( textarea ).elastic();
+
+                            editors[ textarea.id ] = $( textarea ).wysihtml5({
+                                articlesList        : articlesList,
+                                idListePropositions : "liste_" + numElement + "_paragraphs_" + numParagraph + "_paragraph"
+                            });
+                        }
+                    });
+                });
+            });
+        });
+</script>

@@ -1,0 +1,158 @@
+#garminDisplay {
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+	color: #000000;
+	margin: 0 0 1em 0;
+	/*border: 2px outset #3D3A21;*/
+	height: 390px;
+	width: 800px;
+	/*background: #DDE3D6 url("/image/main/upload/garmin.jpg") no-repeat 12px 12px;*/
+	padding: 3px;
+	border:1px solid #B4CFEC;
+	position: relative;
+}
+
+#garminDisplay input {
+	font-size:10px;
+	font-weight: bold;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color:#ffffff;
+    height:18px;
+    background-color: #005E9D;
+    border:1px outset #3D3A21;
+    margin-right: 3px;
+}
+
+#garminDisplay input:disabled {
+    background-color: #D0D0D0;
+}
+
+#garminDisplay select { 
+	font-size:10px;
+	font-weight: bold;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    background-color: #666699; 
+    color: #ffffff; 
+}
+
+.pluginElement {
+	margin: 5px;
+}
+
+/* Style for the Preview button */
+#readDataButton{
+	border: 0;
+	cursor: pointer;
+	text-align: center;
+	width: 70%;
+	height: 51px;
+	margin: 0;
+	padding: 0;
+	background: url(../../images/garmin/button_bg.jpg) no-repeat 0 top;
+	color: #fff;
+	font-size: 16px;
+}
+
+/* Style for the Upload button */
+#readSelectedButton {
+	border: 0;
+	cursor: pointer;
+	text-align: center;
+	width: 100%;
+	height: 51px;
+	background: url(../../images/garmin/button_bg.jpg) no-repeat 0 top;
+	color: #fff;
+	font-size: 16px;
+	position:absolute;
+	top: 195px;
+	left: 65px;
+}
+
+#readDataButton:hover, #readSelectedButton:hover {
+	background: url(../../images/garmin/button_bg.jpg) no-repeat 0 bottom;
+}
+
+#readDataButton:active, #readSelectedButton:active {
+	background: url(../../images/garmin/button_bg.jpg) no-repeat 0 top;
+}
+
+#garminDisplay input.actionButton {
+	font-size:16px;
+	font-weight: bold;
+	font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
+    color:#ffffff;
+    background-color: #0077AA;
+    border:1px outset #3D3A21;
+    padding: 3px;
+    width: 259px;
+    height: 35px;
+    left: 100px;
+}
+
+#readBox {
+    text-align: center;
+    font-size: 14px;
+}
+
+#activityDirectoryClass {
+    text-align: center;
+    font-size: 14px;
+}
+
+#deviceSelect {
+    width: 220px;
+}
+
+#statusBox {
+    padding-left: 90px;
+    height: 40px;
+}
+
+#activityStatusHeader {
+    padding-left: 25px;
+    text-align: right;
+}
+
+.activityStatusCell {
+    padding-left: 25px;
+    text-align: right;
+}
+
+#aboutElement {
+    margin-top: 10px;
+    margin-bottom: 2px;
+    font-size: 9px;
+    text-align: right;
+}
+
+.readResultsElement {
+    margin-top: 6px;
+}
+
+.readResultsSelect {
+    position: absolute;
+    left: 100px;
+}
+
+#readMap {
+	width: 100%;
+	height: 200px;
+}
+
+#progressBar {
+    height:10px;
+    margin-top: 3px;
+    border:1px solid black;
+    width: 95%;
+    padding:0px;
+    text-align: left;
+    background-color:#CCCAC1;
+}
+
+#progressBarDisplay {
+    top:0px;
+    height:10px;
+    margin: 0px;
+    padding:0px;
+    text-align: left;
+    background-color:#005E9D;
+}

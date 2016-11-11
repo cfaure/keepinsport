@@ -1,0 +1,78 @@
+{% block stylesheets %}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksnotification/css/style.css') }}" /> 
+{% endblock %}
+    
+{% block notifications_list %}
+    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+        {{ 'friends.label'|trans }}
+        <span id="newFriendRequestsNumber" {% if new_notifications_number > 0 %}class="badge badge-info"{% endif %}>
+            {% if new_notifications_number > 0 %}
+                {{ new_notifications_number }}
+            {% endif %}
+        </span>
+        <b class="caret"></b>
+    </a>
+    <ul id="lastfriendRequestsBlock" class="dropdown-menu">
+        {% if notifications|length > 0 %}
+            {% for key, notification in notifications %}
+                <li class="nav-header">{{ 'activity.appendAgo'|trans({'%time%': notification.createdAt|created_ago['time'], '%unit%': ('time.' ~ notification.createdAt|created_ago['unit'])|trans }) }}</li>
+                <li idNotif="{{ notification.id }}" class="{% if notification.isRead == 0 %} new {% else %} old {% endif %}" >
+                    Souhaitez vous ajouter {{ notification.fromUser }} à votre liste d'ami ?
+                    <button class="btn btn-mini btn-info" type="button" rel="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': notification.fromUser.id }) }}" >
+                        {{ 'friendRequests.accept'|trans }}
+                    </button>
+                    <button class="btn btn-mini btn-info" type="button" rel="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': notification.fromUser.id }) }}" >
+                        {{ 'friendRequests.refuse'|trans }}
+                    </button>
+                </li>                        
+                <li class="divider"></li>
+            {% endfor %}
+        {% else %}
+            <li class="nav-header" style="text-transform: none;">{{ 'notifications.do_not_have_friends_request'|trans }}</li>
+        {% endif %}
+        <!--<li><a href="{{ path('ksNotification_notificationsList', { 'numPage': 1 }) }}">{{ 'notifications.more'|trans }}</a></li>-->
+    </ul>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("button").click(function() {
+                window.location.replace( $( this ).attr('rel') );
+            });
+            
+            $('#lastFriendRequestsMenu').click(
+                function() {
+                    
+                    var arrayNewNotifs = new Array();
+                    $.each( $('#lastfriendRequestsBlock > li.new') , function(k, notif){
+                        arrayNewNotifs.push($( notif ).attr("idNotif"));
+                    });
+                    
+                    //Si certaines notifications n'étaient pas lues jusqu'à présent
+                    if (arrayNewNotifs.length > 0) {
+                        var request = $.ajax({
+                            url: "{{ path('ksNotification_read_all')}}",
+                            type: "POST",
+                            data : {
+                                newNotifs : arrayNewNotifs
+                            }, 
+                            dataType: "json",
+                            //async : false
+                        });
+
+                        request.done(function(msg) {
+
+                            //Toutes les notifications non lues ont bien été mises à lues en bdd
+                            if (msg.nb_update == arrayNewNotifs.length) {
+                                $("li.new").delay(3000).switchClass( "new", "old", "normal" );
+                                $("#newFriendRequestsNumber").html("").removeClass("badge").removeClass("badge-infor");
+                            }
+                        });
+
+                        request.fail(function(jqXHR, textStatus) {
+                            console.log("Request failed: " + textStatus);
+                        });
+                    }
+                }
+            );
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "KsActivityBundle::layout_3_9.html.twig" %}
+
+{% block activity_content %}
+<div class="thumbnail">
+<h3 class="sportif">{{ 'ffa.import'|trans }}</h3>
+<div class="blocHeaderSeparator"></div>
+<form id="ffaParameters" method="post" action="{{ path('ksActivity_getFfaActivities') }}" class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label">Prénom</label>
+        <div class="controls">
+            <input type="text" class="text" name="firstname" value="{{user.firstname}}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Nom</label>
+        <div class="controls">
+            <input type="text" class="text" name="lastname" value="{{user.lastname}}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label">Année de naissance</label>
+        <div class="controls">
+            <input type="text" class="text" name="birthyear" value="{{user.birthYear}}" />
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <label class="radio inline">Féminin
+                <input type="radio" name="gender" value="F" {% if user.gender == 'F' %} checked {% endif %} />
+            </label>
+            <label class="radio inline">Masculin
+                <input type="radio" name="gender" value="M" {% if user.gender == 'M' %} checked {% endif %}  />
+            </label>
+        </div>
+    </div>
+</form>
+</div>
+<br/>
+
+<center>
+    <span class="btn btn-sportif" id="btnSearch"><span class="icon-search"></span> {{ 'ffa.search'|trans }} </span>
+    <img id="searchLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none;">
+</center>
+
+<br/>
+
+<div id="ffaActivities"></div>
+
+<script type="text/javascript">
+    
+    $("#btnSearch").click(function(e) {
+        $("#ffaActivities").html("");
+        $("#btnSearch").addClass( "disabled" );
+        $("#searchLoader").css('visibility', 'visible');
+        $("#searchLoader").show();
+        
+        // TODO: valider les données comme pour les autres formulaires...
+        lastname    = $.trim($('input[name="lastname"]').attr('value'));
+        firstname   = $.trim($('input[name="firstname"]').attr('value'));
+        if (lastname == '' || firstname == '') {
+            modalInfo('Le nom et le prénom sont obligatoires !');
+            return false;
+        }
+        
+        $.post($('#ffaParameters').attr('action'), $("#ffaParameters").serialize(), function(response) {
+            $("#btnSearch").removeClass( "disabled" );
+            $("#searchLoader").hide();
+            $("#ffaActivities").prepend(response);
+        });
+    });
+</script>
+{% endblock %}

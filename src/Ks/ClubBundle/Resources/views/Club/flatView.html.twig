@@ -1,0 +1,728 @@
+{% extends "KsClubBundle::layout_full.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <style>
+        thead, table caption {
+            text-align: center;
+            font-variant: small-caps;
+            /*font-weight: bold;*/
+        }
+        
+        table.sessionsTable, table.bySportTable{
+            border:3px solid #eeeeee;
+            text-align: center;
+        }
+        table.sessionsTable thead, table.bySportTable thead {
+            background-color: #eeeeee;
+            color: white;
+            text-align: center;
+            color: black;
+        }
+        table.sessionsTable caption, table.bySportTable caption, .goldStars {
+            color: #eeeeee;
+        }
+    </style>
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    {#<script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/index.js') }}"></script>#}
+    <script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/functions.js') }}"></script>
+     
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#sessionsTable').dataTable({
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bSort": false,
+                "bInfo": false,
+                "bAutoWidth": false,
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });
+            
+            $('#bySportTable').dataTable({
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bSort": true,
+                "aaSorting": [[1,'desc']],
+                "bInfo": false,
+                "bAutoWidth": false,
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });
+            
+            if( document.body.clientWidth >= 963 ) {
+                $("#start").datepicker({
+                    dateFormat: "dd/mm/yy",
+                    firstDay: 1,
+                });
+                $("#end").datepicker({
+                    dateFormat: "dd/mm/yy",
+                    firstDay: 1,
+                });
+            } else {
+                var theme = $.browser.safari ? 'ios' : 'android-ics';
+
+                $("#start").scroller({ 
+                        preset: 'date',
+                        theme: theme,
+                        display: 'bottom',
+                        lang : 'fr',
+                        height : 30,
+                        rows : 3,
+                        showLabel : 'true'
+                });
+
+                $("#end").scroller({ 
+                        preset: 'date',
+                        theme: theme,
+                        display: 'bottom',
+                        lang : 'fr',
+                        height : 30,
+                        rows : 3,
+                        showLabel : 'true'
+                });
+            }
+            
+            {% if startOn != '' %}
+                $("#start").datepicker("setDate", new Date("{{ startOn }}")); 
+            {% else %}
+                //FIXME : FMO ne fonctionne pas :(
+                $("#start").attr('value', '');
+                $("#start").datepicker( "option" , {
+                    minDate: null,
+                    maxDate: null} );
+            {% endif %}
+            {% if endOn != '' %} 
+                $("#end").datepicker("setDate", new Date("{{ endOn }}")); 
+            {% else %}
+                $("#end").attr('value', '');
+                $("#end").datepicker( "option" , {
+                    minDate: null,
+                    maxDate: null} );
+            {% endif %}
+                
+            var gaugeOptions = {
+
+                chart: {
+                    type: 'solidgauge'
+                },
+
+                title: null,
+
+                pane: {
+                    center: ['50%', '85%'],
+                    size: '140%',
+                    startAngle: -90,
+                    endAngle: 90,
+                    background: {
+                        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                        innerRadius: '60%',
+                        outerRadius: '100%',
+                        shape: 'arc'
+                    }
+                },
+
+                tooltip: {
+                    enabled: true
+                },
+
+                // the value axis
+                yAxis: {
+                    stops: [
+                        [0.1, '#DF5353'], // red
+                        [0.5, '#DDDF0D'], // yellow
+                        [0.9, '#55BF3B'] // green
+                    ],
+                    lineWidth: 0,
+                    minorTickInterval: null,
+                    tickPixelInterval: 400,
+                    tickWidth: 0,
+                    title: {
+                        y: -70
+                    },
+                    labels: {
+                        y: 16
+                    }
+                },
+
+                plotOptions: {
+                    solidgauge: {
+                        dataLabels: {
+                            y: 5,
+                            borderWidth: 0,
+                            useHTML: true
+                        }
+                    }
+                }
+            };
+
+            $('#progressGauge').highcharts(Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: 100,
+                    title: {
+                        text: '{{ 'coaching.progress'|trans|upper }}'
+                    }
+                },
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '{{ 'coaching.sessions-ended'|trans }} : <b>{{ totalSessionsEnded }}</b> <br/> {{ 'coaching.sessions-scheduled'|trans }} : <b>{{ totalSessionsScheduled }}</b>';
+                    }
+                },
+                series: [{
+                    name: '{{ 'coaching.progress'|trans }}',
+                    data: [{{ progress }}],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
+                               '<span style="font-size:12px;color:silver"></span></div>'
+                    }
+                }]
+
+            }));
+
+            $('#attendanceGauge').highcharts(Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: 100,
+                    title: {
+                        text: '{{ 'coaching.attendance'|trans|upper }}',
+                    }
+                },
+                exporting: {
+                    enabled: false
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '{{ 'coaching.sessions-done'|trans }} : <b>{{ totalSessionsDone }}</b> <br/> {{ 'coaching.until-now'|trans }} : <b>{{ totalSessionsEnded }}</b>';
+                    }
+                },
+                series: [{
+                    name: '{{ 'coaching.attendance'|trans }}',
+                    data: [{{ attendance }}],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
+                               '<span style="font-size:12px;color:silver"></span></div>'
+                    },
+                    tooltip: {
+                        valueSuffix: ' %'
+                    }
+                }]
+
+            }));
+            
+            $('#efficiencyGauge').highcharts(Highcharts.merge(gaugeOptions, {
+                yAxis: {
+                    min: 0,
+                    max: 100,
+                    title: {
+                        text: '{{ 'coaching.efficiency'|trans|upper }}'
+                    }
+                },
+
+                credits: {
+                    enabled: false
+                },
+                
+                exporting: {
+                    enabled: false
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '{{ 'coaching.duration-done'|trans }} : <b>{{ totalSessionsDuration }}</b> <br/>{{ 'coaching.duration-linked'|trans }} : <b>{{ totalCoachingDurationLinked }}</b>';
+                    }
+                },
+                series: [{
+                    name: '{{ 'coaching.efficiency'|trans }}',
+                    data: [{{ efficiency }}],
+                    dataLabels: {
+                        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                            ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}%</span><br/>' +
+                               '<span style="font-size:12px;color:silver"></span></div>'
+                    },
+                    tooltip: {
+                        valueSuffix: ' %'
+                    }
+                }]
+
+            }));
+            
+            {{ pieBySport|raw }}
+
+            $('#pieBySport').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: '{{ 'coaching.sport-repart'|trans|upper }}'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.duration}</b>'
+                },
+                exporting: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.y} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: '{{ 'coaching.duration'|trans }}',
+                    data: pieBySport
+                }]
+            });
+
+            {{ pieByCategory|raw }}
+
+            $('#pieByCategory').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: '{{ 'coaching.category-repart'|trans|upper }}'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.duration}</b>'
+                },
+                exporting: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.y} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: '{{ 'coaching.duration'|trans }}',
+                    data: pieByCategory
+                }]
+            });
+
+            {{ pieByDifficulty|raw }}
+
+            $('#pieByDifficulty').highcharts({
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: '{{ 'coaching.difficulty-repart'|trans|upper }}'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.duration}</b>'
+                },
+                exporting: {
+                    enabled: false
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<b>{point.name}</b>: {point.y} %',
+                            style: {
+                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                            }
+                        }
+                    }
+                },
+                series: [{
+                    type: 'pie',
+                    name: '{{ 'coaching.duration'|trans }}',
+                    data: pieByDifficulty
+                }]
+            });
+
+            {{ pieByTimeZone|raw }}
+
+            $('#pieByTimeZone').highcharts({
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: '{{ 'coaching.duration-repart'|trans|upper }}'
+                },
+                exporting: {
+                    enabled: false
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        rotation: 0,
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif'
+                        }
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Occurences'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.duration}</b>'
+                },
+                series: [{
+                    name: '{{ 'coaching.duration'|trans }}',
+                    data: pieByTimeZone,
+                    dataLabels: {
+                        enabled: true,
+                        rotation: -90,
+                        color: '#FFFFFF',
+                        align: 'right',
+                        x: 4,
+                        y: 10,
+                        style: {
+                            fontSize: '13px',
+                            fontFamily: 'Verdana, sans-serif',
+                            textShadow: '0 0 3px black'
+                        }
+                    }
+                }]
+            });
+        });
+        
+        function publish() {
+            if( !$("#refreshButton").hasClass("disabled") ) {
+                $("#loaderFlatView").show();
+                $("#refreshButton").addClass("disabled");
+                $startGetDate = $("#start").datepicker('getDate');
+                $endGetDate = $("#end").datepicker('getDate');
+                
+                document.location.href = Routing.generate('ksCoaching_flatView', { 
+                    {% if club is defined and club is not null%} 'clubId' : {{ club.id }}, {% elseif user is defined and user is not null %} 'userId' : {{ user.id }}, {% endif %}
+                    'planId' : {{ planId }}, 'startOn' : $startGetDate == null ? null : $startGetDate.getTime()/1000, 'endOn' : $endGetDate == null ? null : $endGetDate.getTime()/1000});
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block left_column %}
+    {#{% render "KsClubBundle:Club:leftColumn" with { 'clubId' : club.id } %}#}
+{% endblock %}    
+    
+{% block content %}
+    
+    {% if club is defined and club is not null%}
+        {% set label = 'clubs' %}
+    {% else %}
+        {% set label = 'sportif' %}
+    {% endif %}
+    
+    <div class="controls pull-right" style="padding:0px 15px 0px 0px;">
+        <a class="btn btn-{{label}} btn pull-right" onclick="history.go(-1);" rel="tooltip" title="{{ "actions.back"|trans }}" >
+            <i class="icon-backward icon-white"></i>
+        </a>
+    </div>
+    
+    <h1 class="{{ label }}">{% if club is defined and club is not null%} {{ club.name }} : {% endif %} {{ planName }} </h1>
+    <div class="blocHeaderSeparator"></div>
+    <br>
+    <div class="row-fluid">
+        <center>
+            <form id="datesForm" method="post" enctype="multipart/form-data" novalidate="novalidate">
+                <div class="input-prepend">
+                    <span class="add-on">{{ 'coaching.starting-date'|trans }}</span>
+                    <input type="text" id="start" class="datepicker input-small">
+                </div>
+                <div class="input-prepend" style="padding-left:10px">
+                    <span class="add-on">{{ 'coaching.ending-date'|trans }}</span>
+                    <input type="text" id="end" class="datepicker input-small">
+                </div>
+                <div class="input-prepend">
+                    <a id="refreshButton" class="btn btn-small btn-{{ label }}" onclick="publish();" rel="tooltip" title="{{ "coaching.refresh"|trans }}" style="padding-top:0px">
+                        <i class="icon-refresh icon-white "></i>
+                    </a>
+                    <img id="loaderFlatView" class="" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display: none; padding: 5px 0px 0px 10px">
+                </div>
+            </form>
+        </center>
+    </div>
+    <br clear="all"/>
+    <div class="visible-desktop visible-tablet">
+        <div class="row-fluid">
+            <div class="span6">
+                <div id="pieBySport" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto"></div>
+            </div>
+            <div class="span6">
+                <div id="pieByCategory" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto"></div>
+            </div>
+        </div>
+        <br clear="all"/>
+        <br clear="all"/>
+        <div class="row-fluid">
+            <div class="span6">
+                <div id="pieByDifficulty" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto"></div>
+            </div>
+            <div class="span6">
+                <div id="pieByTimeZone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto"></div>
+            </div>
+        </div>
+        
+        </br>
+        <div class="row-fluid" style="display:none">
+            <center>
+                <table id="bySportTable" cellpadding="0" cellspacing="0" border="0" width="100px" class="table table-bordered bySportTable" >
+                    <thead>
+                        <tr>
+                            <th>{{ 'coaching.sport'|trans|upper }}</th>
+                            <th>{{ 'coaching.number'|trans|upper }} {# 'coaching.planed-short'|trans #}</th>
+                            <th>{{ 'coaching.number'|trans|upper }} {#'coaching.achieved-short'|trans #}</th>
+                            <th>{{ 'coaching.duration'|trans|upper }} {# 'coaching.planed-short'|trans #}</th>
+                            <th>{{ 'coaching.duration'|trans|upper }} {#'coaching.achieved-short'|trans #}</th>
+                            <th>{{ 'coaching.distance'|trans|upper }} {# 'coaching.planed-short'|trans #}</th>
+                            <th>{{ 'coaching.distance'|trans|upper }} {#'coaching.achieved-short'|trans #}</th>
+                            <th>{{ 'coaching.elevationGain'|trans|upper }} {# 'coaching.planed-short'|trans #}</th>
+                            <th>{{ 'coaching.elevationGain'|trans|upper }} {#'coaching.achieved-short'|trans #}</th>
+                            <th>{{ 'coaching.elevationLost'|trans|upper }} {# 'coaching.planed-short'|trans #}</th>
+                            <th>{{ 'coaching.elevationLost'|trans|upper }} {#'coaching.achieved-short'|trans #}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for sport in sports %}
+                            {% if sport.sport_label != 'empty' %}
+                                <tr>
+                                    <td>
+                                        {% if sport.sport_label != null %}
+                                            {% set sportLabel = 'sports.' ~ sport.sport_label %}
+                                            {% if club is defined and club is not null %}
+                                                <img class='pull-left' src='{{ asset('img/topLeftCorner/clubs/') ~sport.sport_label ~ '.png'}}'/> {{ sportLabel | trans }}
+                                            {% else %}
+                                                <img class='pull-left' src='{{ asset('V2/images/sports/') ~sport.sport_label ~ '.png'}}'/> {{ sportLabel | trans }}
+                                            {% endif %}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if sport.coachingNumber != null %}  {{ sport.coachingNumber }} {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if sport.number != '-' %}  {{ sport.number }} {% else %} - {% endif %}
+                                    </td>
+                                    <td>
+                                        <center rel="tooltip" title="{{ "coaching.planed"|trans }}"> {% if sport.coachingDuration != null %}  {{ sport.coachingDuration }} {% endif %}</center>
+                                    </td>
+                                    <td>
+                                        <center rel="tooltip" title="{{ "coaching.achieved"|trans }}"> {% if sport.duration != '-' %}  {% if sport.duration == 0 %} - {% else %} {{ sport.duration }} {% endif %} {% else %} - {% endif %}</center>
+                                    </td>
+                                    <td>
+                                        <center rel="tooltip" title="{{ "coaching.planed"|trans }}"> {% if sport.coachingDistance != null %}  {{ sport.coachingDistance }} {% endif %}</center>
+                                    </td>
+                                    <td>
+                                        <center rel="tooltip" title="{{ "coaching.achieved"|trans }}"> {% if sport.distance != '-' %}  {{ sport.distance }} {% else %} - {% endif %}</center>
+                                    </td>
+                                    <td>
+                                        <center rel="tooltip" title="{{ "coaching.planed"|trans }}"> {% if sport.coachingElevationGain != null %}  {{ sport.coachingElevationGain }} {% endif %}</center>
+                                    </td>
+                                    <td>
+                                        <center rel="tooltip" title="{{ "coaching.achieved"|trans }}"> {% if sport.elevationGain != '-' %}  {{ sport.elevationGain }} {% else %} - {% endif %}</center>
+                                    </td>
+                                    <td>
+                                        <center rel="tooltip" title="{{ "coaching.planed"|trans }}"> {% if sport.coachingElevationLost != null %}  {{ sport.coachingElevationLost }} {% endif %}</center>
+                                    </td>
+                                    <td>
+                                        <center rel="tooltip" title="{{ "coaching.achieved"|trans }}"> {% if sport.elevationLost != '-' %}  {{ sport.elevationLost }} {% else %} - {% endif %}</center>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </center>
+        </div>
+        <br clear="all"/>
+        <br clear="all"/>
+        <div class="row-fluid">
+            <div class="span4">
+                <center><div id="progressGauge" style="width: 260px; height: 170px; "></div></center>
+            </div>
+            <div class="span4">
+                <center><div id="attendanceGauge" style="width: 260px; height: 170px; "></div></center>
+            </div>
+            <div class="span4">
+                <center><div id="efficiencyGauge" style="width: 260px; height: 170px; "></div></center>
+            </div>
+        </div>
+        <br clear="all"/>
+        <table id="sessionsTable" class="table table-bordered sessionsTable">
+            <thead>
+                <tr>
+                    <th>{{ 'coaching.date'|trans|upper }}</th>
+                    <th>{{ 'coaching.sport'|trans|upper }}</th>
+                    <th>{{ 'coaching.category'|trans|upper }}</th>
+                    <th>{{ 'coaching.session'|trans|upper }}</th>
+                    <th>{{ 'coaching.details'|trans|upper }}</th>            
+                    <th>{{ 'coaching.stateOfHealth'|trans|upper }}</th>
+                    <th>{{ 'coaching.intensity'|trans|upper }}</th>
+                    <th>{{ 'coaching.duration'|trans|upper }}</th>
+                    <th>{{ 'coaching.distance'|trans|upper }}</th>
+                    <th>{{ 'coaching.elevationGain'|trans|upper }}</th>
+                    <th>{{ 'coaching.elevationLost'|trans|upper }}</th>
+                    <th>{{ 'coaching.link'|trans|upper }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for session in sessions %}
+                    {% if session.sport_label != 'empty' %}
+                        <tr>
+                            <td>
+                                {{ session.start|date("d/m/y") }}
+                            </td>
+                            <td>
+                                {% if session.sport_label != null %}
+                                    {% set sportLabel = 'sports.' ~ session.sport_label %}
+                                    {% if session.coachingPlan_id is defined and session.coachingPlan_id is not null %}
+                                        <img class='pull-left' src='{{ asset('img/topLeftCorner/clubs/') ~session.sport_label ~ '.png'}}'/> {{ sportLabel | trans }}
+                                    {% else %}
+                                        <img class='pull-left' src='{{ asset('V2/images/sports/') ~session.sport_label ~ '.png'}}'/> {{ sportLabel | trans }}
+                                    {% endif %}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if session.category != null %}
+                                    <b>{{ session.category }}</b>
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td {% if session.sessionTitle != null %} {% if session.difficulty_id == 1 %} bgcolor="#12a24a" {% elseif session.difficulty_id == 2 %} bgcolor="#FFA500" {% elseif session.difficulty_id == 3 %} bgcolor="#DB2033" {% endif %} {% endif %}>
+                                <font color="#FFFFF">
+                                    {% if session.sessionTitle != null %}
+                                        {{ session.sessionTitle }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </font>
+                            </td>
+                            <td>
+                                {% if session.content != null %}
+                                    {{ session.content }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <center>
+                                    {% if session.activity_type != null %}
+                                        {% if session.points != 0 %}
+                                            {% if session.stateOfHealth_id == 3 %} <div class='icon-green icon-btn icon-smile icon-2x selected' title='{{ "stateOfHealth.great"|trans }}'></div>
+                                            {% elseif session.stateOfHealth_id == 2 %} <div class='icon-orange icon-btn icon-meh icon-2x selected' title='{{ "stateOfHealth.so_so"|trans }}'></div>
+                                            {% elseif session.stateOfHealth_id == 1 %} <div class='icon-red icon-btn icon-frown icon-2x selected' title='{{ "stateOfHealth.tired"|trans }}'></div>
+                                            {% else %} {{ 'coaching.no-feeling-details'|trans }} {% endif %}
+                                        {% else %}
+                                            <span class='icon-remove icon-4x' title='{{ 'coaching.not-done'|trans }}'/>
+                                        {% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </center>
+                            </td>
+                            <td>
+                                <center>
+                                    {% if session.activity_type != null %}
+                                        {% if session.points != 0 %}
+                                            {% if session.intensity_id == 3 %} <div class='icon-red icon-btn icon-circle icon-2x selected' title='{{ "intensity.high"|trans }}'></div>
+                                            {% elseif session.intensity_id == 2 %} <div class='icon-orange icon-btn icon-circle icon-2x selected' title='{{ "intensity.medium"|trans }}'></div>
+                                            {% elseif session.intensity_id == 1 %} <div class='icon-green icon-btn icon-circle icon-2x selected' title='{{ "intensity.low"|trans }}'></div>
+                                            {% else %} N.C. {% endif %}
+                                        {% endif %}
+                                    {% else %}
+                                        -
+                                    {% endif %}   
+                                </center>
+                            </td>
+                            <td>
+                                <center rel="tooltip" title="{{ "coaching.planed"|trans }}"> {% if session.coachingDuration != null %}  {{ session.coachingDuration }} {% endif %}</center>
+                                <center rel="tooltip" title="{{ "coaching.achieved"|trans }}"> {{session.duration}} </center>
+                            </td>
+                            <td>
+                                <center rel="tooltip" title="{{ "coaching.planed"|trans }}"> {% if session.coachingDistance != null %}  {{ session.coachingDistance }} {% endif %}</center>
+                                <center rel="tooltip" title="{{ "coaching.achieved"|trans }}"> {% if session.distance != '-' %}  {{ session.distance }} {% else %} - {% endif %}</center>
+                            </td>
+                            <td>
+                                <center rel="tooltip" title="{{ "coaching.planed"|trans }}"> {% if session.coachingElevationGain != null %}  {{ session.coachingElevationGain }} {% endif %}</center>
+                                <center rel="tooltip" title="{{ "coaching.achieved"|trans }}"> {% if session.elevationGain != '-' %}  {{ session.elevationGain }} {% else %} - {% endif %}</center>
+                            </td>
+                            <td>
+                                <center rel="tooltip" title="{{ "coaching.planed"|trans }}"> {% if session.coachingElevationLost != null %}  {{ session.coachingElevationLost }} {% endif %}</center>
+                                <center rel="tooltip" title="{{ "coaching.achieved"|trans }}"> {% if session.elevationLost != '-' %}  {{ session.elevationLost }} {% else %} - {% endif %}</center>
+                            </td>
+                            <td>
+                                <center>
+                                    {% if session.activity_type != null %}
+                                        <a class="btn btn-small pull-right btn-clubs" href="{{ path('ksActivity_showActivity', { 'activityId' : session.activitySession_id }) }}" rel="tooltip" title="{{ "actions.show"|trans }}">
+                                            <i class="icon-search icon-white "></i>
+                                        </a>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </center>
+                            </td>
+
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+
+
+    
+    
+{% endblock %}

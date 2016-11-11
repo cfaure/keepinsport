@@ -1,0 +1,27 @@
+{% if display_points is not defined %}
+    {% set display_points = false %}
+{% endif %}
+{% if activity.user_id is not null %}
+    <div style="">
+        <div style="">
+            {% include 'KsUserBundle:User:_userImage_league_medium.html.twig' with { 
+                'user_id' : activity.user_id, 
+                'user_username' : activity.username, 
+                'user_imageName': activity.user_imageName, 
+                'user_league_category' : activity.ll_categoryLabel, 
+                'user_league_stars' : activity.ll_starNumber
+            } %}
+            {% if activity.userPoints > 0 and display_points %}
+                {% include 'KsLeagueBundle:League:_user_points.html.twig' with { 'user_league_category' : activity.ll_categoryLabel, 'user_points' : activity.userPoints } %}
+            {% endif %}
+        </div>
+     </div>
+{% elseif activity.club_id is not null %}
+    <div style="">
+        <a class="imageLink" rel="tooltip" title="{{ activity.club_name }}" href="{{ path('ksClub_public_profile', { 'clubId' : activity.club_id }) }}">
+            {% include 'KsClubBundle:Club:_clubImage_medium.html.twig' with {'club_id': activity.club_id, 'club_name': activity.club_name, 'club_avatar': activity.club_avatar } %}
+        </a>
+    </div>
+{% else %}
+    {# TODO: ça ne devrait pas arriver, mais à gérer #}
+{% endif %}

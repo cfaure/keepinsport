@@ -1,0 +1,15 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+{% block activity_content %}
+<div id="container"><!-- affichage du graphe --></div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('Highstock-1.1.6/js/highstock.js') }}"></script>
+    {#<script type="text/javascript" src="{{ asset('Highcharts-2.2.5/js/highcharts.js') }}"></script>#}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            
+        });
+    </script>
+    
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksevent/css/timepicker.0.9.9.css') }}" type="text/css" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {#<script type="text/javascript" src="{{ asset('bundles/ksevent/js/timepicker.0.9.9.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksevent/js/script-timepicker.js') }}"></script>#}
+{% endblock %}
+
+    
+    
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+<h1 class="clubs">{{ 'users.club_add_event'|trans }}</h1>
+<div class="blocHeaderSeparator"></div>
+
+<form id="eventForm" action="{{ path('event_create') }}" method="post" {{ form_enctype(form) }}>
+
+    
+    <div>
+        <!-- Génération du label. -->
+        {{ form_label(form.name, 'users.club_event_name' ) }}
+
+        <!-- Affichage des erreurs pour ce champ précis. -->
+        {{ form_errors(form.name ) }}
+
+        <!-- Génération de l'input. -->
+        {{ form_widget(form.name ) }}
+    </div> 
+        
+    <div>
+        <!-- Génération du label. -->
+        {{ form_label(form.content, 'users.club_event_content' ) }}
+
+        <!-- Affichage des erreurs pour ce champ précis. -->
+        {{ form_errors(form.content ) }}
+
+        <!-- Génération de l'input. -->
+        {{ form_widget(form.content ) }}
+    </div> 
+    
+    <div>
+        <!-- Génération du label. -->
+        {{ form_label(form.typeEvent, 'users.club_event_type' ) }}
+
+        <!-- Affichage des erreurs pour ce champ précis. -->
+        {{ form_errors(form.typeEvent ) }}
+
+        <!-- Génération de l'input. -->
+        {{ form_widget(form.typeEvent ) }}
+    </div>  
+        
+    <div>
+           <!-- Génération du label. -->
+        {{ form_label(form.startDate, 'users.club_event_start' ) }}
+
+        <!-- Affichage des erreurs pour ce champ précis. -->
+        {{ form_errors(form.startDate ) }}
+
+        <!-- Génération de l'input. -->
+        {{ form_widget(form.startDate ) }}
+    </div> 
+    <div>
+        <!-- Génération du label. -->
+        {{ form_label(form.endDate, 'users.club_event_end' ) }}
+
+        <!-- Affichage des erreurs pour ce champ précis. -->
+        {{ form_errors(form.endDate ) }}
+
+        <!-- Génération de l'input. -->
+        {{ form_widget(form.endDate ) }}
+    </div> 
+    
+    <input type="hidden" value="{{ idClub }}" name="idClub">
+
+    {{ form_widget(form._token) }}
+         
+        
+    <p>
+        <input type="submit" value="{{'users.profil_create_label'|trans}}">
+    </p>
+</form>
+
+    <script type="text/javascript">
+        var $form = $("#eventForm");
+    
+        $form.find('.datetime').datetimepicker({
+            dateFormat:"dd/mm/yy",
+            timeFormat: 'hh:mm',
+            addSliderAccess: true,
+            sliderAccessArgs: { touchonly: true }
+        });
+    </script>
+{% endblock %}

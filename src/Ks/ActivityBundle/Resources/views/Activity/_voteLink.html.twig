@@ -1,0 +1,26 @@
+{% if isLight is not defined or not isLight %}
+    {% set isLightStr = "" %}
+{% else %}
+    {% set isLightStr = "-light" %}
+{% endif %}
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    {% if activity.id|has_voted(app.user.id) %}
+        <a class="btn" rel="tooltip" title="{{ "actions.vote"|trans }}" rel2="removeVoteOnActivityTrigger-{{ activity.id }}{{ isLightStr }}" href="{{ path('ksActivity_removeVoteOnActivity', {'activityId': activity.id}) }}">
+            <s><i class="glyphicon glyphicon-thumbs-up"></i> {#{ "actions.vote"|trans }#} ({{ activity.numVotes}})</s>
+        </a>
+    {% else %}
+        <a class="btn" rel="tooltip" title="{{ "actions.vote"|trans }}" rel2="voteOnActivityTrigger-{{ activity.id }}{{ isLightStr }}" href="{{ path('ksActivity_voteOnActivity', {'activityId': activity.id}) }}">
+            <i class="glyphicon glyphicon-thumbs-up"></i> {#{ "actions.vote"|trans }#} ({{ activity.numVotes }})
+        </a>
+    {% endif %}
+{% else %}
+    <a class="btn" rel="tooltip" title="{{ "actions.vote"|trans }}" onclick="showInformation('{{ 'actions.login-required'|trans }}');">
+        <i class="glyphicon glyphicon-thumbs-up"></i> {#{ "actions.vote"|trans }#} ({{ activity.numVotes }})
+    </a>
+{% endif %}
+
+<script type="text/javascript">
+    attachVoteOnActivityEvent($('a[rel2="voteOnActivityTrigger-{{ activity.id }}{{ isLightStr }}"]'));
+    attachRemoveVoteOnActivityEvent($('a[rel2="removeVoteOnActivityTrigger-{{ activity.id }}{{ isLightStr }}"]'));
+</script>

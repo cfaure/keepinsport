@@ -1,0 +1,59 @@
+{#<table class="userSuggest margin-bottom7 table">
+    <tbody>
+    {% for activity in aActivitiesSuggest %}
+        <tr>
+            {% if asset('img/topLeftCorner/clubs/' ~ activity.sport_codeSport ~ '.png')|issetImg %}
+                {% set sportImgUrl = 'img/topLeftCorner/clubs/' ~ activity.sport_codeSport ~ '.png' %}
+            {% else %}
+                {% set sportImgUrl = 'img/topLeftCorner/clubs/running.png' %}
+            {% endif %}
+            <td rowspan="2" style="background-image: url('{{ asset(sportImgUrl) }}'); background-repeat: no-repeat;height: 27px;padding-left:30px;padding-top:13px">
+                {{ activity.sport_label }}   
+            </td>
+            <td> 
+                <i class="icon-time pull-right"></i><span class="muted pull-right">{{ activity.scheduledAt|date('d/m/y H:i') }}</span>
+            </td>
+            <td rowspan="2">
+                <a class="btn btn-clubs btn-mini" href="{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}" style="margin-left:5px;margin-top:8px">
+                    <i class="icon-search"></i>
+                </a>
+            </td>
+        </tr>
+        <tr style="border-bottom:1px solid #F4F3F3">
+            <td>
+                <i class="icon-map-marker pull-right"></i><span class="muted pull-right">{{ activity.proximity }} km</span>
+            </td>
+        </tr>
+    {% endfor %} 
+    </tbody>    
+</table>#}  
+
+{% for activity in aActivitiesSuggest %}
+    {#<div class="row-fluid" style="margin-bottom:3px;">
+        <div class="span2">
+            {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                'user_id' : activity.user_id, 
+                'user_username' : activity.username, 
+                'user_imageName': activity.user_imageName, 
+                'user_league_category' : activity.ll_categoryLabel, 
+                'user_league_stars' : activity.ll_starNumber
+            } %}
+            
+        </div>#}
+        {% if asset('img/topLeftCorner/clubs/' ~ activity.sport_codeSport ~ '.png')|issetImg %}
+            {% set sportImgUrl = 'img/topLeftCorner/clubs/' ~ activity.sport_codeSport ~ '.png' %}
+        {% else %}
+            {% set sportImgUrl = 'img/topLeftCorner/clubs/running.png' %}
+        {% endif %}
+        <a class="linkActivityBloc" rel=tooltip" title="{{ ("sports." ~ activity.sport_codeSport)|trans }}" href="{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}">    
+            <div class="activityBloc" style="background-image: url('{{ asset(sportImgUrl) }}'); background-repeat: no-repeat;padding-left:50px;">
+                <div>
+                    <i class="icon-time"></i><span class=""> {{ activity.scheduledAt|date('d/m/y H:i') }}</span>
+                </div>
+                <div>
+                    <i class="icon-map-marker"></i><span class=""> {{ activity.proximity }} km</span>
+                </div>
+            </div>
+        </a>
+    {#</div>#}
+{% endfor %}

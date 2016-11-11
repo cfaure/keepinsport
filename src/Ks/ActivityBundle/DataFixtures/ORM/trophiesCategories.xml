@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<ks_trophiesCategories_list xml:lang="fr">
+    <ks_trophyCategory>Course à pied</ks_trophyCategory>
+    <ks_trophyCategory>Timing</ks_trophyCategory>
+    <ks_trophyCategory>Sport individuel</ks_trophyCategory>
+    <ks_trophyCategory>Sport collectif</ks_trophyCategory>
+    <ks_trophyCategory>Séries</ks_trophyCategory>
+    <ks_trophyCategory>Durée</ks_trophyCategory>
+    <ks_trophyCategory>Geek</ks_trophyCategory>    
+    <ks_trophyCategory>Parrainage</ks_trophyCategory>    
+    <ks_trophyCategory>Collaboratif</ks_trophyCategory>    
+    <ks_trophyCategory>Achat</ks_trophyCategory>
+    <ks_trophyCategory>Communauté</ks_trophyCategory>
+    <ks_trophyCategory>Première</ks_trophyCategory> 
+</ks_trophiesCategories_list>

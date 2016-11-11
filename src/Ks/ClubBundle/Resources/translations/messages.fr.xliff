@@ -1,0 +1,252 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="fr" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>users.club_name</source>
+                <target>Nom du Club*</target>
+            </trans-unit>
+             <trans-unit id="2">
+                <source>users.my_clubs</source>
+                <target>Mes Clubs</target>
+            </trans-unit>
+             <trans-unit id="3">
+                <source>users.club_creation_titre</source>
+                <target>Création de mon club</target>
+            </trans-unit>
+             <trans-unit id="4">
+                <source>users.club_adress_name</source>
+                <target>Adresse du club</target>
+            </trans-unit>
+             <trans-unit id="5">
+                <source>users.club_tel_number</source>
+                <target>Téléphone fixe</target>
+            </trans-unit>
+             <trans-unit id="6">
+                <source>users.club_mobile_number</source>
+                <target>Téléphone portable</target>
+            </trans-unit>
+             <trans-unit id="7">
+                <source>users.club_email</source>
+                <target>E-mail</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>users.club_adresse_label</source>
+                <target>Adresse</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>users.club_list_label</source>
+                <target>Liste de mes clubs</target>
+            </trans-unit>
+             <trans-unit id="10">
+                <source>users.club_town</source>
+                <target>Ville du Club</target>
+            </trans-unit>
+             <trans-unit id="11">
+                <source>users.club_create</source>
+                <target>Créer un nouveau club</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>crud.edit</source>
+                <target>Editer</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>crud.view</source>
+                <target>Voir</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>users.club_edit</source>
+                <target>Modification d'un club</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>users.club_creation_success</source>
+                <target>Club créé avec succès</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>users.club_view_title</source>
+                <target>Visualition du club :</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>users.club_update_success</source>
+                <target>Modification du club avec succès</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>users.club_site</source>
+                <target>Site web</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>users.member_lastname</source>
+                <target>Nom du Membre</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>users.member_firstname</source>
+                <target>Prénom du Membre</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>users.club_add_a_member</source>
+                <target>Ajouter un membre</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>users.club_add_member_success</source>
+                <target>Ajout d'un membre avec succès </target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>users.club_list_member</source>
+                <target>Liste des membres du club </target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>users.club_edit_member_title</source>
+                <target>Modifier un membre </target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>crud.delete</source>
+                <target>Supprimer</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>users.club_create_team</source>
+                <target>Créer une équipe</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>users.club_add_a_team</source>
+                <target>Création d'une équipe</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>users.club_team_label</source>
+                <target>Nom de l'équipe</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>users.club_team_sport</source>
+                <target>Sport de l'équipe</target>
+            </trans-unit>
+             <trans-unit id="31">
+                <source> users.club_team_members</source>
+                <target>Membres de l'équipe</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>users.club_add_team_success</source>
+                <target>L'équipe a été créée avec succès</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>users.club_list_team</source>
+                <target>Liste des équipes</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>users.club_list_team_member</source>
+                <target>Liste des membres de l'équipe </target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>users.club_edit_team_title</source>
+                <target>Modifier l'équipe </target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>users.club_add_event</source>
+                <target>Créer un événement pour le club (compétition, entrainement, repas)</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>users.club_event_start</source>
+                <target>Date de début de l'événement</target>
+            </trans-unit>
+             <trans-unit id="38">
+                <source>users.club_event_end</source>
+                <target>Date de fin de l'événement</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>users.club_event_name</source>
+                <target>Nom de l'événement</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>users.club_event_content</source>
+                <target>Description de l'événement</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>users.club_event_type</source>
+                <target>Type d'événement</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>users.club_add_event_success</source>
+                <target>Ajout de l'événement avec succès</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>users.club_friend_name_admin</source>
+                <target>Nommer un ami administrateur de ce club</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>users.user_nammed_admin_success</source>
+                <target>Votre ami a été nommé administrateur du club avec succès</target>
+            </trans-unit> 
+            <trans-unit id="45">
+                <source>users.club_delete_success</source>
+                <target>Suppression du club avec succès</target>
+            </trans-unit> 
+            
+            <trans-unit id="46">
+                <source>team.members.label</source>
+                <target>Membres de l'équipe</target>
+            </trans-unit>
+            <trans-unit id="47">
+                <source>team.membersNumber</source>
+                <target>%membersNumber% membres</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>club.contact.label</source>
+                <target>Contact</target>
+            </trans-unit>
+            <trans-unit id="49">
+                <source>club.adresse.label</source>
+                <target>Adresse</target>
+            </trans-unit>
+            <trans-unit id="50">
+                <source>club.town.label</source>
+                <target>Ville</target>
+            </trans-unit>
+            <trans-unit id="51">
+                <source>club.email.label</source>
+                <target>E-mail</target>
+            </trans-unit>
+            <trans-unit id="52">
+                <source>club.site.label</source>
+                <target>Site web</target>
+            </trans-unit>
+            <trans-unit id="53">
+                <source>club.members.label</source>
+                <target>Membres</target>
+            </trans-unit>
+            <trans-unit id="54">
+                <source>club.membersNumber</source>
+                <target>%membersNumber% membres</target>
+            </trans-unit>            
+            <trans-unit id="55">
+                <source>team.members.show_all</source>
+                <target>Voir tous</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>club.members.show_all</source>
+                <target>Voir tous</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>club.teams.list</source>
+                <target>Equipes</target>
+            </trans-unit>
+            <trans-unit id="58">
+                <source>club.events.list</source>
+                <target>Evénements</target>
+            </trans-unit>
+            <trans-unit id="59">
+                <source>club.sports.list</source>
+                <target>Sports</target>
+            </trans-unit>
+             <trans-unit id="60">
+                <source>users.club_delete_event_success</source>
+                <target>Suppression de votre événement avec succès</target>
+            </trans-unit>
+             <trans-unit id="61">
+                <source>users.club_update_event_success</source>
+                <target>Modification de votre événement avec succès</target>
+            </trans-unit>
+            <trans-unit id="62">
+                <source>club.clubs_near_me</source>
+                <target>Les clubs près de chez toi</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

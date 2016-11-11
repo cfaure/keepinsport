@@ -1,0 +1,35 @@
+<div class="modal fade" id="newArticleInCategory{{ category.id }}_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class='modal-header'>
+                <a class='close' data-dismiss='modal'>&times;</a>
+                <h3 class="wikisport">{{ 'article.create-new'|trans }}</h3>
+            </div>
+            <div class='modal-body'>
+                <form  method="post" {{ form_enctype(form) }}>
+                    {{ form_widget(form.categoryTag) }}
+                    <br/>
+                    {{ form_widget(equipmentform.brand, { attr: { class:"articleBrand input-block-level"} }) }}
+                    <br/>
+                    {{ form_widget(form.label, { attr: { class:"articleLabel input-block-level"} }) }}
+                    <br/>
+                    {{ form_widget(equipmentform.type) }}
+                    <br/>
+                    {{ form_rest(form) }}
+
+                    <INPUT type="hidden" value="" name="selectedType_fromMenu" id="selectedType_fromMenu">
+                    <INPUT type="hidden" value="" name="selectedBrand_fromMenu" id="selectedBrand_fromMenu">
+
+                </form>
+                <div class="errorsBloc"></div>
+                <div class="messagesBloc"></div>
+            </div>
+            <div class='modal-footer'>
+                <img class="loader pull-left" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+                <div class="message pull-left"> {{ 'article.looking-for-duplicates'|trans }}</div>
+                <a href='#' class='cancel btn btn-default' data-dismiss='modal'>{{ 'actions.cancel'|trans }}</a>
+                <a href='#' class='create btn btn-success'>{{ 'actions.create'|trans }}</a>
+            </div>
+        </div>
+    </div>
+</div>

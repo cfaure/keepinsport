@@ -1,0 +1,15 @@
+<img class="commentFormLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none"> 
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <a class="btn" rel="tooltip" title="{{ "actions.comment"|trans }}" rel2="commentTrigger-{{ activity.id }}" href="{{ path('ksActivity_getCommentForm', {'activityId': activity.id}) }}">
+        <span class="glyphicon glyphicon-comment"></span> {#{ 'actions.comment'|trans }#}
+    </a>
+{% else %}
+    <a class="btn" rel="tooltip" title="{{ "actions.comment"|trans }}" onclick="showInformation('{{ 'actions.login-required'|trans }}');">
+        <span class="glyphicon glyphicon-comment"></span> {#{ 'actions.comment'|trans }#}
+    </a>
+{% endif%}
+
+<script type="text/javascript">
+    attachCommentEvent($('a[rel2="commentTrigger-{{ activity.id }}"]'));
+</script>

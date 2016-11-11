@@ -1,0 +1,104 @@
+<div class="thumbnail">
+    <ul id="fromUserList" class="nav nav-pills" style="margin-bottom:0px">
+        <li rel="all" class="active">
+            <a href="#">Tous</a>
+        </li>
+        <li rel="me">
+            <a href="#">Moi</a>
+        </li>
+        {% if friends != null %}
+            <li rel="friends">
+                <a href="#">Mes amis sportifs</a>
+            </li>
+        {% endif %}
+        {#<li rel="clubs">
+            <a href="#">
+                <select id="clubsSelect" data-placeholder="Un club" class="chzn-select-deselect" style="width:100px;">
+                    <option value=""></option>
+                    {% for club in user.clubs %}
+                        {% if club.imageName is not defined or club.imageName is null %}
+                            {% set srcImgClub = asset('bundles/ksuser/images/no_avatar.png') %}
+                        {% else %}
+                            {% set srcImgClub = asset('uploads/images/users/resize_48x48/' ~ club.imageName) %}
+                        {% endif %}
+                        {% set sportsList = "" %}
+                        {% for sport in club.sports %}
+                            {% set sportsList = sportsList ~ ", " ~ sport.label %}
+                        {% endfor %} 
+                        <option value="{{ club.id }}" data-imagesrc="{{ srcImgClub }}"
+                        data-description="{{ sportsList }}" style="color:black;">{{ club.name }}</option>
+                    {% endfor %}
+
+
+                </select>
+            </a>
+        </li>#}
+        {#<li rel="cercles">
+            <a href="#">
+                <select id="cerclesSelect" data-placeholder="Un cercle" style="width:100px;">
+                    <option value=""></option>
+                    % for club in user.cercles %}
+                        {% if club.imageName is not defined or club.imageName is null %}
+                            {% set srcImgClub = asset('bundles/ksuser/images/no_avatar.png') %}
+                        {% else %}
+                            {% set srcImgClub = asset('uploads/images/users/resize_48x48/' ~ club.imageName) %}
+                        {% endif %}
+                        {% set sportsList = "" %}
+                        {% for sport in club.sports %}
+                            {% set sportsList = sportsList ~ ", " ~ sport.label %}
+                        {% endfor %} 
+                        <option value="{{ club.id }}" data-imagesrc="{{ srcImgClub }}"
+                        data-description="{{ sportsList }}" style="color:black;">{{ club.name }}</option>
+                    {% endfor % 
+                </select>
+            </a>
+        </li>
+        <li rel="options" class="dropdown" style="float:right">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="icon-cog"></i>
+            <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+            <!-- links -->
+            </ul>
+        </li>#}
+    </ul>
+</div>
+
+
+
+<script type="text/javascript">
+    //var ajaxRequests = new Array();
+
+    $("#fromUserList > li[rel!=options]").unbind();
+    $("#fromUserList > li[rel!=options]").click(function() {
+        
+        //Ici on ou Toutes ou Moi ou Mes Amis
+        liAll = $("#fromUserList > li[rel=all]");
+        li = $( this );
+        //On déselectionne les autres options
+        $("#fromUserList > li[rel!=options]").each(function(key, value) {
+            if( $( this ).hasClass('active') ) {
+                $( this ).removeClass('active');
+            }
+        });
+        // on rend actif le filtre choisit
+        li.addClass('active');
+        // on récupère la valeur
+        fromUsers = li.attr("rel");
+        //On récupère les catégories du premier filtres récupérés
+        activitiesTypes = new Array();
+        $("#activityTypeList > li[rel!=options]").each(function(key, value) {
+            if( $( this ).hasClass('active') ) {
+                activitiesTypes.push($( this ).attr("rel") );
+            }
+        });
+        //on envois en ajax la requête avec les différents paramètres
+        $('#activitiesBlockList').html('');
+        for ( var i = 0; i < ajaxRequests.length; i++) {
+            ajaxRequests[i].abort();
+        }
+        ajaxRequests = new Array();
+        ajaxRequests.push(loadActivities(0, activitiesTypes, fromUsers));
+    });
+</script>

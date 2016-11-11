@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
+	<head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+            <title>{% block title %}Keepinsport{% endblock %}</title>
+
+            <meta content="width=device-width, initial-scale=1.0" name="viewport">
+            <meta content="Page d'accueil de Keepinsport" name="description">
+            <meta content="Keepinsport" name="author">
+
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+            <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}" /> 
+            <link rel="icon" type="image/png" href="{{ asset('img/keepinsport_logo_16.png') }}" />
+            <link rel="apple-touch-icon" href="{{ asset('img/keepinsport_logo_57.png') }}" />
+            <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('img/keepinsport_logo_72.png') }}" />
+            <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('img/keepinsport_logo_114.png') }}" />
+
+            <!-- Le fav and touch icons -->
+            <link href="{{ asset('favicon.ico') }}" rel="shortcut icon" />
+            <link href="{{ asset('apple-touch-icon.png') }}" rel="apple-touch-icon" />
+
+            {% block stylesheets %}
+                {# bootstrap #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}"/>
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-responsive.css') }}">
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap_custom_surcharge.css') }}" />
+
+                {# jquery ui #}
+                {#<link rel="stylesheet" type="text/css" href="{{ asset('css/smoothness/jquery-ui-1.8.18.custom.css') }}" /> #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/ui-lightness/jquery-ui-1.10.3.custom.min.css') }}" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.css') }}" />
+
+                {# bootstrap datepicker et tipemicker #}
+                {#<link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-datepicker/css/datepicker.css') }}" />#}
+                <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('mobiscroll-2.2/css/mobiscroll-2.2.custom.min.css') }}"  />
+
+                {# select custom #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('select2-3.4.5/select2.css') }}" type="text/css" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('select2-3.4.5/select2-bootstrap.css') }}" type="text/css" />
+
+                {# custom radio/checkbox button #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/blue.css') }}"  />
+                <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/yellow.css') }}"  />
+                <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/red.css') }}"/>
+                <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/minimal/grey.css') }}" />
+
+                
+
+                {# mes styles #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}"  />
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/buttons.css') }}"  />
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/navbar.css') }}" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/dropdown.css') }}" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('ksUserBubble/ksUserBubble.css') }}" />
+                <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}"  />
+                <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksleague/css/leagues.css') }}"  />
+                
+                <link rel="stylesheet" type="text/css" href="{{ asset('css/styles.css') }}"  />
+                
+                {# INTRO #}
+                <link rel="stylesheet" type="text/css" href="{{ asset('intro/introjs.css') }}"  />
+            
+            {# font #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/fontawesome/css/font-awesome.min.css') }}" >
+            <!--[if IE 7]><link type="text/css" rel="stylesheet" href="{{ asset('font/fontawesome/css/font-awesome-ie7.min.css') }}"><![endif]-->
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/typicons/typicons.min.css') }}" >
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/fontello/css/fontello.css') }}" >
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/fontello/css/animation.css') }}">
+            <!--[if IE 7]><link type="text/css" rel="stylesheet" href="{{ asset('font/fontello/css/fontello-ie7.css') }}"><![endif]--> 
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/handOfSean/stylesheet.css') }}">
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/fonts.css') }}">
+            
+            {% endblock %}
+
+            {% block javascripts %}
+                {# google #}
+                <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+                {# jquery #}
+                <script type="text/javascript" src="{{ asset('js/jquery-1.8.2.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('js/ui/jquery-ui-1.10.3.custom.min.js') }}"></script>
+
+                <script>
+                    $.widget.bridge('uitooltip', $.ui.tooltip);
+                </script>
+                
+                {# bootstrap #}
+                <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+
+                {# hightchart #}
+                <script type="text/javascript" src="{{ asset('plugins/Highcharts-3.0.2/js/highcharts.js') }}"></script>
+
+                {# pour les listes déroulantes avec image #}
+                <script type="text/javascript" src="{{ asset('js/jquery.ddslick.js') }}"></script>
+
+                <script type="text/javascript" src="{{ asset('bundles/ksuser/js/popover.js') }}"></script>
+
+                {# bootstrap datepicker et tipemicker #}
+                {#<script src="{{ asset('bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>#}
+                <script src="{{ asset('bootstrap-timepicker/js/bootstrap-timepicker.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('mobiscroll-2.2/js/mobiscroll-2.2.custom.min.js') }}"></script>
+
+                {# select custom #}
+                <script type="text/javascript" src="{{ asset('select2-3.4.5/select2.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('select2-3.4.5/select2_locale_fr.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('select2-3.4.5/select2.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('select2-3.4.5/functions.js') }}"></script>
+
+                {# custom radio/checkbox button #}
+                <script type="text/javascript" src="{{ asset('iCheck/jquery.icheck.min.js') }}"></script>
+
+                {# divers : encore utilisés ? #}
+                <script type="text/javascript" src="{{ asset('js/jquery.meio.mask.min.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('chosen/chosen-ced.jquery.js') }}"></script>
+
+                {# mes scripts #}
+                <script type="text/javascript" src="{{ asset('js/scripts.js') }}"></script>
+                <script type="text/javascript" src="{{ asset('bundles/ksclub/js/scripts.js') }}"></script>
+                
+                {# routing js #}
+                <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+                <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+                
+                {# INTRO #}
+                <script type="text/javascript" src="{{ asset('intro/intro.js') }}"></script>
+                
+                <script type="text/javascript">           
+                $(document).ready(function() {
+                    $("[rel=tooltip]").tooltip();
+                    
+                    /*$(function () {
+                        console.log('fade issue');
+                        var isIE = window.ActiveXObject || "ActiveXObject" in window;
+                        if (isIE) {
+                            $('.modal').removeClass('fade');
+                        }
+                    });
+                    
+                    $(function() {
+                        if ($.browser.msie) {
+                            $('.modal').removeClass('fade');
+                        }
+                    });
+                    */
+
+                    
+                    //initializePopovers( $('body'));  
+                    /*$("#test").qtip({
+                        content: {
+                            text: 'At its ', 
+                            title: {
+                                text: 'My ',
+                                //button: true
+                            }
+                        },
+
+                        show: {
+                            event: "mouseenter", // Don't specify a show event...
+                            ready: false // ... but show the tooltip when ready
+                        },
+                        hide: {
+                            //event: 'mouseleave'
+                            target : $(".qtip-tip")
+                        },
+                        style: {
+                            classes: 'qtip-shadow qtip-bootstrap'
+                        }
+                    });*/
+
+                    if( $("#searchSelectTablet").size() > 0 || $("#searchSelectDesktop").size() > 0) {
+                        var translations = {
+                            "placeholder": "{{ "menu.search-placeholder"|trans }}",
+                            "no-matches-found" : "{{ "menu.no-matches-found"|trans }}",
+                            "searching" : "{{ "menu.searching"|trans }}",
+                        };
+                        initSelect2ForResearch( $("#searchSelectTablet"), translations );
+                        initSelect2ForResearch( $("#searchSelectDesktop"), translations );
+                    }
+                    
+                    window.addEventListener('resize', function() { 
+                        resizeMainContainer();
+                    }, false);
+                    
+                    function resizeMainContainer() {
+                        //console.log("resize");
+                        //console.log(document.body.clientWidth);
+                        if (document.body.clientWidth < 753) {
+                            //console.log('visible-phone');
+                            $("#mainContainer").css('margin-top', '-20px');
+                        }
+                        else if (document.body.clientWidth > 753 && document.body.clientWidth < 964) {
+                            //console.log('visible-tablet');
+                            $("#mainContainer").css('margin-top', '-40px');
+                        }
+                        else {
+                            //console.log('visible-desktop');
+                            $("#mainContainer").css('margin-top', '70px');
+                        }
+                    }
+                    
+                    resizeMainContainer();
+                    
+                });
+                
+            </script>
+            {% endblock %}
+        </head>
+        <div id="fb-root"></div>
+        <script type="text/javascript">              
+            /*window.fbAsyncInit = function() {
+                FB.init({
+                    appId      : '106071199501870', // App ID
+                    status     : true, // check login status
+                    //channelUrl : 'http://www.keepinsport.com/',
+                    cookie     : true, // enable cookies to allow the server to access the session
+                    xfbml      : true,  // parse XFBML
+                    oauth      : true
+                });
+            };
+
+            // Load the SDK Asynchronously
+            (function(d){
+                var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement('script'); js.id = id; js.async = true;
+                js.src = "//connect.facebook.net/fr_FR/all.js";
+                ref.parentNode.insertBefore(js, ref);
+                }(document));*/
+
+        </script>
+        
+        {% set page = app.session.get('page') %}
+        
+        <body id="body" style="width:auto">
+            {% include '::infoModal.html.twig' %}
+            {% include '::confirmModal.html.twig' %}
+            
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                {% include 'KsActivityBundle:Activity:_shareActivityModal.html.twig' %}
+                {% render "KsActivityBundle:SportsmenSearch:form" %}
+            {% endif %}
+            
+            {% if page == 'newsFeed' %}
+                {% include '::_header.html.twig' %}
+            {% elseif page == 'login' or page =='register' %}
+                {% include '::_header_login.html.twig' %}
+            {% endif %}
+        
+            <div class="wrapper {% if page == 'newsFeed' %}feed{% endif %}">
+                <div id="mainContainer" class="container" style="margin-top:70px;">
+                    <div class="row-fluid">
+                        <div class="span4 visible-desktop visible-tablet">
+                            </br>
+                            {% block left_column %}{% endblock %}         
+                        </div>
+
+                        <div class="span4">
+                            </br>
+                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                {% render "KsUserBundle:User:netAffiliation_728x90" %}
+                            {% endif %}
+                            
+                            <div class="visible-phone">
+                                {% if app.session.get('isExpertMode') == '1' %}
+                                    <div class="thumbnail ksBloc">
+                                        {% render 'KsActivityBundle:Activity:menu' %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="thumbnail ksBloc">
+                                {% if page == 'newsFeed' %}
+                                    <h3 class="sportif">{{ 'menu.activities-from-my-community'|trans }}</h3>
+                                    <div class="blocHeaderSeparator"></div>
+                                {% endif %}
+                                  
+                                {% block center_column %}{% endblock %} 
+                            </div>
+                        </div>
+
+                        <div class="span4 visible-desktop visible-tablet">
+                            </br>
+                            {% render "KsActivityBundle:Activity:rightColumn_new" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% include '::_google_analytics.html.twig' with { 'google_analytics' : google_analytics } %}
+                
+        {% block bottomscripts %}
+        {% endblock %}
+    </body>
+    <div class="visible-desktop visible-tablet">
+        {% include '::_footer.html.twig' %}
+    </div>
+</html>

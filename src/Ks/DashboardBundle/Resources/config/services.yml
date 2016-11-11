@@ -1,0 +1,7 @@
+parameters:
+#    ks_dashboard.example.class: Ks\DashboardBundle\Example
+
+services:
+#    ks_dashboard.example:
+#        class: %ks_dashboard.example.class%
+#        arguments: [@service_id, "plain_value", %parameter%]

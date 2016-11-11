@@ -1,0 +1,6 @@
+Ks\NotificationBundle\Entity\Notification:
+  type: entity
+  fields:
+    readAt:
+      type: datetime
+      notnull: true

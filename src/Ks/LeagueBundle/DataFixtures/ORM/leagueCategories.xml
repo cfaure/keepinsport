@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<ks_leagueCategories_list xml:lang="fr">
+    <ks_leagueCategory>gold</ks_leagueCategory>
+    <ks_leagueCategory>silver</ks_leagueCategory>
+    <ks_leagueCategory>bronze</ks_leagueCategory>
+    <ks_leagueCategory>other</ks_leagueCategory>
+</ks_leagueCategories_list>

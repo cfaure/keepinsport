@@ -1,0 +1,58 @@
+{% extends "KsLeagueBundle::layout.html.twig" %}
+    
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('plugins/spectrum/spectrum.css') }}" />
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    
+    <script type="text/javascript" src="{{ asset('plugins/spectrum/spectrum.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/functions.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/perso.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/sky.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/index.js') }}"></script> 
+    <script src="{{ asset('bundles/kscanvasdrawing/js/cloud.js') }}"></script>
+    <script type="text/javascript">
+        var reDraw = function(c){
+        clear(c); 
+        sky.draw();
+        var persoX = 0;
+        var persoY = 0;
+        
+        perso.draw(persoX, persoY);
+        
+        
+        
+        /*var params = {};
+        params.persoX = persoX;
+        params.persoY = persoY;
+        params.drawBrassard = true;
+        accessories.draw( params );*/
+    } 
+    </script>
+{% endblock %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+    <h1 class="sportif">Test</h1>
+    <div class="blocHeaderSeparator"></div>
+    <canvas id='canvas'></canvas>
+    <br/>
+    <input id="skinTonSelector" type='color' name='skinTonSelector' />
+    <input id="hairColorSelector" type='color' name='hairColorSelector' />
+    <input id="eyesColorSelector" type='color' name='eyesColorSelector' />
+    <input id="shirtColorSelector" type='color' name='shirtColorSelector' />
+    <input id="shortColorSelector" type='color' name='shortColorSelector' />
+    <input id="shoesColor1Selector" type='color' name='shoesColor1Selector' />
+    <input id="shoesColor2Selector" type='color' name='shoesColor2Selector' />
+    <select id="faceSelector">
+        <option value="happy">:D</option>
+        <option value="normal">:)</option>
+        <option value="sad">:(</option>
+    </select>
+{% endblock %}

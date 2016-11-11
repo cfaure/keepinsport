@@ -1,0 +1,39 @@
+<div class="thumbnail" style="width:45%; float:left; margin-right:2%;">
+    {% if team.imageName is not defined or team.imageName is null %}
+        <img src="{{ asset('bundles/ksuser/images/no_avatar.png') }}" />
+    {% else %}
+        <img src="{{ asset('uploads/images/users/resize_48x48/' ~ club.imageName) }}" />
+    {% endif %}
+    <div style="text-align:center">
+        <p>{{ team.label }}</p>
+    </div>
+</div>
+
+<div class="thumbnail" style="width:45%; float:left;">
+    {{ 'team.members.label'|trans }}
+    {{ 'team.membersNumber'|trans( { "%membersNumber%" : team.players|length } ) }}
+    <a href="#">{{ 'team.members.show_all'|trans }}
+    <br />
+    {% for key, TeamHasMembers in team.members %}
+        {% if TeamHasMembers.member.user is not null %}
+            <a href="#" rel="tooltip" title="{{ TeamHasMembers.member.user.username }}">
+                {% if  TeamHasMembers.member.user.userDetail.imageName is not defined or  TeamHasMembers.member.user.userDetail.imageName is null %}
+                    <img src="{{ asset('bundles/ksuser/images/no_avatar.png') }}" />
+                {% else %}
+                    <img src="{{ asset('uploads/images/users/resize_48x48/' ~  TeamHasMembers.member.user.userDetail.imageName) }}" />
+                {% endif %}
+            </a>
+        {% else %}
+            <a href="#" rel="tooltip" title="{{ TeamHasMembers.member.firstname ~ " " ~ TeamHasMembers.member.firstname }}">
+                <img src="{{ asset('bundles/ksuser/images/no_avatar.png') }}" />
+            </a>
+        {% endif %}
+
+    {% endfor %}
+</div>
+    
+    
+<script type="text/javascript"> 
+
+</script>
+

@@ -1,0 +1,350 @@
+{% extends "KsUserBundle::layout_full.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksleague/css/leagues.css') }}" />
+    <style>
+        div.row {
+            margin-left: 0;
+        }
+        
+        #Grid .mix{
+	display: none;
+        }
+    </style>
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+     <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+     <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+     <script type="text/javascript" src="{{ asset('mixitup-1.5.3/jquery.mixitup.min.js') }}"></script>
+     <script type="text/javascript">
+
+        /*2 fonctions pour trier les ligues*/
+        /*jQuery.fn.dataTableExt.oSort['ligue-asc']  = function(x,y) {
+            var valX = parseInt($(x).find(".rank").prevObject[0].innerHTML);
+            var valY = parseInt($(y).find(".rank").prevObject[0].innerHTML);
+            return ((valX < valY) ? -1 : ((valX > valY) ?  1 : 0));
+        };
+
+        jQuery.fn.dataTableExt.oSort['ligue-desc'] = function(x,y) {
+            var valX = parseInt($(x).find(".rank").prevObject[0].innerHTML);
+            var valY = parseInt($(y).find(".rank").prevObject[0].innerHTML);
+            return ((valX < valY) ? 1 : ((valX > valY) ?  -1 : 0));
+        };*/
+         
+        
+
+        $(document).ready(function() {         
+    
+             /*$('#usersTable').dataTable( {
+                "aoColumns": [
+                    null,
+                    null,
+                    null,
+                    null,
+                    //{ "sType": 'ligue' },
+                    { "bSortable": false },
+                    { "bSortable": false },
+                    { "bSortable": false }
+                ],
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            } ); 
+            
+            $('#usersTableLight').dataTable({
+                "aoColumns": [
+                    null,
+                    { "bSortable": false }
+                ],
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });*/
+             
+            
+            $('input[type=checkbox][name=cbMyFriends]').iCheck({
+                checkboxClass: 'icheckbox_minimal-grey',
+            });
+            var ajax = null;
+            var nbUsersToLoadLimit = 21;
+            var timer, popover_parent;
+         
+            var searchUsers = function( offset, limit ) {
+                
+                searchTerms = $("#searchInput").val();
+                leaguesSelected = new Array();
+                
+                //On récupère les ligues sélectionnées
+                $.each($("#filters").find("div.btn-group[data-name=leagues]").find("button.active"), function() {
+                   leaguesSelected.push( $( this ).data('name') );
+                });
+                
+                sexesSelected = new Array();
+                
+                //On récupère les ligues sélectionnées
+                $.each($("#filters").find("div.btn-group[data-name=sexes]").find("button.active"), function() {
+                   sexesSelected.push( $( this ).data('name') );
+                });
+                
+                myFriends = $("input[type=checkbox][name=cbMyFriends]").is(":checked");
+                
+                if( ajax != null ) ajax.abort();
+                
+                $("#searchOverBloc").hide();
+                $("#searchLoader").show();
+                $("#moreResultsLoader").show();
+                $("#scrollForMoreResultsBloc").hide();
+                
+                ajax = $.post(
+                    Routing.generate('ksUser_search'), 
+                    {
+                        'terms' :   searchTerms,
+                        'leagues':  leaguesSelected,
+                        'sexes' :   sexesSelected,
+                        'myFriends' : myFriends,
+                        'offset' :  offset,
+                        'limit' :   limit
+                    },
+                    function(response) {
+                        if( response.code == 1 ) {
+                            $("#usersBloc").append(response.html);
+                            $("#scrollForMoreResultsBloc").find('.nb').html(response.users_number_not_loaded);
+                            $("#scrollForMoreResultsBloc").show();
+                                                      
+                            //Pour réinitialiser les bulles sur les avatars
+                            
+    
+                            $.each( $("#usersBloc").find(".userAvatarBloc .imageLink"), function(key, value) {
+                                $( this ).popover({
+                                    placement: 'top',
+                                    offset: 15,
+                                    trigger: 'manual',
+                                    delay: { show: 350, hide: 100 },
+                                    html: true
+                                });
+
+                                $( this ).hover(
+                                    function() {
+                                        var self = this;
+                                        clearTimeout(timer);
+                                        $('.popover').hide();
+                                        popover_parent = self
+                                        $(self).popover('show');            
+                                    }, 
+                                    function() {
+                                        var self = this;
+                                        timer = setTimeout(function(){hidePopover(self)},300);    
+                                    }
+                                );
+
+                                /*$( this ).hover(
+                                    function() {
+                                        var self = this;
+                                        clearTimeout(timer);
+                                        $('.popover').hide(); //Hide any open popovers on other elements.
+                                        popover_parent = self
+                                        $(self).popover('show');            
+                                    }, 
+                                    function() {
+                                        var self = this;
+                                        timer = setTimeout(function(){hidePopover(self)},300);    
+                                    }
+                                );*/
+                            });
+                            
+                            
+
+                            $(window).off("scroll");
+                            
+                            if( response.users_number < limit ) {
+                                $("#searchOverBloc").show();
+                                $("#scrollForMoreResultsBloc").hide();
+                            } else {
+                                /*var $scrollForMoreResultsBlocCopy = $("#scrollForMoreResultsBloc").clone();
+                                $scrollForMoreResultsBlocCopy.css('display', 'inline-block');
+                                $scrollForMoreResultsBlocCopy.addClass('scrollForMoreResultsBloc-copy');
+                                $scrollForMoreResultsBlocCopy.show();
+                                $("#usersBloc").append($scrollForMoreResultsBlocCopy);*/
+                                $(window).scroll(function()
+                                {
+                                    if($(window).scrollTop() == $(document).height() - $(window).height())
+                                    {
+                                        searchUsers( offset + limit, limit );
+                                    }
+                                });
+                            }
+                        }
+                        
+                        $("#searchLoader").hide();
+                        $("#moreResultsLoader").hide();
+                    }
+                );
+            };
+            
+            $('.popover').live({
+                mouseover: function() {
+                    clearTimeout(timer);
+                },
+                mouseleave: function() {
+                    var self = this;
+                    timer = setTimeout(function(){hidePopover(popover_parent)},300); 
+                }
+            });
+         
+             $("#searchInput").keyup( function () {
+                    $("#usersBloc").html('');
+                    searchUsers( 0, nbUsersToLoadLimit );
+                /*var filter = $(this).val();
+                
+                if (filter) {
+                    var filters = filter.toLowerCase().split(" ");
+                    $("#usersBloc").find("div.userBloc").hide();
+                    
+                    $.each( filters, function(key, value) {
+                        //Recherche parmis les pseudo
+                        $("#usersBloc").find("div.userBloc[data-username*=" + value + "]").show();
+
+                        //Recherche parmis les sports
+                        $("#usersBloc").find("div.userBloc:not(:visible)[data-sports*=" + value + "]").show();
+                        
+                        //Recherche parmis la ville
+                        $("#usersBloc").find("div.userBloc:not(:visible)[data-town*=" + value + "]").show();
+                    });
+                    
+                } else {
+                    $("#usersBloc").find("div.userBloc").show();
+                }*/
+            });
+            
+            
+            $("#filters").find("button").click(function() {
+                $("#usersBloc").html('');
+                
+                //On attend 100 millisecondes car la classe active du bouton n'est pas encore setté
+                //cf. http://stackoverflow.com/questions/13237238/twitter-bootstrap-checkbox-button-value-changed-after-click-event
+                setTimeout(function() {
+                    searchUsers( 0, nbUsersToLoadLimit );
+                },100);
+            });
+            
+            $('input[type=checkbox][name=cbMyFriends]').on('ifChanged', function(event){
+                $("#usersBloc").html('');
+                searchUsers( 0, nbUsersToLoadLimit );
+            });
+            
+            //On lance la recherche après le chargement
+            searchUsers( 0, nbUsersToLoadLimit );
+        });
+           
+    </script>
+{% endblock %}
+    
+{% block content %}
+    <h1 class="friends">{{ 'sportsmen.list'|trans }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    
+    {#<div>
+        <a class="btn btn-friends" href="{{ path('ksFriends_invite') }}">
+            <i class="icon-envelope icon-white"></i> Inviter un sportif
+        </a>
+        <a class="btn btn-friends" href="{{ path('ks_user_communityDynamicList', {'userId' : app.user.id}) }}">
+            <i class="icon-list icon-white"></i> Mes amis sportifs
+        </a>
+    </div>
+    <br/>#}
+
+    {#% render 'KsLeagueBundle:League:sportifsGraph' %#}
+    {#<br/>
+    <div>
+        {% include 'KsUserBundle:User:_usersTable.html.twig' with { 'users' : users } %}
+    </div>#}
+    {#<img id="filterLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" style="display:none">
+    <div class="controls">	
+    <ul>
+        <li class="btn btn-large filter active" data-filter="all" >Tous</li>
+        <li class="btn btn-large filter" data-filter="gold" ><span class="icon-trophy icon-2x goldStars"></span></li>
+        <li class="btn btn-large filter" data-filter="silver" ><span class="icon-trophy icon-2x silverStars"></span></li>
+        <li class="btn btn-large filter" data-filter="bronze" ><span class="icon-trophy icon-2x bronzeStars"></span></li>
+        <li class="btn filter" data-filter="nutella" > <img src="{{ asset('bundles/ksleague/img/nutella.png') }}" alt="Chocolate" rel="tooltip" title="Ligue nutella"/></li>
+    </ul>
+    </div>
+
+    <div class="controls">	
+    <ul>
+        <li class="btn sort" data-sort="data-username" data-order="desc">Nom <span class="icon-chevron-sign-down"></span></li>
+        <li class="btn sort" data-sort="data-username" data-order="asc">Nom <span class="icon-chevron-sign-up"></span></li>
+        <li class="btn sort" data-sort="data-league" data-order="desc">Ligue <span class="icon-chevron-sign-down"></span></li>
+        <li class="btn sort" data-sort="data-league" data-order="asc">Ligue <span class="icon-chevron-sign-up"></span></li>
+        <li class="btn sort" data-sort="random"><span class="icon-random"></span></li>
+    </ul>
+    </div>#}
+            
+    <!-- FILTER CONTROLS -->
+			
+			
+    {#<ul id="Grid">
+    {% for user in users %}
+        
+        <li class="mix {{ user.leagueCategoryLabel }}" data-username="{{ user.username }}" data-league-category="{{ user.leagueCategoryLabel }}" data-league="{{ user.leagueLevelRank }}">
+            {% include 'KsUserBundle:User:_userImage_league_medium.html.twig' with { 
+                'user_id' : user.id, 
+                'user_username' : user.username, 
+                'user_imageName': user.imageName, 
+                'user_league_category' : user.leagueCategoryLabel, 
+                'user_league_stars' : user.leagueLevelStarNumber
+            } %}
+        </li>
+       
+    {% endfor %}
+
+    </ul>#}
+    
+    <div class="input-prepend pull-left">
+        <span class="add-on"><span class="icon-search"></span></span>
+        <input id="searchInput" type="text"/>
+    </div>
+    
+ 
+    <div id="filters" class="btn-toolbar pull-left" style="margin:0 5px">
+        <div class="btn-group" data-name="sexes" data-toggle="buttons-checkbox" >
+            <button type class="btn" data-name="male"><span class="icon-male" style="color:blue"></span></button>
+            <button class="btn" data-name="female"><span class="icon-female" style="color:#ec49b2"></span></button>
+        </div>
+
+        <div class="btn-group" data-name="leagues" data-toggle="buttons-checkbox">
+            <button class="btn" data-name="gold"><span class="icon-trophy goldStars"></span></button>
+            <button class="btn" data-name="silver"><span class="icon-trophy silverStars"></span></button>
+            <button class="btn" data-name="bronze"><span class="icon-trophy bronzeStars"></span></button>
+        </div>
+    </div>
+    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <label class="pull-left" style="margin-top:5px">
+        <span class="pull-left" style="margin-right:5px"><input type="checkbox" name="cbMyFriends"></span>
+        <span class="pull-left" >Mes amis</span>
+    </label>
+    {% endif %}
+    
+     <img id="searchLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" class="pull-left" style="margin-left:5px;margin-top:7px;display:none">
+    
+    <br clear="all"/>
+    <div id="usersBloc">
+        {#% include 'KsUserBundle:User:_users_grid.html.twig' with { 'users' : users } %#}
+    </div>
+
+    {#<div id="scrollForMoreResultsBloc" style="display:none;height:120px;margin: 0 5px 0 5px;border: 3px solid black;background :grey;background-image:url('{{ asset('img/scroll.png') }}');background-size:100%;background-repeat:no-repeat;background-position:center" alt="scroll" class="userAvatarBloc userAvatarMediumBloc" id="scrollForMoreResultsBloc">
+        <div style="font-size:18px;color:white;font-weight:bold;margin-top:15px">Plus d'utilisateurs en scrollant.</div>
+    </div>#}
+    <br clear="all"/>
+    <img id="moreResultsLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none">
+    <div id="scrollForMoreResultsBloc"class="alert"  style="display:none">
+        <center>Voir plus de sportifs  (<span class="nb"></span> restants) <img style="height:20px" src="{{ asset('img/scroll_brown.png') }}" alt="scroll"></center>
+    </div>
+    <div id="searchOverBloc" class="alert alert-info"  style="display:none">
+        <center>Tous les sportifs ont été chargés.</center>
+    </div>
+
+{% endblock %}        

@@ -1,0 +1,92 @@
+<form id="fCommentForm_{{ activityId }}" class="commentForm" action="{{ path('ksActivity_publishComment', { activityId : activityId }) }}" method="post" {{ form_enctype(form) }} novalidate="novalidate">
+    
+    {{ form_widget(form.comment, { attr: {rows: 2, class: "commentTextarea input-block-level", style: "height: 36px; resize: none;", placeholder:"Ecrire un commentaire"} }) }}
+    
+    {{ form_rest(form) }}
+
+    <div class="pull-right">
+        <img class="publishCommentLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+        <a id="bPublishComment_{{ activityId }}" activityId="{{ activityId }}" class="btn btn-mini btn-link link-sportif">
+            <span class="icon-pencil"></span> {{ 'actions.publish'|trans }}
+        </a>
+        
+    </div>
+    <br class="clearfix"/>
+    <div id="errors_comment_{{ activityId }}" class="error_list"></div>
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#errors_comment_{{ activityId }}").hide();
+        //$publishLoader = $("#publishLoader");
+        //$publishLoader.hide();
+        
+        var form = $("#fCommentForm_{{ activityId }}");
+        var commentTextarea = form.find(".commentTextarea");
+        commentTextarea.focus();
+        /*commentTextarea.keypress(function(e){
+            if( ! typeof commentTextarea.attr('disabled') !== 'undefined' ) {
+                if(e.which == 13)
+                {
+                    commentTextarea.attr('disabled', 'disabled');
+                    $('#fCommentForm_{{ activityId }}').submit();
+                }
+            }
+        });*/
+        //commentTextarea.elastic();
+    });
+    
+    
+    
+    $("#bPublishComment_{{ activityId }}").click(function() {
+        if( ! $( this ).hasClass("disabled") ) {
+            $('#fCommentForm_{{ activityId }}').submit();
+        }
+    });
+    
+    $('#fCommentForm_{{ activityId }}').unbind();
+    $('#fCommentForm_{{ activityId }}').submit(function() {
+        $("#bPublishComment_{{ activityId }}").addClass("disabled");
+        $("#errors_comment_{{ activityId }}").hide();
+        $("#errors_comment_{{ activityId }}").html("");
+        $(this).find("img.publishCommentLoader").show();
+       
+        $commentsBloc = $("#activityBloc-{{ activityId }}").find(".comments-bloc");
+        
+        form = $(this);
+        $.post(form.attr('action'), form.serialize(), function(response) {
+            if ( response.publishResponse == 1 ) {
+                //Si c'est le premier commentaire, le bloc était caché
+                if( ! $commentsBloc.is(":visible") ) {
+                    $commentsBloc.show();
+                } else {
+                    $commentsBloc.append("<hr/>");
+                }
+                
+                $commentsBloc.append(response.commentHtml);
+                
+                form.remove();
+                //refreshTimeline();
+                if( $("#subscriptionBloc-{{ activityId }}").size() > 0 ) {
+                    $("#subscriptionBloc-{{ activityId }}").html(response.subscriptionHtml);
+                }
+            } else {
+                $.each(response.errors, function (fieldName, errors) {
+                    var ul = $("<ul>");
+                    $.each(errors, function (key, error) {
+                        var li = $("<li>").html(error);
+                        ul.append(li);
+                    });
+
+                    $("#errors_comment_{{ activityId }}").append(ul);
+                    $("#errors_comment_{{ activityId }}").show();
+                });
+            }
+            $("#bPublishComment_{{ activityId }}").removeClass("disabled");
+            $(this).find("img.publishCommentLoader").hide();
+        }).fail(function(jqXHR, textStatus) {
+            console.log("error " + textStatus);
+        });
+        return false;
+    });
+</script>

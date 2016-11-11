@@ -1,0 +1,13 @@
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+    <a class="btn btn-mini btn-link link-sportif" rel="tooltip" rel2="downloadTrigger-{{ activity.idFromService }}" title="{{ "actions.downloadTCX"|trans }}" href="{{ path('ksActivity_downloadTCXFromActivity', {'idFromService': activity.idFromService, 'userId' : activity.user_id}) }}">
+        <span class="glyphicon glyphicon-download-alt"></span>
+    </a>
+{% else %}
+    <span class="btn btn-mini btn-link link-sportif" rel="tooltip" title="{{ "actions.downloadTCX"|trans }}" onclick="showInformation('{{ 'actions.login-required'|trans }}');">
+        <span class="glyphicon glyphicon-download-alt"></span>
+    </span>
+{% endif %}
+
+<script type="text/javascript">
+    attachDownloadEvent($('a[rel2="downloadTrigger-{{ activity.idFromService }}"]'));
+</script>

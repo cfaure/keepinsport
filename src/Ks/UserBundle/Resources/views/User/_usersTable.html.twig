@@ -1,0 +1,180 @@
+<div class="visible-desktop visible-tablet">
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="usersTable">
+        <thead>
+            <tr>
+                <th>{{ 'titles.sportman'|trans }}</th>
+                <th>{{ 'titles.firstname'|trans }}</th>
+                <th>{{ 'titles.lastname'|trans }}</th>
+                <th>{{ 'titles.town'|trans }}</th>            
+                {% if club is not defined and club is null %}
+                    <th>{{ 'titles.clubs'|trans }}</th>
+                    <th>{{ 'titles.sports'|trans }}</th>
+                {% endif %}
+                {% if club is defined and club is not null %}
+                    <th>{{ 'titles.package'|trans }}</th>
+                {% endif %}
+                <th>{{ 'titles.actions'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                        'user_id' : user.id, 
+                        'user_username' : user.username, 
+                        'user_imageName': user.imageName, 
+                        'user_league_category' : user.leagueCategoryLabel, 
+                        'user_league_stars' : user.leagueLevelStarNumber
+                    } %}
+                </td>
+                <td>
+                    {% if user.firstName is not null %}
+                        {{ user.firstName }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.lastName is not null %}
+                        {{ user.lastName }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ user.town }}</td>
+                {% if club is not defined and club is null %}
+                    <td>
+                        {% set clubs = user.clubs|split('|') %}
+                        {% if clubs|length > 0 and clubs[0] != '' %}
+                        <ul>
+                        {% for clubLabel in clubs %}
+                            <li>{{ clubLabel }}</li>
+                        {% endfor %}
+                        </ul>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {#
+                        {% set sports = user.sports|split('|') %}
+                        {% if sports|length > 0 and sports[0] != '' %}
+                            <ul>
+                            {% for sportLabel in sports %}
+                                    <li>{{ sportLabel }}</li>
+                                <span rel="tooltip" title="{{ codeSport }}" class="pull-left">
+                                    {% if asset('img/sports/' ~ codeSport ~ '.png')|issetImg %}
+                                        <img width="25px" src="{{ asset('img/sports/' ~ codeSport ~ '.png') }}"/>
+                                    {% else %}
+                                        <img width="25px" src="{{ asset('img/sports/running.png') }}"/>
+                                    {% endif %}
+                                </span>
+                            {% endfor %}
+                            </ul>
+                        {% else %}
+                            -
+                        {% endif %}
+                        #}
+                    </td>
+                {% endif %}
+                {% if club is defined and club is not null %}
+                    <td>
+                        {{ user.remainingSessions }}
+                    </td>
+                    <td width="120">
+                        <a class="btn btn-mini btn-friends" rel="tooltip" title="Voir le profil public de {{ user.username }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                            <i class="icon-search icon-white"></i>
+                        </a>
+                        {% if user.id != 1 and user.id != app.user.id %}
+                            {% if not user.areFriends and not user.isAwaitingRequestFriendResponse  and not user.mustGiveRequestFriendResponse  %}
+                                <a class="btn btn-mini btn-friends" rel="tooltip" title="Rentrer en relation avec {{ user.username }}" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': user.id }) }}">
+                                    <i class="icon-user icon-white"></i> 
+                                </a>
+                            {% elseif user.isAwaitingRequestFriendResponse %}
+                                <a class="btn btn-mini btn-friends" rel="tooltip" title="Annuler la demande de mise en relation avec {{ user.username }}" href="{{ path('ks_user_Cancel_the_friend_request', { 'user2Id': user.id }) }}">
+                                    <i class="icon-ban-circle icon-white"></i> 
+                                </a>
+                            {% elseif user.mustGiveRequestFriendResponse %} 
+                                <a class="btn btn-mini btn-friends" rel="tooltip" title="Accepter la mise en relation avec {{ user.username }}" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': user.id }) }}">
+                                    <i class="icon-ok icon-white"></i> 
+                                </a>
+                                <a class="btn btn-mini btn-friends" rel="tooltip" title="Refuser la mise en relation avec {{ user.username }}" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': user.id }) }}">
+                                    <i class="icon-remove icon-white"></i> 
+                                </a>
+                            {% else %}
+                                <a class="btn btn-mini btn-danger" rel="tooltip" title="Supprimer la relation avec {{ user.username }}" href="{{ path('ks_user_Revoke_a_friend', { 'user2Id': user.id }) }}">
+                                    <i class="icon-remove icon-white"></i> 
+                                </a>
+                            {% endif %}  
+
+                            {% if club is defined and club|is_manager( app.user.id ) and not club|is_manager( user.id ) %}
+                                <a class="btn btn-mini btn-friends" rel="tooltip" title="Nommer manager du club" href="{{ path('ksClubAdmin_addUserAsManager', { 'clubId' : club.id, 'userId': user.id }) }}">
+                                    <i class="icon-cogs"></i> 
+                                </a>
+                                <a id="packageBtn" class="btn btn-mini btn-friends" rel="tooltip" title="Gérer les forfaits" href="javascript:editPackage({{club.id}}, {{user.id }});">
+                                    <i class="glyphicon glyphicon-plus"></i> 
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+<div class="visible-phone">
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="usersTableLight">
+        <thead>
+            <tr>
+                <th>Utilisateur</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>
+                    {% include 'KsUserBundle:User:_userImage_mini.html.twig' with { 'user_id' : user.id, 'user_imageName' : user.imageName }%}
+                    {{ user.username }}
+                </td>
+                <td>
+                    <a class="btn btn-mini btn-friends" rel="tooltip" title="Voir le profil public de {{ user.username }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                        <i class="icon-search icon-white"></i>
+                    </a>
+                    {% if not user.areFriends and not user.isAwaitingRequestFriendResponse  and not user.mustGiveRequestFriendResponse %}
+                        <a class="btn btn-mini btn-friends" rel="tooltip" title="Rentrer en relation avec {{ user.username }}" href="{{ path('ks_user_Ask_a_friend', { 'user2Id': user.id }) }}">
+                            <i class="glyphicon glyphicon-plus icon-white"></i> 
+                        </a>
+                    {% elseif user.mustGiveRequestFriendResponse %} 
+                        <a class="btn btn-mini btn-friends" rel="tooltip" title="Accepter la mise en relation avec {{ user.username }}" href="{{ path('ks_user_Accept_a_friend_request', { 'user2Id': user.id }) }}">
+                            <i class="icon-ok icon-white"></i> 
+                        </a>
+                        <a class="btn btn-mini btn-friends" rel="tooltip" title="Refuser la mise en relation avec {{ user.username }}" href="{{ path('ks_user_Refuse_a_friend_request', { 'user2Id': user.id }) }}">
+                            <i class="icon-remove icon-white"></i> 
+                        </a>
+                    {% elseif user.isAwaitingRequestFriendResponse %}
+                        <a class="btn btn-mini btn-friends" rel="tooltip" title="Annuler la demande de mise en relation avec {{ user.username }}" href="{{ path('ks_user_Cancel_the_friend_request', { 'user2Id': user.id }) }}">
+                            <i class="icon-ban-circle icon-white"></i> 
+                        </a>
+                    {% else %}
+                        <a class="btn btn-mini btn-danger" rel="tooltip" title="Supprimer la relation avec {{ user.username }}" href="{{ path('ks_user_Revoke_a_friend', { 'user2Id': user.id }) }}">
+                            <i class="icon-remove icon-white"></i> 
+                        </a>
+                    {% endif %}    
+                        
+                    {% if club is defined and club|is_manager( app.user.id ) and not club|is_manager( user.id ) %}
+                        <a class="btn btn-mini btn-friends" rel="tooltip" title="Donner les droits d'administration" href="{{ path('ksClubAdmin_addUserAsManager', { 'clubId' : club.id, 'userId': user.id }) }}">
+                            <i class="icon-cogs"></i> 
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+</div>     
+

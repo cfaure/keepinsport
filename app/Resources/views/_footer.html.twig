@@ -1,0 +1,59 @@
+{#<br clear="all"/>
+
+
+<div class="row-fluid">
+<ul id="reseaux" class="list-inline">
+  <li><a target="_blank" href="https://www.facebook.com/pages/Keepinsport/303227623023110"><img src="{{ asset('img/new/reseau1.png') }}"></a></li>
+  <li><a target="_blank" href="https://twitter.com/Keepinsport"><img src="{{ asset('img/new/reseau2.png') }}"></a></li>
+  <li><a target="_blank" href="#"><img src="{{ asset('img/new/reseau3.png') }}"></a></li>
+  <li><a target="_blank" href="#"><img src="{{ asset('img/new/reseau4.png') }}"></a></li>
+  <li><a target="_blank" href="#"><img src="{{ asset('img/new/reseau5.png') }}"></a></li>
+    <li><a target="_blank" href="#"><img src="{{ asset('img/new/reseau6.png') }}"></a></li>
+</ul>
+    <div id="choisir_langue" class="span3">
+        <a href="{{ path('ks_choisir_langue', {'langue' : 'fr'}) }}"><img src="{{ asset('img/flags/fr.png') }}" title="fr" alt="fr"/></a> |
+        <a href="{{ path('ks_choisir_langue', {'langue' : 'en'}) }}"><img src="{{ asset('img/flags/en.png') }}" title="en" alt="en"/></a>
+    </div>
+    <div class="span6 generalConditionLinksBloc">
+        <a href="{{ path('ks_legal_mentions') }}">Mentions légales</a> | 
+        <a href="{{ path('ks_general_conditions') }}">Conditions générales</a>
+    </div>
+    <div class="span3 pull-right" style="text-align:right;color:white">Keepinsport © 2013</div>
+</div>#}
+
+<footer class="visible-desktop visible-tablet" >
+    <div class="container" style="bottom:0px">
+        <div class="row-fluid">
+            <div class="span3">
+                <div class="pull-left">
+                    <h4>{{ 'menu.language'|trans }}</h4>
+                    <div class="blocHeaderSeparator"></div>{# app.getSession().getLocale() #}
+                    <a href="{{ path('ks_choisir_langue', {'locale' : 'fr'}) }}"><img src="{{ asset('img/flags/fr.png') }}" title="fr" alt="fr"/></a>
+                    <a href="{{ path('ks_choisir_langue', {'locale' : 'en'}) }}"><img src="{{ asset('img/flags/en.png') }}" title="en" alt="en"/></a>
+                    <a href="{{ path('ks_choisir_langue', {'locale' : 'ru'}) }}"><img src="{{ asset('img/flags/run.png') }}" title="run" alt="run"/></a>
+                </div>
+            </div>    
+            <div id="step5" class="span9">
+                {% render 'KsUserBundle:User:feedbackForm' %}
+            </div>    
+            
+        </div>
+       
+    </div>
+<div class="footer-black">
+
+<div class="row">
+<div class="container">
+  <div class="span8">Keepinsport © 2014. All rights reserved.
+            <a href="{{ path('ks_legal_mentions') }}">
+                Mentions légales
+            </a> |
+            <a href="{{ path('ks_general_conditions') }}">
+                Conditions générales
+            </a></div>
+  <div class="span4"><img src="{{ asset('img/new/logos-paiement.png') }}"></div>
+  </div><!--/.container-->
+</div>
+
+</div>
+</footer>

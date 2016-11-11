@@ -1,0 +1,126 @@
+{% extends "KsActivityBundle::layout.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {#<link rel="stylesheet" type="text/css" href="{{ asset('js/timeline/timeline.css') }}" />#}
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    {#<script type="text/javascript" src="{{ asset('js/timeline/jquery.masonry.min.js') }}"></script>#}
+    <script type="text/javascript">
+        
+        $(document).ready(function() {
+            $('#blocArticle_label').html("");
+            $('#blocArticle_content').html("");
+            
+            $("#bgetSimilaryArticles").click(function() {
+                articleLabel = $("#ks_activitybundle_articletype_label").val();
+                $.post($(this).attr("href"), {"articleLabel" : articleLabel}, function(response) {
+                    if ( response.response == 1 ) {
+                        //$("#fArticleForm").remove();
+
+                        //document.location.href=Routing.generate('ksArticle_edit', { "articleId" :  response.id  })
+                        $('#blocArticles_searchResultList').html(response.articleListHtml);
+                        //$('#blocArticle_content').html(response.contentUpdateFormHtml);
+
+                    } else {
+
+                    }
+                }).error(function(xqr, error) {
+                    console.log("error " + error);
+                });
+
+                return false;
+            });
+            
+            $("#bPublishArticle").click(function() {
+                articleLabel = $("#ks_activitybundle_articletype_label").val();
+                if( articleLabel == "" ) {
+                    showInformation("Le titre de l'article ne doit pas être vide");
+                } else {
+                    $('#fArticleForm').submit();
+                }
+            });
+            
+            $('#fArticleForm').submit(function() {
+                $(".error_list").remove();
+                form = $(this);
+                
+                categoryId = $("#selectCategory option:selected").val();
+
+                $.post(
+                    //form.attr('action'), 
+                    Routing.generate('ksArticle_create', { "categoryId" : categoryId }),
+                    form.serialize(), 
+                    function(response) {
+                    if ( response.publishResponse == 1 ) {
+                        $("#fArticleForm").remove();
+
+                        document.location.href=Routing.generate('ksArticle_edit', { "articleId" :  response.article.id  })
+                        //$('#blocArticle_label').html(response.label);
+                        //$('#blocArticle_content').html(response.contentUpdateFormHtml);
+
+                    } else {
+                        $.each(response.errors, function (fieldName, errors) {
+                            var labelValue = $("label[for*='" + fieldName + "']").html();
+                            var div = $("<div>").addClass("error_list");
+                            var p = $("<p>", {css: {"text-decoration":"underline"}}).html("Erreurs sur le champ " + labelValue + ":");
+                            var ul = $("<ul>");
+                            $.each(errors, function (key, error) {
+                                var li = $("<li>").html(error);
+                                ul.append(li);
+                            });
+
+                            div.append(p);
+                            div.append(ul);
+                            $('[name*="' + fieldName + '"]').parent().append(div);
+                        });
+                    }
+                }).error(function(xqr, error) {
+                    console.log("error " + error);
+                });
+                return false;
+            }); 
+        });
+    </script>
+{% endblock %}
+    
+{% block activity_content %}
+
+    <form id="fArticleForm"  method="post" {{ form_enctype(articleForm) }}>
+        <div class="input-prepend input-append">
+            <span class="add-on" style="margin-right:-5px">Catégorie du nouvel article</span>
+            <select id="selectCategory" style="margin-bottom:0">
+                {% for category in categories %}
+                    <option value="{{ category.id }}" >{{ category.label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+            
+        <div class="input-prepend">
+            <span class="add-on" style="margin-right:-5px">Titre du nouvel article</span>
+            {{ form_widget(articleForm.label, { attr: { class:"articleLabel", style: "margin-bottom:0"} }) }}
+        </div>
+            
+        {{ form_rest(articleForm) }}  
+            
+        <a id="bPublishArticle" class="btn btn-info" >{{ 'articles.create'|trans }}</a> 
+        
+        <br/>
+        <br/>
+        <a id="bgetSimilaryArticles" class="btn btn-primary" href="{{ path('ksArticle_getSimilaryArticles', {}) }}">Liste de tous les articles</a>
+        
+        
+    </form>
+    
+    <div id="blocArticles_searchResultList"></div>
+    
+    <a class="btn" href="{{ path('ksArticle_list', {}) }}">{{ 'articles.list.label'|trans }}</a>
+    
+
+{% endblock %}

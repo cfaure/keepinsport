@@ -1,0 +1,28 @@
+{% if winner is defined and winner %}
+    {% set winnerClass = "userWinner" %}
+{% else %}
+    {% set winnerClass = "" %}
+{% endif %}
+{% if user is defined and user is not null %}
+    <div class="tournament_userImage" userstyle="width:30px;display:inline-block">
+        {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+            'user_id' : user.id, 
+            'user_username' : user.username, 
+            'user_imageName': user.imageName, 
+            'user_league_category' : user.leagueCategoryLabel, 
+            'user_league_stars' : user.leagueLevelStarNumber
+        } %}
+    </div>
+    
+    <span class="tournament_username {{ winnerClass }} visible-desktop">
+        {{ user.username }}
+    </span> 
+{% elseif username is not null and username != "" %}
+    <span class="tournament_username {{ winnerClass }} visible-desktop">
+        {{ username }}
+    </span>
+{% else %}
+    <span class="tournament_username">
+        -
+    </span>
+{% endif %}

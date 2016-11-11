@@ -1,0 +1,244 @@
+{% set topLeftCornerImg = "" %}
+{% set leftTriangleClass = "" %}
+
+{% if activity.user_id is not null and ( is_granted("IS_AUTHENTICATED_REMEMBERED") and activity.user_id == app.user.id ) %}
+    {% set fromUserType = "sportif" %}
+    {% set leftTriangleClass = "leftSportifTriangle" %}
+{% elseif activity.user_id is not null %}
+    {% set fromUserType = "friends" %}
+    {% set leftTriangleClass = "leftFriendsTriangle" %}
+{% elseif activity.club_id is not null %}
+    {% set fromUserType = "clubs" %}
+    {% set leftTriangleClass = "leftClubsTriangle" %}
+{% endif %}
+{% if activity.type is not null and (activity.type == 'abstract_activity' or activity.type == 'article') %}
+    {% set fromUserType = "wikisport" %}
+    {% set leftTriangleClass = "leftWikisportTriangle" %}
+{% endif %}
+
+{% if activity.type == "sportsmen_search" %}
+    {% set topLeftCornerImg = asset('img/topLeftCorner/friends/groups.png') %}
+    {% set leftTriangleClass = "leftFriendsTriangle" %}
+{% elseif activity.sport_codeSport is defined and activity.sport_codeSport is not null and activity.type != 'article' %}
+    {% if asset('V2/images/sports/' ~ activity.sport_codeSport ~ '.png')|issetImg %}
+        {% set topLeftCornerImg = asset('img/topLeftCorner/' ~ fromUserType ~ '/' ~ activity.sport_codeSport ~ '.png') %}
+    {% else %}
+        {% set topLeftCornerImg = asset('img/topLeftCorner/' ~ fromUserType ~ '/running.png') %}
+    {% endif %}
+{% elseif activity.type == "status" %}
+    {% set topLeftCornerImg = asset('img/topLeftCorner/' ~ fromUserType ~ '/status.png') %}
+{% elseif activity.type == "photo" or activity.type == "photo_album" %}
+    {% set topLeftCornerImg = asset('img/topLeftCorner/' ~ fromUserType ~ '/photo.png') %}
+{% elseif activity.type == "link"  %}
+    {% set topLeftCornerImg = asset('img/topLeftCorner/' ~ fromUserType ~ '/link.png') %}
+{% elseif activity.type == "video"  %}
+    {% set topLeftCornerImg = asset('img/topLeftCorner/' ~ fromUserType ~ '/video.png') %}
+{% elseif activity.type == "abstract_activity" %}
+    {% if connectedActivity is not null and connectedActivity.type == "article" %}
+        {% set topLeftCornerImg = asset('img/topLeftCorner/wikisport/article.png') %}
+        {% set leftTriangleClass = "leftWikisportTriangle" %}
+    {% elseif activity.notificationType_name == "eventParticipation" or activity.notificationType_name == "eventCreation" %}
+        {% if activity.linkedEvent_type is not null %}
+            {% if activity.linkedEvent_club_id is not null %}
+                {% set topLeftCornerImg = asset('img/topLeftCorner/clubs/'~ activity.linkedEvent_type ~'.png') %}
+                {% set leftTriangleClass = "leftClubsTriangle" %}
+            {% else %}
+                {% set topLeftCornerImg = asset('img/topLeftCorner/wikisport/'~ activity.linkedEvent_type ~'.png') %}
+                {% set leftTriangleClass = "leftWikisportTriangle" %}
+            {% endif %}
+        {% else %}
+            {% if activity.linkedEvent_club_id is not null %}
+                {% set topLeftCornerImg = asset('img/topLeftCorner/clubs/empty.png') %}
+                 {% set leftTriangleClass = "leftClubsTriangle" %}
+            {% else %}
+                {% set topLeftCornerImg = asset('img/topLeftCorner/wikisport/empty.png') %}
+                {% set leftTriangleClass = "leftWikisportTriangle" %}
+            {% endif %}
+        {% endif %}
+    {% elseif activity.notificationType_name == "tournament" %}
+        {% set topLeftCornerImg = asset('img/topLeftCorner/clubs/tournament.png') %}
+    {% elseif activity.notificationType_name == "share" %}
+        {% set topLeftCornerImg = asset('img/topLeftCorner/' ~ fromUserType ~ '/share.png') %}
+    {% endif %}
+{% elseif activity.type == 'article' and isShared is defined and isShared %}
+    {% set topLeftCornerImg = "" %}
+{% else %}
+    {% set topLeftCornerImg = asset('img/topLeftCorner/wikisport/article.png') %}
+{% endif %}
+
+{% set margin = "" %}
+{% if isShared is defined and isShared %}
+    {% set leftTriangleClass = "" %}
+{% else %}
+    {% set margin = "margin-left:12px;" %}
+{% endif %}
+<!--div class="leftTriangle {{ leftTriangleClass }} visible-desktop visible-tablet" style=""></div-->
+{% if leftTriangle is defined and leftTriangle %} 
+    <div class="activityBloc contentBloc" style="background-image: url('{{ topLeftCornerImg }}'); background-repeat: no-repeat;{{ margin }}">
+{% else %}
+    <div class="activityBloc contentBloc" style="{{ margin }}">
+{% endif %}
+    {% if activity.type == 'article' and isShared is defined and isShared %}
+        {# Pas de headline dans le cas d'une collaboration à un article #}
+    {% else %}
+        {% include 'KsActivityBundle:Activity:_activityHeadline.html.twig' %}
+        {% if fullscreen is defined and fullscreen == 'true'%}
+            <a class="btn btn-{{ fromUserType }} btn-small pull-right" onclick="history.go(-1);" rel="tooltip" title="{{ "actions.back"|trans }}">
+                <i class="icon-backward icon-white"></i>
+            </a>
+        {% else %}
+            {% if activity.type == 'abstract_activity' and connectedActivity is not null %}
+                {% set href = path('ksWikisport_show', {'id' : connectedActivity.id }) %}
+            {% else %}
+                {% set href = path('ksActivity_showActivity', {'activityId' : activity.id, 'fullscreen' : 'true' }) %}
+            {% endif %}
+            <div class="btn-activities">
+                <a class="btn btn-{{ fromUserType }} btn-small pull-right" href="{{ href }}" rel="tooltip" title="{{ "actions.show"|trans }}">
+                    <i class="icon-search icon-white"></i>
+                </a>
+            </div>
+        {% endif %}
+        <p style="font-size: 0.8em">
+            <span>
+                {% if activity.isPublic %}
+                    <span rel="tooltip" title="Visibilité : Public">
+                        <span class="icon-globe"></span>
+                    </span>
+                {% else %}
+                    <span rel="tooltip" title="Visibilité : Ma communauté">
+                        <span class="icon-group"></span>
+                    </span>
+                {% endif %}
+            </span>
+            {% if activity.place_id is not null %}
+                <span>
+                    {% if activity.place_town_label is not null %}
+                        {{ "activity.near"|trans }} {{ activity.place_town_label }},
+                    {% elseif activity.place_region_label is not null %}
+                        {{ "activity.in"|trans }} {{ activity.place_region_label }}
+                        {% if activity.place_region_label is not null %}
+                            ({{ activity.place_region_label }})
+                        {% endif %},
+                    {% elseif activity.place_fullAdress is not null %}
+                        {{ "activity.near"|trans }} {{ activity.place_fullAdress }},
+                    {% endif %}
+                </span>
+            {% endif %}
+            <span>
+                {% set createdAgo = activity.issuedAt|created_ago_str %}
+                {{ createdAgo['pretty'] }}
+                {% if createdAgo['prettyUnit'] != '' %}
+                    {{ ' ' ~ ('time.' ~ createdAgo['prettyUnit'])|trans }}
+                {% endif %}
+            </span>
+            <span>
+                {% if activity.source is defined and activity.source is not null %}
+                    {% if activity.source == "runkeeper" %}
+                        , {{ "activity.from"|trans }} Runkeeper
+                    {% elseif activity.source == "nikeplus" %}
+                        , {{ "activity.from"|trans }} Nike+
+                    {% elseif activity.source == "gpx" %}
+                        , {{ "activity.from"|trans }} {{ "activity.a-gpx-file"|trans }}
+                    {% elseif activity.source == "ffa" %}
+                        , {{ "activity.from"|trans }} FFA
+                    {% elseif activity.source == "suunto" %}
+                        , {{ "activity.from"|trans }} Suunto
+                    {% else %}
+                        , {{ "activity.from"|trans }} {{ activity.source }}
+                    {% endif %}
+                {% else %}
+                    , {{ "activity.from"|trans }} Keepinsport
+                {% endif %}
+            </span>
+            {% if activity.club_id is not null %}
+                <span>
+                , club 
+                <a href="{{ path('ksClub_public_profile', { 'clubId' : activity.club_id }) }}">
+                    {{ activity.club_name }}
+                </a>
+                </span>
+            {% endif %}
+            {% if activity.linkedEvent_id is not null and activity.linkedEvent_type == 'event_coaching' %}
+                <span>
+                </br>{{ 'coaching.linked-to'|trans }} : <a href="{{ path('ksWikisport_show', { 'id' : activity.wikiPlan_id } ) }}"> {{ activity.coachingPlan }} </a>
+                </span>
+            {% endif %}
+            {% if activity.tournament_id is not null %}
+                <span>
+                , tournoi 
+                <a href="{{ path('ksTournament_show', { 'id' : activity.tournament_id }) }}">
+                    {{ activity.tournament_title != '' ? activity.tournament_title : activity.tournament_id }}
+                </a>
+                </span>
+            {% endif %}
+            
+        </p>
+    {% endif %}
+
+    <div class="row-fluid">
+    
+    {% if connectedActivity is defined and connectedActivity is not null %}
+        {% if activity.label|length > 0 %}
+            <p>{{ activity.label|nl2br }}</p>
+        {% endif %}
+        {#% if activity.description|length > 0 %}
+            <p class="description">{{ activity.description|nl2br }}</p>
+        {% endif %#}
+        {% include 'KsActivityBundle:Activity:_activityBloc.html.twig' with {activity: connectedActivity, isShared: true, connectedActivity: null } %}
+        <br style="clear:both" />
+        {% if isShared is not defined %}
+            {% if ( mail is not defined or ( mail is defined and not mail ) )%} 
+                <div class="activityActionsBloc visible-desktop">
+                    {% include 'KsActivityBundle:Activity:_activityActions.html.twig' with {'isLight' : false }%}
+                </div>
+                <div class="visible-phone visible-tablet">
+                    {% include 'KsActivityBundle:Activity:_activityActions.html.twig' with {'isLight' : true }%}
+                </div>
+
+                <br clear="all"/>
+            {% endif %}
+            {% include 'KsActivityBundle:Comment:_commentsBloc.html.twig' %}
+        {% endif %}
+        {% else %}
+
+            {#% if activity.sport_id is not null %}
+                <div class="pull-left" style="margin-right: 20px">
+                    {% include 'KsActivityBundle:Activity:_infosBloc.html.twig' %}
+                </div>
+            {% endif %#}
+
+            {% if activity.type == 'video' or activity.type == 'link' %}
+                {% include 'KsActivityBundle:Activity:_activityLink_content.html.twig' %}
+            {% elseif activity.type == 'article' %}
+                {% include 'KsActivityBundle:Wikisport:_preview.html.twig' %}
+            {% elseif activity.type == 'sportsmen_search' %}
+                {% include 'KsActivityBundle:SportsmenSearch:_content.html.twig' %}
+            {#% elseif connectedActivity is not null %}
+                    aa
+                {% include 'KsActivityBundle:Activity:_activityBloc.html.twig' with {'activity' : connectedActivity} %#}
+            {% else %}
+                {% include 'KsActivityBundle:Activity:_activityContent.html.twig' %}
+            {% endif %}
+
+            {% include 'KsActivityBundle:PhotoAlbum:_photos.html.twig' %}
+
+        
+        
+            {% if isShared is not defined or ( isShared is defined and not isShared )%}
+                <!--br style="clear:both" /-->
+                {% if ( mail is not defined or ( mail is defined and not mail ) )%} 
+                    <div class="activityActionsBloc visible-desktop">
+                        {% include 'KsActivityBundle:Activity:_activityActions.html.twig' with {'isLight' : false }%}
+                    </div>
+                    <div class="visible-phone visible-tablet">
+                        {% include 'KsActivityBundle:Activity:_activityActions.html.twig' with {'isLight' : true }%}
+                    </div>
+
+                    <br clear="all"/>
+
+                {% endif %}
+                {% include 'KsActivityBundle:Comment:_commentsBloc.html.twig' %}
+            {% endif %}
+        {% endif %}
+    </div>
+</div>

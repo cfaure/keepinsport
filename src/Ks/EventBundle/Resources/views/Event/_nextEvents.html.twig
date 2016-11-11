@@ -1,0 +1,61 @@
+{% for event in events %}
+    {% if event.type is not null %}
+        {% if event.club_id is not null %}
+            {% set topLeftCornerImg = asset('img/topLeftCorner/clubs/'~ event.type ~'.png') %}
+        {% elseif event.user_id is not null %}
+            {% set topLeftCornerImg = asset('V2/images/sports/'~ event.type ~'.png') %}
+        {% else %}
+            {% set topLeftCornerImg = asset('img/topLeftCorner/wikisport/'~ event.type ~'.png') %}
+        {% endif %}
+    {% else %}
+        {% if event.club_id is not null %}
+            {% set topLeftCornerImg = asset('img/topLeftCorner/clubs/empty.png') %}
+        {% elseif event.user_id is not null %}
+            {% set topLeftCornerImg = asset('V2/images/sports/empty.png') %}
+        {% else %}
+            {% set topLeftCornerImg = asset('img/topLeftCorner/wikisport/empty.png') %}
+        {% endif %}
+    {% endif %}
+    {% if event.club_id is not null %}
+        {% set pathEvent = path('ksEventClub_show', { 'id' : event.id }) %}
+    {% else %}
+        {% set pathEvent = path('ksEvent_show', { 'id' : event.id }) %}
+    {% endif %}
+    {% if event.type == 'event_competition' %}
+        <a class="linkActivityBloc" href="{{ pathEvent }}">
+    {% else %}
+        <a class="linkActivityBloc" href="{{ path('ksAgenda_index', {'id' : app.user.id }) }}">
+    {% endif %}
+        <div class="activityBloc contentBloc" style="background-image: url('{{ topLeftCornerImg }}'); background-repeat: no-repeat;margin-bottom: 3px">
+            <div style="margin-left:20px;">
+                
+                {% if event.club_name is not null %}
+                    <b>{{ event.club_name }}</b><br/>
+                {% endif %}
+      
+                {% if event.type == 'event_training' %}
+                    {{ 'events.training'|trans }}
+                {% else %}
+                    {{ event.title }}
+                {% endif %}
+                    
+                <br>
+                <span class="glyphicon glyphicon-calendar"></span> {{ event.start|date('d/m/Y') }}
+
+                <span class="icon-map-marker" style="margin-left:5px"></span> 
+                {% if event.town_label is not null %}
+                    {{ event.town_label }}
+                {% else %}
+                    -
+                {% endif %}
+
+                {#% if event.allDay %}
+                    Du {{ event.start|date('d/m/Y') }} au {{ event.end|date('d/m/Y') }}
+                {% else %}
+                    Du {{ event.start|date('d/m/Y H:i') }} au {{ event.end|date('d/m/Y H:i') }}
+                {% endif %#}
+                <br>
+            </div>
+        </div>
+    </a>
+{% endfor %}

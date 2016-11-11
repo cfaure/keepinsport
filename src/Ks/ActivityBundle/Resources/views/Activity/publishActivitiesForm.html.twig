@@ -1,0 +1,87 @@
+{% include 'KsActivityBundle:Activity:_statusForm.html.twig' with {'form': activityStatusForm} %}
+{% include 'KsActivityBundle:Activity:_photoForm.html.twig' with {'form': photoForm} %}
+{% include 'KsActivityBundle:Activity:_linkForm.html.twig' with {'form': linkForm} %}
+<div>
+    <div class="visible-desktop">
+            <h3 class="sportif" style="display:inline-block">{{ "actions.publish"|trans }}</h3>
+            <a href="{{ path("ksSport_activitySessionForm", {"activityId" : "new"}) }}" class="btn btn-small btn-link link-sportif">
+                <span class="icon-user"></span> {{ "activity.sport-activity"|transchoice(1) }}
+            </a>
+
+            <span class="statusBtn btn btn-small btn-link link-sportif">
+                <span class="glyphicon glyphicon-pencil"></span> {{ "activity.status"|trans }}
+            </span>
+ 
+            <span class="photosBtn btn btn-small btn-link link-sportif">
+                <span class="icon-camera"></span> {{ "activity.photos"|trans }}
+            </span>
+
+            <span class="linkBtn btn btn-small btn-link link-sportif">
+                <span class="icon-paper-clip"></span> {{ "activity.link"|transchoice(1) }}
+            </span>
+
+            <span class="sportsmanSearchBtn btn btn-small btn-link link-sportif">
+                <span class="icon-group"></span> {{ "activity.partners"|trans }}
+            </span>
+            
+            {#<a href="{{ path('ksUser_showChecklist') }}" class="btn btn-small pull-right" rel="tooltip" title="Bien débuter">
+                <span class="icon-question-sign"></span>
+            </a>#}
+        {#<span class="publicationIconsBloc sportif">
+            <a href="{{ path('ksUser_showChecklist') }}" class="pull-right question-link">
+                <span class="icon-question-sign" rel="tooltip" title="Bien débuter" ></span>
+            </a>
+            <span class="glyphicon glyphicon-pencil status" rel="tooltip" title="Publier un statut" ></span>
+            <span class="icon-camera photos" rel="tooltip" title="Publier des photos"></span>
+            <span class="icon-paper-clip link" rel="tooltip" title="Publier un lien"></span>
+            <span class="icon-group sportsmanSearch" rel="tooltip" title="Rechercher un partenaire"></span>
+        </span>#}
+        
+        {#<span class="buttonsPublication">
+            <img style="display:inline;margin-left:20px;" rel="tooltip" title="Publier un statut" class="status" src="{{ asset('bundles/ksactivity/images/status.png') }}"/>
+            <img style="display:inline;margin-left:20px;" rel="tooltip" title="Publier une photo" class="photo" src="{{ asset('bundles/ksactivity/images/photo.png') }}"/>
+            <img style="display:inline;margin-left:20px;" rel="tooltip" title="Publier un lien" class="link" src="{{ asset('bundles/ksactivity/images/link.png') }}"/>
+        </span>#}
+    </div>
+    <div class="visible-phone visible-tablet">
+        <a href="{{ path("ksSport_activitySessionForm", {"activityId" : "new"}) }}" class="btn btn-sportif btn-block">
+            <span class="icon-user"></span> Publier une activité sportive
+        </a>
+        <span class="btn btn-sportif btn-block statusBtn">
+            <span class="glyphicon glyphicon-pencil"></span> Publier un statut
+        </span>
+    </div>
+    <div class="blocHeaderSeparator"></div>
+</div>
+
+<script type="text/javascript">
+    
+    $(".buttonsPublication").find("img").hover(
+        function () {
+            $(this).css("cursor", "pointer");
+        }, 
+        function () {
+            $(this).css("cursor", "default");
+        }
+    );
+    
+    $("a[href=#formActivityType_1]").click();
+ 
+    //attachPublishSportSessionEvent($("img[rel=session]"));
+    /*attachPublishPhotoEvent($(".publicationIconsBloc > .photos"));
+    attachPublishLinkEvent($(".publicationIconsBloc > .link"));
+    attachPublishStatusEvent($(".publicationIconsBloc > .status"));*/
+    //attachPublishSportsmenSearchEvent($(".publicationIconsBloc > .sportsmanSearch"));
+    
+    attachPublishPhotoEvent($(".photosBtn"));
+    attachPublishLinkEvent($(".linkBtn"));
+    attachPublishStatusEvent($(".statusBtn"));
+    
+    {#% if user.userDetail is defined and user.userDetail is not null and user.userDetail.sports is defined %}
+        {% for sport in user.userDetail.sports %}
+            attachPublishSportSessionEvent($("img[rel={{ sport.id }}]"), {{ sport.id }});
+        {% endfor %}
+    {% endif %#}
+
+    
+</script>

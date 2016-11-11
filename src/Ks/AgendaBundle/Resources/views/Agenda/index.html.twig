@@ -1,0 +1,394 @@
+{% extends "KsUserBundle::layout_3_9.html.twig" %}
+
+{% block title %}
+	Keepinsport - Agenda
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksagenda/css/fullcalendar.css') }}" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksagenda/css/style.css') }}" type="text/css" />
+    
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksagenda/js/fullcalendar_ced.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksevent/js/scripts.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap-multiselect.js') }}"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var eventsTypes         = new Array();
+            var eventsSports        = new Array();
+            var eventsUsers         = new Array();
+            var eventsCoachingPlans = new Array();
+            var eventsAvailability  = "";
+            var eventsFrom          = new Array();
+            eventsFrom[0] = "me";
+            eventsFrom[1] = "my_clubs"; //FMO pour éviter de voir les évents des autres clubs que les siens !
+            
+            var ajax = null;  
+            
+            var calendar = $('#agenda').fullCalendar({        
+                header: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'month,agendaWeek,agendaDay'
+                },
+                {% render 'KsUserBundle:Translation:loadFullCalendar_translations' %}
+                firstDay : 1, //Le premier jour est un lundi
+                selectable: true,
+                selectHelper: true,
+                editable: true,
+                events: function(start, end, callback) {
+                    if( ajax ) ajax.abort();
+                    ajax = $.post(
+                        Routing.generate('ksAgenda_getEvents', {'id' : "{{ user.id }}"}),
+                        {
+                            "eventsFrom[]"  : eventsFrom,
+                            "eventsTypes[]" : eventsTypes,
+                            "start"         : Math.round(start.getTime() / 1000),
+                            "end"           : Math.round(end.getTime() / 1000)
+                        },
+                        function(events) {
+                            ajax = null;
+                            callback(events);
+                        }
+                    );
+                },
+                eventRender: function(event, eventElement) {
+                    //eventElement.find('.fc-event-title').prepend("<div class='imageLegend trunc' style=''><img src='{{ asset('img/new.PNG') }}'/></div>");
+                    
+                    $header = "<div id='header_" + event.id + "'>";
+                    
+                    //Sport
+                    if ( event.sport_label ) {
+                        if (event.club_name) $header += "<img class='pull-left' src='{{ asset('img/topLeftCorner/clubs/') }}" + event.sport_code + ".png') }}'/>";
+                        else $header += "<img class='pull-left' src='{{ asset('V2/images/sports/') }}" + event.sport_code + ".png') }}'/>";
+                    }
+                    
+                    if (event.type) {
+                        switch( event.type ) {
+                            case "event_meal":
+                                $header += "<span class='pull-right icon-food iconInAgendaEvent'></span>";
+                                break;
+
+                            case "event_competition":
+                                $header += "<span class='pull-right icon-trophy iconInAgendaEvent'></span>";
+                                break;
+
+                            case "event_training":
+                                $header += "<span class='pull-right icon-home iconInAgendaEvent'></span>";
+                                /*eventElement.find('.fc-event-title').append(
+                                    "<br><i class='pull-right' style='font-size:0.8em'> Entrainement<i> "
+                                );*/
+                                eventElement.find('.fc-event-time').remove();
+                                break;
+                            case "event_coaching":
+                                $header += "<span class='pull-right icon-book iconInAgendaEvent'></span>";
+                                break;
+                        }
+                    }
+                    
+                    if (event.club_name) {
+                        $header += "<img style='opacity: .5;' class='pull-left' src='{{ asset('img/clubs/') }}" + event.club_id + "/resize_48x48/" + event.avatar + "'/>";
+                        /*eventElement.find('.fc-event-inner').prepend(
+                            //"(" + event.club_name + ") "
+                            "<center><div class='imageLegend trunc'> <span class='text'>" + event.club_name + "</span></div></center></br>"
+                        );*/
+                    }
+                    
+                    $title = "<div id='title_" + event.id + "'>";
+                    if (event.activitySession_id) {
+                        if (event.duration == '00:00') $title += "<span class='pull-right icon-remove icon-3x'/>";
+                        else $title += "<span class='pull-right icon-check icon-3x'/>";
+                    }
+                    if (event.isNew == 1) $title += "<img class='pull-right' src='{{ asset('img/new.png') }}'/>";
+                    $title += "</br>";
+                    if (event.type == "event_training" && event.description) {
+                        //FMO : attention ne pas utiliser $description déjà utilisée sur _eventModalForm.html sinon bug !
+                        if (event.description.length > 30) $desc = event.description.substr(0, 30) + "...";
+                        else $desc = event.description;
+                        if (!event.club_name) $title += "<i style='font-size:0.8em'>" + $desc + "</i>";
+                    }
+                    else $title += "<i style='font-size:0.8em'>" + event.title + "</i>";
+                    $title += "</br>";
+                    
+                    $details = "<div id='details_" + event.id + "' style='display:none'>";
+                    if (event.activitySession_id && event.intensity_id && event.duration != '00:00') {
+                        switch(event.intensity_id) {
+                            case '1' : $details += "<div class='icon-green icon-btn icon-circle icon-2x selected' title='{{'coaching.intensity'|trans}}'></div> "; break;
+                            case '2' : $details += "<div class='icon-orange icon-btn icon-circle icon-2x selected' title='{{'coaching.intensity'|trans}}'></div> "; break;
+                            case '3' : $details += "<div class='icon-red icon-btn icon-circle icon-2x selected' title='{{'coaching.intensity'|trans}}'></div> "; break;
+                        }
+                    }
+                    if (event.activitySession_id && event.stateOfHealth_id && event.duration != '00:00') {
+                        switch(event.stateOfHealth_id) {
+                            case '3' : $details += "<div class='icon-green icon-btn icon-smile icon-2x selected' title='{{'coaching.stateOfHealth'|trans}}'></div> "; break;
+                            case '2' : $details += "<div class='icon-orange icon-btn icon-meh icon-2x selected' title='{{'coaching.stateOfHealth'|trans}}'></div> "; break;
+                            case '1' : $details += "<div class='icon-red icon-btn icon-frown icon-2x selected' title='{{'coaching.stateOfHealth'|trans}}'></div> "; break;
+                        }
+                    }
+                    /*if (event.coachingPlan_id && event.activitySession_id && event.achievement) {
+                        $details +=event.achievement + "/10 ");                        
+                    }*/
+                    
+                    eventElement.find('.fc-event-inner').prepend($header);
+                    eventElement.find('.fc-event-title').append($title);
+                    eventElement.find('.fc-event-title').append($details);
+                    
+                    //Affiche le nombre de participants
+                    if (event.maxParticipations && event.usersParticipations) {
+                        if (event.maxParticipations) 
+                            eventElement.find('.fc-event-title').append("</br><span class='icon-group'> " + event.usersParticipations + " / " + event.maxParticipations + " </span>");
+                        else 
+                            eventElement.find('.fc-event-title').append("</br><span class='icon-group'> " + event.usersParticipations + " </span>");
+                        //eventElement.find('.fc-event-title').append("</center>");
+                    }
+                    
+                    //Lieu (pas nécessaire)
+                    /*if ( event.town_label ) {
+                        eventElement.find('.fc-event-title').append(
+                            "<br><i class='pull-right' style='font-size:0.8em'>à " + event.town_label + "<i> "
+                        );
+                    }*/ 
+                },
+                
+                eventMouseover: function(event, jsEvent, view) {
+                    if (event.activitySession_id) {
+                        $("#header_" + event.id).show();
+                        $("#title_" + event.id).hide();
+                        $("#details_" + event.id).show();
+                        if (event.duration != '00:00') {
+                            if (event.activity_type == "session_endurance_on_earth") {
+                                $(this).find('.fc-event-title').append("\
+                                    <div id='tooltip' style='font-size:0.8em'>\
+                                        <p>\
+                                           <img src='{{ asset('bundles/ksactivity/images/timer_mini.png') }}' title='{{ 'activity.duration'|trans }}' /> " + event.duration + "  \
+                                           <img src='{{ asset('bundles/ksactivity/images/ruler_mini.png') }}' title='{{ 'activity.distance'|trans }}' /> " + event.distance + "\
+                                        </p>\
+                                        <p>\
+                                            <img src='{{ asset('bundles/ksactivity/images/mountain_mini.png') }}' title='D+' /> " + event.elevationGain + " \
+                                            <img src='{{ asset('bundles/ksactivity/images/mountain_mini.png') }}' title='D-' /> " + event.elevationLost + "\
+                                        </p>\
+                                    </div>"
+                                );
+                            }
+                            else if (event.activity_type == "session_team_sport") {
+                                $(this).find('.fc-event-title').append("\
+                                    <div id='tooltip' style='font-size:0.8em'>\
+                                        <p>\
+                                           <img src='{{ asset('bundles/ksactivity/images/timer_mini.png') }}' title='{{ 'activity.duration'|trans }}' /> " + event.duration + "  \
+                                           <img src='{{ asset('bundles/ksactivity/images/whistle_mini.png') }}' title='{{ 'activity.result'|trans }}' /> " + event.result.toUpperCase() + "\
+                                        </p>\
+                                    </div>"
+                                );
+                            }
+                            else {
+                                $(this).find('.fc-event-title').append("\
+                                    <div id='tooltip' style='font-size:0.8em'>\
+                                        <p>\
+                                           <img src='{{ asset('bundles/ksactivity/images/timer_mini.png') }}' title='{{ 'activity.duration'|trans }}' /> " + event.duration + "  \
+                                        </p>\
+                                    </div>"
+                                );
+                            }
+                        }
+                        else {
+                            $(this).find('.fc-event-title').append("<div id='tooltip'></br><b>{{ 'coaching.not-done'|trans }}</b></div>");
+                        }
+                    }//$(this).find('.fc-event-inner').css("z-index",2000);
+                },
+                
+		eventMouseout: function(event,jsEvent) {
+                    $("#header_" + event.id).show();
+                    $("#title_" + event.id).show();
+                    $("#details_" + event.id).hide();
+                    $("#tooltip").remove();
+		},
+    
+                select: function(start, end, allDay) {
+                    var params = {
+                        "startDate" : start,
+                        "endDate"   : end,
+                        "allDay"    : allDay,
+                        "isCreation" : true,
+                        "userId"     : "{{ app.user.id }}",
+                        "modalTitle" : "{{ 'coaching.create-event'|trans }}"
+                    }
+                    showEventFormModal(params);
+                },
+                
+                //Clic sur un événement
+                eventClick: function(event) {
+                    //console.log(event);
+                    
+                    //Si l'événement dure 1 jour, il n'y a pas de end
+                    if ( ! event.end ) event.end = event.start;
+                    
+                    var params = {
+                        "startDate"           : event.start,
+                        "endDate"             : event.end,
+                        "allDay"              : event.allDay,
+                        "id"                  : event.id,
+                        "title"               : event.title,
+                        "content"             : event.content,
+                        "type"                : event.type,
+                        {% if user is defined and user is not null %}
+                            "clubId"              : event.club_id, 
+                        {% endif %}
+                        "userId"              : event.user_id,
+                        "isPublic"            : event.isPublic,
+                        "coachingPlanId"      : event.coachingPlan_id,
+                        "coachingCategoryId"  : event.coachingCategory_id,
+                        "coachingSessionId"     : event.coachingSession_id,
+                        "coachingSessionDetail" : event.sessionDetail,
+                        "sportId"             : event.sport_id,
+                        "maxParticipations"   : event.maxParticipations,
+                        "usersParticipate"    : event.usersParticipate,
+                        "activitySessionId"   : event.activitySession_id,
+                        "difficultyId"        : event.difficulty_id,
+                        "modalTitle"          : event.club_id ? event.club_name + " - " + event.title : event.title
+                    }
+                    //Si une activity est liée à un event, c'est qu'on est sur un plan d'entrainement donc on n'affiche pas la boite de dialogue qui permet de modifier/supprimer l'event
+                    if (event.club_id !=null && event.coachingPlan_id == null || event.club_id == null && event.coachingPlan_id !=null) params["isEdition"] = true;
+                    else params["isShow"] = true;
+        
+                    if (event.activitySession_id == null) showEventFormModal(params);
+                    else document.location.href = Routing.generate('ksActivity_showActivity', {'activityId' : event.activitySession_id})
+                },
+                
+                //Déplacement d'un événement temporairement inhibé à revoir ultérieurement avec synchro agenda google
+                eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
+                    if (event.type == 'event_coaching' && event.club_id == null || event.type == 'event_meal' && event.club_id == null) {
+                        $.post(
+                            Routing.generate('ksAgenda_moveOrResizeEvent', {'id' : event.id}), 
+                            {
+                                "dayDelta"      : dayDelta,
+                                "minuteDelta"   : minuteDelta,
+                                "allDay"        : allDay,
+                                "isMove"        : true,
+                            },
+                            function(response) {
+                            }
+                        );
+                    }
+                    else {
+                        showInformation("{{ 'coaching.message-eventDrop'|trans }}");
+                        calendar.fullCalendar('refetchEvents');
+                    }
+                },
+                
+                
+                //Resize sur un événement temporairement inhibé à revoir ultérieurement avec synchro agenda google
+                eventResize: function(event,dayDelta,minuteDelta,revertFunc) {
+                    if (event.type == 'event_coaching' && event.club_id == null || event.type == 'event_meal' && event.club_id == null) {
+                        $.post(
+                            Routing.generate('ksAgenda_moveOrResizeEvent', {'id' : event.id}), 
+                            {
+                                "dayDelta"      : dayDelta,
+                                "minuteDelta"   : minuteDelta,
+                                "isMove"        : false
+                            },
+                            function(response) {
+                            }
+                        );
+                    }
+                    else {
+                        showInformation("{{ 'coaching.message-eventResize'|trans }}");
+                        calendar.fullCalendar('refetchEvents');
+                    }
+                }
+                {#% endif %#}
+            });
+            
+            $("#eventsFromSelect").multiselect({
+                buttonClass: 'btn btn-link',
+                buttonText: function(options) {
+                    if (options.length == 0) {
+                        return '{{ 'coaching.perimeter'|trans }} <b class="caret"></b>';
+                    }else {
+                        var selected = '';
+                        options.each(function() {
+                            selected += $(this).text() + ', ';
+                        });
+                        return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                    }
+                },
+                onChange:function(element, checked){
+                    eventsFrom = $("#eventsFromSelect").val();
+                    calendar.fullCalendar('refetchEvents');
+                }
+            });
+            
+            $("#eventsTypesSelect").multiselect({
+                buttonClass: 'btn btn-link',
+                buttonText: function(options) {
+                    if (options.length == 0) {
+                        return '{{ 'coaching.types'|trans }} <b class="caret"></b>';
+                    }else {
+                        var selected = '';
+                        options.each(function() {
+                            selected += $(this).text() + ', ';
+                        });
+                        return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+                    }
+                },
+                onChange:function(element, checked){
+                    eventsTypes = $("#eventsTypesSelect").val();
+                    calendar.fullCalendar('refetchEvents');
+                }
+            });
+            
+            /*$("#geoSelect").select2({});
+            $("#geoSelect").change(function() {
+                //console.log($( this ).val());
+                //alert("Selected data is: "+JSON.stringify($("#geoSelect").select2("data")));
+                //console.log($("#geoSelect option:selected"));
+                //console.log($("#geoSelect").select2("data"));
+                var selectedIndex = $("#geoSelect")[0].selectedIndex;
+                console.log($("#geoSelect").children("option").eq(selectedIndex));
+            });*/
+        });
+    </script>
+{% endblock %}
+    
+{% block content %}
+    {% include 'KsEventBundle:Event:_eventModalForm.html.twig' with {'form' : eventForm, "userId" : app.user.id} %}  
+    <h2 class="sportif">{{ 'titles.dashboard-of'|trans( { '%username%' : user.username} ) }}</h2>
+    <div class="blocHeaderSeparator"></div>
+    Types : 
+    <select id="eventsTypesSelect" class="test" name="eventsTypesSelect[]" multiple="multiple" size="5">
+        <option value="trainings">{{ 'events.trainings'|trans }}</option>
+        <option value="meals">{{ 'events.meals'|trans }}</option>
+        <option value="others">{{ 'events.others'|trans }}</option>
+        <option value="coaching"">{{ 'events.coaching'|trans }}</option>
+        <option value="competitions">{{ 'events.competitions'|trans }}</option>
+    </select>
+    {{ 'news-feed.perimeter'|trans }} : 
+    <select id="eventsFromSelect" class="test" name="eventsFromSelect[]" multiple="multiple" size="5">
+        <option value="me" selected="selected">{{ 'menu.me'|trans }}</option>
+        <option value="my_clubs" selected="selected">{{ 'titles.my-clubs'|trans }}</option>
+        <option value="public">{{ 'events.public'|trans }}</option>
+    </select>
+    {#<select id="geoSelect" tabindex="-1" style="width:200px">
+        <optgroup label="-- Régions --">
+        {% for key, region in aGeo.regions %}
+            <option value="{{ region.id }}" code="{{ region.code }}">{{ region.label }}</option>
+        {% endfor %}
+        </optgroup>
+        <optgroup label="-- Départements --">
+        {% for key, county in aGeo.counties %}
+            <option value="{{ county.id }}" code="{{ county.code }}">{{ county.label }}</option>
+        {% endfor %}
+        </optgroup>
+        <optgroup label="-- Villes --">
+        {% for key, town in aGeo.towns %}
+            <option value="{{ town.id }}">{{ town.label }}</option>
+        {% endfor %}
+        </optgroup>
+    </select>#}
+    <br/><br/>
+    <div id="agenda"></div>
+{% endblock content %}

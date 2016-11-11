@@ -1,0 +1,9 @@
+# app/config/security.yml
+
+imports:
+    - { resource: "@KsUserBundle/Resources/config/security.yml" }
+    
+        
+#    providers:
+#        fos_userbundle:
+#            id: fos_user.user_provider.username_email

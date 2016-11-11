@@ -1,0 +1,509 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="ru" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>activities.publishStatus</source>
+                <target>Publier le statut</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>activities.publishComment</source>
+                <target>Publier</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>trophies.label</source>
+                <target>Trophées</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>activity.type</source>
+                <target>Type d'activité</target>
+            </trans-unit>
+            
+            <!--Formulaires de sessions-->
+            <trans-unit id="5">
+                <source>session.description</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>session.was_official</source>
+                <target>C'était officiel</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>session.distance</source>
+                <target>Distance parcourue</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>session.time_elapsed</source>
+                <target>Durée de l'activité</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>session.time_moving</source>
+                <target>Durée totale en mouvement</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>session.speed_min</source>
+                <target>Vitesse minimale</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>session.speed_max</source>
+                <target>Vitesse maximale</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>session.speed_average</source>
+                <target>Vitesse moyenne</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>session.elevation_min</source>
+                <target>Elevation minimale</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>session.elevation_max</source>
+                <target>Elevation maximale</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>session.elevation_gain</source>
+                <target>Gain de dénivelé</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>session.elevation_lost</source>
+                <target>Perte de dénivelé</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>session.depth_gain</source>
+                <target>Gain de profondeur</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>session.depth_max</source>
+                <target>Profondeur maximale</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>session.duration_match</source>
+                <target>Durée du match</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>session.our_team</source>
+                <target>Notre équipe</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>session.opposing_team</source>
+                <target>L'équipe adverse</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>session.our_score</source>
+                <target>Notre score</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>session.opposing_team_score</source>
+                <target>Le score de l'équipe adverse</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>activities.publishLink</source>
+                <target>Publier le lien</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>activities.publishSession</source>
+                <target>Publier la session</target>
+            </trans-unit>
+            
+            <!--Actions sur les activités-->
+            <trans-unit id="26">
+                <source>activity.comment</source>
+                <target>Commenter</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>activity.vote</source>
+                <target>Voter</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>activity.withdraw_vote</source>
+                <target>Enlever mon vote</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>activity.subscribe</source>
+                <target>M'abonner</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>activity.unsubscribe</source>
+                <target>Me désabonner</target>
+            </trans-unit>
+            
+            <!--Traduction du temps-->
+            <trans-unit id="31">
+                <source>activity.publishAgo</source>
+                <target>Publié il y a %time% %unit%</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>time.second</source>
+                <target>seconde</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>time.seconds</source>
+                <target>secondes</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>time.minute</source>
+                <target>minute</target>
+            </trans-unit>
+            <trans-unit id="35">
+                <source>time.minutes</source>
+                <target>minutes</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>time.hour</source>
+                <target>heure</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>time.hours</source>
+                <target>heures</target>
+            </trans-unit>
+            <trans-unit id="38">
+                <source>time.day</source>
+                <target>jour</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>time.days</source>
+                <target>jours</target>
+            </trans-unit>
+            <trans-unit id="40">
+                <source>time.week</source>
+                <target>semaine</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>time.weeks</source>
+                <target>semaines</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>time.month</source>
+                <target>mois</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>time.months</source>
+                <target>mois</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>time.year</source>
+                <target>année</target>
+            </trans-unit>
+            <trans-unit id="45">
+                <source>time.years</source>
+                <target>années</target>
+            </trans-unit>
+            <trans-unit id="46">
+                <source>activity.appendAgo</source>
+                <target>Il y a %time% %unit%</target>
+            </trans-unit>
+            
+            <trans-unit id="47">
+                <source>activity.load_older_news</source>
+                <target>Charger les actualités plus anciennes</target>
+            </trans-unit>
+            <trans-unit id="48">
+                <source>activity.publish_status</source>
+                <target>Publier un statut</target>
+            </trans-unit>
+            <trans-unit id="49">
+                <source>activity.publish_session</source>
+                <target>Publier une session d'activités</target>
+            </trans-unit>
+            <trans-unit id="50">
+                <source>activity.publish_photo</source>
+                <target>Publier une photo</target>
+            </trans-unit>
+            <trans-unit id="51">
+                <source>activity.publish_link</source>
+                <target>Publier un lien</target>
+            </trans-unit>
+            
+            <trans-unit id="52">
+                <source>activity.my_community</source>
+                <target>Ma communauté</target>
+            </trans-unit>
+            <trans-unit id="53">
+                <source>activity.more_infos_about_my_community</source>
+                <target>Plus d'infos sur ma communauté</target>
+            </trans-unit>
+            
+            <!--Trophés-->
+            <trans-unit id="54">
+                <source>trophies.category</source>
+                <target>Catégorie</target>
+            </trans-unit>
+            <trans-unit id="55">
+                <source>trophies.isUnlocked</source>
+                <target>Est débloqué</target>
+            </trans-unit>
+            <trans-unit id="56">
+                <source>trophies.unlockedAt</source>
+                <target>Débloqué à</target>
+            </trans-unit>
+            <trans-unit id="57">
+                <source>trophies.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            <trans-unit id="58">
+                <source>showcase.can_expose_a_trophy_here</source>
+                <target>Vous pouvez exposer un trophée ici</target>
+            </trans-unit>
+            <trans-unit id="59">
+                <source>showcase.exposedSince</source>
+                <target>Exposé depuis le %date%</target>
+            </trans-unit>
+            
+            <trans-unit id="60">
+                <source>team.homeTeam</source>
+                <target>Equipe domicile</target>
+            </trans-unit>
+            <trans-unit id="61">
+                <source>team.opposingTeam</source>
+                <target>Equipe adverse</target>
+            </trans-unit>
+            
+            <trans-unit id="62">
+                <source>league.leagueLevel</source>
+                <target>Ligue / Etoile(s)</target>
+            </trans-unit>
+            <trans-unit id="63">
+                <source>league.label</source>
+                <target>Ligue</target>
+            </trans-unit>
+            <trans-unit id="64">
+                <source>activity.pointsNumber</source>
+                <target>%points% points</target>
+            </trans-unit>
+            <trans-unit id="65">
+                <source>activity.votesNumber</source>
+                <target>%votes% votes</target>
+            </trans-unit>
+            
+            <trans-unit id="66">
+                <source>articles.create</source>
+                <target>Créer l'article</target>
+            </trans-unit>
+            <trans-unit id="67">
+                <source>articles.list.label</source>
+                <target>Liste des articles</target>
+            </trans-unit>
+            <trans-unit id="68">
+                <source>article.description</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="69">
+                <source>articles.new</source>
+                <target>Nouvel article</target>
+            </trans-unit>
+            <trans-unit id="70">
+                <source>article.edit</source>
+                <target>Editer</target>
+            </trans-unit>
+            <trans-unit id="71">
+                <source>article.user</source>
+                <target>Sportif</target>
+            </trans-unit>
+            <trans-unit id="72">
+                <source>article.modificationDate</source>
+                <target>Date</target>
+            </trans-unit>
+            <trans-unit id="73">
+                <source>article.content</source>
+                <target>Contenu</target>
+            </trans-unit>
+            <trans-unit id="74">
+                <source>article.actions</source>
+                <target>Actions</target>
+            </trans-unit>
+            
+            <trans-unit id="75">
+                <source>article.saveModifs.label</source>
+                <target>Enregistrer</target>
+            </trans-unit>
+            <trans-unit id="76">
+                <source>article.showArticle.label</source>
+                <target>Revenir à la visualisation de l'article</target>
+            </trans-unit>
+            <trans-unit id="77">
+                <source>article.showdifs</source>
+                <target>Voir les différences</target>
+            </trans-unit>
+            <trans-unit id="78">
+                <source>activities.label</source>
+                <target>Activités</target>
+            </trans-unit>
+            <trans-unit id="79">
+                <source>articles.label</source>
+                <target>WikiSport</target>
+            </trans-unit>
+            <trans-unit id="80">
+                <source>articles.my_articles.label</source>
+                <target>Mes articles</target>
+            </trans-unit>
+            <trans-unit id="81">
+                <source>activity.sharedThatFromHim</source>
+                <target> a partagé %type% de %him%</target>
+            </trans-unit>
+            <trans-unit id="82">
+                <source>activity.share</source>
+                <target>Partager</target>
+            </trans-unit>
+            <trans-unit id="83">
+                <source>article.flash.article_is_being_edited</source>
+                <target>L'article est en cours d'édition par un autre utilisateur. Merci de patienter.</target>
+            </trans-unit>
+            <trans-unit id="84">
+                <source>articleWithPrefixe</source>
+                <target>l'article</target>
+            </trans-unit>
+            <trans-unit id="85">
+                <source>statusWithPrefixe</source>
+                <target>le statut</target>
+            </trans-unit>
+            <trans-unit id="86">
+                <source>statusWithPrefixe</source>
+                <target>le statut</target>
+            </trans-unit>
+            <trans-unit id="87">
+                <source>sessionEnduranceUnderWaterWithPrefixe</source>
+                <target>l'activité</target>
+            </trans-unit>
+            <trans-unit id="88">
+                <source>sessionEnduranceOnEarthWithPrefixe</source>
+                <target>l'activité</target>
+            </trans-unit>
+            <trans-unit id="89">
+                <source>sessionWithPrefixe</source>
+                <target>l'activité</target>
+            </trans-unit>   
+            <trans-unit id="90">
+                <source>activity.sharedThat</source>
+                <target> partagé %type%</target>
+            </trans-unit>
+            <trans-unit id="91">
+                <source>article.showDifsWithPrecedent</source>
+                <target>Précédente</target>
+            </trans-unit>
+            <trans-unit id="92">
+                <source>article.showDifsWithActual</source>
+                <target>Actuelle</target>
+            </trans-unit>
+            <trans-unit id="93">
+                <source>article.textsWereModified</source>
+                <target>Texte</target>
+            </trans-unit>
+            <trans-unit id="934">
+                <source>article.photosWereModified</source>
+                <target>Photos</target>
+            </trans-unit>
+            <trans-unit id="95">
+                <source>article.descriptionWasModified</source>
+                <target>Description</target>
+            </trans-unit>
+            <trans-unit id="96">
+                <source>article.tagsWereModified</source>
+                <target>Mots clés</target>
+            </trans-unit>
+            <trans-unit id="97">
+                <source>article.trainingPlanWasModified</source>
+                <target>Plan d'entrainement</target>
+            </trans-unit>
+            <trans-unit id="98">
+                <source>activity.publishedPhoto</source>
+                <target>a publié une photo</target>
+            </trans-unit>
+            <trans-unit id="99">
+                <source>activity.publishedLink</source>
+                <target>a publié un lien</target>
+            </trans-unit>
+            <trans-unit id="100">
+                <source>activities.publishPhoto</source>
+                <target>Publier la photo</target>
+            </trans-unit>
+            <trans-unit id="101">
+                <source>publish_a_photo</source>
+                <target>Publier une photo</target>
+            </trans-unit>
+            <trans-unit id="102">
+                <source>publish_a_link</source>
+                <target>Publier un lien</target>
+            </trans-unit>
+            <trans-unit id="103">
+                <source>publish_an_activity_session</source>
+                <target>Publier une activité sportive</target>
+            </trans-unit>
+            <trans-unit id="104">
+                <source>activity.publishActivity</source>
+                <target>Publier l'activité</target>
+            </trans-unit>
+            <trans-unit id="105">
+                <source>publish_a_status</source>
+                <target>Publier un statut</target>
+            </trans-unit>
+             <trans-unit id="106">
+                <source>impossible_to_find_the_notification_type_validation_activity</source>
+                <target>Impossible de trouver le type de notification 'validation_activity'</target>
+            </trans-unit>
+            <trans-unit id="107">
+                <source>you-ve-got-%nbActivityInStandBy%-session-in-standby</source>
+                <target>Tu as %nbActivityInStandBy% session(s) d'entraînement en attente de validation</target>
+            </trans-unit>
+             <trans-unit id="108">
+                <source>impossible_to_find_status_stand_by</source>
+                <target>Impossible de trouver le statut 'en-attente'</target>
+            </trans-unit>
+            <trans-unit id="109">
+                <source>impossible_to_find_notification_invitationevent</source>
+                <target>Impossible de trouver le type de notification 'invitation_event'</target>
+            </trans-unit>
+            <trans-unit id="110">
+                <source>you-ve-got-%$nbInvitations%-to-event</source>
+                <target>Vous avez %$nbInvitations% invitation(s) à un événement</target>
+            </trans-unit>
+            <trans-unit id="111">
+                <source>impossible-to-find-activity-%activityId%</source>
+                <target>Impossible de trouver l'activité %activityId%</target>
+            </trans-unit>
+            <trans-unit id="112">
+                <source>impossible-to-find-notification-%$notificationTypeName%</source>
+                <target>Impossible de trouver le type de notification %$notificationTypeName%</target>
+            </trans-unit>
+             <trans-unit id="113">
+                <source>like-your-status</source>
+                <target>aime votre statut</target>
+            </trans-unit>
+            <trans-unit id="114">
+                <source>you-voted-on-this-activity</source>
+                <target>Vous avez déjà voté sur cette activité</target>
+            </trans-unit>
+            <trans-unit id="115">
+                <source>impossible-to-find-vote-%activityId%</source>
+                <target>Impossible de trouver le vote %activityId%</target>
+            </trans-unit>
+            <trans-unit id="116">
+                <source>session.teammates</source>
+                <target>Partenaires</target>
+            </trans-unit>
+            <trans-unit id="117">
+                <source>session.opponents</source>
+                <target>Adversaires</target>
+            </trans-unit>
+            <trans-unit id="118">
+                <source>activity.warn</source>
+                <target>Signaler</target>
+            </trans-unit>
+            <trans-unit id="119">
+                <source>activity.withdraw_warn</source>
+                <target>Signaler</target>
+            </trans-unit>
+            <trans-unit id="120">
+                <source>configure_endomondo_account</source>
+                <target>Identifiants de votre compte Endomondo</target>
+            </trans-unit>
+            <trans-unit id="121">
+                <source>endomondo.configure</source>
+                <target>Configurer</target>
+            </trans-unit>
+            <trans-unit id="122">
+                <source>impossible-to-find-evolution-%evolutionId%</source>
+                <target>Impossible de trouver l'évolution %evolutionId%</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

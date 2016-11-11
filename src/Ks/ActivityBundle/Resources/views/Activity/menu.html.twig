@@ -1,0 +1,227 @@
+{% include 'KsActivityBundle:Activity:_statusForm.html.twig' with {'form': activityStatusForm} %}
+{% include 'KsActivityBundle:Activity:_photoForm.html.twig' with {'form': photoForm} %}
+{% include 'KsActivityBundle:Activity:_linkForm.html.twig' with {'form': linkForm} %}
+{% render 'KsActivityBundle:Wikisport:new_modal' with { 'articleTagId' : '-1' } %}
+
+{% if isExpertMode %}
+    <h3 class="sportif">{{ 'menu.advanced-functions'|trans }} <div id="loaderExpert" style="display:none" class="pull-right"><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div></h3>
+    <div class="blocHeaderSeparator"></div>
+    <div id="content">
+        <ul class="menu">
+            <li class="subitem"><a class="subitem" href="#">{{ 'actions.publish'|trans }}<span class="glyphicon glyphicon-pencil"></span></a>
+                <ul class="subitem">
+                    <li class="subitem">
+                        <span class="activityBtn btn-small btn-link link-sportif">
+                            <span class="icon-user"></span> {{ "activity.sport-activity"|transchoice(1) }}
+                        </span>
+                    </li>
+                    <li class="subitem visible-desktop visible-tablet">
+                        <span class="statusBtn btn btn-small btn-link link-sportif">
+                            <span class="glyphicon glyphicon-pencil"></span> {{ "activity.status"|trans }}
+                        </span>
+                    </li>
+                    {#<li class="subitem">
+                        <span class="photosBtn btn btn-small btn-link link-sportif">
+                            <span class="icon-camera"></span> {{ "activity.photos"|trans }}
+                        </span>
+                    </li>#}
+                    <li class="subitem visible-desktop visible-tablet">
+                        <span class="linkBtn btn btn-small btn-link link-sportif">
+                            <span class="icon-paper-clip"></span> {{ "activity.link"|transchoice(1) }}
+                        </span>
+                    </li>
+                    <li class="subitem visible-desktop visible-tablet">
+                        <span class="articleBtn btn btn-small btn-link link-sportif">
+                            <span class="glyphicon glyphicon-plus"></span> {{ "menu.create-article"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="sportsmanSearchBtn btn btn-small btn-link link-sportif">
+                            <span class="icon-group"></span> {{ "menu.look-for-partners"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="invitBtn btn btn-small btn-link link-sportif">
+                            <span class="icon-envelope"></span> {{ "menu.invite"|trans }}
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li class="subitem"><a class="subitem" href="#">{{ "menu.show"|trans }}<span class="icon-search"></span></a>
+                <ul class="subitem">
+                    <li class="subitem">
+                        <span class="newsFeedBtn btn-small btn-link link-sportif">
+                            <span class="icon-list-alt icon-large"></span> {{ "menu.news-feed"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="mailsBtn btn-small btn-link link-sportif">
+                            <span class="icon-envelope icon-large"></span> {{ "menu.mails"|trans }}
+                        </span>
+                    </li>
+                    {#<li class="subitem"><a class="subitem" href="#">Articles<span>3</span></a></li>
+                    <li class="subitem"><a class="subitem" href="#">Activités publiques</a></li>#}
+                    <li class="subitem">
+                        <span class="agendaBtn btn-small btn-link link-sportif">
+                            <span class="icon-calendar icon-large"></span> {{ "menu.agenda"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="statisticsBtn btn-small btn-link link-sportif">
+                            <span class="icon-bar-chart"></span> {{ "menu.statistics"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="comparisonBtn btn-small btn-link link-sportif">
+                            <span class="icon-bar-chart"></span> {{ "menu.comparison"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="rankingBtn btn-small btn-link link-sportif">
+                            <span class="icon-list-ol"></span> {{ "menu.ranking"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="evolutionBtn btn-small btn-link link-sportif">
+                            <span class="icon-list-ol"></span> {{'evolutions.evolutions_site'|trans}}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="sportsmenBtn btn-small btn-link link-sportif">
+                            <span class="icon-search"></span> {{ "menu.all-sportsmen"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="clubsBtn btn-small btn-link link-sportif">
+                            <span class="icon-search"></span> {{ "menu.clubs"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="shopsBtn btn-small btn-link link-sportif">
+                            <span class="icon-money"></span> {{ "menu.shops"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="equipmentBtn btn-small btn-link link-sportif">
+                            <span class="icon-list-alt"></span> {{ "menu.equipment"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="wikisportBtn btn-small btn-link link-sportif">
+                            <span class="icon-list-alt"></span> {{ "menu.wikisport"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="localisationsBtn btn-small btn-link link-sportif">
+                            <span class="icon-map-marker"></span> {{ "menu.localisations"|trans }}
+                        </span>
+                    </li>
+                </ul>
+            </li>
+            <li class="subitem"><a class="subitem" href="#">{{ 'menu.set-up'|trans }} <span class="icon-cog"></span></a>
+                <ul class="subitem">
+                    <li class="subitem">
+                        <span class="myProfileBtn btn-small btn-link link-sportif">
+                            <span class="icon-list-alt"></span> {{ "menu.my-profile"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="myEquipmentBtn btn-small btn-link link-sportif">
+                            <span class="icon-list-alt"></span> {{ "menu.my-equipment"|trans }}
+                        </span>
+                    </li>
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        {% for clubHasUser in app.user.clubs %}
+                            <li class="subitem">
+                                <span class="myClub{{ clubHasUser.club.id }}Btn btn-small btn-link link-sportif">
+                                    <span class="icon-list-alt"></span> {{ clubHasUser.club.name }} {#<a href="{{ path('ksClub_public_profile', {'clubId' : clubHasUser.club.id }) }}"> </a> #}
+                                </span>
+                            </li>
+                        {% endfor %}
+                    {% endif %}
+                    <li class="subitem">
+                        <span class="myServicesBtn btn-small btn-link link-sportif">
+                            <span class="icon-cog"></span> {{ "menu.my-services"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="noobBtn btn-small btn-link link-sportif">
+                            <span class="icon-cog"></span> {{ "menu.noob-mode"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <i>
+                            <span class="myHomePageBtn btn-small ">
+                                <span class="icon-cog"></span> {{ "menu.my-home-page"|trans }}
+                            </span>
+                        </i>
+                    </li>
+                    <li class="subitem">
+                        <i>
+                            <span class="myProfilePageBtn btn-small ">
+                                <span class="icon-cog"></span> {{ "menu.my-profile-page"|trans }}
+                            </span>
+                        </i>
+                    </li>
+                    <div class="blocHeaderSeparator"></div>
+                    <li class="subitem">
+                        <span style="text-indent: 3.75em">
+                            <a  href="{{ path('fos_user_security_logout') }}" onclick="showLoader();">
+                                <span class="icon-off"></span> {{ 'menu.disconnect'|trans }}
+                            </a>
+                        </span>
+                    </li>
+                    <div class="blocHeaderSeparator"></div>
+                </ul>
+            </li>
+        </ul>
+    </div>
+{% else %}
+    <h3 class="sportif">{{ 'menu.noob-menu'|trans }}<div id="loaderNoob" style="display:none" class="pull-right"><img src="{{ asset('img/loader_ks_16.gif') }}" alt="loader"></div></h3>
+    <div class="blocHeaderSeparator"></div>
+    <div id="content">
+        <ul class="menu">
+            <li class="subitem">
+                <a class="subitem" href="{{ path("ksSport_activitySessionForm", {"activityId" : "new"}) }}" onclick="showLoader();">
+                    <span class="icon-user"></span> {{ "menu.publish-activity"|transchoice(1) }}
+                </a>
+            </li>
+            <li class="subitem">
+                <a class="subitem" href="{{ path("ksLeague_ranking") }}" onclick="showLoader();">
+                    <span class="icon-list-ol"></span> {{ "menu.ranking"|trans }}
+                </a>
+            </li>
+            <li class="subitem">
+                <a class="subitem" href="{{ path("ksActivity_activitiesList") }}" onclick="showLoader();">
+                    <span class="icon-list-alt"></span> {{ "menu.news-feed"|trans }}
+                </a>
+            </li>    
+            <li class="subitem"><a class="subitem" href="#">{{ 'menu.advanced-functions'|trans }}<span class="icon-cog"></span></a>
+                <ul>
+                    <li class="subitem">
+                        <span class="myProfileBtn btn-small btn-link link-sportif">
+                            <span class="icon-list-alt"></span> {{ "menu.my-profile"|trans }}
+                        </span>
+                    </li>
+                    <li class="subitem">
+                        <span class="expertBtn btn-small btn-link link-sportif">
+                            <span class="icon-cog"></span> {{ "menu.expert-mode"|trans }}
+                        </span>
+                    </li>
+                    <div class="blocHeaderSeparator"></div>
+                    <li class="subitem">
+                        <span style="text-indent: 3.75em">
+                            <a  href="{{ path('fos_user_security_logout') }}" onclick="showLoader();">
+                                <span class="icon-off"></span> {{ 'menu.disconnect'|trans }}
+                            </a>
+                        </span>
+                    </li>
+                    <div class="blocHeaderSeparator"></div>
+                </ul>
+            </li>
+        </ul>
+    </div>
+{% endif %}
+
+<script type="text/javascript" src="{{ asset('bundles/ksactivity/js/wikisport.js') }}"></script>
+

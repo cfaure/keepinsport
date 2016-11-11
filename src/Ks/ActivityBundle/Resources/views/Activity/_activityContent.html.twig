@@ -1,0 +1,129 @@
+{% if details is defined and details == true and ( activity.sport_codeSport is defined and activity.sport_codeSport is not null ) %}
+    {# AFFICHAGE DETAILLE #}
+    {# Affichage des données liées à la séance du plan d'entrainement #}
+    {% if activity.linkedEvent_id is not null and activity.linkedEvent_type == 'event_coaching' %}
+        <div class="bloc2">
+            <div class="container">
+                <h3 class="title">{{ 'coaching.attach'|trans }}</h3>
+                <div class="col-md-12">
+                    <b class="bleu">{{ 'coaching.planed'|trans }}</b> : {{ activity.linkedEvent_startDate|date("d/m/Y")  }}, {{ ("sports." ~ activity.linkedEvent_sportCode) |trans }}
+                </div>
+                <div class="col-md-12">
+                    <center> <u>{{ activity.linkedEvent_coachingSession|upper }}</u> ({{ 'coaching.category'|trans }} {{ activity.linkedEvent_coachingCategory }}) </center>
+                    </br>
+                    <b class="bleu">{{ 'coaching.details'|trans }}</b> : {{ activity.linkedEvent_coachingSessionDetail }}
+                </div>
+                </br>
+                {#% if activity.linkedEvent_content is defined and activity.linkedEvent_content is not null %} 
+                    <div class="row">
+                        <b>{{ 'coaching.remarks'|trans }}</b> : {{ activity.linkedEvent_content }}
+                    </div>
+                {% endif %#}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if activity.type == 'session_endurance_on_earth' or activity.type == 'session_endurance_under_water' %}
+        {% include('KsActivityBundle:Activity:_enduranceSession_content_details.html.twig') %}
+    {% elseif activity.type == 'session_team_sport' %}
+        {% include('KsActivityBundle:Activity:_teamSportSession_content_details.html.twig') %}
+    {% else %}
+        {% include('KsActivityBundle:Activity:_activitySession_content_details.html.twig') %}
+    {% endif %}
+
+    {% if activity.sport_id is not null %}
+        {#{% render 'KsCanvasDrawingBundle:CanvasDrawing:activity' with {'activityId': activity.id } %}#}
+    {% endif %}
+{% else %}
+    {# AFFICHAGE FIL D'ACTU #}
+
+    <div class="statut">
+        {% if activity.label|length > 0 %}
+            {{ activity.label|nl2br }}
+        {% endif %}
+        {% if activity.earnedPoints is not null %}
+            <center>
+                {% include 'KsLeagueBundle:League:_user_points.html.twig' with { 'user_league_category' : activity.ll_categoryLabel, 'user_points' : '+' ~ activity.earnedPoints ~" points" } %}
+            </center>
+        {% endif %}
+
+        {% if activity.sport_id is null %}
+            {% if activity.description|length > 0 %}
+                <i><span class="icon-quote-left" style="font-size:0.7em"></span> {{ activity.description|raw|nl2br }} <span class="icon-quote-right" style="font-size:0.7em"></span></i>
+            {% endif %}
+        {% else %}
+            {% if activity.description|length > 0 %}
+                <i><span class="icon-quote-left" style="font-size:0.7em"></span> {{ activity.description|raw|nl2br }} <span class="icon-quote-right" style="font-size:0.7em"></span></i>
+            {% endif %}    
+        {% endif %}
+
+        {#% if activity.duration is not null %}
+            <span style="margin-right:10px">{{ "activity.duration"|trans }} : {{ activity.duration|date('H:i:s') }}</span>
+        {% endif %}
+        {% if activity.distance is not null %}
+            <span style="margin-right:10px">{{ "activity.distance"|trans }} : {{ activity.distance }} Km</span>
+        {% endif %}
+
+        {% if activityScores|length > 0 %}
+            <span style="margin-right:10px">{{ "activity.scores"|trans }} :
+            {% for scores in activityScores %}
+                {% if scores.score1 > scores.score2 %}
+                    <span class="label label-info">{{ scores.score1 }}</span>/{{ scores.score2 }} 
+                {% elseif scores.score2 > scores.score1 %}
+                    {{ scores.score1 }}/<span class="label label-info">{{ scores.score2 }}</span>
+                {% else %}
+                    {{ scores.score1 }}/{{ scores.score2 }} 
+                {% endif %}
+            {% endfor %} 
+            </span>
+        {% endif %#}
+        {% if activityTeamates|length > 0 %}
+            <br/>
+            <span style="margin-right:10px">
+                {{ "activity.team-mates"|trans }} :
+                {% for teamMate_user in activityTeamates %}
+                    {% if teamMate_user.id != activity.user_id %}
+                        <a href="{{ path('ks_user_public_profile', { 'username' : teamMate_user.username }) }}">
+                            {{ teamMate_user.username }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            </span>
+        {% endif %}
+
+        {% if activityOpponents|length > 0 %}
+            <br/>
+            <span style="margin-right:10px">
+                {{ "activity.opponents"|trans }} :
+                {% for opponent_user in activityOpponents %}
+                <a href="{{ path('ks_user_public_profile', { 'username' : opponent_user.username }) }}">
+                    {{ opponent_user.username }}
+                </a>
+                {% endfor %}
+            </span>
+        {% endif %}
+
+        {% if activity.sport_id is not null %}
+            <br>
+            <div id="gmap_{{ activity.id }}"></div>
+            <center>
+                <span class="map">
+                    <a href="{{ path('ksActivity_showActivity', { 'activityId' : activity.id }) }}">
+                        <div id="minimap_{{ activity.id }}"></div>
+                    </a>
+                </span>
+            </center>
+            <div class="row">
+                {#<div id="avatarBloc-{{ activity.id }}" class="col-md-6">
+                    {% include 'KsActivityBundle:Activity:_activityPublisherAvatar.html.twig' with { 'display_points' : true } %}
+                </div>#}
+                {#<br/>
+                <div class="col-md-12">
+                    <center>
+                        {% render 'KsCanvasDrawingBundle:CanvasDrawing:activity' with {'activityId': activity.id } %}
+                    </center>
+                </div>#}
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

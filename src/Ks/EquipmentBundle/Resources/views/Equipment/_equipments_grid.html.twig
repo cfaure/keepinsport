@@ -1,0 +1,23 @@
+{% for equipment in equipments %}
+    <div class="equipmentBloc" style="display:inline-block;margin: 5px 5px 5px 5px">
+        {% include 'KsEquipmentBundle:Equipment:_equipmentImage_medium.html.twig' with { 
+            'userId' : userId,
+            'equipment_id' : equipment.id,
+            'equipment_name' : equipment.name,
+            'equipment_imageName' : equipment.avatar,
+            'with_legend_overlay' : true,
+            'creationOrEdition' : creationOrEdition,
+            'userId' : userId ,
+            'allEquipments' : allEquipments
+        } %}
+        <div style="text-align:center">
+            <div> 
+                {% include 'KsEquipmentBundle:Equipment:_addLink.html.twig' with {
+                    'equipment' : equipment,
+                    'userId' : userId ,
+                    'allEquipments' : allEquipments
+                } %} 
+            </div> 
+        </div>
+    </div>
+{% endfor %}

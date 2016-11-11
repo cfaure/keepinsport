@@ -1,0 +1,262 @@
+{% if club is defined %}  
+    {% set action = path('ksClub_publishLink', {'clubId' : club.id }) %}   
+{% else %}
+    {% set action = path('ksActivity_publishLink') %}
+{% endif %}
+
+<div id="publishLinkModal" class='modal hide fade'>
+    <div class='modal-header'>
+        <a class='close' data-dismiss='modal'>&times;</a>
+        <h3 class="sportif">{{ 'publish_a_link'|trans }}</h3>
+    </div>
+    <div class='modal-body'>
+        <div class="messages"></div> 
+        <form id="linkForm"  action="{{ action }}" method="post" {{ form_enctype(form) }}>
+            {{ form_errors(form) }}
+            {{ form_widget(form.label, { attr: {style: "display:none"} }) }}
+            {{ form_widget(form.description, { attr: {class:"input-block-level", style: "height:54px; resize: none;"} } ) }}
+            {{ form_widget(form.photo, { attr: {style: "display:none"} }) }}
+            {{ form_widget(form.link, { attr: {style: "display:none"} }) }} 
+            {{ form_widget(form.viewLink, { attr: {style: "display:none"} }) }}
+            {{ form_widget(form.linkDescription, { attr: {style: "display:none"} }) }}
+            {{ form_rest(form) }}
+        </form>
+        <div class="bodyLoader" align="center"><img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"></div>
+        <div class='externalLink-bloc'>
+            <div id="atc_bar" align="center">
+                <input type="hidden" name="cur_image" id="cur_image"/>
+                <div id="loader">
+                    <div id="attach_content">
+                        <a class="close" href="#">×</a>
+                        <input id="atc_no_images_input" type="checkbox"/>
+                        <label id="atc_no_images_label" for="atc_no_images_input" class="checkbox">Pas de vignette</label>
+                        <br clear="all">
+                        <div id="atc_images_bloc">
+                            <div id="atc_total_image_nav" >
+                                <a href="#" id="prev"><img src="{{ asset('bundles/ksactivity/images/prev.png') }}"  alt="Prev" border="0" /></a>
+                                <a href="#" id="next"><img src="{{ asset('bundles/ksactivity/images/next.png') }}" alt="Next" border="0" /></a>
+                                <span id="cur_image_num">1</span> of <span id="atc_total_images">1</span>
+                            </div>
+
+                            <div id="atc_images"></div>
+                        </div>
+                        <span class="viewLink" style="display:none"></span>
+                        <div id="atc_info">
+                            <a onclick="window.open(this.href); return false;" href="" id="atc_title"></a>
+
+                            <div id="atc_desc"></div>             
+                        </div>
+
+                        <br clear="all" />
+                    </div>
+                </div>
+                <br clear="all" />
+            </div>
+        </div>
+           
+    </div>
+    <div class='modal-footer'>
+        <img class="loader pull-left" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader">
+        <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+        <a href='#' class='publish btn btn-sportif'>{{ 'activities.publishLink'|trans }}</a>
+    </div>
+</div>
+
+<style>
+	#atc_bar{}
+	#attach_content{border:1px solid #ccc;padding:10px;margin-top:10px;}
+	#atc_images {width:100px;height:120px;overflow:hidden;float:left;}
+	#atc_info {text-align:left; /*float:left;*/}
+	#atc_title {font-size:1.2em;display:block;}
+	#atc_url {font-size:0.8em;display:block;}
+	#atc_desc {font-size:0.8em; padding-top:10px}
+	#atc_total_image_nav{float:left;padding-bottom:4px;font-size:0.7em;}
+	#atc_total_images_info{float:left;padding:4px 10px;font-size:0.7em;}
+    #atc_no_images_input {float:left;padding-left:120px}
+    #atc_no_images_label {float:left;padding:4px 10px;font-size:0.7em;}
+    #atc_images_bloc {float:left;width:100px;margin-right:5px}
+</style>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+        var publishLinkModal = $("#publishLinkModal");
+        var bodyLoader = publishLinkModal.find('.bodyLoader');
+        var publishButton = publishLinkModal.find('a.publish');
+        var externalLinkBloc = publishLinkModal.find('.externalLink-bloc');
+        var descriptionTextarea = $('#ks_activitybundle_activitylinktype_description');
+        descriptionTextarea.val("");
+        descriptionTextarea.html("");
+        
+        $('#attach_content').hide();
+        
+        $.fn.pasteEvents = function( delay ) {
+            if (delay == undefined) delay = 20;
+            return $(this).each(function() {
+                var $el = $(this);
+                $el.on("paste", function() {
+                    $el.trigger("prepaste");
+                    setTimeout(function() { $el.trigger("postpaste"); }, delay);
+                });
+            });
+        };
+
+        $('#ks_activitybundle_activitylinktype_description').on("postpaste", function() {
+            $('#attach_content').hide();
+            parse_link($('#ks_activitybundle_activitylinktype_description').val());
+        }).pasteEvents();
+        
+        //On cache le bloc au clic sur la croix
+        $('#attach_content a.close').click(function() {
+            $('#attach_content').hide();
+            publishButton.addClass("disabled");
+        });
+        
+        // next image
+        $('#next').unbind('click');
+        $('#next').bind("click", function(){
+
+            var total_images = parseInt($('#atc_total_images').html());			 
+            if (total_images > 0)
+            {
+                var index = $('#cur_image').val();
+                $('#atc_images > img[id='+index+']').hide();
+                //$('img#'+index).hide();
+                if(index < total_images)
+                {
+                    new_index = parseInt(index)+parseInt(1);
+                }
+                else
+                {
+                    new_index = 1;
+                }
+
+                $('#cur_image').val(new_index);
+                $('#cur_image_num').html(new_index);
+                //$('img#'+new_index).show();
+                $('#atc_images > img[id='+new_index+']').show();
+            }
+        });	
+
+        // prev image
+        $('#prev').unbind('click');
+        $('#prev').bind("click", function(){
+
+            var total_images = parseInt($('#atc_total_images').html());				 
+            if (total_images > 0)
+            {
+                var index = $('#cur_image').val();
+                $('#atc_images > img[id='+index+']').hide();
+                //$('img#'+index).hide();
+                if(index > 1)
+                {
+                    new_index = parseInt(index)-parseInt(1);
+                }
+                else
+                {
+                    new_index = total_images;
+                }
+
+                $('#cur_image').val(new_index);
+                $('#cur_image_num').html(new_index);
+                $('#atc_images > img[id='+new_index+']').show();
+                //$('img#'+new_index).show();
+            }
+        });	
+		
+		function parse_link (url)
+		{
+			if(!isValidURL(url))
+			{
+				showInformation('Please enter a valid url.');
+				return false;
+			}
+			else
+			{
+				bodyLoader.show();
+
+                $('#atc_title').attr('href', url);
+
+				$.post(Routing.generate('ksActivity_parseLink'), {'link' : escape(url)}, function(response){
+					bodyLoader.hide();
+                    
+                    if ( response.parseResponse == 1 ) {
+                        //Set Content
+                        $('#atc_title').html(response.title);
+                        $('#atc_desc').html(response.description);
+                        
+                        var viewLink = $('#attach_content').find(".viewLink");
+                        if (response.viewUrl != "") {
+                           viewLink.html(response.viewUrl);
+                        } 
+
+                        //Flip Viewable Content 
+                        $('#attach_content').fadeIn('slow');
+
+                        $('#atc_total_images').html(response.total_images);
+                        $('#atc_images').html(' ');
+
+                        if( response.total_images <1 ) {
+                            //$('#atc_total_images_info').hide();
+                            $('#atc_total_image_nav').hide();  
+                        } else {
+
+
+                            $.each(response.images, function (a, b)
+                            {
+                                $('#atc_images').append('<img src="'+b.img+'" width="100" id="'+(a+1)+'">');
+                            });
+                            
+                            $('#atc_images img').hide(); 
+
+                            //Show first image
+                            $('#atc_images > img[id=1]').fadeIn();
+                            //$('img#1').fadeIn();
+                            $('#cur_image').val(1);
+                            $('#cur_image_num').html(1);
+
+                        }
+                        
+                        $('#ks_activitybundle_activitylinktype_description').html("");
+                        $('#ks_activitybundle_activitylinktype_description').val("");
+                        publishButton.removeClass("disabled");
+                        externalLinkBloc.show();
+                    } else {
+                        showInformation(response.errorMessage);
+                    }
+                }); 
+                
+                
+                
+                $( "#atc_no_images_input"  ).bind( "click", function(event, ui) {
+                    if( $( this ).is(":checked") ) {
+                        //$('#atc_total_images_info').hide();
+                        $('#atc_total_image_nav').hide();
+                        $('#atc_images').css("visibility", "hidden");
+                    } else {
+                        //$('#atc_total_images_info').show();
+                        $('#atc_total_image_nav').show();
+                        $('#atc_images').css("visibility", "visible");
+                    }
+                });
+                
+                if ( $( "#atc_no_images_input" ).is(":checked") ) {
+                    $( "#atc_no_images_input" ).click();
+                }
+			}
+		};	
+	});
+
+	function isValidURL(url)
+	{
+		var RegExp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+		
+		if(RegExp.test(url)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+    
+       
+    
+</script>

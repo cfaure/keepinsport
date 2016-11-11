@@ -1,0 +1,11 @@
+<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+    {{ 'user.my_profile.label'|trans }}
+    <b class="caret"></b>
+</a>
+<ul class="dropdown-menu">
+    
+    <li><a href="{{ path('ks_league_leagueStandings') }}">{{ 'league.label'|trans }}</a></li>
+    <li><a href="{{ path('ks_activity_trophiesList') }}">{{ 'trophies.label'|trans }}</a></li>
+    <li><a href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">{{ 'user.show_my_public_profile'|trans }}</a></li>
+</ul>
+ 

@@ -1,0 +1,260 @@
+{% block _ksSportTypeStats_sport_widget %}
+    {% spaceless %}
+        {#<div {{ block('widget_container_attributes') }}>#}
+        <span id="{{ id }}Container">    
+            {{ form_widget(form, { attr: { style: "display:none", class:"selectSports" } }) }}
+            {% render "KsActivityBundle:Sport:customSelectSports" with {"context" : "Stats", "multiple": "0"} %}
+            {{ form_rest(form) }}
+        </span>
+        <script type="text/javascript">
+            $container      = $("#{{ id }}Container");
+            $select         = $("#{{ id }}");
+            $customSelect   = $container.find(".customSelectSports");
+            
+            //Sur mobile on affiche un select normal pour que l'os du mobile gère correctement 
+            if( document.body.clientWidth >= 963 ) { 
+                if( !$select.is(":disabled") ) {
+                    $customSelect.select2({
+                        placeholder: "{{ 'actions.select-sport'|trans }}",
+                        width : 250,
+                        //allowClear: true,
+                        formatResult: function(state) {
+                            var codeSport = state.element[0].getAttribute("codeSport");
+                            if (!codeSport) return state.text; 
+                            return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+                        },
+                    });
+                    //console.log($select);
+                    //console.log($select.find("option:selected"));
+                    //console.log($select.find("option:selected").val());
+                    //console.log($select.val());
+                    //alert($select.val());
+                    $customSelect.select2("val", "");
+                 } else {
+                     $customSelect.attr("disabled", "");
+                     $customSelect.addClass("disabled");
+                 }   
+            }
+            
+            $customSelect.change(function() { 
+                $select.val($( this ).val());
+                $select.change();
+            });
+            
+            
+        </script>
+
+    {% endspaceless %}
+{% endblock %}
+        
+{% block _ksSportType_sport_widget %}
+    {% spaceless %}
+        {#<div {{ block('widget_container_attributes') }}>#}
+        <span id="{{ id }}Container">    
+            {{ form_widget(form, { attr: { style: "display:none", class:"selectSports" } }) }}
+            {% render "KsActivityBundle:Sport:customSelectSports" with {"context" : "", "multiple": "0"} %}
+            {{ form_rest(form) }}
+        </span>
+        <script type="text/javascript">
+            $container      = $("#{{ id }}Container");
+            $select         = $("#{{ id }}");
+            $customSelect   = $container.find(".customSelectSports");
+            
+            //Sur mobile on affiche un select normal pour que l'os du mobile gère correctement 
+            if( document.body.clientWidth >= 963 ) { 
+                if( !$select.is(":disabled") ) {
+                    $customSelect.select2({
+                        placeholder: "{{ 'actions.select-sport'|trans }}",
+                        width : 250,
+                        //allowClear: true,
+                        formatResult: function(state) {
+                            var codeSport = state.element[0].getAttribute("codeSport");
+                            if (!codeSport) return state.text; 
+                            return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+                        },
+                    });
+                    //console.log($select);
+                    //console.log($select.find("option:selected"));
+                    //console.log($select.find("option:selected").val());
+                    //console.log($select.val());
+                    //alert($select.val());
+                    $customSelect.select2("val", "");
+                 } else {
+                     $customSelect.attr("disabled", "");
+                     $customSelect.addClass("disabled");
+                 }   
+            }
+            
+            $customSelect.change(function() { 
+                $select.val($( this ).val());
+                $select.change();
+            });
+            
+            
+        </script>
+
+    {% endspaceless %}
+{% endblock %}
+
+{% block _ksSportTypeMulti_sport_widget %}
+    {% spaceless %}
+        {#<div {{ block('widget_container_attributes') }}>#}
+        <span id="{{ id }}Container">    
+            {{ form_widget(form, { attr: { style: "display:none", class:"selectSports" }, multiple:"multiple" }) }}
+            {% render "KsActivityBundle:Sport:customSelectSports" with {"multiple": "1"} %}
+            {{ form_rest(form) }}
+            
+        </span>
+        <script type="text/javascript">
+            $container      = $("#{{ id }}Container");
+            $select         = $("#{{ id }}");
+            $customSelect   = $container.find(".customSelectSports");
+            $selectedSports = "";
+            
+            //Sur mobile on affiche un select normal pour que l'os du mobile gère correctement 
+            if( document.body.clientWidth >= 963 ) { 
+                if( !$select.is(":disabled") ) {
+                    $customSelect.select2({
+                        placeholder: "{{ 'actions.select-sport'|trans }}",
+                        width : 250,
+                        //allowClear: true,
+                        formatResult: function(state) {
+                            var codeSport = state.element[0].getAttribute("codeSport");
+                            if (!codeSport) return state.text; 
+                            return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+                        },
+                    });
+                    $customSelect.select2("val", "");
+                 } else {
+                     $customSelect.attr("disabled", "");
+                     $customSelect.addClass("disabled");
+                 }   
+            }
+            
+            $customSelect.change(function() { 
+                $select.val($( this ).val());
+                $select.change();
+            });
+           
+            
+        </script>
+
+    {% endspaceless %}
+{% endblock %}   
+        
+{% block _ksSportTypeMultiNotAll_sport_widget %}
+    {% spaceless %}
+        {#<div {{ block('widget_container_attributes') }}>#}
+        <span id="{{ id }}Container">    
+            {{ form_widget(form, { attr: { style: "display:none", class:"selectSports" }, multiple:"multiple" }) }}
+            {% render "KsActivityBundle:Sport:customSelectSportsNotAll" with {"multiple" : "1" } %}
+            {{ form_rest(form) }}
+        </span>
+        <script type="text/javascript">
+            $container      = $("#{{ id }}Container");
+            $select         = $("#{{ id }}");
+            $customSelect   = $container.find(".customSelectSports");
+            $selectedSports = "";
+            
+            //Sur mobile on affiche un select normal pour que l'os du mobile gère correctement 
+            if( document.body.clientWidth >= 963 ) { 
+                if( !$select.is(":disabled") ) {
+                    $customSelect.select2({
+                        placeholder: "{{ 'actions.select-sport'|trans }}",
+                        width : 250,
+                        //allowClear: true,
+                        formatResult: function(state) {
+                            var codeSport = state.element[0].getAttribute("codeSport");
+                            if (!codeSport) return state.text; 
+                            return "<img  src='{{ asset('V2/images/sports/') }}" + codeSport +"-black.png'/> " + state.text;
+                        },
+                    });
+                    $customSelect.select2("val", "");
+                 } else {
+                     $customSelect.attr("disabled", "");
+                     $customSelect.addClass("disabled");
+                 }   
+            }
+            
+            $customSelect.change(function() { 
+                $select.val($( this ).val());
+                $select.change();
+            });
+           
+            
+        </script>
+
+    {% endspaceless %}
+{% endblock %}         
+        
+{% block _equipmentType_fromMenu_type_widget %}
+    {% spaceless %}
+        <span id="{{ id }}Container">    
+            {{ form_widget(form, { attr: { style: "display:none" }}) }}
+            {% render "KsUserBundle:Equipment:customSelectEquipmentType" %}
+            {{ form_rest(form) }}
+        </span>
+        <script type="text/javascript">
+            $containerType_fromMenu  = $("#{{ id }}Container");
+            $selectType_fromMenu     = $("#{{ id }}");
+            $customSelectType_fromMenu   = $containerType_fromMenu.find(".customSelectEquipmentType");
+            $selectedType_fromMenu = "";
+            
+            //Sur mobile on affiche un select normal pour que l'os du mobile gère correctement 
+            if( document.body.clientWidth >= 963 ) { 
+                if( !$selectType_fromMenu.is(":disabled") ) {
+                    $customSelectType_fromMenu.select2({
+                        placeholder: "{{ 'actions.select-sport'|trans }}",
+                        width : 250,
+                    });
+                    $customSelectType_fromMenu.select2("val", "");
+                 } else {
+                     $customSelectType_fromMenu.attr("disabled", "");
+                     $customSelectType_fromMenu.addClass("disabled");
+                 }   
+            }
+            
+            $customSelectType_fromMenu.change(function() { 
+                $selectType_fromMenu.val($( this ).val());
+                $selectType_fromMenu.change();
+                $("#selectedType_fromMenu").val($customSelectType_fromMenu.select2("val"));
+            });
+        </script>
+    {% endspaceless %}
+{% endblock %} 
+        
+{% block _equipmentType_type_widget %}
+    {% spaceless %}
+        <span id="{{ id }}Container">    
+            {{ form_widget(form, { attr: { style: "display:none" }}) }}
+            {% render "KsUserBundle:Equipment:customSelectEquipmentType" %}
+            {{ form_rest(form) }}
+        </span>
+        <script type="text/javascript">
+            $containerType  = $("#{{ id }}Container");
+            $selectType     = $("#{{ id }}");
+            $customSelectType   = $containerType.find(".customSelectEquipmentType");
+            $selectedType = "";
+            
+            //Sur mobile on affiche un select normal pour que l'os du mobile gère correctement 
+            if( document.body.clientWidth >= 963 ) { 
+                if( !$selectType.is(":disabled") ) {
+                    $customSelectType.select2({
+                        placeholder: "{{ 'actions.select-sport'|trans }}",
+                        width : 250,
+                    });
+                    $customSelectType.select2("val", "");
+                 } else {
+                     $customSelectType.attr("disabled", "");
+                     $customSelectType.addClass("disabled");
+                 }   
+            }
+            
+            $customSelectType.change(function() { 
+                $selectType.val($( this ).val());
+                $selectType.change();
+                $("#selectedType").val($customSelectType.select2("val"));
+            });
+        </script>
+    {% endspaceless %}
+{% endblock %}           

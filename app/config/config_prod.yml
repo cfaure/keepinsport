@@ -1,0 +1,35 @@
+imports:
+    - { resource: config.yml }
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+        nested:
+            type:  stream
+            path:  %kernel.logs_dir%/%kernel.environment%.log
+            level: debug
+
+#lexik_maintenance:
+#    authorized_ips: []
+#    driver:
+#        # File driver
+#        class: '\Lexik\Bundle\MaintenanceBundle\Drivers\FileDriver'      # Classe pour le FileDriver
+#        options: {file_path: %kernel.root_dir%/lock}                     # file_path est le chemin vers votre fichier, ici le fichier est lock
+        
+swiftmailer:
+    transport: smtp
+    encryption: tls
+    port: 587
+    auth_mode:  login
+    host: 
+    username: 
+    password: 

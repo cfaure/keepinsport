@@ -1,0 +1,57 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#deleteTeamCompositionButton").click(function() {
+                $("#teamCompositionDeleteForm").submit();
+            });
+        });
+    </script>
+{% endblock %}
+    
+{% block content %}
+    <h1 class="clubs">{{ teamComposition.name }}</h1>
+    <div class="blocHeaderSeparator"></div>
+    date : {{ teamComposition.date|date("d/m/Y H:i") }}
+    
+    <br/>
+    <a class="btn" href="{{ path('ksTeam_show', {"teamId" : teamComposition.team.id}) }}">
+        <i class="icon-backward"></i> Retour
+    </a>
+    <a rel=tooltip" title="Editer" class="btn btn-clubs" href="{{ path('ksTeamComposition_edit', { 'teamCompositionId': teamComposition.id }) }}">
+        <i class="glyphicon glyphicon-pencil icon-white"></i>
+    </a>
+    <button rel=tooltip" title="Supprimer" id="deleteTeamCompositionButton" class="btn btn-clubs">
+        <i class="icon-remove icon-white"></i>
+    </button>
+    
+    <a rel=tooltip" title="Informer les sportifs selectionnés" class="btn btn-clubs" href="{{ path('ksTeamComposition_informSelectedUsers', { 'teamCompositionId': teamComposition.id }) }}">
+        <i class="icon-envelope icon-white"></i>
+    </a>
+    
+    
+    <h2>Sportifs participants</h2>
+    {% for teamCompositionHasUser in teamComposition.users %}
+        <a rel="tooltip" title="{{ teamCompositionHasUser.user.username }}" href="{{ path('ks_user_public_profile', { 'username' : teamCompositionHasUser.user.username }) }}">
+            {% if teamCompositionHasUser.user.userDetail is defined and teamCompositionHasUser.user.userDetail != null %}
+                {% set user_imageName = teamCompositionHasUser.user.userDetail.imageName %}
+            {% else %}
+                {% set user_imageName = null %}
+            {% endif %}
+            {% include 'KsUserBundle:User:_userImage.html.twig' with {' user_imageName' :  user_imageName }%}
+        </a>
+    {% endfor %}
+    
+    <form id="teamCompositionDeleteForm" action="{{ path('ksTeamComposition_delete', { 'teamCompositionId': teamComposition.id }) }}" method="post">    
+        {{ form_rest(deleteTeamCompositionform) }}  
+    </form>
+    
+    
+
+{% endblock %}

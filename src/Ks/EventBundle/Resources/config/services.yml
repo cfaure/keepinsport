@@ -1,0 +1,7 @@
+services: 
+    ks_event.twig.extension:
+        class: Ks\EventBundle\Twig\Extensions\KsEventExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - "@service_container"

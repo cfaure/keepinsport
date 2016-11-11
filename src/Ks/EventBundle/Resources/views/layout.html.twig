@@ -1,0 +1,22 @@
+{% extends is_granted("ROLE_USER")
+    ? "::layout.html.twig"
+    : "::noauth.html.twig"
+%}
+
+{% block title %}
+	Event - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+	{# On définit un sous-titre commun à toutes les pages du bundle, par exemple #}
+	{#<h1>{{ event|trans({}, 'KsEventBundle') }}</h1>#}
+
+    <div>
+        {# On définit un nouveau block, que les vues du bundle pourront étendre #}
+        {% block ks_event_content %}
+            
+        {% endblock %}
+    </div>
+
+{% endblock %}

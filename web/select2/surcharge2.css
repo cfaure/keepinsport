@@ -1,0 +1,50 @@
+/*.select2-container .select2-choice span {
+    width: 330px;
+}*/
+
+.searchSelect.select2-container .select2-choice, .customSelectSports.select2-container .select2-choice {
+    -moz-user-select: none;
+    background-clip: none;
+    background-color: #FFFFFF;
+    background-image: none;
+    border-radius: 0;
+}
+
+.searchSelect.select2-container .select2-choice div {
+    background:none;
+    border :0;
+    color : #DDDDDD;
+    padding-top:5px;
+}
+
+.searchSelect.select2-container .select2-choice span {
+    width: 100%;
+}
+
+.customSelectSports.select2-container .select2-choice div {
+    background:none;
+    border :0;
+    color : #DDDDDD;
+}
+
+@font-face{
+  font-family:'FontAwesome';
+  src:url('../font/fontawesome/font/fontawesome-webfont.eot?v=3.0.1');
+  src:url('../font/fontawesome/font/fontawesome-webfont.eot?#iefix&v=3.0.1') format('embedded-opentype'),
+  url('../font/fontawesome/font/fontawesome-webfont.woff?v=3.0.1') format('woff'),
+  url('../font/fontawesome/font/fontawesome-webfont.ttf?v=3.0.1') format('truetype');
+  font-weight:normal;
+  font-style:normal;
+}
+
+.searchSelect.select2-container .select2-choice div b {
+    background:none;
+}
+
+.searchSelect.select2-container .select2-choice div b:before {
+    font-family:FontAwesome;
+    content:"\f002";
+    position: relative;
+    top: -5px;
+    font-weight:normal;
+}

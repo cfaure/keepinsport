@@ -1,0 +1,4 @@
+{#<center>
+    <b>{{ event.title }}</b>
+</center>#}
+{% include 'KsEventBundle:Event:_eventInfos.html.twig' with {'event': event, 'participations' : participations } %}

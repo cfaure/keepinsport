@@ -1,0 +1,178 @@
+<div class="modal fade" id="coachPricesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #da2032!important">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Fermer</span></button>
+                <h4 class="modal-title"><img src="{{ asset('V2/images/icon-elite.png') }}" title="Pack Elite" /> Pack Elite <span id="coachLabel"></span></h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 pack">
+                        <p> 
+                            <span class="bleu">SUIVI SUR-MESURE :</span> Pour mieux connaître les prestations de ton coach nous t'offrons la possibilité de le contacter afin que vous validiez ensemble ton projet sportif.
+                        </p>
+                        <p>
+                            Pour celà, nous te proposons de remplir ton <b>questionnaire coach</b> qui permettra à ton futur coach de mieux répondre à tes questions.
+                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                Celui-ci se trouve au niveau de ton profil, onglet <i>"5. questionnaire coach"</i>, accessible ci-dessous.
+                            {% else %}
+                                Pour celà il te faut un compte utilisateur sur Keepinsport, nous t'invitons donc à te créer un compte ci-dessous.
+                            {% endif %}
+                        </p>
+
+                        <p> Pour info voici ses tarifs :</p>
+
+                        <ul class="col-md-12">
+                            <li class="content">
+                                <div id="radio1" class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadiosCoach" id="optionsRadiosCoach1" checked><span class="bleu" id="optionsRadiosCoach1Label"></span>
+                                        <span id="optionsRadiosCoach1Label2" style="font-size: 0.9em"></span>
+                                    </label>
+                                </div>
+                                <div id="radio2" class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadiosCoach" id="optionsRadiosCoach2"><span class="bleu" id="optionsRadiosCoach2Label"></span>
+                                        <span id="optionsRadiosCoach2Label2" style="font-size: 0.9em"></span>
+                                    </label>
+                                </div>
+                                <div id="radio3" class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadiosCoach" id="optionsRadiosCoach3"><span class="bleu" id="optionsRadiosCoach3Label"></span>
+                                        <span id="optionsRadiosCoach3Label2" style="font-size: 0.9em"></span>
+                                    </label>
+                                </div>
+                                <div id="radio4" class="radio">
+                                    <label>
+                                        <input type="radio" name="optionsRadiosCoach" id="optionsRadiosCoach4"><span class="bleu" id="optionsRadiosCoach4Label"></span>
+                                        <span id="optionsRadiosCoach4Label2" style="font-size: 0.9em"></span>
+                                    </label>
+                                </div>
+                                <br/>
+                                <span id="coachDiversLabel1"></span><span class="bleu" id="coachDiversLabel2"></span><span id="coachDiversLabel3"></span><span class="bleu" id="coachDiversLabel4"></span>
+                                <br/><br/>
+                                <center>
+                                    <p> 
+                                        <span style="font-size: 0.9em">Rq : Toute période commencée est due (paiement en début de période) Pour plus d'information, consulter nos conditions générales de ventes <a href="{{ path('ks_sales_conditions') }}">ici</a></span>
+                                    </p>
+                                </center>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <br/>
+                <div id="blocWatchElite">
+                    <p> 
+                        <span class="bleu" id="labelWatchElite"></span> : Sélectionne un mode de paiement pour ta montre !
+                    </p>         
+                    <ul class="col-md-12">
+                        <li class="content">           
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadiosEliteWatch" id="eliteWatchChoice1" checked ><span class="bleu" id="eliteWatchChoice1Label"></span>
+                                    <span style="font-size: 0.9em">(en 1 fois)</span>
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadiosEliteWatch" id="eliteWatchChoice2"><span class="bleu" id="eliteWatchChoice2Label"></span>
+                                    <span style="font-size: 0.9em">(en 2 fois <b>sans frais</b>)</span>
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadiosEliteWatch" id="eliteWatchChoice3"><span class="bleu" id="eliteWatchChoice3Label"></span>
+                                    <span style="font-size: 0.9em">(en 3 fois <b>sans frais</b>)</span>
+                                </label>
+                            </div>
+                            <br/>
+                            {#<p> 
+                                <span style="font-size: 0.9em">* : pour une estimation des mensualites, clique <a id="calculatorElite" href="https://secure.kwixo.com/credit/calculator.htm?merchantId=97718" target="_blank">ici</a></span>
+                            </p>#}
+                            <br/>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 pack">
+                        <center>
+                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and app.user.isAllowedPackPremium%} <a ref="tooltip" title="Voir les différentes offres" href="{{ path('ksOffers') }}" style="font-size: 0.9em!important" class="label label-gold">15% offert sur l'achat d'une montre !</a>
+                            {% else %} <span style="font-size: 1.2em!important" class="label label-gold">15% offert sur l'achat d'une montre !</span>
+                            {% endif %}
+                            <br/>
+                            <br/>
+                            <br/>
+                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %} 
+                                <a id="paymentEliteBtn" type="button" class="btn btn-success">Suite : questionnaire coach</a>
+                            {% else %}
+                                <a id="paymentEliteBtn" type="button" class="btn btn-success">Suite : création d'un compte</a>
+                            {% endif %}
+                        </center>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">  
+    $("#paymentEliteBtn").click(function() {
+        if (!$("#paymentEliteBtn").hasClass("disabled")) {
+            $("#paymentEliteBtn").addClass("disabled");
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                addUserAction('payer', 'elite', false);
+
+                /*console.log(planSelected);
+                console.log(watchSelected);
+                console.log(actualChoice);
+                console.log(watchOfferChoice);
+                console.log(packOfferChoice);*/
+                if (planSelected == 'advanced1' || planSelected == 'advanced2' || planSelected == 'advanced3') pack = 'premium';
+                else if (planSelected == 'elite1' || planSelected == 'elite2' || planSelected == 'elite3') pack = 'elite';
+                else pack = 'defis';
+
+                $.post(
+                        Routing.generate('ksUser_setPrefPack'), 
+                        {
+                            "pack"  : pack,
+                            "watch" : watchSelected,
+                            "coach" : actualChoice,
+                            "watchOfferChoice" : watchOfferChoice,
+                            "packOfferChoice" : packOfferChoice
+                        },
+                        function(response) {
+                            if( response.response == 1 ) {
+                                showInformation('Ton futur coach te contactera dès que tu auras rempli ton <b>questionnaire sportif</b> (onglet n°5 de ton profil), à très vite :)');
+                                setTimeout(function() {
+                                    document.location.href = Routing.generate('ksProfile_V2');
+                                },3000);
+                            }
+                        }
+                    );
+
+                $("#coachPricesModal").modal('hide');
+                $("#paymentEliteBtn").removeClass("disabled");
+            {% else %}
+                //Cas page login
+                addUserAction('login', 'elite', false);
+
+                console.log(planSelected);
+                console.log(watchSelected);
+                console.log(actualChoice);
+                console.log(watchOfferChoice);
+                console.log(packOfferChoice);
+                if (packOfferChoice == 'default') packOfferChoice = '110€/mois sur 3 mois';
+                if (planSelected == 'advanced1' || planSelected == 'advanced2' || planSelected == 'advanced3') pack = 'premium';
+                else if (planSelected == 'elite1' || planSelected == 'elite2' || planSelected == 'elite3') pack = 'elite';
+                else pack = 'defis';
+
+                parameters = "?pack=" + pack + "&watch=" + watchSelected + "&coach=" + actualChoice + "&watchOfferChoice=" + watchOfferChoice + "&packOfferChoice=" + packOfferChoice;
+                console.log(parameters);
+                document.location.href = "{{ path('fos_user_registration_register') }}" + parameters;
+            {% endif %}
+        }
+    });
+</script>

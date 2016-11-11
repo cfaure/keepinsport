@@ -1,0 +1,545 @@
+<script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/functions.js') }}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Make monochrome colors and set them as default for all pies
+        Highcharts.getOptions().plotOptions.pie.colors = (function () {
+            var colors = [],
+                base = Highcharts.getOptions().colors[0],
+                i;
+
+            for (i = 0; i < 10; i += 1) {
+                // Start out with a darkened base color (negative brighten), and end
+                // up with a much brighter color
+                colors.push(Highcharts.Color(base).brighten(-i/ 7).get());
+            }
+            return colors;
+        }());
+        
+        {{ pieBySportCoaching|raw }}
+
+        $('#pieBySportCoaching').highcharts({
+            chart: {
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.sport-repart'|trans|upper }}'
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.duration}</b>'
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    size:'{% if coachingIsBigger == 1 %}100{% else %}{{ coeff }}{% endif %}%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        //enabled: false,
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    //showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieBySportCoaching
+            }]
+        });
+        
+        {{ pieBySportDone|raw }}
+
+        $('#pieBySportDone').highcharts({
+            chart: {
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.sport-repart'|trans|upper }}'
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.duration}</b>'
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    size:'{% if coachingIsBigger == 1 %}{{ coeff }}{% else %}100{% endif %}%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        //enabled: false,
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    //showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieBySportDone
+            }]
+        });
+        if (pieBySportDone.length == 0) $('#pieBySportDone').html("<br/><span>{{ 'coaching.no-activities-found'|trans }}</span>");
+
+        {{ pieByCategoryCoaching|raw }}
+
+        $('#pieByCategoryCoaching').highcharts({
+            chart: {
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.category-repart'|trans|upper }}'
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.duration}</b>'
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    size:'{% if coachingIsBigger == 1 %}100{% else %}{{ coeff }}{% endif %}%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        //enabled: false,
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    //showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieByCategoryCoaching
+            }]
+        });
+        
+        {{ pieByCategoryDone|raw }}
+
+        $('#pieByCategoryDone').highcharts({
+            chart: {
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.category-repart'|trans|upper }}'
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.duration}</b>'
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    size:'{% if coachingIsBigger == 1 %}{{ coeff }}{% else %}100{% endif %}%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        //enabled: false,
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    //showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieByCategoryDone
+            }]
+        });
+        if (pieBySportDone.length == 0) $('#pieByCategoryDone').html("<br/><span>{{ 'coaching.no-activities-found'|trans }}</span>");
+        
+        {{ pieByDifficultyCoaching|raw }}
+
+        $('#pieByDifficultyCoaching').highcharts({
+            chart: {
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.difficulty-repart'|trans|upper }}'
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.duration}</b>'
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    size:'{% if coachingIsBigger == 1 %}100{% else %}{{ coeff }}{% endif %}%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        //enabled: false,
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    //showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieByDifficultyCoaching
+            }]
+        });
+        
+        {{ pieByDifficultyDone|raw }}
+
+        $('#pieByDifficultyDone').highcharts({
+            chart: {
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.difficulty-repart'|trans|upper }}'
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.duration}</b>'
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    size:'{% if coachingIsBigger == 1 %}{{ coeff }}{% else %}100{% endif %}%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        //enabled: false,
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }
+                    },
+                    //showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieByDifficultyDone
+            }]
+        });
+        if (pieBySportDone.length == 0) $('#pieByDifficultyDone').html("<br/><span>{{ 'coaching.no-activities-found'|trans }}</span>");
+
+        {{ pieByTimeZoneCoaching|raw }}
+
+        $('#pieByTimeZoneCoaching').highcharts({
+            chart: {
+                type: 'column'
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.duration-repart'|trans|upper }}'
+                text: null
+            },
+            exporting: {
+                enabled: false
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category',
+                labels: {
+                    rotation: 0,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                //max : $('#pieByTimeZoneDone').highcharts().yAxis[0].max > $('#pieByTimeZoneCoaching').yAxis[0].max ? $('#pieByTimeZoneDone').highcharts().yAxis[0].max : $('#pieByTimeZoneCoaching').yAxis[0].max,
+                title: {
+                    text: '{{ 'coaching.duration'|trans }} (h)'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                //pointFormat: '{series.name}: <b>{point.occurences}</b>'
+                pointFormat: 'Séances : <b>{point.occurences}</b><br/>{{ 'coaching.duration'|trans }} : <b>{point.duration}</b>'
+            },
+            series: [{
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieByTimeZoneCoaching,
+                dataLabels: {
+                    enabled: true,
+                    //rotation: -90,
+                    color: 'white',
+                    //align: 'right',
+                    x: 0,
+                    y: 0,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif',
+                        textShadow: '0 0 3px black'
+                    },
+                    formatter: function() {
+                        return ("<span>" + this.point.occurences + "</span>");
+                    }
+                }
+            }]
+        });
+                
+        {{ pieByTimeZoneDone|raw }}
+
+        $('#pieByTimeZoneDone').highcharts({
+            chart: {
+                type: 'column'
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.duration-repart'|trans|upper }}'
+                text: null
+            },
+            exporting: {
+                enabled: false
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category',
+                labels: {
+                    rotation: 0,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                //max : $('#pieByTimeZoneDone').highcharts().yAxis[0].max > $('#pieByTimeZoneCoaching').yAxis[0].max ? $('#pieByTimeZoneDone').highcharts().yAxis[0].max : $('#pieByTimeZoneCoaching').yAxis[0].max,
+                title: {
+                    text: '{{ 'coaching.duration'|trans }} (h)'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                pointFormat: 'Séances : <b>{point.occurences}</b><br/>{{ 'coaching.duration'|trans }} : <b>{point.duration}</b>'
+            },
+            series: [{
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieByTimeZoneDone,
+                dataLabels: {
+                    enabled: true,
+                    //rotation: -90,
+                    color: 'white',
+                    //align: 'right',
+                    x: 0,
+                    y: 0,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif',
+                        textShadow: '0 0 3px black'
+                    },
+                    formatter: function() {
+                        return ("<span>" + this.point.occurences + "</span>");
+                    }
+                }
+            }]
+        });
+        
+        {{ pieByHRZone|raw }}
+
+        $('#pieByHRZone').highcharts({
+            chart: {
+            },
+            credits: {
+                enabled: false
+            },
+            title: {
+                //text: '{{ 'coaching.hr-repart'|trans|upper }}'
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{point.label}<br clear="all">{series.name}: <b>{point.duration}</b>'
+            },
+            exporting: {
+                enabled: false
+            },
+            plotOptions: {
+                pie: {
+                    size:'100%',
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    colors: {0: 'rgb(244, 57, 76)', 1: 'rgb(208, 21, 40)', 2: 'rgb(197, 25, 29)', 3: 'rgb(160, 25, 25)', 4: 'rgb(99, 0, 0)'},
+                    dataLabels: {
+                        enabled: false,
+                        /*enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} %',
+                        style: {
+                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                        }*/
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: '{{ 'coaching.duration'|trans }}',
+                data: pieByHRZone
+            }]
+        });
+        if (pieBySportDone.length == 0) $('#pieByHRZone').html("<span>{{ 'coaching.no-activities-found'|trans }}</span>");
+        
+        {% if planType is not null %}
+            $max = $('#pieByTimeZoneDone').highcharts().yAxis[0].max > $('#pieByTimeZoneCoaching').highcharts().yAxis[0].max ? $('#pieByTimeZoneDone').highcharts().yAxis[0].max : $('#pieByTimeZoneCoaching').highcharts().yAxis[0].max;
+            $('#pieByTimeZoneCoaching').highcharts().yAxis[0].setExtremes(0, $max);
+        {% else %} 
+            $max = $('#pieByTimeZoneDone').highcharts().yAxis[0].max;
+        {% endif %}
+        $('#pieByTimeZoneDone').highcharts().yAxis[0].setExtremes(0, $max);
+        
+        $("#launchVisitButton").removeClass("disabled");
+        
+        {% if visitSeenPreference is defined and visitSeenPreference|length == 0 or visitSeenPreference[0]['date'] is defined and visitSeenPreference[0]['date'] is null %}
+            startIntro();
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and app.user.id != 1 %}
+                $.ajax({
+                    url: Routing.generate('ksUser_setDashboardSeen'),
+                    type: "POST",
+                    success: function (data) {
+                    }
+                });
+            {% endif %}
+        {% endif %}
+    });
+</script>
+
+{% if planType is not null %}
+    {% set size = 6 %}
+{% else %}
+    {% set size = 12 %}
+{% endif %}
+
+<div class="row">
+    {% if planType is not null %}
+        <div class="col-md-6 entete-planifie">
+            <span class="glyphicon glyphicon-calendar"></span>Planifié : {{ totalSessionsScheduled }} {{ 'coaching.activities'|trans }}, {{ totalCoachingDuration }}
+        </div>
+    {% endif %}
+    <div class="col-md-{{size}} entete-realise">
+        <span class="glyphicon glyphicon-ok"></span>Réalisé : {{ totalActivitiesDone }} {{ 'coaching.activities'|trans }}, {{ totalActivitiesDuration }}
+    </div>
+</div>
+
+{% if planType is not null %}
+    <div class="row" id="repartBySport">
+        {#<div class="col-md-12 entete-planifie">
+            <span class="glyphicon glyphicon-calendar"></span>Planifié
+        </div>
+        <div class="col-md-1 mobile bleu">
+            <span class="glyphicon glyphicon-calendar"></span>&nbsp;Planifié
+        </div>#}
+        <h2 class="bleu">{{ 'coaching.sport-repart'|trans|upper }}</h2>
+        <div id="pieBySportCoaching" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class="col-md-6 first"></div>
+        <div id="pieBySportDone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class="col-md-6 first"></div>
+    </div>
+    <div class="row" id="repartByCategory">
+        <h2 class="bleu">{{ 'coaching.category-repart'|trans|upper }}</h2>
+        <div id="pieByCategoryCoaching" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class="col-md-6 first"></div>
+        <div id="pieByCategoryDone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class="col-md-6 first"></div>
+    </div>
+    <div class="row" id="repartByDifficulty">
+        <h2 class="bleu">{{ 'coaching.difficulty-repart'|trans|upper }}</h2>
+        <div id="pieByDifficultyCoaching" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class="col-md-6 first"></div>
+        <div id="pieByDifficultyDone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class="col-md-6 first"></div>
+    </div>
+    <div class="row" id="repartByDuration">
+        <h2 class="bleu">{{ 'coaching.duration-repart'|trans|upper }}</h2>
+        <div id="pieByTimeZoneCoaching" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class="col-md-6 first"></div>
+        <div id="pieByTimeZoneDone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class="col-md-6 first"></div>
+    </div>
+{% else %}
+    <div class="row">
+        <div class="col-md-6 first">
+            <h2 class="bleu">{{ 'coaching.sport-repart'|trans|upper }}</h2>
+            <div id="pieBySportDone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class=""></div>
+        </div>
+        <div class="col-md-6 first">
+            <h2 class="bleu">{{ 'coaching.category-repart'|trans|upper }}</h2>
+            <div id="pieByCategoryDone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class=""></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 first">
+            <h2 class="bleu">{{ 'coaching.difficulty-repart'|trans|upper }}</h2>
+            <div id="pieByDifficultyDone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class=""></div>
+        </div>
+        <div class="col-md-6 first">
+            <h2 class="bleu">{{ 'coaching.duration-repart'|trans|upper }}</h2>
+            <div id="pieByTimeZoneDone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto" class=""></div>
+        </div>
+    </div>
+{% endif %}
+
+<div class="row realise">
+    <div class="col-md-3 bloc-white first" id="repartByHR">  
+        <h4 class="bleu">Fréquences cardiaques</h4>
+        {% if displayPieByHRZone %}
+            <div id="pieByHRZone"></div>
+            <div class="row-fluid">
+                <div class="" id="HRRest"></div>
+                <div class="" id="HRMax"></div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-md-9 bloc-white" id="stats">  
+        <div id="statisticsViewContainer"><img id="statisticsViewLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none;"/></div>
+    </div>  
+</div>

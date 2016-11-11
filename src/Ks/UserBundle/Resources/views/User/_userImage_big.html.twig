@@ -1,0 +1,12 @@
+{% if user_imageName is defined and user_imageName is not null %}
+    {# ancien chemin #}
+    {% if asset('uploads/images/users/original/' ~ user_imageName)|issetImg %}
+        <img class="userImage" src="{{ asset('uploads/images/users/original/' ~ user_imageName) }}" alt="Avatar Keepinsport" />
+    {% elseif user_id is defined and user_id is not null and asset('img/users/' ~ user_id ~ '/original/' ~ user_imageName)|issetImg %}
+        <img class="userImage" src="{{ asset('img/users/' ~ user_id ~ '/original/' ~ user_imageName) }}" alt="Avatar Keepinsport" />
+    {% else %}
+    <img class="userImage" src="{{ asset('bundles/ksuser/images/no_avatar_ks_512x512.png') }}" alt="Pas d'avatar" />
+    {% endif %}
+{% else %}
+    <img class="userImage" src="{{ asset('bundles/ksuser/images/no_avatar_ks_512x512.png') }}" alt="Pas d'avatar" />
+{% endif %}

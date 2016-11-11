@@ -1,0 +1,7 @@
+{% if activity.photo is defined and activity.photo is not null %}
+    <center>
+        <a rel="lightbox[photos]" href="{{ asset('img/activities/' ~ activity.photo ) }}" title="">
+            <img class="activityPhoto" src="{{ asset('img/activities/' ~ activity.photo ) }}" alt="" >
+        </a>
+    </center>
+{% endif %}

@@ -1,0 +1,121 @@
+{% extends "KsUserBundle::layout_full.html.twig" %}
+
+{% block title %}
+	Keepinsport - {{ 'titles.contest'|trans }}
+{% endblock %}
+        
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    
+    {# organigrammes #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('jOrgChart/jquery.jOrgChart.css') }}" />
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+     <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+     
+     {# organigrammes #}
+    <script src="{{ asset('jOrgChart/jquery.jOrgChart.js') }}"></script>
+     <script type="text/javascript">
+        $(document).ready(function() {
+             $('#usersTable').dataTable( {
+                 "bSort": false,
+                 "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            } ); 
+            
+            $('#usersTableLight').dataTable({
+                "bSort": false,
+                "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+            });
+            
+            $("#godsonsList").jOrgChart({
+                chartElement : '#godsonsChart',
+                dragAndDrop  : false
+            });
+        });
+           
+    </script>
+{% endblock %}
+    
+{% block content %}
+    {#
+    <a href="" target="_blank" class="btn btn-sportif pull-right">
+        <span class="icon-search"></span> 
+        Réglement
+    </a>
+    #}
+    <h1 class="sportif">{{ shop.name }} </h1>
+    <div class="blocHeaderSeparator"></div>
+    
+    <br/>
+    {% include 'KsLeagueBundle:League:_ranking_working.html.twig' %}
+    <br/>
+    
+    <div class="row-fluid">
+        <div class="span3">
+            <center>
+                <div style="display:inline-block;margin: 5px 5px 5px 5px;{%if shop.conditions|length >0 %} border : 3px solid #e8b419; {% endif %}">
+                    {% include 'KsShopBundle:Shop:_shopImage.html.twig' with { 
+                        'shop_id' : shop.id,
+                        'shop_imageName' : shop.avatar,
+                    } %}
+                </div>
+            </center>
+        </div>
+        <div class="span9">
+            <p>
+                <u>{{ 'shops.town'|trans }} :</u> {{ shop.town }}
+            </p>
+            <p>
+                <u>{{ 'shops.address'|trans }} :</u> {{ shop.address|raw }}
+            </p>
+            <p>
+                <u>{{ 'shops.contact'|trans }} :</u> {{ shop.telNumber }}  {{ shop.email|raw }}
+            </p>
+            <p>
+                <u>{{ 'shops.sports'|trans }} :</u>
+                {% if shop.sports|length > 0 %}
+                    {{ shop.sports|join(', ') }}
+                {% else %}
+                    -
+                {% endif %}
+            </p>
+            {% if shop.conditions|length > 0 %}
+                <p>
+                    <u>{{ 'shops.conditions'|trans }} :</u>
+                    {{ shop.conditions|raw }}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    
+    </br>
+    
+    <h3 class="sportif">{{ 'titles.contestShop'|trans }}</h3>
+    <div class="blocHeaderSeparator"></div>
+    
+    <div class="alert alert-info">{{'shops.message-participants'|trans}} </div>
+    
+    <center>
+        <h1>{{ 'titles.direct-ranking'|trans }} : {{ ("months." ~ month )|trans }} {{ 'now'|date("Y") }}</h1>
+        </br>
+        <a class="btn btn-shops" rel="tooltip" title="{{ 'shops.previous-month'|trans }}" href="{{ path('KsContest_seasonShop', {'shopId': shop.id, 'delay' : delay -1}) }}">
+            <i class="icon-backward icon-white"></i>
+        </a>
+        <a class="btn btn-shops" rel="tooltip" title="{{ 'shops.see-all-winners'|trans }}" href="{{ path('ksShop_list') }}">
+            <i class="icon-search icon-white"></i>
+        </a>
+        <a class="btn btn-shops" rel="tooltip" title="{{ 'shops.next-month'|trans }}" href="{{ path('KsContest_seasonShop', {'shopId': shop.id, 'delay' : delay +1}) }}">
+            <i class="icon-forward icon-white"></i>
+        </a>
+        </br>
+        </br>
+    </center>
+    
+    {% include 'KsLeagueBundle:League:_rankings.html.twig' with {'context' : 'contest', 'delay' : delay} %}
+
+
+{% endblock content %}

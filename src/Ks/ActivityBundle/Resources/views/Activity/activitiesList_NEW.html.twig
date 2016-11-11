@@ -1,0 +1,281 @@
+{% extends "::layout_V2.html.twig" %}
+   
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+        
+    {# zoom sur photos #}
+    <link rel="stylesheet" type="text/css" href="{{ asset('swipebox/source/swipebox.css') }}" />   
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+    {# zoom sur photos #}
+    <script src="{{ asset('swipebox/source/jquery.swipebox.min.js') }}"></script>    
+    
+    <script type="text/javascript" src="{{ asset('js/bootstrap-multiselect.js') }}"></script>
+    
+    {# canvas #}
+    <script src="{{ asset('bundles/kscanvasdrawing/js/functions.js') }}"></script>
+    <script src="{{ asset('bundles/kscanvasdrawing/js/accessory.js') }}"></script>
+    
+    <script type="text/javascript">
+        
+        function startIntro(){
+            var intro = introJs();
+              intro.setOptions({
+                steps: [
+                  { 
+                    intro: "{{ 'visit.newsFeed-start'|trans|raw }} :",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepHeader',
+                    intro: "{{ 'visit.newsFeed-header'|trans|raw }} :",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#s2id_searchSelectDesktop',
+                    intro: "{{ 'visit.newsFeed-search'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepDashboard',
+                    intro: "{{ 'visit.newsFeed-dashboard'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepPublishActivity',
+                    intro: "{{ 'visit.newsFeed-publish'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepRanking',
+                    intro: "{{ 'visit.newsFeed-ranking'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepCompetitions',
+                    intro: "{{ 'visit.newsFeed-competitions'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  {
+                    element: '#stepNewsFeed',
+                    intro: "{{ 'visit.newsFeed-news'|trans|raw }}",
+                    position: 'bottom'
+                  },
+                  /*,
+                  {
+                    element: '#stepNotif',
+                    intro: "Toutes tes notifications sont là (messages reçus par le site et ceux des autres sportifs)",
+                    position: 'bottom'
+                  },*/
+                  /*{
+                    element: '#stepStats',
+                    intro: "{{ 'visit.message4'|trans|raw }}",
+                    position: 'bottom'
+                  },*/
+                  /*{
+                    element: '#stepGifts',
+                    intro: "{{ 'visit.message6'|trans|raw }}",
+                    position: 'bottom'
+                  },*/
+                  /*{
+                    element: '#stepAgenda',
+                    intro: "{{ 'visit.message7'|trans|raw }}",
+                    position: 'bottom'
+                  },*/
+                  /*{
+                    element: '#menuModeBtnDesktop',
+                    intro: "{{ 'visit.message8'|trans|raw }}",
+                    position: 'bottom',
+                    tooltipClass:'forMenuModeBtnDesktop'
+                  },*/
+                  {
+                    element: '#feedbackFooterForm',
+                    intro: "{{ 'visit.newsFeed-feedback'|trans|raw }}",
+                    position: 'top'
+                  },
+                  {
+                    element: '#stepProfil',
+                    intro: "{{ 'visit.newsFeed-profil'|trans|raw }}",
+                    position: 'left'
+                  },
+                  /*
+                  /*
+                  {
+                    element: '#stepLeftColumnGifts',
+                    intro: "{{ 'visit.message12'|trans|raw }}",
+                    position: 'right'
+                  },
+                  {
+                    element: '#step4',
+                    intro: "Ici défilent les dernières activités récemment publiées par la communauté, clique sur une d'elles pour voir le détail ;)",
+                    position: 'right'
+                  },
+                  {
+                    element: '#stepRightColumnStart',
+                    intro: "{{ 'visit.message14'|trans|raw }}",
+                    position: 'bottom'
+                  },*/
+                  {
+                    element: '#stepOffers',
+                    intro: "{{ 'visit.newsFeed-offers'|trans|raw }}",
+                    position: 'bottom'
+                  }
+                ]
+              });
+              intro.start();
+          }
+        
+        function modalInfo(message) {
+            $('#modalInfo .modal-body').html(message);
+            $('#modalInfo').modal('show');
+        }
+        
+        if( !isCanvasSupported ) {
+            alert( "Met ton naviguateur internet à jour pour profiter de toutes les fonctionalités du site !" );
+        }
+        
+        $(document).ready(function() {
+            $("#body").addClass("message"); //pour activer le css correspondant
+            
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                radioClass: 'iradio_flat-blue'
+            });
+            
+            {% if visitSeenPreference is defined and visitSeenPreference|length == 0 or visitSeenPreference[0]['date'] is defined and visitSeenPreference[0]['date'] is null %}
+                startIntro();
+                {% if user.id != 1 %}
+                    $.ajax({
+                        url: Routing.generate('ksUser_setVisitSeen'),
+                        type: "POST",
+                        success: function (data) {
+                        }
+                    });
+                {% endif %}
+            {% endif %}
+            
+            $("#blocInfoFinish").hide();
+            
+            $("a.linkActivityBloc").tooltip();
+            
+            $("#importantStatusBloc").find("button.close").click(function() {
+                var activityId = $( this ).attr("data-activityId");
+                $.post(Routing.generate('ksActivity_readImportantStatus', {'activityId' : activityId}), {});
+            });
+            
+            //On cré les liens dans la zone des statuts importants
+            var rgx = new RegExp('((https?|ftp|file)://[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])','ig');
+            if( $("#importantStatusBloc").size() > 0 ) {
+                $("#importantStatusBloc > span.content").html($("#importantStatusBloc > span.content").html().replace(rgx,"<a target='_blank' href='$1'>$1</a>"));
+            }
+            
+            //FMO : mis en commentaire le 17/02/14 car plante chez certains, mais pas tout le monde...même si browser identique !
+            //rssReader.init("fluxRssEquipe");
+            
+            //var handleComplete = function() {
+                activitiesTypes = getActivityTypesSelect();
+                fromUsers = getFromUsersSelect();
+                sports = getSportsSelect();
+                lastModified = $("input[name=sortBy][value=modificationDate]").is(":checked");
+                //loadActivities_new(0, activitiesTypes, fromUsers, sports, lastModified);
+            //};
+
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <div class="bloc1 small">
+            <div class="container">
+                <h1 class="title premium">Mes actualités</h1>
+                {#<div class="bloc1-nav">
+                    <ul class="nav nav-pills navbar-left">
+                        <li><a href="#" title=""><span class="glyphicon glyphicon-pencil"></span></a></li>
+                        <li><a href="#" title=""><span class="glyphicon glyphicon-search"></span></a></li>
+                        <li><a href="#" title=""><span class="glyphicon glyphicon-cog"></span></a></li>
+                    </ul>
+                </div>#}
+            </div>
+        </div><!---bloc---->
+        <div class="bloc2">
+            <div class="container">
+                <div class="col-md-4">      
+                    <div class="bloc-left">
+                        <!---bloc---->
+                        <h3 class="bleu">{{ 'menu.activities-fromKS'|trans }}</h3>
+                        {% render "KsActivityBundle:Activity:leftColumn" %}
+                    </div>
+                </div>
+                <div class="col-md-4 fil-actualite">
+                    <h3 class="bleu">Dernières activités</h3>
+                    <div class="bloc-left"><!---bloc---->
+                        {% if importantStatus != false %}
+                            <div id="importantStatusBloc" class="alert alert-info">
+                                <button type="button" class="close" data-activityId="{{ importantStatus.id }}" data-dismiss="alert">×</button>
+                                <span class="content">
+                                    <strong>{{ importantStatus.statusFrom }} :</strong> </br> {{ importantStatus.description |nl2br }}
+                                </span>
+                            </div>
+                        {% endif %}
+
+                        {#% include 'KsActivityBundle:Activity:_activitiesFilter.html.twig' with {
+                            'newsFeedTypePreference'    : newsFeedTypePreference, 
+                            'newsFeedFromPreference'    : newsFeedFromPreference, 
+                            'newsFeedSportsPreference'  : newsFeedSportsPreference, 
+                            'newsFeedSortPreference'    : newsFeedSortPreference, 
+                            'activitiesType'            : true, 
+                            'fromUsers'                 : true, 
+                            'sports'                    : true, 
+                            'activitySportChoiceForm'   : activitySportChoiceForm, 
+                            'sort'                      : true, 
+                            'user'                      : app.user
+                        } %#}
+                        {% render "KsActivityBundle:Activity:lastActivities" with { 
+                            'nbActivities'          : 15,
+                            'activitiesTypes'       : newsFeedTypePreference, 
+                            'activitiesFrom'        : newsFeedFromPreference, 
+                            'sports'                : newsFeedSportsPreference, 
+                            'lastModified'          : newsFeedSortPreference } %}
+                    </div>
+                </div>
+                <div class="col-md-4 wikisport">
+                    <div class="bloc-left"><!---bloc----> 
+                        <h3 class="bleu">
+                            Wikisport
+                            <span>
+                                <a class="suite pull-right" rel="tooltip" title="{{ "wikisport.show-all"|trans }}" href="{{ path('ksWikisport_index') }}"><i class="glyphicon glyphicon-chevron-right"></i></a>
+                            </span>
+                        </h3>
+                        {% render "KsActivityBundle:Activity:rightColumn" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <div class="visible-desktop visible-tablet">
+    </div>
+
+    <a id="bLoadMoreActivities" class="btn btn-sportif btn-block" style="width:100%;display:none">
+        <i class="icon-repeat icon-white"></i> {{ 'news-feed.more-news'|trans }}
+    </a>
+    
+    {# ancien block qui précisait que sur scroll on affiche plus d'activités
+    <div id="blocMoreActivitiesToLoad" class="alert" style="display:none">
+        <center>Voir plus d'activités <img style="height:20px" src="{{ asset('img/scroll_brown.png') }}" alt="scroll"></center>
+    </div>#}
+    
+    <div id="blocInfoFinish" class="alert alert-info" style="display:none">
+        <center>
+            {{ 'news-feed.no-more-news'|trans }} - <strong><a href="#body">{{ 'actions.go-top'|trans }}</a></strong>
+        </center>
+    </div>
+{% endblock %}

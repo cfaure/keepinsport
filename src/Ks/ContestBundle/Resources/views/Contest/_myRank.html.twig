@@ -1,0 +1,157 @@
+<div class="">   
+    <h3 class="sportif">Mon classement</h3>
+    <div class="blocHeaderSeparator"></div>
+    
+    {% set nbUsersToAffich = 0 %}
+    {% if users.first is defined %}
+        {% set nbUsersToAffich = nbUsersToAffich + 1 %}
+    {% endif %}
+    {% if users.beforeMe is defined %}
+        {% set nbUsersToAffich = nbUsersToAffich + 1 %}
+    {% endif %}
+    {% if users.me is defined %}
+        {% set nbUsersToAffich = nbUsersToAffich + 1 %}
+    {% endif %}
+    {% if users.afterMe is defined %}
+        {% set nbUsersToAffich = nbUsersToAffich + 1 %}
+    {% endif %}
+    {% if users.last is defined %}
+        {% set nbUsersToAffich = nbUsersToAffich + 1 %}
+    {% endif %}
+
+    {% if nbUsersToAffich == 1 %}
+        {% set spanClass = "span12" %}
+    {% endif %}
+    {% if nbUsersToAffich == 2 %}
+        {% set spanClass = "span6" %}
+    {% endif %}
+    {% if nbUsersToAffich == 3 %}
+        {% set spanClass = "span4" %}
+    {% endif %}
+    {% if nbUsersToAffich == 4 %}
+        {% set spanClass = "span3" %}
+    {% endif %}
+    {% if nbUsersToAffich == 5 %}
+        {% set spanClass = "span2" %}
+    {% endif %}
+    
+    <div class="row-fluid " style="text-align: center">
+        {% if nbUsersToAffich == 5 %}
+            <div class="span1 visible-desktop visible-tablet"></div>   
+        {% endif %}   
+        {% if users.last is defined %}
+            <div class="{{ spanClass }}">   
+                <div class="span11">
+                    <center>
+                        <div >
+                            #{{ users.last.rank }}
+                        </div>
+                        {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                            'user_id' : users.last.id, 
+                            'user_username' : users.last.username, 
+                            'user_imageName': users.last.imageName, 
+                            'user_league_category' : users.last.leagueCategoryLabel, 
+                            'user_league_stars' : users.last.leagueLevelStarNumber
+                        } %}
+                        {#<span class="label label-info">{{ users.last.points|number_format(0, '.', ' ') }}</span>#}
+                        <span class="label label-info">{{ users.last.godFatherPoints|number_format(0, '.', ' ') }}</span>
+                    </center>
+                </div>
+                <span class="icon-chevron-right icon-4x span1" style="margin-top:30px"></span>
+            </div>
+        {% endif %}
+
+        {% if users.afterMe is defined %}
+            <div class="{{ spanClass }}">   
+                <div class="span11">
+                    <center>
+                        <div >
+                            #{{ users.afterMe.rank }}
+                        </div>
+                        {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                            'user_id' : users.afterMe.id, 
+                            'user_username' : users.afterMe.username, 
+                            'user_imageName': users.afterMe.imageName, 
+                            'user_league_category' : users.afterMe.leagueCategoryLabel, 
+                            'user_league_stars' : users.afterMe.leagueLevelStarNumber
+                        } %}
+                        {#<span class="label label-info">{{ users.afterMe.points|number_format(0, '.', ' ') }}</span>#}
+                        <span class="label label-info">{{ users.afterMe.godFatherPoints|number_format(0, '.', ' ') }}</span>
+                    </center>
+                </div>
+                <span class="icon-chevron-right icon-4x span1" style="margin-top:30px"></span>
+            </div>
+        {% endif %}
+
+        {% if users.me is defined %}
+            <div class="{{ spanClass }}">
+                 <div class="span11">
+                    <center>
+                        <div >
+                            #{{ users.me.rank }}
+                        </div>
+                        {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                            'user_id' : users.me.id, 
+                            'user_username' : users.me.username, 
+                            'user_imageName': users.me.imageName, 
+                            'user_league_category' : users.me.leagueCategoryLabel, 
+                            'user_league_stars' : users.me.leagueLevelStarNumber
+                        } %}
+                        {#<span class="label label-info">{{ users.me.points|number_format(0, '.', ' ') }}</span>#}
+                        <span class="label label-info">{{ users.me.godFatherPoints|number_format(0, '.', ' ') }}</span>
+                    </center>
+                </div>
+                {% if users.beforeMe is defined or users.first is defined %}
+                <span class="icon-chevron-right icon-4x span1" style="margin-top:30px"></span>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if users.beforeMe is defined %}
+            <div class="{{ spanClass }}">  
+                <div class="span11">
+                    <center>
+                        <div >
+                            #{{ users.beforeMe.rank }}
+                        </div>
+                        {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                            'user_id' : users.beforeMe.id, 
+                            'user_username' : users.beforeMe.username, 
+                            'user_imageName': users.beforeMe.imageName, 
+                            'user_league_category' : users.beforeMe.leagueCategoryLabel, 
+                            'user_league_stars' : users.beforeMe.leagueLevelStarNumber
+                        } %}
+                        {#<span class="label label-info">{{ users.beforeMe.points|number_format(0, '.', ' ') }}</span>#}
+                        <span class="label label-info">{{ users.beforeMe.godFatherPoints|number_format(0, '.', ' ') }}</span>
+                    </center>
+                </div>
+                {% if users.first is defined %}
+                <span class="icon-chevron-right icon-4x span1" style="margin-top:30px"></span>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if users.first is defined %}
+            <div class="{{ spanClass }}">  
+                <center>
+                    <div >
+                        #{{ users.first.rank }}
+                    </div>
+                    {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                        'user_id' : users.first.id, 
+                        'user_username' : users.first.username, 
+                        'user_imageName': users.first.imageName, 
+                        'user_league_category' : users.first.leagueCategoryLabel, 
+                        'user_league_stars' : users.first.leagueLevelStarNumber
+                    } %}
+                    {#<span class="label label-info">{{ users.first.points|number_format(0, '.', ' ') }}</span>#}
+                    <span class="label label-info">{{ users.first.godFatherPoints|number_format(0, '.', ' ') }}</span>
+                </center>
+            </div>
+        {% endif %}
+    </div>
+    
+    
+    
+</div>
+<br/>

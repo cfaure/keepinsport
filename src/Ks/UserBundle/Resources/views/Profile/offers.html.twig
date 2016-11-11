@@ -1,0 +1,741 @@
+{% extends "KsActivityBundle::layout_V2.html.twig" %}
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("home");
+            $('input').iCheck({
+                checkboxClass: 'icheckbox_flat-blue',
+                radioClass: 'iradio_flat-blue'
+            });
+            
+            $("#headerV2").css("background-color","#fff");
+            
+            $("#_submit").click(function() {
+                if( !$("#_submit").hasClass("disabled") ) {
+                    $("#_submit").addClass("disabled");
+                }
+           });
+           $("#menuHeaderOffers").addClass("active");
+           $("#menuHeaderBtnOffers").attr("href", "#");
+           
+           $("#paymentPremiumBtn").click(function() {
+                if (!$("#paymentPremiumBtn").hasClass("disabled")) {
+                    $("#paymentPremiumBtn").addClass("disabled");
+                    //addUserAction('payer', 'premium', false);
+
+{#
+                    console.log(planSelected);
+                    console.log(watchSelected);
+                    console.log(actualChoice);
+                    console.log(watchOfferChoice);
+                    console.log(packOfferChoice);
+#}
+                    if (planSelected == 'advanced1' || planSelected == 'advanced2' || planSelected == 'advanced3') pack = 'premium';
+                    else if (planSelected == 'elite1' || planSelected == 'elite2' || planSelected == 'elite3') pack = 'elite';
+                    else pack = 'defis';
+
+                    var callbackYes = function () {
+                        $.post(
+                            Routing.generate('ksUser_setPremium'), 
+                            {
+                                "pack"  : pack,
+                                "watch" : watchSelected,
+                                "coach" : actualChoice,
+                                "watchOfferChoice" : watchOfferChoice,
+                                "packOfferChoice" : packOfferChoice
+                            },
+                            function(response) {
+                                if( response.response == 1 ) showInformation('{{ 'profile.premium-successful'|trans|raw }}');
+                                else showInformation('{{ 'profile.premium-update'|trans }}');
+                                document.location.href = Routing.generate('ksAgenda_index', {"id" : {{ app.user.id }}});
+                            }
+                        );
+                    }
+                    var callbackNo = function () {
+                        //showInformation('{{ 'profile.premium-successful'|trans }}');
+                    };
+                    //$("#premiumPricesModal").modal('hide');
+                    //askConfirmation("{{ 'profile.ask-for-premium'|trans|raw }}", 'sportif', callbackYes, callbackNo);
+                    
+                    // on récupère les value (= nombre de paiement) pour watchOffer et packOffer
+                    var packNumPayments  = $('input:radio[name=optionsRadiosPremium]').filter(":checked").val();
+                    var watchNumPayments = $('input:radio[name=optionsRadiosPremiumWatch]').filter(":checked").val();
+                    
+                    // AJOUT CF: on envoit les infos à l'action profile/process-offer
+                    // qui va construire le formulaire à soumettre à paybox
+                    // pour pouvoir accéder à leur page de paiement.
+                    $.post(
+                        Routing.generate('ksProcessOffer'),
+                        {
+                            "pack"  : pack,
+                            "watch" : watchSelected,
+                            "coach" : actualChoice,
+                            "packNumPayments" : packNumPayments,
+                            "watchNumPayments" : watchNumPayments
+                        },
+                        function(response) {
+                            $('#payment-container').html(response);
+                            var $paymentForm = $('#payment-container form');
+                            $paymentForm.submit();
+                        }
+                    );
+                }
+                $("#paymentPremiumBtn").removeClass("disabled");
+            });
+            $('#carousel-accueil-coachs').carousel({
+                interval: 300 * 10
+        });
+            $('#myCarousel').carousel({
+                interval: 800 * 10
+            });
+       });
+    </script>
+{% endblock %}
+
+{% block body %}
+        
+    <!--WRAPPER-->
+    <div class="wrapper">
+        <!--bloc1-->
+        <div class="bloc1">
+            <div class="container">
+                <center><h1 style="font-family: 'Gloria Hallelujah', cursive;">Les meilleurs coachs au service des sportifs exigeants !</h1></center>
+            </div>
+            <div class="container">
+                <br><br>
+                <div class="row" style="padding-top:20px">
+                    <div class="col-md-5">
+                        <div style="font-family: 'PT Sans', sans-serif!important; font-size: 40px; color:white ">Les coachs </div>
+                        <div id="carousel-accueil-coachs" class="carousel slide" data-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <img class="" style="width:95%" src="{{ asset('V2/images/carrousel_ultrascal.jpg') }}">
+                                </div><!--/.item-->
+                                <div class="item">
+                                    <img class="" style="width:95%" src="{{ asset('V2/images/carrousel_joel_hauss.jpg') }}">
+                                </div><!--/.item-->
+                                <div class="item">
+                                    <img class="" style="width:95%" src="{{ asset('V2/images/carrousel_thierry_chambry.jpg') }}">
+                                </div><!--/.item-->
+                                <div class="item">
+                                    <img class="" style="width:95%" src="{{ asset('V2/images/carrousel_raymond_fontaine.jpg') }}">
+                                </div><!--/.item-->
+                                <div class="item">
+                                    <img class="" style="width:95%" src="{{ asset('V2/images/carrousel_terre_de_sport.jpg') }}">
+                                </div><!--/.item-->
+                                <div class="item">
+                                    <img class="" style="width:95%" src="{{ asset('V2/images/carrousel_eric_lacroix.jpg') }}">
+                                </div><!--/.item-->
+                                <div class="item">
+                                    <img class="" style="width:95%" src="{{ asset('V2/images/carrousel_new_coachs.jpg') }}">
+                                </div><!--/.item-->
+                            </div><!--/.carousel-inner-->
+                            <a class="left carousel-control" href="#carousel-accueil-coachs" data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left"></span>
+                            </a>
+                            <a class="right carousel-control" href="#carousel-accueil-coachs" data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right"></span>
+                            </a>
+                            {#<ol class="carousel-indicators">
+                                <li data-target="#carousel-accueil-coachs" data-slide-to="0" class="active"></li>
+                                <li data-target="#carousel-accueil-coachs" data-slide-to="1"></li>
+                            </ol>#}
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <span style="font-family: 'PT Sans', sans-serif!important; font-size: 40px; color:white ">Formules d'entraînement</span>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <span style="position:absolute;padding:390px 0px 0px 53px"> <a class="btn btn-premium btn-lg" href="#decouvrez" data-scroll>JE VEUX DECOUVRIR !</a></span>
+                                <img class="" style="width:100%" src="{{ asset('V2/images/bloc_premium.jpg') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <span style="position:absolute;padding:390px 0px 0px 53px"> <a class="btn btn-elite btn-lg" href="#decouvrez" data-scroll>JE VEUX DECOUVRIR !</a></span>
+                                <img class="" style="width:100%" src="{{ asset('V2/images/bloc_elite.jpg') }}">
+                            </div>
+                            </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <span style="position:absolute;padding:20px 0px 0px 394px"> <a class="btn btn-confort btn-lg" href="#decouvrez" data-scroll>JE VEUX DECOUVRIR !</a></span>
+                                <img class="" style="padding-top:0px;width:100%" src="{{ asset('V2/images/bloc_confort.jpg') }}">
+                        </div>
+                    </div>
+                </div>
+        </div>
+            </div>
+        </div><!--/bloc1-->
+
+        <!--bloc3-->
+        <div class="bloc3" style="">
+        <div class="container">
+            <center><h3 style="color:white;font-family: 'Gloria Hallelujah', cursive;  font-size: 30px">Les témoignages des sportifs !</h3></center>
+            <div class="row" style="height: 250px;">
+                <div class="col-md-12">
+                    <div id="myCarousel" class="carousel slide desktop" data-ride="carousel">
+          <div class="carousel-inner">
+                            {% set key = 0 %}
+                            {% set first = 0 %}
+                            {% for citation in citations %}
+                                {% if citation.user is defined and citation.user is not null %}
+                                    {% if key % 1 == 0 and first == 0%}
+            <div class="item active">
+                                            <div class="container2">
+                                        {% set first = 1 %}
+                                    {% elseif key % 1 == 0 and first == 1 %}
+            </div>
+            </div>
+            <div class="item">
+                                            <div class="container2">
+                                    {% endif %}
+                                                <center>
+                                                    <div class="col-md-8">
+                                                        <div class="testimony" style="text-align: justify; padding:0px 20px 0px 20px">
+                                                            <span class="guillemet">“</span> <i>{{ citation.text }}</i> <span class="guillemet">”</span>
+            </div>
+            </div>
+                                                    <div class="col-md-4">
+                                                        <span class="pull">
+                                                            <span class="media-object">
+                                                                {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                                                    'user_id' : citation.user.id, 
+                                                                    'user_username' : citation.user.username, 
+                                                                    'user_imageName': citation.user.imageName, 
+                                                                    'user_league_category' : citation.user.leagueCategoryLabel, 
+                                                                    'user_league_stars' : citation.user.leagueLevelStarNumber,
+                                                                    'withBubble' : false
+                                                                } %}
+                                                            </span>
+                                                        </span><!--/pull-->
+                                                        <div class="name-testimony" style="font-size: 1.2em">
+                                                            {{ citation.user.firstName }}, ligue {{ ("leagues." ~ citation.user.leagueCategoryLabel)|trans }}{# {{ citation.user.leagueLevelStarNumber }} {{ "leagues.stars-number"|transchoice(citation.user.leagueLevelStarNumber) }}#}
+          </div>
+                                                        <span class="label label-elite">Elite</span>
+                                                        <br>
+                                                        <b>Coach :</b> Pascal Blanc
+                                                        <img class="" style="" src="{{ asset('V2/images/vignette_ultrascal.jpg') }}">
+        </div>
+        </center>
+                                {% endif %}
+                                {% set key = key + 1 %}
+                            {% endfor %}
+          </div>
+          </div>
+        </div>
+                        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>	<!--/ Carousel Desktop-->	
+
+                    <!--Carousel Mobile-->
+                    <div id="myCarousel2" class="carousel slide mobile" data-ride="carousel">
+                        <div class="carousel-inner">
+                            {% set key =0 %}
+                            {% for citation in citations %}
+                                {% if citation.user is defined and citation.user is not null %}
+                                    {% if key == 0 %}
+                                        <div class="item active">
+                                    {% else %}
+                                        <div class="item">
+                                    {% endif %}
+                                            <div class="col-md-3">
+                                                <span class="pull">
+                                                    <span class="media-object">
+                                                        {% include 'KsUserBundle:User:_userImage_league.html.twig' with { 
+                                                            'user_id' : citation.user.id, 
+                                                            'user_username' : citation.user.username, 
+                                                            'user_imageName': citation.user.imageName, 
+                                                            'user_league_category' : citation.user.leagueCategoryLabel, 
+                                                            'user_league_stars' : citation.user.leagueLevelStarNumber,
+                                                            'withBubble' : false
+                                                        } %}
+                                                    </span>
+                                                </span><!--/pull-->
+                                                <div class="testimony">
+                                                    <span class="guillemet">“</span> {{ citation.text }} <span class="guillemet">”</span>
+                                                </div>
+                                                <div class="name-testimony" style="font-size: 0.8em">
+                                                    <i>{{ citation.user.firstName }}, ligue {{ ("leagues." ~ citation.user.leagueCategoryLabel)|trans }} {{ citation.user.leagueLevelStarNumber }} {{ "leagues.stars-number"|transchoice(citation.user.leagueLevelStarNumber) }}</i>
+                                                </div>
+                                            </div>
+                                    </div>
+                                    {% set key = key + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <a class="left carousel-control" href="#myCarousel2" role="button" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a>
+                        <a class="right carousel-control" href="#myCarousel2" role="button" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+                    </div>
+                </div>
+            </div>
+
+        <!--Accroches Mobile-->
+        <div class="mobile">
+            <div class="txt-mobile elite-mobile">Offre Elite<br/>Tarifs selon le coach</div>
+            <div class="txt-mobile premium-mobile">Offre Premium<br/>À partir de 5€/mois</div>
+            <div class="txt-mobile confort-mobile">Offre Défis<br/>c'est gratuit !</div>
+            <span class="fleche fleche-elite-mobile"><img src="{{ asset('V2/images/fleche.png') }}"></span>
+            <span class="fleche fleche-premium-mobile"><img src="{{ asset('V2/images/fleche2.png') }}"></span>
+            <span class="fleche fleche-confort-mobile"><img src="{{ asset('V2/images/fleche3.png') }}"></span>
+        </div>
+
+
+        <div class="row" style="padding-top:60px" id="decouvrez">
+            <h2>Découvre les offres</h2>
+            <img class="logo desktop" src="{{ asset('V2/images/logo-petit.png') }}">
+        </div>
+        <div class="row" style="padding-top:130px">
+          <div class="col-md-3 first" >
+            <ul>
+              <li><span class="content"><b>Coaching sur mesure avec un pro <a href="#" data-toggle="modal" data-target="#modalElite">>DECOUVRIR !</a></b></span></li>
+              <li><span class="content"><b>Import de plan d'entraînement fait par des coachs <a href="#" data-toggle="modal" data-target="#modalPremium">>DECOUVRIR !</a></b></span></li>
+              <li><span class="content">Accès aux défis <a onclick="showInformation('<div style=\'text-align:justify;\'>Tous les mois à chaque fin de saison des cadeaux et des bons d\'achat chez nos partenaires (<b>Endurance Shop, Running Conseil, etc</b>) sont distribués par tirage au sort selon vos points gagnés en fonction de vos activités sportives ! <br><br> RQ : Le gain des membres <b>PREMIUM</b> est 2X fois plus important :)<br><br> <center><b>BIENTOT DISPONIBLE !</b></center></div>');" >>DECOUVRIR !</a><center><b>bientôt disponible !</b></center>
+              <li><span class="content">Synchronisation auto de tes activités <a onclick="showInformation('<p>Tes activités peuvent être automatiquement importées via nos services <b>gratuits</b> de synchronisation de montres ou d\'applications smartphone :</p><center><img src=\'{{ asset('bundles/ksactivity/images/garmin.jpg' ) }}\' width=\'100\'/><img style=\'padding:20px 20px 10px 20px\' src=\'{{ asset('bundles/ksactivity/images/polar.jpg' ) }}\' width=\'140\'/><img style=\'padding:0px 0px 0px 0px\' src=\'{{ asset('bundles/ksactivity/images/suunto_blanc.jpg' ) }}\' width=\'100\'/><br/><img src=\'{{ asset('bundles/ksactivity/images/RunKeeper.png' ) }}\' width=\'100\'/><img style=\'padding-left:20px\' src=\'{{ asset('bundles/ksactivity/images/nike+.jpg' ) }}\' width=\'50\'/><img style=\'padding-left:20px\' src=\'{{ asset('bundles/ksactivity/images/endomondo.png' ) }}\' width=\'90\'/></center><br><br><b>Autre avantage</b> : tu peux retrouver tous tes amis sportifs sur un seul et même site !');">>DECOUVRIR !</a></span></li>
+              <li><span class="content">Suivi d'entrainement et progression <a target="_blank" href="{{ path('ksAgenda_index', {"id" : 7 }) }}">>DECOUVRIR !</a></span></li>
+              <li><span class="content">Outil d'analyse d'activité <a target="_blank" href="{{ path('ksActivity_showActivity', { 'activityId' : 25974 }) }}">>DECOUVRIR !</a></span></li>
+              <li><span class="content">Comparateur de séances <a target="_blank" href="{{ path('ksActivity_showActivity', { 'activityId' : 25974 }) }}">>DECOUVRIR !</a></span></li>
+              <li><span class="content">Import de ton historique complet <a onclick="showInformation('<div style=\'text-align:justify;\'>Grâce à nos services <b>gratuits</b> de synchronisation tu peux importer TOUT ton historique sportif sans limite de temps sur 1 seul et même site ! <br><br><center><img src=\'{{ asset('bundles/ksactivity/images/garmin.jpg' ) }}\' width=\'100\'/><img style=\'padding:20px 20px 10px 20px\' src=\'{{ asset('bundles/ksactivity/images/polar.jpg' ) }}\' width=\'140\'/><img style=\'padding:0px 0px 0px 0px\' src=\'{{ asset('bundles/ksactivity/images/suunto_blanc.jpg' ) }}\' width=\'100\'/><br/><img src=\'{{ asset('bundles/ksactivity/images/RunKeeper.png' ) }}\' width=\'100\'/><img style=\'padding-left:20px\' src=\'{{ asset('bundles/ksactivity/images/nike+.jpg' ) }}\' width=\'50\'/><img style=\'padding-left:20px\' src=\'{{ asset('bundles/ksactivity/images/endomondo.png' ) }}\' width=\'90\'/></center></div>')">>DECOUVRIR !</a></span></li>
+              <li><span class="content">Synchronisation automatique avec Google Agenda <a onclick="showInformation('Si tu as contraintes personnelles précisées dans ton Google Agenda, tu peux synchroniser et faire donc apparaitre ces infos dans ton <b>agenda Keepinsport</b> !');" >>DECOUVRIR !</a>
+              <li><span class="content">Accès facilité à une montre spécialisée <a href="#bloc4-montres" data-scroll>>DECOUVRIR !</a> </span></li>
+            </ul>
+          </div>
+           <div class="col-md-3 confort">
+           <div class="title"><img class="logo" src="{{ asset('V2/images/icon-defis.png') }}"><div class="desktop">Défis<br/><span>c'est gratuit !</span></div></div>
+           <ul>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+              <li>&nbsp;</li>
+            </ul>
+            <div class="choisir"><a href="#composez" data-scroll><span class="btn btn-primary desktop">Je m'inscris !</span><span class="glyphicon glyphicon glyphicon-plus-sign mobile"></span></a></div>
+          </div>
+           <div class="col-md-3 premium">
+            <div class="title"><img class="logo" src="{{ asset('V2/images/icon-premium.png') }}"><div class="desktop">Premium<br/><span>À partir de 5€/ mois</span></div></div>
+           <ul>
+              <li>&nbsp;</li>
+              <li><center><a href="#" data-toggle="modal" data-target="#modalPremium"><img src="{{ asset('V2/images/heart_green.jpg') }}"></a></center></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+            </ul>
+            <div class="choisir"><a href="#composez" data-scroll><span class="btn btn-primary desktop">Je m'inscris !</span><span class="glyphicon glyphicon glyphicon-plus-sign mobile"></span></a></div>
+          </div>
+           <div class="col-md-3 elite">
+            <div class="title"><img class="logo" src="{{ asset('V2/images/icon-elite.png') }}"><div class="desktop">Elite<br/><span>Tarif selon le coach</span></div></div>
+           <ul>
+              <li><center><a href="#" data-toggle="modal" data-target="#modalElite"><img src="{{ asset('V2/images/heart_red.jpg') }}"></a></center></li>
+              <li>&nbsp;</li>
+              {#<li><i class="glyphicon glyphicon-ok"></i></li>#}
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+              <li><i class="glyphicon glyphicon-ok"></i></li>
+            </ul>
+            <div class="choisir"><a href="#composez" data-scroll><span class="btn btn-primary desktop">Je m'inscris !</span><span class="glyphicon glyphicon glyphicon-plus-sign mobile"></span></a></div>
+          </div>
+        </div><!--/.row-->
+        </div><!--/.container-->
+        </div><!--/bloc3-->
+
+
+        <!--bloc4-->
+        <div class="bloc4" id="bloc4-montres" style="">
+            <div class="container">
+                <h2>Découvre les montres</h2>
+                <img class="logo desktop" src="{{ asset('V2/images/logo-petit.png') }}">
+                <p class="bloc4-txt">
+                    Keepinsport, c'est aussi l'accès facilité aux montres les plus performantes (nécessaires pour les sportifs les plus exigeants), financées sur 1, 2, ou 3 mois en complément d'un engagement aux offres Premium (sur 1 an) ou Elite (sur 1 mois).
+                </p>
+                <div id="carousel-montres" class="carousel slide" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <img src="{{ asset('V2/images/montre-V800-carrousel.png') }}" alt="">
+                                    <span><b>POLAR V800</b> (avec cardio) <span class="label label-premium">+ offre Premium</span> ou <span class="label label-elite">+ offre Elite</span></span>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div>
+                                <div class="col-md-4">
+                                    <img src="{{ asset('V2/images/montre-ambit3Peak-carrousel.png') }}" alt="">
+                                    <span><b>AMBIT 3 Peak</b> (avec cardio) <span class="label label-premium">+ offre Premium</span> ou <span class="label label-elite">+ offre Elite</span></span>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div>
+                                <div class="col-md-4">
+                                    <img src="{{ asset('V2/images/montre-920xt-carrousel.png') }}" alt="">
+                                    <span><b>GARMIN 920xt</b> (avec cardio) <span class="label label-premium">+ offre Premium</span> ou <span class="label label-elite">+ offre Elite</span></span>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div>
+                            </div><!--/.row-->
+                        </div><!--/.item-->
+                        <div class="item">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <img src="{{ asset('V2/images/montre-M400-carrousel.png') }}" alt="">
+                                    <span><b>POLAR M400</b> (avec cardio) <span class="label label-premium">+ offre Premium</span> ou <span class="label label-elite">+ offre Elite</span></span>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div>
+                                <div class="col-md-4">
+                                    <img src="{{ asset('V2/images/montre-ambit3Sport-carrousel.png') }}" alt="">
+                                    <span><b>AMBIT 3 Sport</b> (avec cardio) <span class="label label-premium">+ offre Premium</span> ou <span class="label label-elite">+ offre Elite</span></span>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div>
+                                <div class="col-md-4">
+                                    <img src="{{ asset('V2/images/montre-620-carrousel.png') }}" alt="">
+                                    <span><b>GARMIN 620</b> (avec cardio) <span class="label label-premium">+ offre Premium</span> ou <span class="label label-elite">+ offre Elite</span></span>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div>
+                            </div><!--/.row-->
+                        </div><!--/.item-->
+                    </div><!--/.carousel-inner-->
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-montres" role="button" data-slide="prev">
+                      <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-montres" role="button" data-slide="next">
+                      <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+                {#<h3 class="bleu">Compose ton pack et choisis ta montre !</h3>#}
+                <br>
+                {#<center><span style="font-size: 1.5em!important" class="label label-gold">15€ offert sur un pack Premium ou Elite...</span></center>#}
+                <a class="btn btn-primary btn-lg" href="#composez" data-scroll>J'y vais !</a> 
+            </div><!--/.container-->     
+        </div><!--/bloc4-->
+
+        <!--bloc5-->
+        <div class="bloc5" id="composez" style="">
+            <div class="container">
+                <h2>Compose ton Pack</h2>
+                <img class="logo desktop" src="{{ asset('V2/images/logo-blanc-petit.png') }}" />
+            </div>	
+            <div class="container">
+                <form name="packComposeForm" id="packComposeForm">
+                    <div class="first-block"  id="step1">
+                        <div class="title1">
+                            <span class="number">1</span>Choisis ton pack : <b id="cost"></b>
+                        </div>
+                        <div class="bg1 block-choice elite" data-pos="elite" id="blocElite">
+                            <div class="disabledOverlay"></div>
+                            <div class="title"><img src="{{ asset('V2/images/icon-elite.png') }}">Pack Elite<br/><span>Tarif selon le coach</span></div>
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="elite1" id="elite1"> <span class="bleu">+ montre haut de gamme</span></label>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="elite2" id="elite2"> <span class="bleu">+ montre</span></label>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="elite3" id="elite3"> <span class="bleu">Sans montre</span></label>
+                            </div><!--/.checkbox-->
+                            <ul class="fonctionnalites">		
+                                <li class="rouge"><b>Coaching sur mesure avec un professionnel</b></li>
+                                <li>Import complet de l'historique de mes entraînements</li>
+                                <li>Synchronisation automatique de mes activités</li>
+                                <li>Outils avancés d'analyse et de suivi d'entraînement</li>
+                                <li> <i>* : prix en fonction du choix avec ou sans montre, et selon le coach</i></li>
+                            </ul><!--/.fonctionnalites-->
+                        </div><!--/.bg1-->
+                        <div class="bg2 block-choice advanced" data-pos="advanced" id="blocPremium">
+                            <div class="disabledOverlay"></div>
+                            <div class="title"><img src="{{ asset('V2/images/icon-premium.png') }}">Pack Premium<br/><span>À partir de 5€/ mois (**)</span></div>
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="advanced1" id="advanced1"> <span class="bleu">+ montre haut de gamme</span></label>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="advanced2" id="advanced2">  <span class="bleu">+ montre</span></label>
+                            </div><!--/.checkbox-->
+                            <div class="checkbox">
+                                <label><input type="checkbox" name="advanced3" id="advanced3">  <span class="bleu">Sans montre</span></label>
+                            </div><!--/.checkbox-->
+                            <ul class="fonctionnalites">		
+                                <li class="vert"><b>Import de plan d'entraînement fait par des coachs</b></li>
+                                <li>Import complet de l'historique de mes entraînements</li>
+                                <li>Synchronisation automatique de mes activités</li>
+                                <li>Outils avancés d'analyse et de suivi d'entraînement</li>
+                                <li> <i>** : prix en fonction du choix avec ou sans montre</i></li>
+                            </ul><!--/.fonctionnalites-->
+                        </div><!--/.bg2-->
+
+                        <div class="bg3 block-choice confort" data-pos="confort" id="blocDefis">
+                            <div class="disabledOverlay"></div>
+                            <div class="title"><img src="{{ asset('V2/images/icon-defis.png') }}">Pack Défis<br/><span>c'est gratuit !</span></div>
+                            <ul class="fonctionnalites">		
+                                <li>Accès aux défis pour gagner des cadeaux <b>(bientôt disponible !)</b></li>
+                                <li>Synchronisation automatique de mes activités</li>
+                            </ul><!--/.fonctionnalites-->
+                            <a class="btn btn-primary">Formule actuelle !</a>
+                            <span class="clearfix"></span>
+                        </div><!--/.bg3-->
+                    </div><!--/.first-block-->
+
+                    <div class="second-block block-choice montre" data-pos="montre" id="step2" >
+                        <div class="disabledOverlay"></div>
+                        <div class="title2">
+                            <span class="number">2</span>Choisis ta montre à prix réduit :
+                        </div>
+                        <ul class="montres">
+                            <li class="watch elite1 advanced1">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre-V800-carrousel.png') }}" alt=""><br/>
+                                    <label id="V800Label"><input type="checkbox" name="montre1" id="V800">POLAR V800</label>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div><!--/.checkbox-->
+                            </li>
+                            <li class="watch elite1 advanced1">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre-ambit3Peak-carrousel.png') }}" alt=""><br/>
+                                    <label id="ambit3PeakLabel"><input type="checkbox" name="montre2" id="ambit3Peak">AMBIT3 Peak</label>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div><!--/.checkbox-->
+                            </li>
+                            <li class="watch elite1 advanced1">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre-920xt-carrousel.png') }}" alt=""><br/>
+                                    <label id="920xtLabel"><input type="checkbox" name="montre3" id="920xt">GARMIN 920xt</label>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div><!--/.checkbox-->
+                            </li>
+                            <li class="watch elite2 advanced2">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre-M400-carrousel.png') }}" alt=""><br/>
+                                    <label id="M400Label"><input type="checkbox" name="montre4" id="M400">POLAR M400</label>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div><!--/.checkbox-->
+                            </li>
+                            <li class="watch elite2 advanced2">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre-ambit3Sport-carrousel.png') }}" alt=""><br/>
+                                    <label id="ambit3SportLabel"><input type="checkbox" name="montre5" id="ambit3Sport">AMBIT3 Sport</label>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div><!--/.checkbox-->
+                            </li>
+                            <li class="watch elite2 advanced2">
+                                <div class="checkbox">
+                                    <img src="{{ asset('V2/images/montre-620-carrousel.png') }}" alt=""><br/>
+                                    <label id="620Label"><input type="checkbox" name="montre6" id="620">GARMIN 620 </label>
+                                    {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                                </div><!--/.checkbox-->
+                            </li>
+                        </ul>
+                        {#<a href="javascript:;" id="okWatch" class="btn btn-success btn-sm hide">Choisir cette montre</a>#}
+                        <br clear="all">
+                        <br clear="all">
+                        <a href="javascript:;" id="modifPackWatch">> MODIFIER MON PACK</a>
+                    </div><!--/.second-block-->
+
+                    <div class="third-block block-choice coach"  data-pos="coach"  id="step3">
+                        <div class="disabledOverlay"></div>
+                        <div class="title3">
+                            <span class="number">3</span>Choisis ton coach personnel :
+                        </div>
+                        <div class="content">
+                            <div class="checkbox coachbox">
+                                <img src="{{ asset('V2/images/coach1.jpg') }}" alt="">
+                                <label id="coach1Label"><input type="checkbox"  name="coach1" id="Pascal_Blanc"> Pascal Blanc</label>
+                                {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                            </div><!--/.checkbox-->
+                            <div class="checkbox coachbox">
+                                <img src="{{ asset('V2/images/coach2.JPG') }}" alt="">
+                                <label id="coach2Label"><input type="checkbox"  name="coach2" id="Terre_de_sport"> Terre de sport</label>
+                                {#<a href="#" data-toggle="modal" data-target="#myModal">Plus de détails</a>#}
+                            </div><!--/.checkbox-->
+                        </div><!--/.content-->
+                        <a href="javascript:;" id="modifPackCoach">> MODIFIER MON PACK</a>
+                    </div><!--/.third-block-->
+                </form><!--/.form-->
+                <img class="accroche desktop" src="{{ asset('V2/images/accroche-bloc1.png') }}">
+            </div><!--/.container-->  
+        </div><!--/bloc5-->
+
+        <!--bloc6-->
+        <div class="bloc6" style="">
+        <div class="container">
+        <h2>Les questions les plus fréquemment posées</h2>
+        <img class="logo desktop" src="{{ asset('V2/images/logo-petit.png') }}">
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    J'ai déjà une montre, je peux bénéficier du pack Premium ou Elite ?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                Oui tout à fait ! Si tu possèdes déjà une montre spécialisée, tu peux opter pour un pack <b>Premium ou Elite</b> sans achat de montre. Le constructeur de pack te permet de choisir cette formule. (<a href="#composez" data-scroll>Plus de détails</a>)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                    Je vis dans un DOM, comment se passe la livraison des montres ?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                Pour la Réunion nous avons une filiale locale qui pourra vous livrer directement votre montre en passant par un de nos magasins partenaires (<b>Endurance shop, Running Conseil et Run Escapades</b>) Pour les autres DOM, les frais de livraison classiques s'appliquent.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                    Je me suis trompé de choix lorsque j'ai construit mon pack, est-ce je peux le modifier ?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                Oui pas de soucis ! Tu peux modifier tes souhaits directement via ton profil, ou en cliquant sur <a href="{{ path('ksOffers') }}" >"voir les offres"</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel-group" id="accordion2">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseOne2">
+                                    J'aimerai discuter avec mon futur coach avant de payer la formule Elite, est-ce possible ?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne2" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                Oui c'est possible et conseillé ! Une fois ton pack construit sur la formule Elite, le coach que tu as choisi va recevoir un mail et si ton numéro de téléphone a bien été renseigné sur ton profil il te rappellera dès qu'il pourra pour s'entretenir avec toi !
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo2">
+                                    Est-il possible d'arrêter ma formule <b>Premium</b> en cours ?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseTwo2" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                L'offre Premium n'est pas un abonnement, soit tu t'offres cette formule à l'année et donc tu ne peux pas arrêter et te faire rembourser les mois non utilisés, soit tu optes pour 5€/ mois et donc restes libre d'arrêter quand tu le souhaites.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion2" href="#collapseThree2">
+                                    Est-il possible d'arrêter ma formule <b>Elite</b> en cours ?
+                                </a>
+                            </h4>
+                        </div>
+                        <div id="collapseThree2" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                Tu dois t'engager sur 4 semaines minimum avec ton coach, passée cette période libre à toi d'arrêter ta formule Elite ou non. En cas de blessures certains coachs peuvent t'aider à reprendre le sport et te conseiller sur la bonne pratique dans ce cas de figure. Il faudra donc bien décider avec lui ce que tu souhaites dans ce cas précis. (Etre encadré et donc payer ses services, ou bien être temporairement non pris en charge par ton coach et donc ne plus payer pour la formule Elite)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!--/row-->
+
+         </div><!--/.container-->  
+        </div><!--/bloc6-->
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalElite" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #da2032!important">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Fermer</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Fonctionnement Offre "Elite"</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul>
+                                    <li><span class="number-xs">1</span> <b>Mise en relation</b> avec ton coach pour définir et valider tes objectifs </li><br>
+                                    <li><span class="number-xs">2</span> <b>Élaboration d'un planning</b> détaillé sur mesure créé par ton coach. Réalisé en fonction de ton age, tes objectifs, ton historique, tes disponibilités, des sports que tu peux pratiquer, etc</li><br>
+                                    <li><span class="number-xs">3</span> <b>Publication</b> de tes activités sur le site manuellement ou avec ta montre grâce à nos services gratuits de synchronisation.<center><img src='{{ asset('bundles/ksactivity/images/garmin.jpg' ) }}' width='100'/><img style='padding:20px 20px 10px 20px' src='{{ asset('bundles/ksactivity/images/polar.jpg' ) }}' width='140'/><img style='padding:0px 0px 0px 0px' src='{{ asset('bundles/ksactivity/images/suunto_blanc.jpg' ) }}' width='100'><br/><img src='{{ asset('bundles/ksactivity/images/RunKeeper.png' ) }}' width='100'><img style='padding-left:20px' src='{{ asset('bundles/ksactivity/images/nike+.jpg' ) }}' width='50'><img style='padding-left:20px' src='{{ asset('bundles/ksactivity/images/endomondo.png' ) }}' width='90'></center></li><br>
+                                    <li><span class="number-xs">4</span> <b>Suivi de ton entraînement</b> au fil de l'eau par ton coach grâce au système de notification en temps réel (pour permettre à ton coach de faire évoluer ton planning si besoin)</li><br>
+                                    <li><span class="number-xs">5</span> <b>Analyse</b> de tes performances grâce à ton tableau de bord évolué</li><br>
+                                    <li><span class="number-xs">6</span> <b>Questions/réponses illimitées</b> avec ton coach (bénéficie de son retour d'expérience et de ses précieux conseils)</li>
+                                    <br>
+                                    <li><span class="number-xs">7</span> <b>Atteints tes objectifs !</b></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="modalPremium" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header" style="background-color: #14a14a!important">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Fermer</span></button>
+                        <h4 class="modal-title" >Fonctionnement Offre "Premium"</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul>
+                                    <li><span class="number-xs">1</span> <b>Choisis un plan d'entraînement</b> parmis ceux créés par nos coachs, en fonction de tes objectifs, de tes contraintes personnelles ou professionnelles </li><br>
+                                    <li><span class="number-xs">2</span> <b>Importe le dans ton agenda</b> en fonction d'une date de début ou bien en "rétro-planning" en fonction d'une compétition future.</li><br>
+                                    <li><span class="number-xs">3</span> <b>Publie tes activités</b> sur le site manuellement ou avec ta montre grâce à nos services gratuits de synchronisation.<center><img src='{{ asset('bundles/ksactivity/images/garmin.jpg' ) }}' width='100'/><img style='padding:20px 20px 10px 20px' src='{{ asset('bundles/ksactivity/images/polar.jpg' ) }}' width='140'/><img style='padding:0px 0px 0px 0px' src='{{ asset('bundles/ksactivity/images/suunto_blanc.jpg' ) }}' width='100'><br/><img src='{{ asset('bundles/ksactivity/images/RunKeeper.png' ) }}' width='100'><img style='padding-left:20px' src='{{ asset('bundles/ksactivity/images/nike+.jpg' ) }}' width='50'><img style='padding-left:20px' src='{{ asset('bundles/ksactivity/images/endomondo.png' ) }}' width='90'></center></li><br>
+                                    <li><span class="number-xs">4</span> <b>Suis ton entraînement</b> au fil de l'eau grâce à ton tableau de bord avancé</li><br>
+                                    <li><span class="number-xs">5</span> <b>Atteints tes objectifs !</b></li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% include '::premiumPricesModal.html.twig' %}
+        {% include '::coachPricesModal.html.twig' %}
+        
+        {# CF: ajout pour stocker la réponse de process-offer #}
+        <div id="payment-container"></div>
+        
+    </div>
+    <!--END WRAPPER-->
+{% endblock body %}

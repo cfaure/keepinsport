@@ -1,0 +1,28 @@
+.table tbody tr.new, tr.new, li.new {
+    background-color: #d4ffaa;
+}
+
+.table tbody tr.new:hover td, tr.new:hover, li.new:hover  {
+  background-color: #affc62;
+}
+
+.table tbody tr.old, tr.old, li.old {
+   background-color: #f9f9f9;
+}
+
+.table tbody tr.old:hover , tr.old:hover, li.old:hover {
+    background-color: #f5f5f5;
+}
+
+#notificationsBar { 
+    padding : 2px;
+    /*background-color: #2C2C2C*/
+}
+
+#notificationsBar li.old{ 
+    /*background-color: #2C2C2C*/
+}
+
+#notificationsBar li.new{ 
+    /*background-color: #2C2C2C*/
+}

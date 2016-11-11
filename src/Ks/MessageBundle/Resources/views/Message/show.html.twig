@@ -1,0 +1,125 @@
+{% extends "KsMessageBundle::layout.html.twig" %}
+
+{% block title %}
+	Keepinsport - Messages
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#body").addClass("message"); //pour activer le css correspondant
+            
+            $("#submitButton").click(function() {
+                if( !$("#submitButton").hasClass("disabled") ) {
+                    $("#submitButton").addClass("disabled");
+                }
+            });
+            
+            $("#mailBoxButton").click(function() {
+                if( !$("#mailBoxButton").hasClass("disabled") ) {
+                    $("#mailBoxButton").addClass("disabled");
+                    document.location.href=Routing.generate('ksMessage_box', { "numPage" :  1  });
+                }
+            });
+        });
+    </script>
+{% endblock %}    
+    
+{% block content %}
+    <!--WRAPPER-->
+    <div class="wrapper"> 
+        <!--bloc1-->
+        <div class="bloc1">
+            <div class="container">
+                <h1 class="title premium">Message</h1>
+                <div class="bloc1-nav">
+                    <ul class="nav nav-pills navbar-left">
+                        <li rel="tooltip" title="{{ "actions.write-message"|trans }}"><a href="{{ path('ksMessage_new') }}"><span class="glyphicon glyphicon-pencil"></span></a></li>
+                    </ul>
+                    <ul class="navbar-right">
+                        <button id="mailBoxButton" type="button" class="btn btn-success" href={{ path('ksMessage_box', {'numPage' : 1}) }}><span class="glyphicon glyphicon-envelope"></span> Boite de réception</button>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!---BLOC2---->
+        <div class="bloc2">
+            <div class="container">
+                <div class="col-md-12">
+                    <ul class="conversation list-group">
+                        <li class="list-group-item active"> 
+                            <strong>{{ "titles.subject"|trans }} : </strong>{{ message.subject }}<br/>
+                            <strong>{{ "titles.participants"|trans }} :</strong>
+                            <br/>
+                            <div class="col-md-12">
+                                {% for user in message.toUsers %}
+                                    {% if user.id != app.user.id %}
+                                        <a rel="tooltip" title="{{ user.username }}" href="{{ path('ks_user_public_profile', { 'username' : user.username }) }}">
+                                            {% if user.userDetail is defined and user.userDetail != null %}
+                                                {% set user_imageName = user.userDetail.imageName %}
+                                            {% else %}
+                                                {% set user_imageName = null %}
+                                            {% endif %}
+                                            {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : user.id, 'user_imageName': user_imageName} %}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </li>
+                        <br/>
+                        <br/>
+                        <li class="list-group-item">
+                            <a rel="tooltip" title="{{ message.fromUser.username }}" href="{{ path('ks_user_public_profile', { 'username' : message.fromUser.username }) }}">
+                                {% if message.fromUser.userDetail is defined and message.fromUser.userDetail != null %}
+                                    {% set user_imageName = message.fromUser.userDetail.imageName %}
+                                {% else %}
+                                    {% set user_imageName = null %}
+                                {% endif %}
+                                {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : message.fromUser.id, 'user_imageName': user_imageName} %}
+                            </a>
+                            <div class="reply">
+                                <div class="txt-conversation">{{ message.content }}</div>
+                                <div class="date-conversation">Envoyé le {{ message.sentAt|date('d/m/Y H:i:s') }}</div>
+                            </div>
+                        </li>
+                        {% for answer in message.answers %}
+                            <li class="list-group-item">
+                                <a rel="tooltip" title="{{ answer.fromUser.username }}" href="{{ path('ks_user_public_profile', { 'username' : answer.fromUser.username }) }}">
+                                    {% if answer.fromUser.userDetail is defined and answer.fromUser.userDetail != null %}
+                                        {% set user_imageName = answer.fromUser.userDetail.imageName %}
+                                    {% else %}
+                                        {% set user_imageName = null %}
+                                    {% endif %}
+                                    {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : answer.fromUser.id, 'user_imageName': user_imageName} %}
+                                </a>
+                                <div class="reply">
+                                    <div class="txt-conversation">{{ answer.content }}</div>
+                                    <div class="date-conversation">Envoyé le {{ answer.sentAt|date('d/m/Y H:i:s') }}</div>
+                                </div>
+                            </li>
+                        {% endfor %}
+                        <li class="list-group-item bloc-reponse">
+                            <a rel="tooltip" title="{{ app.user.username }}" href="{{ path('ks_user_public_profile', { 'username' : app.user.username }) }}">
+                                {% if app.user.userDetail is defined and app.user.userDetail != null %}
+                                    {% set user_imageName = app.user.userDetail.imageName %}
+                                {% else %}
+                                    {% set user_imageName = null %}
+                                {% endif %}
+                                {% include 'KsUserBundle:User:_userImage.html.twig' with { 'user_id' : app.user.id, 'user_imageName': user_imageName} %}
+                            </a>
+                            <div class="reply">
+                                <form id="answerForm" action="{{ path('ksMessage_send') }}"  method="post" {{ form_enctype(answerForm) }} >
+                                    {{ form_widget(answerForm.content, { attr: {rows: 3, class: "form-control", value: "", style: "height: 56px; resize: none;"} }) }}
+                                    {{ form_rest(answerForm) }}
+                                    <button id="submitButton" type="submit" class="btn btn-success">Répondre</button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div><!--/CONTAINER--> 
+        </div><!--/BLOC2-->
+    </div>
+    
+{% endblock content %}

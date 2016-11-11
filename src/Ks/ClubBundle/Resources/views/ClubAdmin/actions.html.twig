@@ -1,0 +1,56 @@
+{% extends "KsClubBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }} - Clubs
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+    <h1>Actions possibles sur le club {{ club.name }}</h1>
+    
+     <ul>
+        <li>
+            <a href="{{ path('ksClub_public_profile', { "clubId" : club.id }) }}">Profil public</a>
+        </li>
+        {% if club|is_manager( app.user.id ) %}
+            <li>
+                <a href="{{ path('ksClub_edit', { 'id': club.id }) }}">{{ 'crud.edit'|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('KsClub_teams', { 'clubId': club.id }) }}">{{ 'users.club_list_team'|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('KsClub_members', { 'clubId': club.id }) }}">Liste des membres</a>
+            </li>
+
+            <li>
+                <a href="{{ path('club_friend_admin', { 'idClub': club.id , 'numPage': 1}) }}">{{ 'users.club_friend_name_admin'|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('ksClub_events', { 'clubId': club.id }) }}">{{ 'users.club_list_event'|trans }}</a>
+            </li>
+            <li>
+                <a href="{{ path('ksClubAdmin_askForMembershipInProgress', { 'clubId': club.id }) }}">
+                    Demandes d'adhésion en attente
+                    {% if nbMembershipAskInProgress > 0 %}
+                        <span class="label label-important">{{ nbMembershipAskInProgress }}</span>
+                    {% endif %}
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+    
+    <a class="btn" href="{{ path('ksClub_myClubs') }}">
+        <i class="icon-backward"></i> 
+        Retour
+    </a>
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% for datas in activities %}
+    
+    {% include 'KsActivityBundle:Activity:_activity_new.html.twig' with {
+        'activity':  datas.activity,
+        'photos': datas.photos,
+        'comments': datas.comments,
+        'activityTeamates': datas.activityTeamates,
+        'activityOpponents': datas.activityOpponents,
+        'connectedActivity': datas.connectedActivity,
+        'activityScores': datas.activityScores,
+        'clubManagers': datas.clubManagers
+    } %}
+
+{% endfor %}

@@ -1,0 +1,62 @@
+<form class="eventEditForm" action="{{ path('ksEvent_editEvent', {"eventId" : event.id }) }}" method="post" {{ form_enctype(form) }}>
+
+    {# Les erreurs générales du formulaire. #}
+    {{ form_errors(form) }}
+
+    <div class="input-prepend control-group">
+        <span class="add-on before">
+            {{ form_label(form.name, 'Nom' ) }}
+        </span>
+        {{ form_widget(form.name, { attr: {class:"name uneditable-input", style: "margin-bottom:0;display:inline;"} }) }}
+    </div>
+    
+    {{ form_widget(form.content, { attr: {class:"content", style: "width:100%"} }) }}
+    
+    <div class="input-prepend control-group startDate">
+        <span class="add-on before">
+            {{ form_label(form.startDate, 'Date de début' ) }}
+        </span>
+        {{ form_widget(form.startDate, { attr: {class:"startDate datetime", style: "margin-bottom:0;z-index:2000"} }) }}
+    </div>
+    
+    <div class="input-prepend">
+        <span class="add-on before">
+            {{ form_label(form.endDate, 'Date de fin' ) }}
+        </span>
+        {{ form_widget(form.endDate, { attr: {class:"endDate datetime", style: "margin-bottom:0;z-index:2000"} }) }}
+    </div>
+    
+    <div class="input-prepend">
+        <span class="add-on before">
+            {{ form_label(form.typeEvent, "Type d'événement" ) }}
+        </span>
+        {{ form_widget(form.typeEvent, { attr: {class:"typeEvent", style: "margin-bottom:0"} }) }}
+    </div>
+    
+
+    {{ form_rest(form) }}
+</form>
+<style>
+    .eventEditForm span.add-on.before {
+        width:200px;
+        margin-left:0px;
+        margin-right:-5px;
+    }
+</style>
+<script type="text/javascript">
+    $('.datetime').datetimepicker({
+        numberOfMonths: 2,
+        dateFormat:"dd/mm/yy",
+        timeFormat: 'h:m',
+	//separator: ' à ',
+        hourGrid: 4,
+	minuteGrid: 10,
+        //addSliderAccess: true,
+	//sliderAccessArgs: { touchonly: false }
+    });
+    /*$.each($('.datetime'),function(key, dateTimeField){
+        $dateTime = $( dateTimeField );
+        //$dateTime.val($.fullCalendar.formatDate($dateTime.val(), "dd/MM/yyyy HH:mm"));
+        $dateTime.datetimepicker();
+    });*/
+</script>

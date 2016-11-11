@@ -1,0 +1,124 @@
+<div class="bloc2">
+    <div class="container">
+        <h3 class="title">Données principales</h3>
+        <div class="row">
+            {% if activityTeamates|length > 0 %}
+                <div>
+                    Partenaires :
+                    {% for teamMate_user in activityTeamates %}
+                        {% if teamMate_user.id != activity.user_id %}
+                            <a href="{{ path('ks_user_public_profile', { 'username' : teamMate_user.username }) }}">
+                                {{ teamMate_user.username }}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if activityOpponents|length > 0 %}
+                <div>
+                    Adversaires :
+                    {% for opponent_user in activityOpponents %}
+                    <a href="{{ path('ks_user_public_profile', { 'username' : opponent_user.username }) }}">
+                        {{ opponent_user.username }}
+                    </a>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if activity.label is not null %}
+                <br/>
+                <p>{{ activity.label|nl2br }}</p>
+            {% endif %}
+            {% if activity.description is not null %}
+                <br/>
+                <p>{{ activity.description|nl2br }}</p>
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-md-2">
+                <ul>
+                    <li> 
+                        <span class="glyphicon glyphicon-time"></span>
+                        <div class="donnees-bloc">
+                            <div class="donnees-titre">Durée</div>
+                            <div class="donnees-chiffre">
+                                <span id="movingDuration">
+                                    {% if activity.duration is not null %}
+                                        {{ activity.duration|date('H:i:s') }}
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <ul>
+                    <li> 
+                        <span class="glyphicon glyphicon-fire"></span>
+                        <div class="donnees-bloc">
+                            <div class="donnees-titre">Calories</div>
+                            <div class="donnees-chiffre">
+                                {% if activity.calories is not null %}
+                                    {{ activity.calories }} kcal
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <ul>
+                    <li> 
+                        {% if activity.stateOfHealth_code is null %}
+                            {% set stateOfHealhCode = "great" %}
+                        {% else %}
+                            {% set stateOfHealhCode = activity.stateOfHealth_code %}
+                        {% endif %}    
+                        {#<img class="media-object pull-left" src="{{ asset('bundles/ksactivity/images/smiley_' ~ stateOfHealhCode ~ '.png') }}" alt="Forme" title="Forme"/>#}
+                        <span class="glyphicon glyphicon-thumbs-up"></span>
+                        <div class="donnees-bloc">
+                            <div class="donnees-titre">Forme</div>
+                            <div class="donnees-chiffre">
+                                {% if activity.stateOfHealth_name is not null %}
+                                    {{ activity.stateOfHealth_name }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+    {% if activity.place_latitude is not null and activity.place_longitude is not null %}
+        <!--bloc3-->
+        <div class="bloc3">
+            <div class="container">
+                <h3 class="bleu">Lieu</h3>
+                <div id="gmap-{{ activity.id }}" style="margin-left:0px;height:300px;border: 2px solid grey;border-radius: 4px 4px 4px 4px;"></div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            var map = new google.maps.Map(
+                document.getElementById("gmap-{{ activity.id }}"), {
+                mapTypeId: google.maps.MapTypeId.ROADMAP,
+                center: new google.maps.LatLng( "{{ activity.place_latitude }}", "{{ activity.place_longitude }}" ),
+                zoom : 8,
+            });
+
+            var locationMarker = new google.maps.Marker({
+                map     : map,
+                position: new google.maps.LatLng( "{{ activity.place_latitude }}", "{{ activity.place_longitude }}" ),
+            });
+        </script>
+    {% endif %}
+    
+</div>

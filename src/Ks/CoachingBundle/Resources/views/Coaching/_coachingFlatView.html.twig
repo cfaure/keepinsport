@@ -1,0 +1,263 @@
+<script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/functions.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/ksactivity/js/v3_epoly.js') }}"></script> {# fonctions additionnelles pour l'objet polyline de google map #}
+
+<script type="text/javascript">
+    
+    $(document).ready(function() {
+        //Affichage des mini map pour chaque activité réalisée
+        
+        //console.log('{{isUser}}');
+        
+        {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") or not isUser and not isManager%}
+            $('.sessionDetail').foggy();
+
+            $('.sessionDetail')
+                .attr('unselectable', 'on')
+                .css('user-select', 'none')
+                .css('MozUserSelect', 'none')
+                .on('selectstart', false)
+                .on('mousedown', false);
+        {% endif %}
+        
+        {{ waypointsActivities|raw }}
+                
+        //console.log(waypointsActivities.length);
+        
+        $.each(waypointsActivities, function(key, waypoints) {
+            $map = new google.maps.Map(document.getElementById("gmap"), {mapTypeId: google.maps.MapTypeId.TERRAIN});
+            $points= new Array();
+            $mapPoints = new Array();
+            //console.log(waypoints.id);
+            if (Object.keys(waypoints.points).length != 0) {
+                $firstPoint = Object.keys(waypoints.points)[0];
+                $lastPoint = Object.keys(waypoints.points)[Object.keys(waypoints.points).length - 1];
+
+                $lat_min = waypoints.points[$firstPoint].lat;
+                $lat_max = waypoints.points[$firstPoint].lat;
+                $lon_min = waypoints.points[$firstPoint].lon;
+                $lon_max = waypoints.points[$firstPoint].lon;
+                
+                $i=0;
+                $j=0;
+                $iStep = Math.ceil(Object.keys(waypoints.points).length / 500);
+                if ($iStep == 0) $iStep = 1;
+                $.each(waypoints.points, function(key2, waypoint) {
+                    //console.log(key2+'lat/lon='+waypoint.lat+'/'+waypoint.lon);
+                    if ($i % $iStep == 0) { // FMO: on ne prend qu'1 relevé sur $iStep sinon l'appel à l'API google plante sur des gros tracés (GPX par exemple)
+                        $mapPoints.push(
+                            new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+                        );
+                        if ( waypoint.lat < $lat_min ) $lat_min = waypoint.lat;
+                        if ( waypoint.lat > $lat_max ) $lat_max = waypoint.lat;
+                        if ( waypoint.lon < $lon_min ) $lon_min = waypoint.lon;
+                        if ( waypoint.lon > $lon_max ) $lon_max = waypoint.lon;
+
+                        $points[$j] = [waypoint.lat,  waypoint.lon];
+                        $j++;
+                    }
+                    $i++;
+                });
+
+                //On trace le parcours 
+                $traceRoute = new google.maps.Polyline({
+                    path: $mapPoints,
+                    strokeColor: "#2581BA",
+                    strokeOpacity: 1.0,
+                    strokeWeight: 3
+                });
+
+                $map.setCenter(new google.maps.LatLng(
+                    (($lat_max + $lat_min) / 2.0),
+                    (($lon_max + $lon_min) / 2.0)
+                ));
+
+                $map.fitBounds($traceRoute.Bounds());
+                $traceRoute.setMap($map);
+
+                //$zoom = $map.getZoom();
+                //console.log($zoom);
+
+                $encoded = createEncodings($points);
+                $path = "weight:3%7Ccolor:0x0000ff%7Cenc:"+ $encoded;//.replace("\\\\", "\\");
+
+                $html = '<img id="' + waypoints.id + '" border="0" src="//maps.googleapis.com/maps/api/staticmap?center=' + (($lat_max + $lat_min) / 2.0) + ',' + (($lon_max + $lon_min) / 2.0);
+                //$html += '&zoom=' + $zoom;
+                $html += '&size=150x100&maptype='+google.maps.MapTypeId.TERRAIN+'&path='+$path+'"</img>';
+                //console.log($html);
+                $("#minimap_"+waypoints.id).html($html);
+            }
+        });
+        
+        $('#sessionsTable').dataTable({
+            "bPaginate": true,
+            "bLengthChange": false,
+            "bFilter": true,
+            "bSort": false,
+            "bInfo": false,
+            "bAutoWidth": false,
+            "oLanguage": {% render 'KsUserBundle:Translation:loadDatatables_translations' %}
+        });
+    });
+</script>
+
+<div id="gmap"></div>
+
+{% if planType is not null %}
+    {% set size = 4 %}
+{% else %}
+    {% set size = 6 %}
+{% endif %}
+
+{# ancienne version avec dataTables (moins beau mais permet de faire des recherches instantannées) #}
+<section id="">
+    <table id="sessionsTable" class="table table-bordered table-stripped sessionsTable">
+        <thead>
+            <tr id="stepFlatView">
+                {% if planType is not null %} <th class="col-md-{{size}}"><span class="glyphicon glyphicon-calendar"></span> Planifié</th> {% endif %}
+                <th class="col-md-{{size}}"><span class="glyphicon glyphicon-ok"></span> Réalisé</th>
+                <th class="col-md-{{size}}"><span class="glyphicon glyphicon-comment"></span> Commentaires</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for session in sessions %}
+                {% if session.sport_label != 'empty' %}
+                    <tr>
+                        {% if planType is not null %}
+                            <td class="col-md-{{size}} {% if session.sessionTitle != null %}{% if session.difficulty_id == 1 %} green {% elseif session.difficulty_id == 2 %} orange {% elseif session.difficulty_id == 3 %} red {% endif %} {% endif %}">
+                                {% if session.sessionTitle != null %}
+                                    <span style="color:#fff!important"> 
+                                        <b>{{ session.start|date("d/m/y") }}</b>
+                                    </span>
+                                    <span class='pull-right'>
+                                        {% if session.sport_code != null %}
+                                            {% set sportLabel = 'sports.' ~ session.sport_label %}
+                                            {% if session.coachingPlan_id is defined and session.coachingPlan_id is not null %}
+                                                <img src="{{ asset('V2/images/sports/') ~ session.sport_code ~ '.png' }}"/> <span style="color:#fff!important">{{ sportLabel | trans }}</span>
+                                            {% endif %}
+                                        {% endif %}
+                                    </span>
+                                    <br/>
+                                    <br/>
+                                    <center>
+                                        {% if session.category != null %}
+                                            <b>{{ session.category|upper }}</b> : 
+                                        {% endif %}
+                                        {% if session.sessionTitle != null %}
+                                            <u>{{ session.sessionTitle }}</u>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </center>
+                                    <br/>
+                                    {% if session.content != null %}
+                                        <span class="sessionDetail">{{ session.content|raw|nl2br }}</span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                    {#<br/><br/>
+                                    <b>{{ 'coaching.data-scheduled'|trans }} :</b>
+                                    <center> 
+                                        <span rel='tooltip' title='{{ "coaching.duration"|trans }}'>{% if session.eventDuration != null %} {{ session.eventDuration }} {% endif %}</span><br/>
+                                        <span rel='tooltip' title='{{ "coaching.distance"|trans }}'>{% if session.eventDistance != null %} {{ session.eventDistance }} {{ 'coaching.distance-mesure'|trans }} {% endif %}</span><br/>
+                                        <span rel='tooltip' title='{{ "coaching.elevationGain"|trans }}'>{% if session.eventElevationGain != null %} +{{ session.eventElevationGain }} {{ 'coaching.elevation-mesure'|trans }}{% endif %}</span><br/>
+                                        <span rel='tooltip' title='{{ "coaching.elevationLost"|trans }}'>{% if session.eventElevationLost != null %} -{{ session.eventElevationLost }} {{ 'coaching.distelevationance-mesure'|trans }}{% endif %}</span><br/>
+                                    </center>#}
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                        <td class="col-md-{{size}}">
+                            {% if session.activity_type != null %}
+                                {% if session.points != 0 %}
+                                    <span>
+                                        {% if session.activitySession_issuedAt is not null %} 
+                                            <b>{{ session.activitySession_issuedAt|date("d/m/y") }}</b>
+                                        {% endif %}
+                                    </span>
+                                    <span class="pull-right">
+                                        {% if session.activitySession_sport_code != null %}
+                                            {% set sportLabel = 'sports.' ~ session.activitySession_sport_label %}
+                                            {% if session.activitySession_sport_code is defined and session.activitySession_sport_code is not null %}
+                                                <img src="{{ asset('V2/images/sports/') ~ session.activitySession_sport_code ~ '-black.png' }}"/> {{ sportLabel | trans }}
+                                            {% endif %}
+                                        {% endif %}
+                                    </span>
+                                    <br/>
+                                    <br/>
+                                    <center>
+                                        <span class="intensityBloc">
+                                            {% if session.stateOfHealth_id is not null %}
+                                                {{ 'coaching.stateOfHealth'| trans }} : 
+                                                {% if session.stateOfHealth_id == 1 %} <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "stateOfHealth.tired"|trans }}" data-code="tired" class="intensityBloc icon-red icon-btn icon-frown icon-2x selected"></span><br/>
+                                                {% elseif session.stateOfHealth_id == 2 %}  <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "stateOfHealth.so_so"|trans }}" data-code="so_so" class="intensityBloc icon-orange icon-btn icon-meh icon-2x selected"></span><br/>
+                                                {% elseif session.stateOfHealth_id == 3 %}  <span style="display:inline-block;width:30px" rel="tooltip" title="{{ "stateOfHealth.great"|trans }}" data-code="great" class="intensityBloc icon-green icon-btn icon-smile icon-2x selected"></span><br/>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if session.intensity_id is not null %}
+                                                {{ 'coaching.intensity'| trans }} : 
+                                                {% if session.intensity_id == 3 %} <span class="intense">{{ 'intensity.high'|trans }}</span><br/>
+                                                {% elseif session.intensity_id == 2 %} <span class="modere">{{ 'intensity.medium'|trans }}</span><br/>
+                                                {% elseif session.intensity_id == 1 %} <span class="peu-intense">{{ 'intensity.low'|trans }}</span><br/>
+                                                {% endif %}
+                                            {% endif %}
+                                            {% if planType is not null %}
+                                                {% if session.achievement is not null %}
+                                                    {{ 'coaching.achievement'| trans }} : 
+                                                    <span class="note"><b>{% if session.achievement != null %} {{ session.achievement }}/10 {% endif %}</b></span><br/>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if session.category != null %}
+                                                    <b>{{ session.category|upper }}</b> : 
+                                                {% endif %}
+                                                {% if session.sessionTitle != null %}
+                                                    <u>{{ session.sessionTitle }}</u>
+                                                {% endif %}
+                                            {% endif %}
+                                            <br/>
+                                        </span>
+
+                                        <span class="map">
+                                            <a target="_blank" href="{{ path('ksActivity_showActivity', { 'activityId' : session.activitySession_id }) }}" rel="tooltip" title="{{ "actions.show"|trans }}">
+                                                <div id="minimap_{{ session.activitySession_id }}"></div>
+                                                <span class="glyphicon glyphicon-chevron-right">{{ "titles.show-more"|trans }}</span>
+                                            </a>
+                                        </span>
+                                        {#<span class="mobile">
+                                            <button type="button" class="btn btn-success" href="{{ path('ksActivity_showActivity', { 'activityId' : session.activitySession_id }) }}" rel="tooltip" title="{{ "actions.show"|trans }}">
+                                                {{ "actions.show"|trans }}
+                                            </button>
+                                        </span>#}
+                                    </center>
+                                    <span class="content">
+                                        {% if session.activity_type != null %}
+                                            {% if session.points != 0 %}
+                                                <br/>
+                                                <span class="bleu">{{ 'coaching.data-achieved'|trans }} :</span>
+                                                <center> 
+                                                    <span rel='tooltip' title='{{ "coaching.duration"|trans }}'>{% if session.duration != '-' %} {{ session.duration }} {% endif %}</span><br/>
+                                                    <span rel='tooltip' title='{{ "coaching.distance"|trans }}'>{% if session.distance != '-' %} {{ session.distance }} {{ 'coaching.distance-mesure'|trans }} {% endif %}</span><br/>
+                                                    <span rel='tooltip' title='{{ "coaching.elevationGain"|trans }}'>{% if session.elevationGain != '-' %} +{{ session.elevationGain }} {{ 'coaching.elevation-mesure'|trans }}{% endif %}</span><br/>
+                                                    <span rel='tooltip' title='{{ "coaching.elevationLost"|trans }}'>{% if session.elevationLost != '-' %} -{{ session.elevationLost }} {{ 'coaching.elevation-mesure'|trans }}{% endif %}</span><br/>
+                                                </center>
+                                            {% endif %}
+                                        {% endif %}
+                                    </span>
+                                {% else %}
+                                    <span class='icon-remove'></span>
+                                    {{ 'coaching.not-done'|trans }}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td class="col-md-{{size}}">
+                            {% if session.description != null %}<span class="guillemet">“</span><i>{{ session.description }}<span class="guillemet">”</span></i>{% endif %}
+                            <br/>
+                            <br/>
+                            {% if session.activitySession_id != null %} 
+                                {% include 'KsActivityBundle:Comment:_commentsBloc.html.twig' with {'id' : session.activitySession_id, 'comments' : comments[session.activitySession_id] } %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</section>

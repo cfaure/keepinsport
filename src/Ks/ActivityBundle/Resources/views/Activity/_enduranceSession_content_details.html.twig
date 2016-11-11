@@ -1,0 +1,1929 @@
+{% if activityTeamates|length > 0 %}
+    <div>
+        Partenaires :
+        {% for teamMate_user in activityTeamates %}
+            {% if teamMate_user.id != activity.user_id %}
+                <a href="{{ path('ks_user_public_profile', { 'username' : teamMate_user.username }) }}">
+                    {{ teamMate_user.username }}
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+    
+{% if activityOpponents|length > 0 %}
+    <div>
+        Adversaires :
+        {% for opponent_user in activityOpponents %}
+        <a href="{{ path('ks_user_public_profile', { 'username' : opponent_user.username }) }}">
+            {{ opponent_user.username }}
+        </a>
+        {% endfor %}
+    </div>
+{% endif %}
+<div id="stepActivityDetailMainData" class="bloc2">
+    <div class="container">
+        <h3 class="title">Données principales</h3>
+        <div class="col-md-3">
+            <ul>
+                <li> <span class="glyphicon glyphicon-road"></span>
+                    <div class="donnees-bloc">
+                        <div class="donnees-titre">Distance</div>
+                        <div class="donnees-chiffre">
+                            {% if activity.distance is not null %}
+                                {{ activity.distance|number_format(2, '.', ',') }} km
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+                {% if activity.type == 'session_endurance_on_earth' %}
+                    <li> <span class="glyphicon glyphicon-circle-arrow-up"></span>
+                        <div class="donnees-bloc">
+                            <div class="donnees-titre">D+</div>
+                            <div class="donnees-chiffre">
+                                <span id="elevationGain">
+                                    {% if activity.elevationGain is not null %}
+                                        +{{ activity.elevationGain }} m
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li> <span class="glyphicon glyphicon-circle-arrow-up"></span>
+                        <div class="donnees-bloc">
+                            <div class="donnees-titre">Profondeur max</div>
+                            <div class="donnees-chiffre">
+                                <span>
+                                    {% if activity.depthMax is not null %}
+                                        {{ activity.depthMax }} m
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-md-3">
+            <ul>
+                <li> <span class="glyphicon glyphicon-time"></span>
+                    <div class="donnees-bloc">
+                        <div class="donnees-titre">Durée</div>
+                        <div class="donnees-chiffre">
+                            <span id="movingDuration">
+                                {% if activity.duration is not null %}
+                                    {{ activity.duration|date('H:i:s') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </li>
+                {% if activity.type == 'session_endurance_on_earth' %}
+                    <li> <span class="glyphicon glyphicon-circle-arrow-down"></span>
+                        <div class="donnees-bloc">
+                            <div class="donnees-titre">D-</div>
+                            <div class="donnees-chiffre">
+                                <span id="elevationLost">
+                                    {% if activity.elevationLost is not null %}
+                                        -{{ activity.elevationLost }} m
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li> <span class="glyphicon glyphicon-circle-arrow-up"></span>
+                        <div class="donnees-bloc">
+                            <div class="donnees-titre">Gain profondeur</div>
+                            <div class="donnees-chiffre">
+                                <span>
+                                    {% if activity.depthGain is not null %}
+                                        {{ activity.depthGain }} m
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="col-md-3">
+            <ul>
+                <li> <span class="glyphicon glyphicon-dashboard"></span>
+                    <div class="donnees-bloc">
+                        <div class="donnees-titre">Vitesse</div>
+                        <div class="donnees-chiffre">
+                            {% if activity.timeMoving > 0 %}
+                                {% set speed = ((activity.distance) / activity.timeMoving * 60 * 60) %}
+                                {{ speed|number_format(1, '.', ',') }} km/h
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+                <li> <span class="glyphicon glyphicon-fire"></span>
+                    <div class="donnees-bloc">
+                        <div class="donnees-titre">Calories</div>
+                        <div class="donnees-chiffre">
+                            {% if activity.calories is not null %}
+                                {{ activity.calories }} kcal
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-3">
+            <ul>
+                <li> <span class="glyphicon glyphicon-dashboard"></span>
+                    <div class="donnees-bloc">
+                        <div class="donnees-titre">Rythme</div>
+                        <div class="donnees-chiffre">
+                            <span id="pace">-</span> "/km
+                        </div>
+                    </div>
+                </li>
+                {% if activity.stateOfHealth_code is null %}
+                    {% set stateOfHealhCode = "great" %}
+                {% else %}
+                    {% set stateOfHealhCode = activity.stateOfHealth_code %}
+                {% endif %}    
+                {#<img class="media-object pull-left" src="{{ asset('bundles/ksactivity/images/smiley_' ~ stateOfHealhCode ~ '.png') }}" alt="Forme" title="Forme"/>#}
+                <li> <span class="glyphicon glyphicon-thumbs-up"></span>
+                    <div class="donnees-bloc">
+                        <div class="donnees-titre">Forme</div>
+                        <div class="donnees-chiffre">
+                            {% if activity.stateOfHealth_name is not null %}
+                                {{ activity.stateOfHealth_name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% if (hasWaypoints is defined and hasWaypoints is not null) or (activity.place_latitude is not null and activity.place_longitude is not null) %}
+    <!--bloc3-->
+    <div class="bloc3">
+        <div class="container">
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and isUser and not isAllowedPackPremium and not isAllowedPackElite %}
+                <a id="goAdvancedDetailBtn" rel="tooltip" title="" class="btn glyphicon glyphicon-upload btn-success" data-original-title="Activer le mode avancé d'analyse d'activité"> Analyse avancée</a>
+                <br>
+                <br>
+            {% endif %}
+                <h3 class="bleu">Outils d'analyse {% if not isAllowedPackPremium and not isAllowedPackElite %}SIMPLIFIÉ{% else %}AVANCÉ <div class="pull-right "><a id="resizeNormalBtn" title="{{ 'coaching.resize-normal'|trans }}" class="glyphicon glyphicon-resize-small"></a></div><div class="pull-right "><a id="resizeFullBtn" title="{{ 'coaching.resize-full'|trans }}" class="glyphicon glyphicon-resize-full"></a></div>{% endif %}</h3>
+            <div class="row tab1-activite">
+                {% if hasWaypoints is defined and hasWaypoints is not null %}
+                    <div>
+                        
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <!--/.container--> 
+    </div>
+    <!--/bloc3--> 
+    
+    <!--bloc4-->
+    <div class="bloc4">
+        <div class="container-wide">
+            <div id="leftColumn" {% if isAllowedPackPremium or isAllowedPackElite %}class="col-md-8"{% else %}class="span12"{% endif %}>
+                <div id="graphContainer"><!-- affichage du graphe --></div>
+                <br>
+                <div id="stepActivityDetailMap">
+                    <div id="gmap-{{ activity.id }}" class="ksBloc thumbnail" style="height:345px;"></div>
+                </div>
+                <div id="HRLegend"></div>
+                <br>
+            </div>
+            {% if isAllowedPackPremium or isAllowedPackElite %}
+                <div id="splits" class="col-md-4 split-kilo">
+                    {% if activity.sport_codeSport != "swimming" and hasWaypoints is defined and hasWaypoints is not null %}
+                        <div id="stepActivityDetailSplits">
+                            <center><h3 class="bleu">{{ 'coaching.splits-repart'|trans|upper }}</h3></center>
+                            <div class="splits" id="splitsContainer" style="height:335px;overflow-y : scroll;">
+                                <center>
+                                    <img src="{{ asset('img/loader_ks_57.gif') }}" alt="loader">
+                                </center>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {#{% if issetHeartRates and activity.HRMax is defined and activity.HRMax is not null %}#}
+                        <br clear="all">
+                        <br clear="all">
+                        <div id="stepActivityDetailHR">
+                            <center>
+                                <h3 class="bleu">{{ 'coaching.hr-repart'|trans|upper }}</h3>
+                                <div id="pieByHRZone" style="min-width: 150px; height: 200px; max-width: 600px; margin: 0 auto"></div>
+                                <br clear="all">
+                                <a id="editHRBtn" href="{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ path('ksProfile_V2') }}{% else%}#{% endif %}" style="display:none" rel="tooltip" title="" class="glyphicon glyphicon-pencil" data-original-title="{{ 'coaching.hr-edit-help'|trans }}"> {{ 'coaching.hr-edit'|trans }}</a>
+                                <div class="row">
+                                    <div class="span6" id="HRRest"></div>
+                                    <div class="span6" id="HRMax"></div>
+                                </div>
+                             </center>
+                        </div>
+                    {#{% endif %}#}
+                </div>
+            {% endif %}
+            <!--/.container--> 
+        </div>
+    </div>
+    <div class="bloc5">
+        <div class="container">            
+            <div class="row" id="stepActivityDetailComparisonTool">
+                <div id="comparisonToolViewContainer"></div>
+                <br>
+                <center><img id="comparisonToolViewLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style=""/></center>
+            </div>
+            <br>
+        </div>
+    </div>
+    
+{% else %}
+    <div class="bloc3">
+        <div class="container">
+            <div class="alert alert-info">
+                {{ 'activity.no-gps-data'|trans }}
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% if hasWaypoints is defined and hasWaypoints is not null %}
+    <br style="clear:both" />
+
+{#<script type="text/javascript" src="{{ asset('js/hightcharts/themes/grid.js') }}"></script>#}
+
+    <script type="text/javascript">
+        
+        {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            $("#headerV2").css("background-color","#000");
+        {% endif %}
+        
+        function startIntro(){
+            var intro = introJs();
+            intro.setOptions({
+                steps: [
+                    { 
+                      intro: "{{ 'visit.activityDetail-start'|trans|raw }} :",
+                      position: 'bottom'
+                    },
+                    {
+                      element: '#stepActivityDetailHeader',
+                      intro: "{{ 'visit.activityDetail-header'|trans|raw }}",
+                      position: 'bottom'
+                    },
+                    {
+                      element: '#stepActivityDetailPoints',
+                      intro: "{{ 'visit.activityDetail-points'|trans|raw }}",
+                      position: 'left'
+                    },
+                    {
+                      element: '#stepActivityDetailMainData',
+                      intro: "{{ 'visit.activityDetail-main-data'|trans|raw }}",
+                      position: 'top'
+                    },
+                    {
+                      element: '#graphContainer',
+                      intro: "{{ 'visit.activityDetail-graph'|trans|raw }}",
+                      position: 'top'
+                    },
+                    {
+                      element: '#stepActivityDetailMap',
+                      intro: "{{ 'visit.activityDetail-map'|trans|raw }}",
+                      position: 'right'
+                    },
+                    {
+                      element: '#stepActivityDetailSplits',
+                      intro: "{{ 'visit.activityDetail-splits'|trans|raw }}",
+                      position: 'left'
+                    },
+                    {
+                      element: '#stepActivityDetailHR',
+                      intro: "{{ 'visit.activityDetail-hr'|trans|raw }}",
+                      position: 'left'
+                    },
+                    {
+                      element: '#stepActivityDetailComparisonTool',
+                      intro: "{{ 'visit.activityDetail-comparison-tool'|trans|raw }}",
+                      position: 'top'
+                    },
+                    {
+                      element: '#stepActivityDetailLast',
+                      intro: "{{ 'visit.activityDetail-actions'|trans|raw }}",
+                      position: 'top'
+                    }
+                ]
+            });
+            
+            /*intro.setOption('doneLabel', 'Retour').start().oncomplete(function() {
+                //window.location.href = 'second.html?multipage=true';
+                history.go(-1);
+            });*/
+            
+            intro.start();
+        }
+        
+        $("#launchVisitButton").click(function() {
+            if (!$("#launchVisitButton").hasClass("disabled")) {
+                startIntro(); 
+            }
+        });
+        
+        {% if (isAllowedPackPremium or isAllowedPackElite ) and activityDetailSeenPreference is defined and activityDetailSeenPreference|length == 0 or activityDetailSeenPreference[0]['date'] is defined and activityDetailSeenPreference[0]['date'] is null %}
+            startIntro();
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") and app.user.id != 1 %}
+                $.ajax({
+                    url: Routing.generate('ksUser_setActivityDetailSeen'),
+                    type: "POST",
+                    success: function (data) {
+                    }
+                });
+            {% endif %}
+        {% endif %}
+
+        var landmarks = []; // stockage des markers gmap
+        var latLong = {};  //Stockage des points latitude/longitude
+        var waypoints = [];
+        var laps = [];
+
+        function formatPace(pace) {
+            avgPaceMin = Math.floor(pace);
+            avgPaceSec = Math.floor(Math.round((pace - avgPaceMin) * 60));
+            if (avgPaceSec == 60) { avgPaceSec = 0; ++avgPaceMin; }
+            avgPaceSecStr = avgPaceSec.toString();
+            if (avgPaceSec < 10) { avgPaceSecStr = "0" + avgPaceSecStr; }
+
+            return avgPaceMin + ":" + avgPaceSecStr;
+        }
+
+        function formatTime(totalMin, showZeroHours) {
+            hours = Math.floor(Math.floor(totalMin) / 60);
+            min = Math.floor(totalMin) % 60;
+            sec = Math.floor((totalMin - Math.floor(totalMin)) * 60.0); 
+
+            if (sec == 60) { sec = 0; ++min; }
+            if (min == 60) { min = 0; ++hours; }
+
+            secStr = sec.toString();
+            if (sec < 10) { secStr = "0" + secStr; }
+            minStr = min.toString();
+            if (min < 10) { minStr = "0" + minStr; }
+
+            return  (showZeroHours || hours > 0) ?
+                hours + ":" + minStr + ":" + secStr
+                : minStr + ":" + secStr;
+        } 
+
+        function traceMarkers(map, waypoints, distanceForOneMarkInKm) {
+            //console.log(distanceForOneMarkInKm);
+            if (landmarks.length && (landmarks.length > 0)) {
+                for (i = 1; i < landmarks.length; i++) {
+                    landmarks[i].setMap(map);
+                }
+            } else {
+                //var km_points = traceRoute.GetPointsAtDistance(distanceForOneMarkInKm * 1000); //FMO : => bug !! approximation des distances et donc le marker n'est pas au bon endroit...
+                i=0;
+                $.each(waypoints, function(key, waypoint) {
+                    km = Math.floor(parseInt(waypoint.distance));
+                    step = Math.floor(parseInt(waypoint.distance) / distanceForOneMarkInKm);
+                    //console.log("km/step="+km+"/"+step);
+                    if (landmarks[step] === undefined && step !=0) {
+                        point = new google.maps.LatLng(waypoint.lat, waypoint.lon);
+                        landmarks[step] = createKmMarker(map, point, km);
+                        //console.log("             new:"+km);
+                    }
+                });
+            }
+        }
+
+        function createKmMarker(map, point, km) {
+            return new google.maps.Marker({
+                position: point,
+                map: map,
+                title: "Km " + km,
+                icon: new google.maps.MarkerImage('https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + km + '|49AFCD|FFFFFF'),
+                zIndex: Math.round(point.lat() * -100000) << 5
+            });
+        }
+
+        var responseAjax;
+        var extremes;
+        var pieEvent;
+        var map;
+        var zoom;
+        var dataType;
+        var locationMarker;
+        var waypoints;
+        var laps;
+        var firstPoint;
+        var lastPoint;
+        var lat_max;
+        var lat_min;
+        var lon_max;
+        var lon_min;
+        var timeElapsedByKm = {};
+        var shade = [];
+        var strokeColor;
+
+        //Utile pour les splits et redraw du graph
+        function splitByKm() {
+            $.each(responseAjax.chart.distances, function(key, distance) {
+                kmInf = (Math.floor(distance[1])).toString();
+                //kmSup = (Math.ceil(distance[1])).toString();
+                if( timeElapsedByKm[kmInf] === undefined && kmInf != "0") {
+                    //console.log(key+"/"+responseAjax.chart.fullDurationMoving[key]+"/"+responseAjax.chart.distances[key][1]);
+                    timeElapsedByKm[kmInf] = {
+                        "key"   : key,
+                        "time" : responseAjax.chart.fullDurationMoving[key],
+                        "km" : responseAjax.chart.distances[key][1],  
+                    }
+                }
+                //Traitement du dernier point même si pas un km entier
+                if (key == Object.keys(responseAjax.chart.distances).length-1) {
+                    timeElapsedByKm[parseInt(kmInf)+1] = {
+                        "key"   : key,
+                        "time" : responseAjax.chart.fullDurationMoving[key],
+                        "km" : responseAjax.chart.distances[key][1],  
+                    }
+                }
+            });
+            //console.log(timeElapsedByKm);
+            return timeElapsedByKm;
+        }
+
+        var getDenBetweenWaypoints = function(elevations, p1, p2) {
+            var den = {
+                '+'         : 0,
+                '-'         : 0,
+            };
+            if ( elevations.length > 0 ) {
+                //var threshold =  5;  plus besoin car données lissées en amont
+                var threshold =  0;
+                if (elevations[p1] != undefined) {
+                    var eleRef = parseInt(elevations[p1][1]);
+
+                    if (eleRef != null) {
+                        //console.log(eleRef);
+                        for (i = p1; i <= p2; i++) {
+                            if ( ( parseInt(elevations[i][1]) - eleRef ) > threshold ) {
+                                den['+'] += parseInt(elevations[i][1]) - eleRef;
+                                eleRef = parseInt(elevations[i][1]);
+                            };
+                            if ( ( eleRef - parseInt(elevations[i][1]) ) > threshold ) {
+                                den['-'] += eleRef - parseInt(elevations[i][1]);
+                                eleRef = parseInt(elevations[i][1]);
+                            };
+                        };
+                    }
+                }
+            } else {
+                den["+"] = 0;
+                den["-"] = 0;
+            }
+            return den;
+        }
+
+        var label;
+        function reDrawPeriod(chart, event) {
+            //console.log('reDrawPeriod with event :'+ event);
+            var text;
+            var d = [];
+            d['+'] = -1;
+            d['-'] = -1;
+            elevationGainToCalc = true;
+            elevationLostToCalc = true;
+            if (event && event.xAxis) {
+                //Cas d'un zoom
+                //FIXME : recentrer d'abord la map
+                xAxisMin = event.xAxis[0].min;
+                xAxisMax = event.xAxis[0].max;
+                distance = 0;
+                speed = 0;
+                duration = xAxisMax-xAxisMin;
+                pace = 0;
+                d['+'] = -1;
+                d['-'] = -1;
+            }
+            else {
+                //Sans zoom
+                xAxisMin = chart.xAxis[0].min;
+                xAxisMax = chart.xAxis[0].max;
+                distance = parseFloat('{{ activity.distance }}');
+                {% if activity.timeMoving > 0 %}
+                    {% set speed = ((activity.distance) / activity.timeMoving * 60 * 60) %}
+                {% else %}
+                    -
+                {% endif %}
+                speed = parseFloat('{{ speed }}').toFixed(1);
+                duration = parseFloat('{{ activity.timeMoving }}');
+                if (responseAjax.info['duration'] && responseAjax.info['distance']) {
+                    pace = formatPace(responseAjax.info["duration"] / 60.0 / responseAjax.info['distance']);
+                }
+                {% if activity.elevationGain is null %}
+                    d['+'] = parseInt(responseAjax.info["D+"]);
+                {% else %}
+                    d['+'] = parseInt('{{ activity.elevationGain }}');
+                {% endif %}
+                {% if activity.elevationLost is null %}
+                    d['-'] = parseInt(responseAjax.info["D-"]);
+                {% else %}
+                    d['-'] = parseInt('{{ activity.elevationLost }}');
+                {% endif %}
+
+                if (d['+'] != -1) elevationGainToCalc =false;
+                if (d['-'] != -1) elevationLostToCalc =false;
+            }
+
+            var total = [];
+            var avg = [];
+            var min = [];
+            var max = [];
+            var countTemp = 0;
+            var pointIndexMin = 99999;
+            var pointIndexMax = 0;
+            var iMin = 99999;
+            var iMax = 0;
+            for ($i=0;$i<chart.series[0].xData.length;$i++) {
+                //Recherche des index min/max de la période sélectionnée
+                if (xAxisMin <= chart.series[0].xData[$i] && chart.series[0].xData[$i] <= xAxisMax) {
+                    countTemp ++;
+                    iMin = $i < iMin ? $i : iMin;
+                    iMax = $i > iMax ? $i : iMax;
+                }
+            }
+            //console.log(iMin);
+            //console.log(iMax);
+            pointIndexMin = responseAjax.chart.fullDurationMoving.indexOf(chart.series[0].xData[iMin]);
+            pointIndexMax = responseAjax.chart.fullDurationMoving.indexOf(chart.series[0].xData[iMax]);
+            //console.log(pointIndexMin);
+            //console.log(pointIndexMax);
+
+            if (distance == 0 && pointIndexMin != -1 && pointIndexMax != -1) distance = (responseAjax.chart.distances[pointIndexMax][1] - responseAjax.chart.distances[pointIndexMin][1]).toFixed(3);
+            //console.log(distance);
+
+            for ($j =0; $j < Object.keys(dataType).length; $j++) {
+                totalTemp =0;
+                minTemp =99999;
+                maxTemp =0;
+                decimal = 0;
+                if ($j == dataType.ELEVATION)    decimal = 0;
+                if ($j == dataType.SPEED)        decimal = 1;
+                if ($j == dataType.PACE)         decimal = 2;
+                if ($j == dataType.HEARTRATE)    decimal = 0;
+                if ($j == dataType.TEMPERATURE)  decimal = 1;
+
+                key=0;
+                for ($i=iMin;$i<=iMax;$i++) {
+
+                    if (chart.series[$j].yData[$i] != null) {
+                        totalTemp += chart.series[$j].yData[$i];
+                        minTemp    = chart.series[$j].yData[$i] < minTemp ? chart.series[$j].yData[$i] : minTemp;
+                        maxTemp    = chart.series[$j].yData[$i] > maxTemp ? chart.series[$j].yData[$i] : maxTemp;
+                        if ($j == dataType.ELEVATION && (elevationGainToCalc || elevationLostToCalc)) {
+                            if ($i==0) den = getDenBetweenWaypoints(responseAjax.chart.elevations, 0, $i);
+                            else den = getDenBetweenWaypoints(responseAjax.chart.elevations, $i-1, $i);
+                            //console.log(parseInt(den['+']));
+                            if (elevationGainToCalc) d['+'] += parseInt(den['+']);
+                            if (elevationLostToCalc) d['-'] += parseInt(den['-']);
+                        }
+                    }
+                }
+                total[$j] = totalTemp;
+                avg[$j] = (total[$j] / countTemp).toFixed(decimal);
+                min[$j] = minTemp.toFixed(decimal);
+                max[$j] = maxTemp.toFixed(decimal);
+            }
+
+            text = '<span style="color:black">DONNEES AFFICHEES : ' + distance + 'km' + ', +' + parseInt(d['+']) + 'm' + ', -' + parseInt(d['-']) + 'm pour ' + secondsToTime(duration) + '</span>';
+            text += '<br/><span style="color:#7cb5ec">Altitude : ' + avg[dataType.ELEVATION] + 'm' +' (' + min[dataType.ELEVATION] + ', ' + max[dataType.ELEVATION] + ')</span>';
+            text += '<br/><span style="color:#434348">Vitesse : ' + (speed != 0 ? speed : avg[dataType.SPEED]) + 'km/h' +' (' + min[dataType.SPEED] + ', ' + max[dataType.SPEED] + ')</span>';
+            text += '&nbsp<span style="color:#14a14a">Rythme : ' + (pace !=0 ? pace : formatPace(avg[dataType.PACE])) + '/km' +' (' + min[dataType.PACE] + ', ' + max[dataType.PACE] + ')</span>';
+            if (avg[dataType.HEARTRATE] != undefined) text += '<br/><span style="color:rgb(244, 57, 76)">Cardio : ' + avg[dataType.HEARTRATE] + 'bpm' +' (' + min[dataType.HEARTRATE] + ', ' + max[dataType.HEARTRATE] + ')</span>';
+            if (avg[dataType.RR] != undefined) text += '&nbsp&nbsp<span style="color:#9b1212">R-R : ' + avg[dataType.RR] + ' (' + min[dataType.RR] + ', ' + max[dataType.RR] + ')</span>';
+            if (avg[dataType.TEMPERATURE] != undefined)text += '<br/><span style="color:#8085e9">Température : ' + avg[dataType.TEMPERATURE] + '°C' +' (' + min[dataType.TEMPERATURE] + ', ' + max[dataType.TEMPERATURE] + ')</span>';
+            if (avg[dataType.PEDALINGFREQUENCY] != undefined)text += '<br/><span style="color:#6c6c76">Fréquence : ' + avg[dataType.PEDALINGFREQUENCY] + 'tr/min' + ' (' + min[dataType.PEDALINGFREQUENCY] + ', ' + max[dataType.PEDALINGFREQUENCY] + ')</span>';
+            if (avg[dataType.POWER] != undefined)text += '&nbsp&nbsp<span style="color:#000000">Puissance : ' + avg[dataType.POWER] + 'W' +' (' + min[dataType.POWER] + ', ' + max[dataType.POWER] + ')</span>';
+
+            if (label != undefined) label.fadeOut();
+            
+            {% if isUser == 0 or isAllowedPackPremium or isAllowedPackElite %}
+                label = chart.renderer.label(text, 50, 0)
+                    .attr({
+                        fill: 'white',//#d7e8f8',
+                        padding: 5,
+                        r: 5,
+                        zIndex: 8,
+                        stroke: Highcharts.getOptions().colors[0],
+                        'stroke-width': 2,
+                        id: 'period',
+                    })
+                    .css({
+                        color: '#FFFFFF'
+                    })
+                    .add();
+            {% endif %}
+        }
+
+        function reDrawMap(context, km, event, distanceMin, distanceMax) {
+            //console.log('reDrawMap with :'+ context + '-' + km + '-'+ event);
+            mapPointsDistrib = [];
+
+            map = new google.maps.Map(
+                document.getElementById("gmap-{{ activity.id }}"), {
+                mapTypeId: google.maps.MapTypeId.TERRAIN,
+                center: new google.maps.LatLng( "{{ activity.place_latitude }}", "{{ activity.place_longitude }}" )
+            });
+
+            var isPolylineDistrib = false;
+
+            map.setCenter(new google.maps.LatLng(
+                ((lat_max + lat_min) / 2.0),
+                ((lon_max + lon_min) / 2.0)
+            ));
+            map.fitBounds(traceRoute.Bounds());
+            //traceRoute.setMap(null);
+
+            var isPolylineDistrib = false;
+            var isCentered = true;
+
+            if (context == 'dblclick') {
+                strokeColor = "#2581BA";
+                isCentered = true;
+                reDrawPeriod(chart);
+            }
+            else if (context == 'HR' || context == 'HRMax') {
+                strokeColor = "rgb(244, 57, 76)";
+                isCentered = true;
+                chart.xAxis[0].setExtremes(extremes.min, extremes.max);
+                reDrawPeriod(chart);
+            }
+            else if (context == 'split') {
+                strokeColor = "#ffb400";
+                isCentered = false;
+                chart.xAxis[0].setExtremes(extremes.min, extremes.max);
+                reDrawPeriod(chart);
+            }
+            else if (context == 'lap') {
+                strokeColor = "#ffb400";
+                isCentered = false;
+                //chart.xAxis[0].setExtremes(extremes.min, extremes.max);
+                reDrawPeriod(chart);
+            }
+            else if (context == 'selection') {
+                strokeColor = "#ffb400";
+                isCentered = false;
+                reDrawPeriod(chart, event);
+                if (event != undefined) {
+                    if (event.resetSelection) {
+                        //Cas du clic sur "reset zoom" = "dblclick"
+                        xAxisMin = chart.xAxis[0].getExtremes().min;
+                        xAxisMax = chart.xAxis[0].getExtremes().max;
+                        strokeColor = "#2581BA";
+                        isCentered = true;
+                        reDrawPeriod(chart);
+                    }
+                    else {
+                        xAxisMin = event.xAxis[0].min;
+                        xAxisMax = event.xAxis[0].max;
+                    }
+                }
+                else {
+                    xAxisMin = chart.xAxis[0].getExtremes().min;
+                    xAxisMax = chart.xAxis[0].getExtremes().max;
+                }
+            }
+            else if (context == 'selectionWithHR') {
+                strokeColor = "rgb(244, 57, 76)";
+                isCentered = false;
+                reDrawPeriod(chart, event);
+            }
+
+            for($i=0;$i<chart.series.length;$i++) {
+                //console.log(chart.series[$i].name);
+                if(chart.series[$i].name == 'Split sélectionné' || chart.series[$i].name == 'Zone HR sélectionnée' || chart.series[$i].name == 'Zone HR maximum') chart.series[$i].remove();
+            }
+
+            //console.log(xAxisMin);
+            //console.log(xAxisMax);
+
+            shade = [];
+            $.each(waypoints, function(key, waypoint) {
+                if (context == 'HR' || context == 'selectionWithHR' || context == 'HRMax') test = pieEvent.point.val1 <= waypoint.heartRate && waypoint.heartRate < pieEvent.point.val2 || pieEvent.point.val1 == responseAjax.HRRest && pieEvent.point.val2 == responseAjax.HRRest && waypoint.heartRate == null;
+                else if (context == 'split') test = (km == Math.floor(parseInt(waypoint.distance) + 1));
+                else if (context == 'lap') test = (distanceMin <= waypoint.distance && waypoint.distance <= distanceMax);
+                else if (context == 'selection') test = ( xAxisMin <= key && key <= xAxisMax);
+                else if (context == 'dblclick') test = false;
+                cardio = [];
+                cardio[0] = parseInt(key);
+                //console.log(waypoint.distance + "-" + Math.floor(parseInt(waypoint.distance) + 1));
+                if (test) {
+                    //Pour la distribution HR : cas ou le HR est dans la zone considérée ou bien dans la zone0 (pas de cardio activé)
+                    //Pour la distribution split : cas ou on entre dans le km ciblé
+                    point = new google.maps.LatLng(waypoint.lat,  waypoint.lon);
+                    if (!isCentered) {
+                        map.setCenter(point);
+                        map.setZoom(15);
+                        isCentered = true;
+                    }
+
+                    mapPointsDistrib.push(point);
+
+                    if (!isPolylineDistrib) {
+                        traceRouteDistrib = new google.maps.Polyline({
+                            path: mapPointsDistrib,
+                            strokeColor: '#2581BA',
+                            strokeOpacity: 1,
+                            strokeWeight: 3,
+                        });
+
+                        traceRouteDistrib.setMap(map);
+                        mapPointsDistrib = [];
+                        mapPointsDistrib.push(
+                            new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+                        );
+                        isPolylineDistrib = true;
+
+                    }
+                    if (context == 'HR' || context == 'selectionWithHR' || context == 'HRMax') {
+                        if (waypoint.heartRate != undefined) cardio[1] = waypoint.heartRate;
+                        else cardio[1] = null;
+                        shade.push(cardio);
+                    }
+                }
+                else {
+                    mapPointsDistrib.push(
+                        new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+                    );
+                    if (isPolylineDistrib) {
+                        traceRouteDistrib = new google.maps.Polyline({
+                            path: mapPointsDistrib,
+                            strokeColor: strokeColor,
+                            strokeOpacity: 1,
+                            strokeWeight: 5
+                        });
+                        traceRouteDistrib.setMap(map);
+                        mapPointsDistrib = [];
+                        mapPointsDistrib.push(
+                            new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+                        );
+                        isPolylineDistrib = false;
+                    }
+                    if (context == 'HR' || context == 'selectionWithHR' || context == 'HRMax') {
+                        if (chart.yAxis[dataType.HEARTRATE] != undefined) cardio[1] = chart.yAxis[dataType.HEARTRATE].getExtremes().min <0 ? 0 : chart.yAxis[dataType.HEARTRATE].getExtremes().min;
+                        else cardio[1] = null;
+                        shade.push(cardio);
+                    }
+                }
+            });
+            traceRouteDistrib = new google.maps.Polyline({
+                path: mapPointsDistrib,
+                strokeColor: isPolylineDistrib ? strokeColor : '#2581BA',
+                strokeOpacity: 1,
+                strokeWeight: isPolylineDistrib ? 6 : 3
+            });
+            traceRouteDistrib.setMap(map);
+
+            locationMarker = new google.maps.Marker({
+                icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/ks-pin.png') }}" ),
+                position: new google.maps.LatLng( waypoints[firstPoint].lat, waypoints[firstPoint].lon )
+            });
+
+            new google.maps.Marker({
+                map     : map,
+                icon    : new google.maps.MarkerImage("{{ asset('V2/images/logo-depart.png') }}" ),
+                position: new google.maps.LatLng( waypoints[firstPoint].lat, waypoints[firstPoint].lon ),
+                title   : "Départ"
+            });
+
+            new google.maps.Marker({
+                map     : map,
+                icon    : new google.maps.MarkerImage("{{ asset('V2/images/logo-arrivee.png') }}" ),
+                position: new google.maps.LatLng( waypoints[lastPoint].lat, waypoints[lastPoint].lon ),
+                title   : "Fin"
+            });
+
+            traceMarkers(map, waypoints, distanceForOneMark);
+
+            locationMarker.setMap(map);
+
+            /* FMO 17/08/2015 mis en commentaire car se supperpose avec le bloc5 comparateur de séances et pas utile au final
+            if (context == 'HR' || context == 'selectionWithHR') {
+                if (pieEvent.point.label == pieEvent.point.name) pieEvent.point.label = ""; 
+                $('#HRLegend').html("<center><span><b>" + pieEvent.point.label + " </b> " + pieEvent.point.name + " => <b>" + pieEvent.point.duration + "</b></span></center>");
+                $('#HRLegend').addClass("alert alert-info");
+            }
+            else {
+                $('#HRLegend').html("");
+                $('#HRLegend').removeClass("alert alert-info");
+            }
+            */
+            //Pas de zoom en fonction du split pour l'instant car pas intéressant sur 1 km, à étudier si split intelligent
+
+            //console.log(timeElapsedByKm[km-1]["key"]);
+            //console.log(timeElapsedByKm[km]["key"]);
+            //chart.xAxis[0].setExtremes(timeElapsedByKm[km-1]["key"], timeElapsedByKm[km]["key"]);
+            //console.log(responseAjax.chart.elevations);
+
+            if (context == 'split') {
+                $.each(responseAjax.chart.elevations, function(key, elevation) {
+                    //Construction des data pour la shade area
+                    if (km ==1) firstKey = 0;
+                    else firstKey = timeElapsedByKm[km-1]["key"];
+                    lastKey = timeElapsedByKm[km]["key"];
+                    if (firstKey <= key && key <= lastKey) {
+                        shade.push(elevation);
+                        //console.log(elevation)
+                    }
+                });
+            }
+            else if (context == 'selection') {
+                $.each(responseAjax.chart.elevations, function(key, elevation) {
+                    if (xAxisMin <= key && key <= xAxisMax) {
+                        shade.push(elevation);
+                        //console.log(elevation)
+                    }
+                });
+            }
+            else if (context == 'lap') {
+                $.each(responseAjax.chart.elevations, function(key, elevation) {
+                    distance = responseAjax.chart.distances[key][1];
+                    if (distanceMin <= distance && distance <= distanceMax) {
+                        shade.push(elevation);
+                        //console.log(elevation)
+                    }
+                });
+            }
+            //console.log(shade);
+
+            if (context == 'HR'  || context == 'selectionWithHR' || context == 'HRMax' || context == 'split' || context == 'lap') {
+                if (dataType.HEARTRATE != undefined && (context == 'HR' || context == 'selectionWithHR' || context == 'HRMax')) chart.series[parseInt(dataType.HEARTRATE)].setVisible(true, false);
+                if (context == 'HR' || context == 'selectionWithHR') name = 'Zone HR sélectionnée';
+                else if (context == 'HRMax') name = 'Zone HR maximum';
+                else if (context == 'split' || context == 'lap') name = 'Split sélectionné';
+                chart.addSeries({
+                    id:'shade',
+                    type:'area',
+                    name: name,
+                    marker:{enabled:false},
+                    lineWidth:0,
+                    color:strokeColor,
+                    data: shade,
+                    yAxis: (context == 'HR' || context == 'selectionWithHR' || context == 'HRMax') ? parseInt(dataType.HEARTRATE) : parseInt(dataType.ELEVATION),
+                    });
+            }
+        }
+        
+        $(document).ready(function() {
+        
+            $("#goAdvancedDetailBtn").click(function() {
+                if( !$("#goAdvancedDetailBtn").hasClass("disabled") ) {
+                    $("#loaderImportByEnd").show();
+                    $("#goAdvancedDetailBtn").addClass("disabled");
+                    //On passe le user en premium automatiquement et on ré-affiche la page
+                    $.post(
+                        Routing.generate('ksUser_setPremium'), 
+                        {
+                        },
+                        function(response) {
+                            if( response.response == 1 ) showInformation('{{ 'profile.premium-successful'|trans|raw }}');
+                            document.location.reload();
+                        }
+                    );
+                };
+            });
+            
+            $("#resizeNormalBtn").hide();
+            
+            $("#resizeFullBtn").click(function() {
+                if( !$("#resizeFullBtn").hasClass("disabled") ) {
+                    $("#leftColumn").removeClass("col-md-8");
+                    $("#leftColumn").addClass("col-md-12");
+                    $("#splits").hide();
+                    drawGraph();
+                    $("#resizeNormalBtn").show();
+                    $("#resizeFullBtn").hide();
+                    $('#HRLegend').html("");
+                    $('#HRLegend').removeClass("alert alert-info");
+                }
+            });
+            
+            $("#resizeNormalBtn").click(function() {
+                if( !$("#resizeNormalBtn").hasClass("disabled") ) {
+                    $("#leftColumn").removeClass("col-md-12");
+                    $("#leftColumn").addClass("col-md-8");
+                    $("#splits").show();
+                    drawGraph();
+                    $("#resizeNormalBtn").hide();
+                    $("#resizeFullBtn").show();
+                }
+            });
+            
+            function drawGraph() {
+                $.get(
+                    Routing.generate('ksActivity_getDataGraph', {'activityId' : {{ activity.id }}} ), 
+                    function(response) {
+                        responseAjax = response;
+
+                        waypoints = response.map.waypoints; // tableau sous échantilonné
+                        //console.log(waypoints);
+
+                        var kmsNumber       = parseInt({{ activity.distance }});
+                        map                 = new google.maps.Map(
+                            document.getElementById("gmap-{{ activity.id }}"), {
+                            mapTypeId: google.maps.MapTypeId.TERRAIN
+                        });
+                        var mapPoints       = [];
+
+                        if (Object.keys(waypoints).length != 0) {
+                            firstPoint = Object.keys(waypoints)[0];
+                            lastPoint = Object.keys(waypoints)[Object.keys(waypoints).length - 1];
+
+                            lat_min = waypoints[firstPoint].lat;
+                            lat_max = waypoints[firstPoint].lat;
+                            lon_min = waypoints[firstPoint].lon;
+                            lon_max = waypoints[firstPoint].lon;
+
+
+                            if ( kmsNumber > 50 ) {
+                                distanceForOneMark = 10; //On ajoute que les dizaines
+                            }
+                            else if( kmsNumber <= 15 ) {         
+                                distanceForOneMark = 1; //On affiche tous les kilomètres
+                            } 
+                            else {
+                                distanceForOneMark = 5; //On affiche tous les 5 kilomètres
+                            }
+                            traceMarkers(map, waypoints, distanceForOneMark);
+
+                            locationMarker = new google.maps.Marker({
+                                map     : map,
+                                icon    : new google.maps.MarkerImage("{{ asset('bundles/ksactivity/images/ks-pin.png') }}" ),
+                                position: new google.maps.LatLng( waypoints[firstPoint].lat, waypoints[firstPoint].lon )
+                            });
+
+                            new google.maps.Marker({
+                                map     : map,
+                                icon    : new google.maps.MarkerImage("{{ asset('V2/images/logo-depart.png') }}" ),
+                                position: new google.maps.LatLng( waypoints[firstPoint].lat, waypoints[firstPoint].lon ),
+                                title   : "Départ"
+                            });
+
+                            new google.maps.Marker({
+                                map     : map,
+                                icon    : new google.maps.MarkerImage("{{ asset('V2/images/logo-arrivee.png') }}" ),
+                                position: new google.maps.LatLng( waypoints[lastPoint].lat, waypoints[lastPoint].lon ),
+                                title   : "Fin"
+                            });
+                        }
+
+                        $.each(waypoints, function(key, waypoint) {
+                            //console.log(key+'lat/lon='+waypoint.heartRate+'/'+waypoint.speed);
+                            mapPoints.push(
+                                new google.maps.LatLng(waypoint.lat,  waypoint.lon)
+                            );
+                            if ( waypoint.lat < lat_min ) lat_min = waypoint.lat;
+                            if ( waypoint.lat > lat_max ) lat_max = waypoint.lat;
+                            if ( waypoint.lon < lon_min ) lon_min = waypoint.lon;
+                            if ( waypoint.lon > lon_max ) lon_max = waypoint.lon;
+                        });
+
+                        //On trace le parcours 
+                        traceRoute = new google.maps.Polyline({
+                            path: mapPoints,
+                            strokeColor: "#2581BA",
+                            strokeOpacity: 1.0,
+                            strokeWeight: 3
+                        });
+                        map.setCenter(new google.maps.LatLng(
+                            ((lat_max + lat_min) / 2.0),
+                            ((lon_max + lon_min) / 2.0)
+                        ));
+
+                        map.fitBounds(traceRoute.Bounds());
+                        traceRoute.setMap(map);
+                        zoom = map.getZoom();
+
+
+                        /*alert("min" + response.info["minEle"]);
+                        alert("avg" + response.info["avgEle"]);
+                        alert("max" + response.info["maxEle"]);
+                        alert("ecT" + response.info["ecartTypePace"]);*/
+
+                        // Traitement des données pour les splits
+                        splitByKm();
+
+                        bestKm = worstKm = 1;
+                        bestLapSpeed = worstLapSpeed = 0;
+                        bestLapHR = worstLapHR = 0;
+
+                        /* création du tableau des splits */
+                        $splitsContainer = $("#splitsContainer").html("");
+                        $splitsHeader = "";
+                        $splitsDetails = "";
+                        $splitsHR = "";
+                        $splitCheck = "";
+                        $userHRMax = "{{ activity.HRMax }}" == "" ? 0 : parseInt("{{ activity.HRMax }}");
+                        $userHRRest = "{{ activity.HRRest }}" == "" ? 0 : parseInt("{{ activity.HRRest }}");
+            
+                        /* S'il existe des laps générés par le sportif lors de la sortie ils sont prioritaires aux splits /km*/
+                        if (Object.keys(responseAjax.laps).length > 1) {
+                            /* calculs meilleur et pire lap */
+                            for (lap = 0; lap < Object.keys(responseAjax.laps).length; lap++) {
+                                if (responseAjax.laps[lap]["averageSpeed"] !== undefined && responseAjax.laps[lap]["averageSpeed"] != 0) {
+                                    if( responseAjax.laps[lap]["averageSpeed"] < responseAjax.laps[worstLapSpeed]["averageSpeed"] ) {
+                                        worstLapSpeed = lap;
+                                    }
+                                    if( responseAjax.laps[lap]["averageSpeed"] > responseAjax.laps[bestLapSpeed]["averageSpeed"] ) {
+                                        bestLapSpeed = lap;
+                                    }
+                                }
+                                if (responseAjax.laps[lap]["averageHR"] !== undefined && responseAjax.laps[lap]["averageHR"] != 0) {
+                                    if( responseAjax.laps[lap]["averageHR"] < responseAjax.laps[worstLapHR]["averageHR"] ) {
+                                        worstLapHR = lap;
+                                    }
+                                    if( responseAjax.laps[lap]["averageHR"] > responseAjax.laps[bestLapHR]["averageHR"] ) {
+                                        bestLapHR = lap;
+                                    }
+                                }
+                            }
+                            var distanceMin = distanceMax = 0;
+                            for (lap = 0; lap < Object.keys(responseAjax.laps).length; lap++) {
+                                distanceMax = distanceMin + responseAjax.laps[lap]["distance"];
+                                lapDisplayed = lap +1;
+                                $splitsHeader += '<li>'+ lapDisplayed + ': ' + (responseAjax.laps[lap]["distance"] < 1 ? (responseAjax.laps[lap]["distance"]*1000 + 'm') : (Math.round(responseAjax.laps[lap]["distance"]) + 'km')) + '</li>';
+                                
+                                if ($userHRMax != 0) {
+                                    $color = lap == bestLapHR ? "HR-max" : lap == worstLapHR ? "HR-min" : "HR-normal";
+                                    $percent = 100 * responseAjax.laps[lap]["averageHR"] / responseAjax.laps[bestLapHR]["averageHR"];
+                                    $splitsHR += '<li class="progress" onclick="reDrawMap(\'lap\', null, null, ' + distanceMin + ',' + distanceMax +');"><div rel="tooltip" title="HR min/max : ' + responseAjax.laps[lap]["minHR"] + '/' + responseAjax.laps[lap]["maxHR"] + '" class="progress-bar progress-bar-' + $color +'" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: ' + ($percent > 70 ? $percent : "70") + '%;cursor: pointer;">' + responseAjax.laps[lap]["averageHR"] + ' : ' + Math.round(100*responseAjax.laps[lap]["averageHR"]/$userHRMax, 0) + '% </div></li>';
+                                    //$splitCheck += '<li> <input type="checkbox"></input></li>';
+                                }
+            
+                                $color = lap == bestLapSpeed ? "success" : lap == worstLapSpeed ? "error" : "info";
+                                $percent = 100 * responseAjax.laps[lap]["averageSpeed"] / responseAjax.laps[bestLapSpeed]["averageSpeed"];
+                                $splitsDetails += '<li class="progress" onclick="reDrawMap(\'lap\', null, null, ' + distanceMin + ',' + distanceMax +');"><div rel="tooltip" title="Vitesse min/max : ' + responseAjax.laps[lap]["minSpeed"] + ' / ' + responseAjax.laps[lap]["maxSpeed"] +  ', D+ : ' + responseAjax.laps[lap]["elevationGain"] + 'm, D- : ' + responseAjax.laps[lap]["elevationLost"] + 'm " class="progress-bar progress-bar-' + $color +'" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: ' + ($percent > 75 ? $percent : "75") + '%;cursor: pointer;">' + secondsToTime(responseAjax.laps[lap]["duration"], 'noHours') + ' à ' + responseAjax.laps[lap]["averageSpeed"] + 'km/h  </div></li>';
+                                distanceMin += responseAjax.laps[lap]["distance"];
+                            }
+                            if ($userHRMax != 0) {
+                                $splitsContainer.append('<div class="col-md-3"><center><ul>' + $splitsHeader + '</ul></center></div>');
+                                $splitsContainer.append('<div class="col-md-5">' + $splitsDetails + '</div>');
+                                $splitsContainer.append('<div class="col-md-4">' + $splitsHR + '</div>');
+                                //$splitsContainer.append('<div class="col-md-1">' + $splitCheck + '</div>');
+                            }
+                            else {
+                                $splitsContainer.append('<div class="col-md-4"><center><ul>' + $splitsHeader + '</ul></center></div>');
+                                $splitsContainer.append('<div class="col-md-8">' + $splitsDetails + '</div>');
+                            }
+                        }
+                        else {
+                            /* calculs du rythme et des dénivelés +/- */
+                            for (km = 1; km <= Object.keys(timeElapsedByKm).length; km++) {         
+                                if (timeElapsedByKm[km] !== undefined) {
+                                    if( km != 1 && timeElapsedByKm[km - 1] ) {
+                                        timeElapsedByKm[km]["paceInSeconds"] = (timeElapsedByKm[km]["time"] - timeElapsedByKm[km - 1]["time"]) / (timeElapsedByKm[km]["km"] - timeElapsedByKm[km - 1]["km"]);
+                                        den = getDenBetweenWaypoints(response.chart.elevations, timeElapsedByKm[km - 1]["key"], timeElapsedByKm[km]["key"]);
+                                    } else {
+                                        //paceInSeconds = response.info.duration - timeElapsedByKm[km];
+                                        timeElapsedByKm[km]["paceInSeconds"] = timeElapsedByKm[km]["time"] / timeElapsedByKm[km]["km"];
+                                        //console.log("km " + km + " : " + secondsToTime(paceInSeconds));
+                                        den = getDenBetweenWaypoints(response.chart.elevations, 0, timeElapsedByKm[km]["key"]);
+                                    }
+
+                                    timeElapsedByKm[km]["d+"] = den["+"];
+                                    timeElapsedByKm[km]["d-"] = den["-"];
+
+                                    if (timeElapsedByKm[worstKm] !== undefined && timeElapsedByKm[bestKm] !== undefined) {
+                                        if( timeElapsedByKm[km]["paceInSeconds"] > timeElapsedByKm[worstKm]["paceInSeconds"] ) {
+                                            worstKm = km;
+                                        }
+                                        if( timeElapsedByKm[km]["paceInSeconds"] < timeElapsedByKm[bestKm]["paceInSeconds"] ) {
+                                            bestKm = km;
+                                        }
+                                    }
+                                }
+                            }
+                            for (km = 0; km <= Object.keys(timeElapsedByKm).length; km++) {
+                                if (timeElapsedByKm[km] !== undefined) {
+                                    //console.log(timeElapsedByKm[bestKm]);
+                                    $splitsHeader += '<li>'+ km + 'km</li>';
+                                    $color = km == bestKm ? "success" : km == worstKm ? "error" : "info";
+                                    if (timeElapsedByKm[bestKm] !== undefined) $percent = 100 * timeElapsedByKm[km]["paceInSeconds"] / timeElapsedByKm[bestKm]["paceInSeconds"] - 80;
+                                    else $percent = 100;
+                                    $splitsDetails += '<li class="progress" onclick="reDrawMap(\'split\', ' + km + ');"><div rel="tooltip" title="D+ : ' + timeElapsedByKm[km]["d+"] + 'm / D- : ' + timeElapsedByKm[km]["d-"] + 'm" class="progress-bar progress-bar-' + $color +'" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: ' + $percent + '%;cursor: pointer;">' + secondsToTime(timeElapsedByKm[km]["paceInSeconds"], 'noHours') + '</div></li>';
+                                }
+                            }
+                            $splitsContainer.append('<div class="col-md-2"><ul>' + $splitsHeader + '</ul></div>');                   
+                            $splitsContainer.append('<div class="col-md-10">' + $splitsDetails + '</div>');
+                        }
+                        
+                        /* Création du div qui contient les graphs */
+                        var highchartsOptions = {};
+                        highchartsOptions.chart =
+                        {
+                            renderTo: "graphContainer",
+                            type: 'spline',
+                            animation: false,
+                            height : 420,
+                            alignTicks: true,
+                            zoomType: 'x',
+                            panning: true,
+                            panKey: 'shift',
+                            events: {
+                                selection: function (event) {
+                                    {% if isAllowedPackPremium or isAllowedPackElite %} 
+                                        //reDrawPeriod(this, event);
+
+                                        HRIsVisible = false;
+                                        for($i=0;$i<chart.series.length;$i++) {
+                                            if(chart.series[$i].name == 'Zone HR sélectionnée') HRIsVisible = chart.series[$i].visible;
+                                        }
+                                        reDrawMap(HRIsVisible ? 'selectionWithHR' : 'selection', null, event);
+                                    {% else %}
+                                    {% endif %}
+                                    /*setTimeout(function () {
+                                        label.fadeOut();
+                                    }, 5000);
+                                    */
+                                }
+                            },
+                        };
+                        highchartsOptions.rangeSelector = {
+                            enabled: false,
+                            inputEnabled: false
+                        };
+                        highchartsOptions.title = {text:""};
+                        highchartsOptions.credits = {enabled:false};
+                        // on en a besoin ici pour accéder à response... solution temp
+                        // => faire tous les traitements dans /activities/activity
+                        highchartsOptions.plotOptions = {
+                            area: {
+                                pointStart: 0,
+                                marker: {
+                                    enabled: true,
+                                    symbol: 'circle',
+                                    radius: 2,
+                                    states: {
+                                        hover: {
+                                            enabled: true
+                                        }
+                                    }
+                                }
+                            },
+                            series : {
+                                point: {
+                                    events: {
+                                        mouseOver: function() { // NOTE CF: il faut aussi gérer les cas où il n'y a pas de gmap associée
+                                            curPos = new google.maps.LatLng(
+                                                waypoints[this.x].lat, waypoints[this.x].lon);
+                                            locationMarker.setVisible(true);
+                                            locationMarker.setPosition(curPos);
+                                            if (!map.getBounds().contains(curPos)) {
+                                                map.panTo(curPos);
+                                            }
+                                        }
+                                    }
+                                },
+                                events: {
+                                    mouseOut: function() {    
+                                        //locationMarker.setVisible(false);
+                                    },
+                                    hide: function () {
+                                    },
+                                    show: function () {
+                                    },
+                                    legendItemClick: function(event) {
+                                        //$($('.highcharts-legend-item')[0]).click();
+                                        //this.id ne fonctionne pas !!!
+                                        for($i=0;$i<chart.series.length;$i++) {
+                                            if(chart.series[$i].name == this.name && this.name != 'Split sélectionné' && this.name != 'Zone HR sélectionnée' && this.name != 'Zone HR maximum') {
+                                                if (this.visible) {
+                                                    //console.log(this.name + ":" + this.visible);
+                                                    chart.yAxis[String($i)].update({
+                                                        labels: {
+                                                            enabled: false
+                                                        },
+                                                        title: {
+                                                            text: null
+                                                        }
+                                                    });
+                                                }
+                                                else {
+                                                    chart.yAxis[String($i)].update({
+                                                        labels: {
+                                                            enabled: true
+                                                        },
+                                                        title: {
+                                                            text: null
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                            else {
+                                            }
+                                        }
+                                    }
+                                },
+                                lineWidth: 2,
+                                marker: {
+                                    enabled: true
+                                },
+                                shadow: false,
+                                states: {
+                                    hover: {
+                                        lineWidth: 2
+                                    }
+                                },
+                                enableMouseTracking: true
+                            }
+                        };
+
+                        //xAxis;
+                        highchartsOptions.xAxis = [{
+                            min: 0,
+                            data : response.chart.fullDurationMoving,
+                            title: {
+                                text : "Durée",
+                                offset : 25
+                            },
+                            labels: {
+                                formatter: function () {
+                                    return secondsToTime(this.value);
+                                }
+                            },
+                        }];
+
+                        //yAxis  
+                        highchartsOptions.yAxis = new Array();
+                        dataType = { "ELEVATION" : '0', "SPEED" : '1', "PACE" : '2'};
+                        
+                        //En fonction du type de sortie on affiche soit l'altitude + vitesse soit vitesse + rythme par défaut
+                        //Les 2 1ers sont affichés par défaut car on les a tout le temps
+                        {% if activity.elevationGain is not null and activity.elevationGain > 200 %}
+                            serieToDisplay = dataType["ELEVATION"];
+                        {% else %}
+                            serieToDisplay = dataType["ELEVATION"];//dataType["PACE"]; En attente lissage rythme
+                        {% endif %}
+                        if (typeof(response.chart.temperatures) != 'undefined' && response.chart.temperatures.length > 0) {
+                            dataType["TEMPERATURE"] = String(Object.keys(dataType).length);
+                        }
+                        if (typeof(response.chart.pedalingFrequencies) != 'undefined' && response.chart.pedalingFrequencies.length > 0) {
+                            dataType["PEDALINGFREQUENCY"] = String(Object.keys(dataType).length);
+                        }
+                        if (typeof(response.chart.powers) != 'undefined' && response.chart.powers.length > 0) {
+                            dataType["POWER"] = String(Object.keys(dataType).length);
+                        }
+                        if (typeof(response.chart.heartRates) != 'undefined' && response.chart.heartRates.length > 0) {
+                            dataType["RR"] = String(Object.keys(dataType).length);
+                            dataType["HEARTRATE"] = String(Object.keys(dataType).length);
+                            //dataType["EPOC"] = String(Object.keys(dataType).length);
+                        }
+                        
+                        highchartsOptions.yAxis[dataType.SPEED] = {
+                            title: {
+                                text: null
+                            },
+                            /*title: {
+                                text : "Vitesse",
+                                offset : 40,
+                                style: {
+                                    color: '#434348',
+                                    fontWeight: 'bold'
+                                }
+                            },*/
+                            height: 200,
+                            top: 120,
+                            offset: 0,
+                            labels : {
+                                align :"left",
+                                x: 5,
+                                style: {
+                                    color: '#434348',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            //tickPixelInterval: 30,
+                            opposite: true
+                        };
+
+                        highchartsOptions.yAxis[dataType.ELEVATION] = {
+                            title: {
+                                text: null
+                            },
+                            /*title: {
+                                text : "Altitude",
+                                offset : 40,
+                                style: {
+                                    color: '#7cb5ec',
+                                    fontWeight: 'bold'
+                                }
+                            },*/
+                            height: 200,
+                            top: 120,
+                            offset: 25,
+                            //startOnTick: false,
+                            //endOnTick: false,
+                            labels : {
+                                align :"left",
+                                x: 0,
+                                style: {
+                                    color: '#7cb5ec',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            gridLineWidth:0,
+                            //tickPixelInterval: 50,
+                            min: response.info["minEle"],
+                            max: response.info["maxEle"],
+                        };
+
+                        highchartsOptions.series = [];
+                        highchartsOptions.series[dataType.SPEED] = {
+                            id:   dataType.SPEED,
+                            name: "Vitesse",
+                            data: response.chart.speeds,
+                            //type: "areaspline",
+                            //fillOpacity: 0.65,
+                            yAxis: parseInt(dataType.SPEED),
+                            visible: true,
+                            color: '#434348',
+                            marker: {
+                                enabled : false
+                            }
+                        };
+                        highchartsOptions.series[dataType.ELEVATION] = {
+                            id:   dataType.ELEVATION,
+                            name: "Altitude",
+                            data: response.chart.elevations,
+                            type: "areaspline",
+                            fillOpacity: 0.3,
+                            yAxis: parseInt(dataType.ELEVATION),
+                            visible: serieToDisplay == dataType["ELEVATION"] ? true : false,
+                            color:'#7cb5ec',
+                            marker: {
+                                enabled : false
+                            }
+                        };
+
+                        if (response.chart.paces.length > 0) {
+                            //highchartsOptions.chart.height += 100;
+                            highchartsOptions.yAxis[dataType.PACE] = {
+                                title: {
+                                    text: null
+                                },
+                                /*title: {
+                                    text : "Rythme",
+                                    offset : 90,
+                                    style: {
+                                        color: '#14a14a',
+                                        fontWeight: 'bold'
+                                    }
+                                },*/
+                                height: 200,
+                                top: 120,
+                                offset: 0,
+                                labels : {
+                                    align :"left",
+                                    x: 40,
+                                    style: {
+                                        color: '#14a14a',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                gridLineWidth:0,
+                                //tickPixelInterval: 50,
+                                opposite: true
+                            };
+
+                            highchartsOptions.series[dataType.PACE] = {
+                                id:   dataType.PACE,
+                                name: "Rythme",
+                                data: response.chart.paces,
+                                //type: "areaspline",
+                                //fillOpacity: 0.65,
+                                yAxis: parseInt(dataType.PACE),
+                                visible: serieToDisplay == dataType["PACE"] ? true : false,
+                                color: '#14a14a',
+                                marker: {
+                                    enabled : false
+                                }
+                            };
+
+                            //Calcul du min/max en fonction de l'écart type
+                            if (response.info["ecartTypePace"] > 10) {
+                                if (response.info["minPace"] != 0) highchartsOptions.yAxis[dataType.PACE].min = response.info["minPace"];
+                                else highchartsOptions.yAxis[dataType.PACE].min     = 0 ;
+                                highchartsOptions.yAxis[dataType.PACE].max     = response.info["avgPace"] + 5;
+                            }
+                            else {
+                                highchartsOptions.yAxis[dataType.PACE].min     = response.info["avgPace"] - 1.2 * response.info["ecartTypePace"];
+                                highchartsOptions.yAxis[dataType.PACE].max     = response.info["avgPace"] + 1.2 * response.info["ecartTypePace"];
+                            }
+                        } 
+
+                        if (typeof(response.chart.heartRates) != 'undefined' && response.chart.heartRates.length > 0) {
+                            //highchartsOptions.chart.height += 100;
+
+                            highchartsOptions.series[dataType.HEARTRATE] = {
+                                id:   dataType.HEARTRATE,
+                                name: "Cardio",
+                                data: response.chart.heartRates,
+                                //type: "areaspline",
+                                //fillOpacity: 0.65,
+                                yAxis: parseInt(dataType.HEARTRATE),
+                                visible: true,
+                                color: 'rgb(244, 57, 76)',
+                                marker: {
+                                    enabled : false
+                                }
+                            };
+
+                            highchartsOptions.yAxis[dataType.HEARTRATE] = {
+                                title: {
+                                    text: null
+                                },
+                                /*title: {
+                                    text : "Cardio",
+                                    offset : 90,
+                                    style: {
+                                        color: 'rgb(244, 57, 76)',
+                                        fontWeight: 'bold'
+                                    }
+                                },*/
+                                height: 200,
+                                //top : 210 + (Object.keys(dataType).length-dataType.HEARTRATE)*110,
+                                top: 120,
+                                offset: 0,
+                                //lineWidth: 2,
+                                labels : {
+                                    align :"right",
+                                    x: -(Object.keys(dataType).length-parseInt(dataType.HEARTRATE))*40,
+                                    style: {
+                                        color: 'rgb(244, 57, 76)',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                gridLineWidth:0,
+                                tickPixelInterval: 50,
+                                min : response.info['minHR'] == 99999 ? 50 : response.info['minHR'],
+                                max : response.info['maxHR'] == -99999 ? 220 : response.info['maxHR']
+                            };
+
+                            highchartsOptions.series[dataType.RR] = {
+                                id:   dataType.RR,
+                                name: "R-R",
+                                data: response.chart.RR,
+                                //type: "areaspline",
+                                //fillOpacity: 0.65,
+                                yAxis: parseInt(dataType.RR),
+                                visible: false,
+                                color: 'rgb(244, 57, 76)',
+                                marker: {
+                                    enabled : false
+                                }
+                            };
+
+                            highchartsOptions.yAxis[dataType.RR] = {
+                                title: {
+                                    text: null
+                                },
+                                /*title: {
+                                    text : "Cardio",
+                                    offset : 90,
+                                    style: {
+                                        color: 'rgb(244, 57, 76)',
+                                        fontWeight: 'bold'
+                                    }
+                                },*/
+                                height: 200,
+                                //top : 210 + (Object.keys(dataType).length-dataType.HEARTRATE)*110,
+                                top: 120,
+                                offset: 0,
+                                //lineWidth: 2,
+                                labels : {
+                                    align :"right",
+                                    x: -(Object.keys(dataType).length-parseInt(dataType.RR))*40,
+                                    style: {
+                                        color: '#9b1212',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                gridLineWidth:0,
+                                tickPixelInterval: 50
+                            };
+                            /*
+                            highchartsOptions.series[dataType.EPOC] = {
+                                id:   dataType.EPOC,
+                                name: "EPOC",
+                                data: response.chart.EPOC,
+                                //type: "areaspline",
+                                //fillOpacity: 0.65,
+                                yAxis: parseInt(dataType.EPOC),
+                                visible: false,
+                                color: 'rgb(244, 57, 76)',
+                                marker: {
+                                    enabled : false
+                                }
+                            };
+
+                            highchartsOptions.yAxis[dataType.EPOC] = {
+                                title: {
+                                    text: null
+                                },
+                                height: 200,
+                                //top : 210 + (Object.keys(dataType).length-dataType.HEARTRATE)*110,
+                                top: 120,
+                                offset: 0,
+                                //lineWidth: 2,
+                                labels : {
+                                    align :"right",
+                                    x: -(Object.keys(dataType).length-parseInt(dataType.EPOC))*40,
+                                    style: {
+                                        color: 'rgb(244, 57, 76)',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                gridLineWidth:0,
+                                tickPixelInterval: 50
+                            };
+                            */
+                        }
+
+                        if (typeof(response.chart.temperatures) != 'undefined' && response.chart.temperatures.length > 0 ) {
+                            //highchartsOptions.chart.height += 100;
+                            highchartsOptions.series[dataType.TEMPERATURE] = {
+                                id:   dataType.TEMPERATURE,
+                                name: "Température",
+                                data: response.chart.temperatures,
+                                //type: "areaspline",
+                                //fillOpacity: 0.65,
+                                yAxis: parseInt(dataType.TEMPERATURE),
+                                visible: false,
+                                color: '#8085e9',
+                                marker: {
+                                    enabled : false
+                                },
+                            };
+                            highchartsOptions.yAxis[dataType.TEMPERATURE] = {
+                                title: {
+                                    text: null
+                                },
+                                /*title: {
+                                    text : "Temp.",
+                                    offset : 120,
+                                    style: {
+                                        color: '#8085e9',
+                                        fontWeight: 'bold'
+                                    }
+                                },*/
+                                height: 200,
+                                top: 120,
+                                offset: 0,
+                                //lineWidth: 2,
+                                labels : {
+                                    align :"right",
+                                    x: -(Object.keys(dataType).length-parseInt(dataType.TEMPERATURE))*40,
+                                    style: {
+                                        color: '#8085e9',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                gridLineWidth:0,
+                                //tickPixelInterval: 70,
+                                //min : response.info['minTemp']-1,
+                                //max : response.info['maxTemp']+1
+                            };
+                        }
+
+                        if (typeof(response.chart.pedalingFrequencies) != 'undefined' && response.chart.pedalingFrequencies.length > 0 ) {
+                            //highchartsOptions.chart.height += 100;
+                            highchartsOptions.series[dataType.PEDALINGFREQUENCY] = {
+                                id:   dataType.PEDALINGFREQUENCY,
+                                name: "Fréquence",
+                                data: response.chart.pedalingFrequencies,
+                                //type: "areaspline",
+                                //fillOpacity: 0.65,
+                                yAxis: parseInt(dataType.PEDALINGFREQUENCY),
+                                visible: false,
+                                color: '#6c6c76',
+                                marker: {
+                                    enabled : false
+                                },
+                            };
+                            highchartsOptions.yAxis[dataType.PEDALINGFREQUENCY] = {
+                                title: {
+                                    text: null
+                                },
+                                /*title: {
+                                    text : "Temp.",
+                                    offset : 120,
+                                    style: {
+                                        color: '#8085e9',
+                                        fontWeight: 'bold'
+                                    }
+                                },*/
+                                height: 200,
+                                top: 120,
+                                offset: 0,
+                                //lineWidth: 2,
+                                labels : {
+                                    align :"right",
+                                    x: -(Object.keys(dataType).length-parseInt(dataType.PEDALINGFREQUENCY))*40,
+                                    style: {
+                                        color: '#6c6c76',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                gridLineWidth:0,
+                                //tickPixelInterval: 10,
+                                min : response.info['minPF'],
+                                //max : 100
+                            };
+                        }
+
+                        if (typeof(response.chart.powers) != 'undefined' && response.chart.powers.length > 0 ) {
+                            //highchartsOptions.chart.height += 100;
+                            highchartsOptions.series[dataType.POWER] = {
+                                id:   dataType.POWER,
+                                name: "Puissance",
+                                data: response.chart.powers,
+                                //type: "areaspline",
+                                //fillOpacity: 0.65,
+                                yAxis: parseInt(dataType.POWER),
+                                visible: false,
+                                color: '#000000',
+                                marker: {
+                                    enabled : false
+                                },
+                            };
+                            highchartsOptions.yAxis[dataType.POWER] = {
+                                title: {
+                                    text: null
+                                },
+                                /*title: {
+                                    text : "Temp.",
+                                    offset : 120,
+                                    style: {
+                                        color: '#8085e9',
+                                        fontWeight: 'bold'
+                                    }
+                                },*/
+                                height: 200,
+                                top: 120,
+                                offset: 0,
+                                //lineWidth: 2,
+                                labels : {
+                                    align :"right",
+                                    x: -(Object.keys(dataType).length-parseInt(dataType.POWER))*40,
+                                    style: {
+                                        color: '#000000',
+                                        fontWeight: 'bold'
+                                    }
+                                },
+                                gridLineWidth:0,
+                                //tickPixelInterval: 10,
+                                min : response.info['minPower'],
+                                max : 300
+                            };
+                        }
+
+                        highchartsOptions.tooltip = {
+                            headerFormat: "",
+                            shared: true,
+                            crosshairs: true,
+                            valueDecimals: 2,
+                            formatter: function() {
+                                //Avant abscisse = distance
+                                //var pointIndex  = response.chart.distances.indexOf(this.x);
+                                var pointIndex  = response.chart.fullDurationMoving.indexOf(this.x);
+                                //console.log(pointIndex);
+                                if (pointIndex != -1) {
+                                    var timeStr     = response.chart.fullDurationMoving ?
+                                        "<br/>Temps: " + formatTime(response.chart.fullDurationMoving[pointIndex] / 60.0)
+                                        : '';
+                                    var yValStr = '';
+
+                                    if (typeof(response.chart.elevations) != 'undefined' && response.chart.elevations.length > 0) {
+                                        yValStr += 'Altitude: ' + response.chart.elevations[pointIndex][1] + ' m<br />';
+                                    }
+                                    if (typeof(response.chart.speeds) != 'undefined' && response.chart.speeds.length > 0) {
+                                        yValStr += 'Vitesse: ' + Highcharts.numberFormat(response.chart.speeds[pointIndex][1], 1) + ' km/h<br />';
+                                    }
+                                    if (typeof(response.chart.paces) != 'undefined' && response.chart.paces.length > 0) {
+                                        yValStr += 'Rythme: ' + formatPace(response.chart.paces[pointIndex][1]) + ' /km<br/>';
+                                    }
+                                    if (typeof(response.chart.heartRates) != 'undefined' && response.chart.heartRates.length > 0) {
+                                        yValStr += 'Cardio: ' + Highcharts.numberFormat(response.chart.heartRates[pointIndex][1], 0) + ' bpm<br/>';
+                                        yValStr += 'R-R: ' + Highcharts.numberFormat(response.chart.RR[pointIndex][1], 0) + ' <br/>';
+                                        //yValStr += 'EPOC: ' + Highcharts.numberFormat(response.chart.EPOC[pointIndex][1], 0) + ' <br/>';
+                                    }
+                                    if (typeof(response.chart.temperatures) != 'undefined' && response.chart.temperatures.length > 0) {
+                                        yValStr += 'Température: ' + Highcharts.numberFormat(response.chart.temperatures[pointIndex][1], 1) + ' C°<br/>';
+                                    }
+                                    if (typeof(response.chart.pedalingFrequencies) != 'undefined' && response.chart.pedalingFrequencies.length > 0) {
+                                        yValStr += 'Fréquence: ' + Highcharts.numberFormat(response.chart.pedalingFrequencies[pointIndex][1], 1) + ' tr/min<br/>';
+                                    }
+                                    if (typeof(response.chart.powers) != 'undefined' && response.chart.powers.length > 0) {
+                                        yValStr += 'Puissance: ' + Highcharts.numberFormat(response.chart.powers[pointIndex][1], 1) + ' W<br/>';
+                                    }
+                                    return yValStr
+                                        + "Distance: " + Highcharts.numberFormat(response.chart.distances[pointIndex][1], 2) + " km"    
+                                        + timeStr;
+                                }
+                            }
+                        };
+
+                        {% if activity.elevationGain is null %}
+                            $("#elevationGain").html(response.info["D+"] + " m");
+                        {% endif %}
+                        {% if activity.elevationLost is null %}
+                            $("#elevationLost").html(response.info["D-"] + " m");
+                        {% endif %}
+                        $("#movingDuration").html(formatTime(response.info['duration'] / 60.0));
+                        if (response.info['duration'] && response.info['distance']) {
+                            $("#pace").html(formatPace(response.info["duration"] / 60.0 / response.info['distance']));
+                        }
+
+                        {% set init = false %}
+                        chart = new Highcharts.Chart(highchartsOptions, function(chart){
+                            // use double-click to cancel zoom
+                            extremes = chart.xAxis[0].getExtremes();
+                            $(chart.container).bind('dblclick', function(){
+                                var current = chart.xAxis[0].getExtremes();
+                                if(current.min != extremes.min || current.max != extremes.max) {
+                                    chart.xAxis[0].setExtremes(extremes.min, extremes.max);
+                                }
+                                {% if isAllowedPackPremium or isAllowedPackElite%} 
+                                    //reDrawPeriod(chart);
+                                    {% if init %}
+                                        //reDrawMap('dblclick');
+                                        {% set init = false %}
+                                    {% endif %}
+                                    reDrawMap('dblclick');
+                                {% endif %}
+                            })
+                        });
+
+                        //On affiche uniquement les 2 séries principales
+                        for($i=0;$i<chart.yAxis.length;$i++) {
+                            if($i == parseInt(dataType.SPEED) || $i == parseInt(serieToDisplay)) {
+                                chart.yAxis[String($i)].update({
+                                    labels: {
+                                        enabled: true
+                                    }
+                                });
+                            }
+                            else {
+                                chart.yAxis[String($i)].update({
+                                    labels: {
+                                        enabled: false
+                                    }
+                                });
+                            }
+                        }
+
+                        reDrawPeriod(chart);
+
+                        //console.log("maxPOWER:"+highchartsOptions.yAxis[dataType.POWER].max);
+                        //console.log("minPOWER:"+highchartsOptions.yAxis[dataType.POWER].min);
+
+                        // Make monochrome colors and set them as default for all pies
+                        Highcharts.getOptions().plotOptions.pie.colors = (function () {
+                            var colors = [],
+                                //base = Highcharts.getOptions().colors[0],
+                                base = 'rgb(244, 57, 76)',
+                                i;
+
+                            //console.log(base);
+                            for (i = 0; i < 5; i += 1) {
+                                // Start out with a darkened base color (negative brighten), and end
+                                // up with a much brighter color
+                                colors.push(Highcharts.Color(base).brighten(-i/7).get());
+                            }
+                            return colors;
+                        }());
+
+                        //Affichage du camembert HR pour pack premium et elite
+                        $('#pieByHRZone').highcharts({
+                            chart: {
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false,
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: null//'{{ 'coaching.hr-repart'|trans|upper }}'
+                            },
+                            tooltip: {
+                                pointFormat: '{point.label}<br clear="all">{series.name}: <b>{point.duration}</b>'
+                            },
+                            exporting: {
+                                enabled: false
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: false,
+                                        //enabled: true,
+                                        format: '<b>{point.name}</b>: {point.y} %',
+                                        style: {
+                                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                        }
+                                    },
+                                    //showInLegend: true
+                                }
+                            },
+                            series: [{
+                                type: 'pie',
+                                name: '{{ 'coaching.duration'|trans }}',
+                                data: response.pieByHRZone,
+                                events: {
+                                    click: function (event) {
+                                        /*console.log(event.point.val1);
+                                        console.log(event.point.val2);
+                                        console.log(event);*/
+                                        if (event.point.val1 && event.point.val2) {
+                                            pieEvent = event;
+                                            reDrawMap('HR', null, event);
+                                        }
+                                    }
+                                }
+                            }]
+                        });
+
+                        if (response.HRMax == '-' || response.HRRest == '-') {
+                            $("#editHRBtn").show();
+                        }
+                        else {
+                            $('#HRMax').html("<center><span><b>Max :</b> " + response.HRMax + " bpm</span></center>");
+                            $('#HRRest').html("<center><span><b>Repos :</b> " + response.HRRest + " bpm</span></center>");
+                        }
+                        /* Si Cardio actif et données HR au niveau du profil on affiche différemment les infos */
+                        if (dataType.HEARTRATE != undefined && $userHRMax != 0 && $userHRRest != 0) {
+                            $val1 = Math.round($userHRRest + 90 /100 * ($userHRMax - $userHRRest),0);
+                            pieEvent = { 'point' : {'val1' : $val1, 'val2' : $userHRMax, 'label' : 'Zone Maximum', 'name' : 'De ' + $val1 + ' à ' + $userHRMax + 'bpm', 'duration' : ''}};
+                            reDrawMap('HRMax', null);
+                        }
+                    }
+                );
+            }
+            
+            drawGraph();
+            
+            //Affichage de l'outil de comparaison de séances
+            $("#comparisonToolViewContainer").html("");
+            $("#comparisonToolViewLoader").show();
+            $.get(
+                Routing.generate('ksCoaching_getComparisonTool', { "id": {{ activity.user_id }}, "activityId" : {{ activity.id }}}),
+                function(response) {
+                    if (response.code ==1) {
+                        $("#comparisonToolViewContainer").html(response.graph);
+                        //$("#comparisonToolViewLoader").hide();
+                    }
+                }
+            );
+        });
+    </script>
+{% else %}
+    <script type="text/javascript">
+       $("#splitsContainer").html("Non disponibles");
+       {% if activity.place_latitude is not null and activity.place_longitude is not null %}
+        var map = new google.maps.Map(
+            document.getElementById("gmap-{{ activity.id }}"), {
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+            center: new google.maps.LatLng( "{{ activity.place_latitude }}", "{{ activity.place_longitude }}" ),
+            zoom : 15,
+        });
+
+        var locationMarker = new google.maps.Marker({
+            map     : map,
+            position: new google.maps.LatLng( "{{ activity.place_latitude }}", "{{ activity.place_longitude }}" ),
+        });
+        {% endif %}
+    </script>
+{% endif %}

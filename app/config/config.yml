@@ -1,0 +1,181 @@
+imports:
+    - { resource: parameters.ini }
+    - { resource: security.yml }
+
+framework:
+    #esi:             ~
+    translator:      { fallback: %locale% }
+    secret:          "%secret%"
+    charset:         UTF-8
+    router:          { resource: "%kernel.root_dir%/config/routing.yml" }
+    form:            true
+    csrf_protection: true
+    validation:      { enable_annotations: true }
+    templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
+    session:
+        default_locale: %locale%
+        auto_start:     true
+        lifetime:       31536000
+
+services:
+    keepinsport.listener.maintenance:
+        class: Ks\UserBundle\Listener\MaintenanceListener
+        arguments:
+            container: "@service_container"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+# Twig Configuration
+twig:
+    debug:            %kernel.debug%
+    strict_variables: %kernel.debug%
+    form:
+        resources:
+            - 'KsActivityBundle:Form:fields.html.twig'
+            - 'KsEventBundle:Form:fields.html.twig'
+            - 'KsNotificationBundle:Form:fields.html.twig'
+            - 'KsUserBundle:Form:fields.html.twig'
+    globals:
+        host:             "%host%"
+        path_web:         "%path_web%"
+        google_analytics: "%google_analytics%"
+        facebookauth:     "%facebookauth%"
+        checkServicesSync: "%checkServicesSync%"
+
+# Assetic Configuration
+assetic:
+    debug:          %kernel.debug%
+    use_controller: false
+    bundles:
+        - "KsUserBundle"
+        - "KsLeagueBundle"
+        - "KsCanvasDrawingBundle"
+    # java: /usr/bin/java
+    filters:
+        cssrewrite: ~
+        # closure:
+        #     jar: %kernel.root_dir%/java/compiler.jar
+        # yui_css:
+        #     jar: %kernel.root_dir%/java/yuicompressor-2.4.2.jar
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   %database_driver%
+        host:     %database_host%
+        port:     %database_port%
+        dbname:   %database_name%
+        user:     %database_user%
+        password: %database_password%
+        charset:  UTF8
+
+    orm:
+        auto_generate_proxy_classes: %kernel.debug%
+        auto_mapping: true
+    
+swiftmailer:
+    transport: smtp
+    encryption: tls
+    port: 587
+    auth_mode:  login
+    host: 
+    username: 
+    password: 
+
+jms_security_extra:
+    secure_controllers:  true
+    secure_all_services: false
+    
+fos_user:
+    db_driver: orm
+    firewall_name: public
+    use_listener: false
+    user_class: Ks\UserBundle\Entity\User
+    # On utilise twig_swift pour pouvoir envoyer un email en HTML
+    service:
+        mailer: fos_user.mailer.twig_swift
+        #ks.mailer
+        #fos_user.mailer.twig_swift
+    # Permet de renseigner le nouveau formulaire d'inscription
+    registration:
+        form:
+          #validation_groups: [Default, RegistrationKs]
+        #form:
+        #    type: myapp_user_registration
+        # Permet la validation automatique du compte par envoi d'un email
+        confirmation:
+            enabled: false
+            from_email:
+                address: contact@keepinsport.com
+                sender_name: Keepinsport
+            template: KsUserBundle:User:registration.email.twig
+    resetting:
+        email:
+            from_email:
+                address: contact@keepinsport.com
+                sender_name: Keepinsport
+
+fos_facebook:
+    file:   %kernel.root_dir%/../vendor/facebook-sdk/src/base_facebook.php
+    alias:  facebook
+    app_id: 106071199501870
+    secret: 219af5b2792ea6267de3cf1017f91c1a
+    cookie: true
+    permissions: [email, user_birthday, user_location]
+    
+#fos_google:
+    #app_name: Keepinsport
+    #client_id: 774996425691.apps.googleusercontent.com
+    #client_secret: 7fzaLwUcNpHrce_uOLA_hVGZ
+    #state: auth
+    #access_type: online
+    #scopes: [userinfo.email, userinfo.profile]
+    #approval_prompt: auto
+    #redirect_uri: /google/login
+    #callback_url: http://yourdomain.com/login_check
+    
+vich_uploader:
+    db_driver: orm
+    mappings:
+      club_image:
+        upload_dir: %kernel.root_dir%/../web/img/clubs/original
+        delete_on_remove: true
+        namer: namer.club_image
+      userdetail_image:
+        upload_dir: %kernel.root_dir%/../web/uploads/images/users/original
+        delete_on_remove: true
+        namer: namer.userdetail_image
+      gpx_file:
+        upload_dir: %kernel.root_dir%/../web/uploads/gpx/activities/notparsed
+        delete_on_remove: true
+        
+ks_payment:
+    site: %paybox.site%
+    rang: %paybox.rang%
+    identifiant: %paybox.identifiant%
+    hmac: %paybox.hmac%
+    server: %paybox.server%
+    repondre_a: %paybox.repondre_a%
+    
+#lexik_maintenance:
+#    authorized_ips: []                       # option facultative, Adresses autorisées : '127.0.0.1'
+#    driver:
+#        #ttl: 3600                                                        # option facultative, Durée de la maintenance, en seconde
+# 
+#        # File driver
+#        class: '\Lexik\Bundle\MaintenanceBundle\Drivers\FileDriver'      # Classe pour le FileDriver
+#        options: {file_path: %kernel.root_dir%/lock}                     # file_path est le chemin vers votre fichier, ici le fichier est lock
+ 
+        # MemCache driver
+        #class: Lexik\Bundle\MaintenanceBundle\Drivers\MemCacheDriver     # Classe pour le MemCachedriver
+        #options: {key_name: 'maintenance', host: 127.0.0.1, port: 11211} # Vous devez configurer le nom de la clé, l'host et le port
+ 
+        # Database driver:
+        #class: 'Lexik\Bundle\MaintenanceBundle\Drivers\DatabaseDriver'   # Classe pour le DatabaseDriver
+ 
+        # Option 1 : avec doctrine
+        #options: {connection: custom}                                  # option facultative, En option vous pouvez choisir une connexion doctrine, sinon le driver utilisera celle par défaut.
+ 
+        # Option 2 : avec un dsn, vous devez avoir une colonne appelée ttl.
+        #options: {dsn: "mysql:dbname=maintenance;host:172.123.6.55", table: maintenance, user: base_distante, password: root}  # Vous devez configurer le nom de votre base de données, son adresse, la table, l'utilisateur de connexion et le mot de passe.
+ 

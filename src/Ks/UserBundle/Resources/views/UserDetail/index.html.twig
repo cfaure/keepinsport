@@ -1,0 +1,63 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>Liste des userDetail</h1>
+
+<table class="records_list">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Country_code</th>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Description</th>
+            <th>Avatar</th>
+            <th>Country_area</th>
+            <th>Town</th>
+            <th>Longitude</th>
+            <th>Latitude</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td><a href="{{ path('userdetail_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
+            <td>{{ entity.countrycode }}</td>
+            <td>{{ entity.firstname }}</td>
+            <td>{{ entity.lastname }}</td>
+            <td>{{ entity.description }}</td>
+            <td>{{ entity.file }}</td>
+            <td>{{ entity.countryarea }}</td>
+            <td>{{ entity.town }}</td>
+            <td>{{ entity.longitude }}</td>
+            <td>{{ entity.latitude }}</td>
+            <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('userdetail_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('userdetail_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<ul>
+    <li>
+        <a href="{{ path('userdetail_new') }}">
+            Create a new entry
+        </a>
+    </li>
+</ul>
+
+{% endblock %}

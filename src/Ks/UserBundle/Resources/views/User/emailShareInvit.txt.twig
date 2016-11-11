@@ -1,0 +1,62 @@
+{{ user.username }} souhaite partager avec toi une actualité sur le site Keepinsport
+
+<br>
+{% if description is not null and description != "" %}
+    <br>
+    "{{ description }}"
+{% endif %}
+
+<br>
+{# Affichage de l'activité en question #}
+
+    {#% include 'KsActivityBundle:Activity:_activityBloc.html.twig' with { 'activity': activity, 'host': host, 'isShared': true } %#}
+    {% set activity =  datas.activity %}
+    {% set photos = datas.photos %}
+    {% set comments = datas.comments %}
+    {% set activityTeamates = datas.activityTeamates %}
+    {% set activityOpponents = datas.activityOpponents %}
+    {% set connectedActivity = datas.connectedActivity %}
+
+    {% set path = path('ksActivity_showActivity', {"activityId" : activity.id }) %}
+
+    {% if activity.type == 'status' %}
+        {% set type = "Statut" %} 
+        {% set message = activity.username ~ " a publié un statut." %}
+    {% elseif activity.type == 'video' %}
+        {% set type = "Vidéo" %}
+        {% set message = activity.username ~ " a publié une vidéo." %}
+    {% elseif activity.type == 'link' %}
+        {% set type = "Lien" %} 
+        {% set message = activity.username ~ " a publié un lien." %}
+    {% elseif activity.type == 'photo' %}
+        {% set type = "Photo" %} 
+        {% set message = activity.username ~ " a publié une photo." %}
+    {% elseif activity.type == 'session_team_sport' %}
+        {% set type = "Session de sport collectif" %}
+        {% set message = activity.username ~ " a publié une activité de " ~ activity.sport_label ~ "." %}
+    {% elseif activity.type == 'session_endurance_on_earth' or activity.type == 'session_endurance_under_water' %}
+        {% set type = "Session d'endurence" %}
+        {% set message = activity.username ~ " a publié une activité de " ~ activity.sport_label ~ "." %}
+    {% elseif activity.type == 'session' %}
+        {% set type = "Activité sportive" %}  
+        {% set message = activity.username ~ " a publié une activité de " ~ activity.sport_label ~ "." %}
+    {% elseif activity.type == 'abstract_activity' %}
+        {% if activity.notificationType_name == "edit" and connectedActivity.type == "article" %}
+            {% set message = activity.username ~ " a collaboré à l'article " ~ connectedActivity.label ~"." %}
+        {% else %}
+            {% set type = "Partage d'activité" %}{#{ connectedActivity }#}
+            {% set message = activity.username ~ " a partagé une actualité." %}
+        {% endif %}
+    {% elseif activity.type == 'article' %}
+        {% set type = "Article" %}  
+        {% set path = path('ksArticle_show', {"articleId" : activity.id }) %}
+        {% set message = activity.username ~ " a collaboré à l'article " ~ activity.label ~"." %}
+    {% elseif activity.type == 'photo_album' %}
+        {% set type = "Album photo" %}  
+        {% set message = activity.username ~ " a publié un album photo." %}
+    {% else %}
+        {% set type = "Statut" %}  
+        {% set message = activity.username ~ " a publié un statut." %}
+    {% endif %}
+    <p>{#{ message }#} <a href="{{ host }}{{ path }}">Voir plus</a></p>
+

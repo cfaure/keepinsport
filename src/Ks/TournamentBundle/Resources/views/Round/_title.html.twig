@@ -1,0 +1,15 @@
+<span class="label">
+    {% if roundType == 5 %}
+        1/32<span class="visible-desktop visible-tablet"> de finale</span>
+    {% elseif roundType == 4 %}
+        1/8<span class="visible-desktop visible-tablet"> de finale</span>
+    {% elseif roundType == 3 %}
+        1/4<span class="visible-desktop visible-tablet"> de finale</span>
+    {% elseif roundType == 2 %}
+        1/2<span class="visible-desktop visible-tablet"> de finale</span>
+    {% elseif roundType == 1 %}
+        Finale
+    {% elseif roundType == 0 %}
+        Podium
+    {% endif %}
+</span>

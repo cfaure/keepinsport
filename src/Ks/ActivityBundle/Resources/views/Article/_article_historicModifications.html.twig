@@ -1,0 +1,92 @@
+<div>
+    <div id="blocLastArticleContent" style="float:left"></div>
+    <div id="blocVersionArticleContent"></div>
+</div>
+<div id="blocDifferencesArticleContent"></div>
+<br clear="both" />
+<table id="userList" class="table table-bordered table-striped articlesTables">
+    <thead>
+        <tr>
+            <th>{{ 'article.user'|trans }}</th>
+            <th>{{ 'article.modificationDate'|trans }}</th>
+            {% if not tags|is_a_training_plan(articleContent.tags) %}
+                <th>{{ 'article.textsWereModified'|trans }}</th>
+            {% else %}
+                <th>{{ 'article.trainingPlanWasModified'|trans }}</th>
+            {% endif %}
+            <th>{{ 'article.photosWereModified'|trans }}</th>
+            <th>{{ 'article.descriptionWasModified'|trans }}</th>
+            <th>{{ 'article.tagsWereModified'|trans }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for key, modification in historicModifications %}
+            {# On n'affiche pas la première version où tout était vide #}
+            {% if key != historicModifications|length -1 %}
+                {% if historicModifications[key + 1] is defined %}
+                    {% set previousModif = historicModifications[key + 1] %}
+                {% else %}
+                    {% set previousModif = null %}
+                {% endif %}
+                <tr>
+                    <td>{{ modification.user.username }}</td>
+                    <td>{{ modification.modifiedAt|date('d/m/Y H:i:s') }}</td>
+                    {% if not tags|is_a_training_plan(articleContent.tags) %}
+                        <td>
+                            {% include 'KsActivityBundle:Article:_article_showDifferences.html.twig'  with { 'changed' : modification.elementsWereChanged, 'differencesType' : 'elements' } %}
+                        </td>
+                    {% else %}
+                        <td>
+                            {% if modification.trainingPlanWasChanged %}
+                                <span class="icon-ok-circle"></span>
+                            {% else %}
+                                <span class="icon-remove-circle"></span>
+                            {% endif %}
+                        </td>
+                    {% endif %}
+                    <td>
+                        {% include 'KsActivityBundle:Article:_article_showDifferences.html.twig'  with { 'changed' : modification.photosWereChanged, 'differencesType' : 'photos' } %}
+                    </td>
+                    <td>
+                        {% include 'KsActivityBundle:Article:_article_showDifferences.html.twig'  with { 'changed' : modification.descriptionWasChanged, 'differencesType' : 'descriptions' } %}
+                    </td>
+                    <td>
+                        {% include 'KsActivityBundle:Article:_article_showDifferences.html.twig'  with { 'changed' : modification.tagsWereChanged, 'differencesType' : 'tags' } %}
+                    </td>
+                </tr>
+                {% if key == 0 %}
+                    {% set lastModif = modification %}
+                {% endif %}
+             {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript">
+    $('a[id*=bShowDiffsWithActual_], a[id*=bShowDiffsWithPrev_]').click(function() {
+        var beforeArticleId = $( this ).attr("beforeArticleId");
+        var afterArticleId = $( this ).attr("afterArticleId");
+        var differencesType = $( this ).attr("differencesType");
+        $("#blocLastArticleContent").html("");
+        $("#blocVersionArticleContent").html("");
+        
+        $.get(
+            Routing.generate('ksArticle_showDifferences', { 
+                "differencesType"    : differencesType, 
+                "articleId"         : beforeArticleId, 
+                "modificationId"    : afterArticleId 
+            }),
+            function(response) {
+                //$('#blocArticle_content').html(response.contentUpdateFormHtml);
+                //$("#blocLastArticleContent").html(response.actuelContentHtml);
+                //$("#blocVersionArticleContent").html(response.versionContentHtml);
+                //$("#activitiesBlockList").data("data-offset", response.offset);
+                //document.getElementById('blocDifferencesArticleContent').innerHTML = response.differencesHtml;
+                $("#blocDifferencesArticleContent").html(response.differencesHtml);
+
+            }
+        );
+
+        //return false;
+    }); 
+</script>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:fb="http://www.facebook.com/2008/fbml">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Maintenance de Keepinsport{% endblock %}</title>
+
+    <meta http-equiv="refresh" content="15">
+    
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Page d'accueil de Keepinsport" name="description">
+    <meta content="Keepinsport" name="author">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('img/keepinsport_logo_16.png') }}" />
+    <link rel="apple-touch-icon" href="{{ asset('img/keepinsport_logo_57.png') }}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('img/keepinsport_logo_72.png') }}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('img/keepinsport_logo_114.png') }}" />
+
+    <!-- Le fav and touch icons -->
+    <link href="{{ asset('favicon.ico') }}" rel="shortcut icon" />
+    <link href="{{ asset('apple-touch-icon.png') }}" rel="apple-touch-icon" />
+
+    <!-- Le style -->
+    {% block stylesheets %}
+        {# bootstrap #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}"/>
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-responsive.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap_custom_surcharge.css') }}" />
+
+        {# jquery ui #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/smoothness/jquery-ui-1.8.18.custom.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.css') }}" />
+
+
+        {# bootstrap datepicker et tipemicker #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-datepicker/css/datepicker.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('mobiscroll-2.2/css/mobiscroll-2.2.custom.min.css') }}"  />
+
+        {# select custom #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('select2-3.4.5/select2.css') }}" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('select2-3.4.5/select2-bootstrap.css') }}" type="text/css" />
+
+        {# custom radio/checkbox button #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/blue.css') }}" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/yellow.css') }}" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/red.css') }}" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/minimal/grey.css') }}" type="text/css" />
+
+        {# font #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('font/fontawesome/css/font-awesome.min.css') }}" >
+        <!--[if IE 7]><link type="text/css" rel="stylesheet" href="{{ asset('font/fontawesome/css/font-awesome-ie7.min.css') }}"><![endif]-->
+        <link rel="stylesheet" type="text/css" href="{{ asset('font/typicons/typicons.min.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('font/fontello/css/fontello.css') }}" >
+        <link rel="stylesheet" type="text/css" href="{{ asset('font/fontello/css/animation.css') }}">
+        <!--[if IE 7]><link type="text/css" rel="stylesheet" href="{{ asset('font/fontello/css/fontello-ie7.css') }}"><![endif]-->
+        <link rel="stylesheet" type="text/css" href="{{ asset('font/handOfSean/stylesheet.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/fonts.css') }}">
+
+        {# mes styles #}
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}"  />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/buttons.css') }}"  />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/navbar.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('css/dropdown.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('ksUserBubble/ksUserBubble.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}"  />
+
+        {# JQuery sliders #}
+        <link rel="stylesheet" href="{{asset('bundles/ksactivity/css/slider.css')}}">
+
+    {% endblock %}
+</head>
+
+<body style="width:auto;background-color: #FFFF;">
+
+    <div class="container" style="margin-top:20px">
+
+        <div class="row-fluid visible-desktop visible-tablet">
+            </br>
+            </br>
+            </br>
+            <a href="{{ path('ksActivity_activitiesList') }}"><img src="{{ asset('img/box_tools_ks.png') }}" alt="Maintenance" title="Maintenance" style="width:300px;margin:10px" class="pull-left"/></a>
+            </br>
+            </br>
+            </br>
+            <center>
+                <p> {{ 'maintenance.message1'|trans }} <a href="{{ path('ksActivity_activitiesList') }}"><img src="{{ asset('img/ks_typo_logo_mini_mini.png') }}" style="margin-bottom: 5px"/></a> {{ 'maintenance.message2'|trans }}</p>
+                <p> <i><u>{{ 'maintenance.message3'|trans }}</u> : <b>{{ maintenanceUntil }}</b></i> </p>
+                <img src="{{ asset('img/loader_ks_57.gif') }}" alt="{{ 'maintenance.message4'|trans }}">
+            </center>
+        </div>
+        <div class="row-fluid visible-phone">
+            <center><a href="{{ path('ksActivity_activitiesList') }}"><img src="{{ asset('img/box_tools_ks.png') }}" alt="Maintenance" title="Maintenance" style="width:300px;margin:10px" /></a></center>
+            </br>
+        </div>
+        <div class="row-fluid visible-phone">
+            <center>
+                <p> {{ 'maintenance.message1'|trans }} <a href="{{ path('ksActivity_activitiesList') }}"><img src="{{ asset('img/ks_typo_logo_mini_mini.png') }}" style="margin-bottom: 5px"/></a> {{ 'maintenance.message2'|trans }}</p>
+                <p> <i><u>{{ 'maintenance.message3'|trans }}</u> : <b>{{ maintenanceUntil }}</b></i> </p>
+                <img src="{{ asset('img/loader_ks_57.gif') }}" alt="{{ 'maintenance.message4'|trans }}">
+            </center>
+        </div>
+        </br>
+        </br>
+        </br>
+    </div>
+</body>
+
+<footer class="visible-desktop visible-tablet" >
+    <div class="container" style="bottom:0px">
+        <div style="text-align: center">Keepinsport © 2014. All rights reserved.</div>
+    </div>
+</footer>
+
+</html>
+

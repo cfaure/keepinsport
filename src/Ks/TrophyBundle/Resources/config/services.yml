@@ -1,0 +1,11 @@
+parameters:
+#    ks_trophy.example.class: Ks\TrophyBundle\Example
+
+services:
+    ks_trophy.trophyService:
+        class: Ks\TrophyBundle\Service\TrophyService
+        tags:
+            -  { name: twig.extension }
+        arguments:
+          - "@doctrine"
+          - "@ks_notification.notificationService"

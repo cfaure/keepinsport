@@ -1,0 +1,244 @@
+<div id="stepNewsFeed">
+    <div id="showSynchronizedActivitiesBloc" class="alert alert-info"  style="display:none">
+        <center>{{ 'menu.last-activities-sync'|trans }} <span class="btn btn-link" id="showSynchronizedActivitiesButton">Voir</span></center>
+    </div>
+        
+    <span class="pull-left">
+        {% if activitiesType is defined and activitiesType %}
+            <select id="activityTypeSelect" multiple="multiple" >
+                <option value="session">{{ "activity.sport-activity"|transchoice(2) }}</option>
+                <option value="status" >{{ "activity.status"|trans }}</option>
+                <option value="photo" >{{ "activity.photos"|trans }}</option>
+                <option value="link" >{{ "activity.link"|transchoice(2) }}</option>
+                <option value="abstract_activity" >{{ "activity.others"|trans }}</option>
+            </select>
+        {% endif %}
+
+        {% if fromUsers is defined and fromUsers %}
+            <span {% if not is_granted("ROLE_USER") %}style="display:none" {% endif %}>
+                <select id="fromUsersSelect" multiple="multiple" >
+                    {% if is_granted("ROLE_USER") %}
+                        <option value="me">{{ 'activity.me'|trans }}</option>
+                        <option value="my_friends">{{ 'activity.my-friends'|trans }}</option>
+                        <option value="my_clubs">{{ 'activity.my-clubs'|trans }}</option>
+                        <option value="my_league"> {{ 'activity.my-league'|trans }}</option>
+                    {% endif %}
+                    <option value="public" {% if not is_granted("ROLE_USER") %}selected="selected" {% endif %}>{{ 'activity.ks-network'|trans }}</option>
+                    <!--option value="keepinsport">{{ 'activity.ks-user'|trans }}</option-->
+                </select>
+            </span>
+        {% endif%}
+        {% if sports is defined and sports %}
+            {{ form_widget(activitySportChoiceForm.sport) }}
+        {% endif %}
+    </span>
+    
+    {% if sort is defined and sort and is_granted("ROLE_USER") %}
+        <span class="pull-right">
+            <div class="btn-group">
+                <button data-toggle="dropdown" class="multiselect dropdown-toggle btn btn-mini btn-link" type="button" style="width: auto;">
+                    {{ "news-feed.order"|trans }} <b class="caret"></b>
+                </button>
+                <ul class="dropdown-menu" style="max-height: 400px; overflow-y: auto; overflow-x: hidden;">
+                    <li>
+                        <a style="padding:0;" href="javascript:void(0);">
+                            <label style="margin:0;padding:3px 20px 3px 20px;width:100%;height:100%;cursor:pointer;">
+                                <input id="sortByModificationDate" type="radio" name="sortBy" value="modificationDate" checked="checked" style="margin-bottom:5px;"> {{ "news-feed.modification-date"|trans }}
+                            </label>
+                        </a>
+                    </li>
+                    <li>
+                        <a style="padding:0;" href="javascript:void(0);">
+                            <label style="margin:0;padding:3px 20px 3px 20px;width:100%;height:100%;cursor:pointer;">
+                                <input id="sortByCreationDate" type="radio" name="sortBy" value="creationDate" style="margin-bottom:5px;"> {{ "news-feed.creation-date"|trans }}
+                            </label>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </span>
+    {% endif%}
+    <br style="clear: both" />
+</div>
+
+<script type="text/javascript">
+    // TODO: à simplifier !!!! il faut une solution fonction qui lance la requete ajax
+    // et définir les triggers de manière "globale"
+    
+    var ajax, ajax2 = null;
+    var max = 5;
+    
+    $("#activityTypeSelect").multiselect({
+        includeSelectAllOption: true,
+        buttonClass: 'btn btn-mini btn-link',
+        buttonText: function(options) {
+            if (options.length == 0) {
+                return '{{ "news-feed.filter"|trans }} <b class="caret"></b>';
+            }else {
+                var selected = '{{ "news-feed.filter"|trans }} : ';
+                options.each(function() {
+                    selected += $(this).text() + ', ';
+                });
+                return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+            }
+        },
+        onChange:function(element, checked){
+            activitiesTypes = getActivityTypesSelect();
+            fromUsers = getFromUsersSelect();
+            sports = getSportsSelect(); 
+            lastModified = $("input[name=sortBy][value=modificationDate]").is(":checked");
+            
+            //FMO avant on ajoutait en dynamique des blocs mais lenteur !
+            /*
+            if( ajaxRequests != null && typeof(ajaxRequests) != 'undefined') {
+                //console.log(ajaxRequests.length);
+                for ($i=0;$i<ajaxRequests.length;$i++) {
+                    if (ajaxRequests[$i] != null) {
+                        //console.log(ajaxRequests);
+                        //console.log(ajaxRequests[$i]);
+                        ajaxRequests[$i].abort();
+                        //console.log("aborted !");
+                    }
+                }
+            }
+            //console.log("before loadActivities !");
+            loadActivities( 0, activitiesTypes, fromUsers, sports, lastModified );
+            //console.log("after loadActivities !");
+            */
+            {% if is_granted("ROLE_USER") %} 
+                if( ajax2 != null ) ajax2.abort();
+                ajax2 = savePreferenceNewsFeedFilters(activitiesTypes, fromUsers, sports, lastModified );
+            {% endif %}
+        }
+    });
+    //On utilise les préférences de l'utilisateur
+    $("#activityTypeSelect > option").removeAttr('selected');
+    {% for key, preference in newsFeedTypePreference %}
+        $("#activityTypeSelect > option[value={{ preference.code }}]").attr("selected", "selected");
+    {% endfor %}
+    $("#activityTypeSelect").multiselect('refresh');
+    
+    $("#fromUsersSelect").multiselect({
+        includeSelectAllOption: true,
+        buttonClass: 'btn btn-mini btn-link',
+        buttonText: function(options) {
+            if (options.length == 0) {
+                return '{{ "news-feed.perimeter"|trans }} <b class="caret"></b>';
+            }else {
+                var selected = '{{ "news-feed.perimeter"|trans }} : ';
+                options.each(function() {
+                    selected += $(this).text() + ', ';
+                });
+                return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+            }
+        },
+        onChange:function(element, checked){
+            activitiesTypes = getActivityTypesSelect();
+            fromUsers = getFromUsersSelect();
+            sports = getSportsSelect();
+            lastModified = $("input[name=sortBy][value=modificationDate]").is(":checked");
+            
+            {% if is_granted("ROLE_USER") %} 
+                if( ajax2 != null ) ajax2.abort();
+                ajax2 = savePreferenceNewsFeedFilters(activitiesTypes, fromUsers, sports, lastModified );
+            {% endif %}
+        }
+    });
+    $("#fromUsersSelect > option").removeAttr('selected');
+    {% for key, preference in newsFeedFromPreference %}
+        $("#fromUsersSelect > option[value={{ preference.code }}]").attr("selected", "selected");
+    {% endfor %}
+    $("#fromUsersSelect").multiselect('refresh');
+    
+    $("#ksSportTypeMultiSimple_sport").multiselect({
+        includeSelectAllOption: true,
+        buttonClass: 'btn btn-mini btn-link',
+        buttonText: function(options) {
+            if (options.length == 0) {
+                return '{{ "news-feed.sports"|trans }} <b class="caret"></b>';
+            }else {
+                var selected = '{{ "news-feed.sports"|trans }} : ';
+                options.each(function() {
+                    selected += $(this).text() + ', ';
+                });
+                return selected.substr(0, selected.length -2) + ' <b class="caret"></b>';
+            }
+        },
+        onChange:function(element, checked){
+            activitiesTypes = getActivityTypesSelect();
+            fromUsers = getFromUsersSelect();
+            sports = getSportsSelect();
+            lastModified = $("input[name=sortBy][value=modificationDate]").is(":checked");
+            
+            {% if is_granted("ROLE_USER") %} 
+                if( ajax2 != null ) ajax2.abort();
+                ajax2 = savePreferenceNewsFeedFilters(activitiesTypes, fromUsers, sports, lastModified );
+            {% endif %}
+        }
+    });
+    $("#ksSportTypeMultiSimple_sport > option").removeAttr('selected');
+    {% for key, preference in newsFeedSportsPreference %}
+        {% if preference.id == '' %} {# cas de mes sports #}
+            $("#ksSportTypeMultiSimple_sport > option[value=-1]").attr("selected", "selected");
+        {% else %}
+            $("#ksSportTypeMultiSimple_sport > option[value={{ preference.code }}]").attr("selected", "selected");
+        {% endif %}
+    {% endfor %}
+    $("#ksSportTypeMultiSimple_sport").multiselect('refresh');
+    
+    //Gestion du tri
+    $("#sortByModificationDate").click(function() {
+        $("#sortByModificationDate").addClass( "active" );
+        $("#sortByCreationDate").removeClass( "active" );
+
+        activitiesTypes = getActivityTypesSelect();
+        fromUsers       = getFromUsersSelect();
+        sports          = getSportsSelect();
+        
+        {% if is_granted("ROLE_USER") %} 
+            if( ajax2 != null ) ajax2.abort();
+            ajax2 = savePreferenceNewsFeedFilters(activitiesTypes, fromUsers, sports, lastModified );
+        {% endif %}
+    });
+
+    $("#sortByCreationDate").click(function() {
+        $("#sortByCreationDate").addClass( "active" );
+        $("#sortByModificationDate").removeClass( "active" );
+
+        activitiesTypes = getActivityTypesSelect();
+        fromUsers       = getFromUsersSelect();
+        sports          = getSportsSelect();
+        
+        {% if is_granted("ROLE_USER") %} 
+            if( ajax2 != null ) ajax2.abort();
+            ajax2 = savePreferenceNewsFeedFilters(activitiesTypes, fromUsers, sports, lastModified );
+        {% endif %}
+    });
+    
+    $("#showSynchronizedActivitiesButton").click(function() {
+    
+        $("#showSynchronizedActivitiesBloc").hide();
+        
+        //On sélectionne les activités sportives
+        $("#activityTypeSelect > option[value=session]").attr("selected", "selected");
+        $("#activityTypeSelect").multiselect('refresh');
+        
+        //On sélectionne "moi"
+        $("#fromUsersSelect > option[value=me]").attr("selected", "selected");
+        $("#fromUsersSelect").multiselect('refresh');
+        
+        activitiesTypes = getActivityTypesSelect();
+        fromUsers       = getFromUsersSelect();
+        sports          = getSportsSelect();
+        
+        $('#activitiesBlockList').html('');
+
+        if( ajax !== null && typeof(ajax) !== 'undefined') for ($i=0;$i<max;$i++) if (ajax[$i] !==null) ajax[$i].abort();
+        ajax =  loadActivities( 0, activitiesTypes, fromUsers, sports, true ) ;
+        
+        {% if is_granted("ROLE_USER") %} 
+            if( ajax2 != null ) ajax2.abort();
+            ajax2 = savePreferenceNewsFeedFilters(activitiesTypes, fromUsers, sports, lastModified );
+        {% endif %}
+    });
+</script>

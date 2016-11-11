@@ -1,0 +1,422 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksevent/css/timepicker.0.9.9.css') }}" type="text/css" />
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksevent/js/timepicker.0.9.9.js') }}"></script>
+{% endblock %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+<h1>{{ 'users.activity_sessions_in_stand_by'|trans }} : </h1>
+
+{% if agendaHasEvents %}
+
+    <script type='text/javascript'>
+        $(document).ready(function() {
+
+
+            $('#listLoad').hide();
+            $('.id_activity').hide();
+           
+            
+            //Chargement de toutes les listes nécessaires 
+            
+            //liste des sports
+            var request = $.ajax({
+                url: "{{ path('ksAllSports')}}",
+                type: "POST",
+                dataType: "json"
+            });
+
+            request.done(function(response) {
+                //traitement de la réponse
+                aSports = response.sports;
+                //label du select 
+                selectSport = "<label for='sport'>Sport</label>";
+                //construction du select
+                selectSport  += "<select name='sport' id='sport'>";
+                $.each(aSports, function(key, value) { 
+                    selectSport += "<option value='"+key+"'>"+value+"</option>";
+                });   
+                selectSport += "</select>"; 
+                //au premier cahrgement on met la liste dans une div caché 
+                //pour eviter de lacharger a chque fois
+                $('#sport').html(selectSport);
+                $('#sport').hide();
+                listLoaded();
+                showAction();
+                //$('#typeEvent').hide();
+                //ajout du select au modal
+            });
+
+            request.fail(function(jqXHR, textStatus) {
+                showInformation("Récupération des sports impossible : " + textStatus);
+            });
+            
+            //liste des états de forme
+            var request = $.ajax({
+                url: "{{ path('ksAllStateOfHealth')}}",
+                type: "POST",
+                dataType: "json"
+            });
+
+            request.done(function(response) {
+                //traitement de la réponse
+                aStateOfHealth = response.stateOfHealth;
+                //label du select 
+                selectStateOfHealth = "<label for='sport'>Etat de forme</label>";
+                //construction du select
+                selectStateOfHealth  += "<select name='stateOfHealth' id='stateOfHealth'>";
+                $.each(aStateOfHealth, function(key, value) { 
+                    selectStateOfHealth += "<option value='"+key+"'>"+value+"</option>";
+                });   
+                selectStateOfHealth += "</select>"; 
+                //au premier cahrgement on met la liste dans une div caché 
+                //pour eviter de lacharger a chque fois
+                $('#stateOfHealth').html(selectStateOfHealth);
+                $('#stateOfHealth').hide();
+                listLoaded()
+                showAction();
+                //ajout du select au modal
+
+            });
+
+            request.fail(function(jqXHR, textStatus) {
+                showInformation("Récupération des etat de forme impossbile : " + textStatus);
+            });
+            
+            //liste des type de météo
+            var request = $.ajax({
+                url: "{{ path('ksAllWeather')}}",
+                type: "POST",
+                dataType: "json"
+            });
+            
+            request.done(function(response) {
+                //traitement de la réponse
+                aWeather = response.weather;
+                //label du select 
+                selectWeather = "<label for='weather'>Météo</label>";
+                //construction du select
+                selectWeather  += "<select name='weather' id='weather'>";
+                $.each(aWeather, function(key, value) { 
+                    selectWeather += "<option value='"+key+"'>"+value+"</option>";
+                });   
+                selectWeather += "</select>"; 
+                //au premier cahrgement on met la liste dans une div caché 
+                //pour eviter de lacharger a chque fois
+                $('#weather').html(selectWeather);
+                $('#weather').hide();
+                listLoaded();
+                showAction();
+                //ajout du select au modal
+
+            });
+
+            request.fail(function(jqXHR, textStatus) {
+                showInformation("Récupération des etat de forme impossbile : " + textStatus);
+            });
+            
+            
+            
+            
+            weather = $('#weather').html();
+            stateOfHealth = $('#stateOfHealth').html();
+            sport = $('#sport').html();
+            if(weather && stateOfHealth && sport) {
+                $('.lauchActivityModal').show();
+            }
+            
+            
+            
+            $('.lauchActivityModal').click(function(e) {
+                
+                idActivity = $(this).find('.id_activity').html();
+                //Requete ajax pour récupérer la session
+                if(idActivity!=null){
+                   var request = $.ajax({
+                                    url: "{{ path('getActivityById')}}",
+                                    type: "POST",
+                                    data : {
+                                        idActivity : idActivity,
+                                    }, 
+                                    dataType: "json"
+                                });
+
+                    request.done(function(response) {
+                        //traitement de la réponse
+                        
+                        if(response.activity){
+                            aActivity = response.activity;
+                            //Récupération des informations de l'événement 
+                            //mis a jour dans l'activité 
+                            if(aActivity[0]["label"]) {
+                                $('#name').val(aActivity[0]["label"]);
+                            }
+                            
+                            if(aActivity[0]["id"]) {
+                                $('#idActivity').val(aActivity[0]["id"]);
+                            }
+                            
+                            if(aActivity[0]["duration"]) {
+                                $('#duration').val(aActivity[0]["duration"]);
+                            }
+                            
+                            if(aActivity[0]["description"]) {
+                                $('#description').val(aActivity[0]["description"]);
+                            }
+                            
+                            if(aActivity[0]["startDate"]) {
+                                $('#startDate').val(aActivity[0]["startDate"]);
+                                
+                                
+                                
+                                var digitpattern = /\d+/g;
+                                
+                                datetime = aActivity[0]["startDate"];
+                                matches = datetime.match(digitpattern);
+
+                                for(i=0;i<5;i++){
+                                    if(matches[i].substring(0,1)=="0"){
+                                    matches[i] = matches[i].substring(1,2);
+                                    }
+                                }
+
+
+                                year = matches[0];
+                                day = matches[1];
+                                month = matches[2];
+                                hour = matches[3];
+                                minutes = matches[4];
+
+                                $('#startDate').datetimepicker('setDate', (new Date(year, day-1, month, hour, minutes)) );
+             
+                            }
+                            
+                            //mise à jour des informations de l'activité 
+                            //et validation de l'activité
+                            $('#confirmAskEvent-button').unbind();
+                            $('#confirmAskEvent-button').click(function(e) {
+
+                                name = $('#name').val();
+                                idActivity = $('#idActivity').val();
+                                idSport = $('#sport').val();
+                                idStateOfHealth = $('#stateOfHealth').val();
+                                idWeather = $('#weather').val();
+                                duration = $('#duration').val();
+                                description = $('#description').val();
+                                startDate = $('#startDate').val();
+                                
+                                //Mise à jour coté serveur
+                                var request = $.ajax({
+                                    url: "{{ path('ksEditAndValidateActivity')}}",
+
+                                    type: "POST",
+                                    data : {
+                                        name : name,
+                                        idActivity : idActivity,
+                                        idSport : idSport,
+                                        idStateOfHealth:idStateOfHealth,
+                                        idWeather:idWeather,
+                                        duration:duration,
+                                        description:description,
+                                        startDate:startDate,
+                                    }, 
+                                    dataType: "json",
+                                });
+
+                                request.done(function(response) {
+                                    //traitement de la réponse
+                                    if(response.update){
+                                        $('#confirmAskEvent').modal('toggle');
+                                        //Rechargemenet de la page
+                                        location.reload();
+                                    }    
+
+                                });
+
+                                request.fail(function(jqXHR, textStatus) {
+                                    showInformation("Mise à jour de l'activité impossible : " + textStatus);
+                                });
+                            
+                            
+                            });
+                            
+                            
+                            
+                        }    
+
+                    });
+
+                    request.fail(function(jqXHR, textStatus) {
+                        showInformation("Récupération de l'activité impossible : " + textStatus);
+                    }); 
+                }   
+                    
+                
+                
+
+                var bodyModal = "";
+                //e.preventDefault();
+                //var titleActivity = this.title+
+                $('#title_modal_event').html(this.title)
+                bodyModal += "<label for='name'>{{ 'users.name'|trans }}</label>";
+                bodyModal += "<input type='text' name='name' id='name' />";
+                bodyModal += "<label for='description'>Description de l'activité</label>";
+                bodyModal += "<textarea rows='5' cols='20' name='description' id='description'></textarea>";
+                bodyModal += "<label for='startDate'>{{ 'users.dateStart'|trans }}</label>";
+                bodyModal += "<input type='text' name='startDate' id='startDate' />"; 
+                bodyModal += "<label for='duration'>{{ 'users.duration'|trans }}</label>";
+                bodyModal += "<input type='text' name='duration' id='duration' />";
+                bodyModal += "<input type='hidden' name='idActivity' id='idActivity' />";
+                
+                bodyModal += selectSport;
+                bodyModal += selectStateOfHealth;
+                bodyModal += selectWeather;
+                $('#editAskEvent-button').hide();
+                $('#deleteAskEvent-button').hide();
+                $('#confirmAskEvent-button').show();
+                $('#confirmAskEvent .modal-body').html(bodyModal);
+                $('#confirmAskEvent-button').attr('href', this.href);
+                $('#confirmAskEvent').modal('show');
+                
+                
+                $.datepicker.regional['fr'] = {clearText: 'Effacer', clearStatus: '',
+		closeText: 'Fermer', closeStatus: 'Fermer sans modifier',
+		prevText: '<Préc', prevStatus: 'Voir le mois précédent',
+		nextText: 'Suiv>', nextStatus: 'Voir le mois suivant',
+		currentText: 'Courant', currentStatus: 'Voir le mois courant',
+		monthNames: ['Janvier','Février','Mars','Avril','Mai','Juin',
+		'Juillet','Août','Septembre','Octobre','Novembre','Décembre'],
+		monthNamesShort: ['Jan','Fév','Mar','Avr','Mai','Jun',
+		'Jul','Aoû','Sep','Oct','Nov','Déc'],
+		monthStatus: 'Voir un autre mois', yearStatus: 'Voir un autre année',
+		weekHeader: 'Sm', weekStatus: '',
+		dayNames: ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+		dayNamesShort: ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'],
+		dayNamesMin: ['Di','Lu','Ma','Me','Je','Ve','Sa'],
+		dayStatus: 'Utiliser DD comme premier jour de la semaine', dateStatus: 'Choisir le DD, MM d',
+		dateFormat: 'dd/mm/yy', firstDay: 0, 
+		initStatus: 'Choisir la date', isRTL: false};
+            
+                /*$.datepicker.setDefaults($.datepicker.regional['fr']);
+                
+                $.timepicker.regional['fr'] = {
+	                timeOnlyTitle: 'Choisir une durée',
+	                timeText: 'Heure',
+	                hourText: 'Heures',
+	                minuteText: 'Minutes',
+	                secondText: 'Secondes',
+	                millisecText: 'Millisecondes',
+	                timezoneText: 'Fuseau horaire',
+	                currentText: 'Maintenant',
+	                closeText: 'Terminé',
+	                timeFormat: 'hh:mm',
+	                amNames: ['AM', 'A'],
+	                pmNames: ['PM', 'P'],
+	                ampm: false
+	        };
+                
+                $.timepicker.setDefaults($.timepicker.regional['fr']);*/
+                
+                //$.datepicker.formatDate('dd/mm/yy');
+                
+                
+                $('#startDate').datetimepicker({
+                    timeFormat: 'hh:mm',
+                    minDate: -300,
+                    maxDate: 0
+                });
+                
+                $('#duration').timepicker({
+                        hourGrid: 4,
+                        minuteGrid: 10
+                });
+                
+            })   
+                
+            
+            function listLoaded(){
+                listload = $('#listLoad').html();
+                listload = listload+1;
+                $('#listLoad').html(listload);
+            }
+            
+            function showAction(){
+                if($('#listLoad').html()=="111"){
+                    //$('.lauchActivityModal').show();
+                    $('.lauchActivityModal').attr("href","#")
+                }    
+            }  
+
+        })
+
+</script>  
+
+
+    <!-- boite modale pour l'affichage d'un petit formulaire d'ajout d'événement -->
+    <div class="modal hide" id="confirmAskEvent">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">×</a>
+            <h3 id="title_modal_event"></h3>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+            <a id="confirmAskEvent-button" href="#" class="btn btn-primary">{{ 'users.validate_activity'|trans }}</a>
+            <a id="editAskEvent-button" href="#" class="btn btn-primary">{{ 'modal.edit'|trans }}</a>
+            <a id="deleteAskEvent-button" href="#" class="btn btn-primary">{{ 'modal.delete'|trans }}</a>
+            <a href="#" data-dismiss="modal" class="btn">{{ 'modal.close'|trans }}</a>
+        </div>
+    </div>
+
+    <div id="sport"></div>
+    <div id="stateOfHealth"></div>
+    <div id="weather"></div>
+    <div id="listLoad"></div>
+    
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>{{ 'users.name'|trans }}</th>
+                <th>{{ 'users.date'|trans }}</th>
+                <th>{{ 'users.duration'|trans }}</th>
+                <th>{{ 'users.status'|trans }}</th>
+                <th>{{ 'users.action'|trans }}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for agendaHasEvent in agendaHasEvents %}
+            <tr>
+                <td>{{ agendaHasEvent.event.name }}</td>
+                <td>{{ agendaHasEvent.event.startDate|date('d/m/Y H:i:s') }}</td>
+                <td>{{ agendaHasEvent.event.activitySession.duration|date('H:i') }}</td>
+                {% if agendaHasEvent.event.activitySession.isValidate  %}
+                    <td>{{ 'users.validate_status'|trans }}</td>
+                {% else %}  
+                    <td>{{ 'users.stand_by_status'|trans }}</td>
+                {% endif %}
+                <td><a class="lauchActivityModal" class="toggleConfirm" title="{{ 'users.validate_activity'|trans }}">{{ 'users.validate_activity'|trans }} <span class="id_activity">{{ agendaHasEvent.event.activitySession.id }}</span></a> </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% else %}    
+    
+    <p> {{ 'users.no_activity_in_stand_by_found'|trans }} </p>
+
+
+{% endif %}
+
+{% endblock %}

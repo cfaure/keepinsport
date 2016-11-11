@@ -1,0 +1,17 @@
+{# génération du sommaire #}
+<ol>
+{% for key, element in articleElements %}
+    <li>
+        <a href="#title_{{ key }}">{{ element.title|raw }}</a>
+        <ol>
+        {% for key, tableOrParagraph in element.content %}
+            {% if tableOrParagraph.subtitle is defined and tableOrParagraph.subtitle != "" %}
+                <li>
+                    <a href="#subtitle_{{ key }}">{{ tableOrParagraph.subtitle|raw }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        </ol>
+    </li>
+{% endfor %}
+</ol>

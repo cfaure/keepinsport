@@ -1,0 +1,318 @@
+{% extends "::noauth.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}" type="text/css" />
+    <style type="text/css">
+        .smallnote {
+            font-size: 0.8em; font-style: italic;
+            margin-top: 5px;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksdashboard/js/index.js') }}"></script>
+    <script src="https://apis.google.com/js/client.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#container").html("");
+            $.post(
+                Routing.generate('ksDashboard_getDataGraphTopLeaguesUsers'), 
+                {},
+                function(response) {
+                    $("#goldTopLoader").hide();
+                    $("#silverTopLoader").hide();
+                    $("#bronzeTopLoader").hide();
+                    
+                    //console.log(response);
+                    var highchartsOptions = {};
+
+                    highchartsOptions.title = {
+                        text: ''
+                    };
+                    
+                    highchartsOptions.xAxis = xAxisOptions;
+                    highchartsOptions.yAxis = yAxisOptions;
+                    highchartsOptions.tooltip = tooltipStackingGraphOptions;
+                    highchartsOptions.plotOptions = plotOptionsGraphOptions;
+                    highchartsOptions.plotOptions.column.stacking = "normal";
+                    highchartsOptions.plotOptions.series.point.events.click = function(e) {}
+                    highchartsOptions.credits = creditsOptions;
+
+                    $.each( response.leagues, function(leagueCategoryId, leagueCategoryLabel) {
+                        if( Object.keys(response.sports[leagueCategoryId]).length > 0 && Object.keys(response.users[leagueCategoryId]).length > 0 ) {
+                            highchartsOptions.chart = {
+                                renderTo: leagueCategoryLabel + 'TopContainer',
+                                type: 'column'
+                            };
+
+                            highchartsOptions.series = [];
+                            var aUsernames = [];
+                            var aUserIds = [];
+                            $.each( response.users[leagueCategoryId], function(userId, userUsername) {
+                                    aUsernames.push(userUsername);
+                                    aUserIds.push(userId);
+                            });
+                            $.each( response.sports[leagueCategoryId], function(sportId, sportLabel) {
+
+                                highchartsOptions.series.push({
+                                    id:   sportId,
+                                    name: sportLabel,
+                                    data: response.chart.points[leagueCategoryId][sportId],
+                                });
+                            });
+                            highchartsOptions.xAxis.categories = aUsernames;
+                            //console.log(highchartsOptions.series);
+                            new Highcharts.Chart(highchartsOptions);
+                        } else {
+                            $('#' + leagueCategoryLabel + 'TopContainer').html("Les sportifs de cette catégories n'ont encore fait aucune activité");
+                        }
+                    });
+
+                }
+            );
+            
+            /*var clientId = '774996425691.apps.googleusercontent.com';
+            var apiKey = 'AIzaSyAL3oC2JfcvDNkxhb0rx0VeemXMJaSLWzA';
+            var scopes = 'https://www.googleapis.com/auth/plus.me';
+            gapi.client.setApiKey('AIzaSyAL3oC2JfcvDNkxhb0rx0VeemXMJaSLWzA');
+            gapi.client.load('plus', 'v1', function() { 
+                console.log('loaded.'); 
+                var request = gapi.client.plus.activities.search({'query': 'Google+', 'orderBy': 'best'});
+                request.execute(function(resp) { console.log(resp); });
+            });*/
+            
+            
+            
+            /*$("#googleButton").click(function() {
+            
+            });*/
+        });
+
+    </script>
+{% endblock %}   
+{% block body %}
+
+<div id="fb-root"></div>
+<script>
+var isConnectedToFB = false;
+    
+function login() {
+    FB.login(function(response) {
+        if (response.authResponse) {
+            //console.log(response.authResponse);
+            //console.log('... et redirect'); // connected
+            window.location = "{{ url('_security_check_facebook') }}"; //"http://local.keepinsport.com/keepinsport/web/app_dev.php/login";
+        } else {
+            // console.log('cancelled')
+        }
+    }, {scope: 'publish_actions,user_photos'});
+}
+
+function testLogin() {
+    //var isConnectedToFB;
+    
+    if (isConnectedToFB) {
+        //console.log('redirect');
+        window.location = "{{ url('_security_check_facebook') }}";
+    } else {
+        login();
+        //console.log('login fb');
+    }
+}
+
+window.fbAsyncInit = function() {
+    FB.init({
+        appId      : '106071199501870', // App ID
+        status     : true, // check login status
+        cookie     : true, // enable cookies to allow the server to access the session
+        xfbml      : true  // parse XFBML
+    });
+    
+    // Additional initialization code here
+    
+    FB.getLoginStatus(function(response) {
+        if (response.status === 'connected') {
+            isConnectedToFB = true;
+        } else if (response.status === 'not_authorized') {
+            //console.log('FB: not auth');
+        } else {
+            //console.log('FB: not logged in');
+        }
+    });
+};
+// Load the SDK Asynchronously
+(function(d){
+    var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement('script'); js.id = id; js.async = true;
+    js.src = "//connect.facebook.net/fr_FR/all.js";
+    ref.parentNode.insertBefore(js, ref);
+    }(document));
+//gapi.client.load('API_NAME', 'API_VERSION', CALLBACK);
+</script>
+ 
+<!-- Centrer veticalement une div sans connaiter sa taille --> 
+    {% render 'KsUserBundle:User:feedbackBloc' %}
+
+    <div class="row-fluid">
+        <div class="span4 visible-desktop visible-tablet" style="font-size:0.9em">
+            <div class="rightColumnBloc thumbnail">
+                <h3 class="sportif">Pour tous les sportifs</h3>
+                <div class="blocHeaderSeparator"></div>
+                <ul>
+                    <li>Compétiteur dans l'âme ou sportif du dimanche ? Suis toutes tes activités en quelques clics</li>
+                    <li>Améliore tes performances et prépare tes sorties avec Google Agenda</li>
+                    <li>Synchronise tes activités à partir de nombreuses applications externes</li>
+                </ul>
+            </div>
+            <div class="rightColumnBloc thumbnail">
+                <h3 class="friends">Une communauté dynamique</h3>
+                <div class="blocHeaderSeparator"></div>
+                <p>
+                    <ul>
+                        <li>Partage tes activités et multiplie les échanges avec tes amis</li>
+                        <li>Bénéficie des conseils de la communauté et partage ton expérience</li>
+                        <li>Trouve facilement de nouveaux partenaires de sport</li>
+                    </ul>
+                </p>
+            </div>
+            <div class="rightColumnBloc thumbnail">
+                <h3 class="clubs">Enfin un espace pour les clubs</h3>
+                <div class="blocHeaderSeparator"></div>
+                <p>
+                    <ul>
+                        <li>Augmente la visibilité de ton club et le nombre d'adhérents</li>
+                        <li>Améliore la communication avec tes adhérents</li>
+                        <li>Gére les événements, les équipes ou les infrastructures</li>
+                    </ul>
+                </p>
+            </div>  
+        </div>
+            
+        <div class="span4">
+            <div class="rightColumnBloc thumbnail">
+                <div >
+                    <img style="width:100%; vertical-align: middle" src="{{ asset('img/ks_typo_logo.png') }}" />
+                    <div class="blocHeaderSeparator"></div>
+                    {% if error %}
+                        <div class="alert alert-error">{{ 'security.login.error.badcredantials'|trans }}</div>
+                    {% endif %}
+                    <form action="{{ path("fos_user_security_check") }}" method="post" class="login form-horizontal">
+
+                        <div class="control-group">
+                            <label class="control-label" for="username">{{ 'security.login.username'|trans({}, 'FOSUserBundle') }}</label>
+                            <div class="controls">
+                                <input type="text" class="input-medium" id="username" name="_username" value="{{ last_username }}" placeholder="Nom d'utilisateur" />
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label" for="password">Mot de passe* :</label>
+                            <div class="controls">
+                                <input type="password" class="input-medium" id="password" name="_password" placeholder="Mot de passe" /> <br>
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <div class="controls">
+                                <label for="remember_me" class="checkbox" style="text-align: left">
+                                    <input type="checkbox"  id="remember_me" name="_remember_me" value="on" checked />
+                                        {{ 'security.login.remember_me'|trans({}, 'FOSUserBundle') }}
+                                </label>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+
+                        <center>
+                            <input type="submit" class="btn btn-large btn-sportif" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans({}, 'FOSUserBundle') }}" />
+
+                            <div class="smallnote"><a href="{{ path('fos_user_resetting_request') }}">mot de passe oublié ?</a></div>
+                        </center>
+                    </form>
+                </div>
+                <center>
+                    {% if facebookauth != "false" %}
+                        <div style="margin: 5px; border-top : 2px solid #999999">
+                            <span class="badge" style="position:relative;top:-12px">ou</span>
+                        </div>
+
+                        <a href="#" class="btn btn-large btn-sportif" onClick="javascript: testLogin()">
+                            Connexion avec <span class="facebook-icon">facebook</span>
+                        </a>
+                    {% endif %}
+                      
+                    {#% if googleauth is defined and googleauth != "false" %#}
+                        {#{ google_login_button() }#}
+                    {#% endif %#}
+                    
+                        
+                    <br /><br />
+                    <div class="blocHeaderSeparator"></div>
+                    <p>
+                        <em>Pas encore inscrit ?</em> <a href="{{ path('fos_user_registration_register') }}">Je veux m'inscrire !</a>
+                    </p>
+                </center> 
+            </div>
+            <div class="rightColumnBloc visible-desktop visible-tablet">
+                <div class="thumbnail">
+                    <h3 class="sportif">Services disponibles</h3>
+                    <div class="blocHeaderSeparator"></div>
+                    {% include 'KsActivityBundle:Activity:_servicesBloc.html.twig' with {'withLink': false} %}
+                </div>
+            </div>
+        </div>
+        <div class="span4 visible-desktop visible-tablet">
+            <div class="rightColumnBloc thumbnail">
+                <a class="btn btn-wikisport btn-small pull-right" href="{{ path('ksArticle_list') }}">
+                    <i class="icon-search icon-white"></i>
+                </a>
+                <h3 class="wikisport">Articles récents</h3>
+                <div class="blocHeaderSeparator"></div>
+                {% render "KsActivityBundle:Article:lastModifiedArticles" with { 'nbArticles' : 5 } %}
+            </div>
+
+            <div class="rightColumnBloc thumbnail visible-desktop visible-tablet">
+                <h3 class="friends">Dernières activités</h3>
+                <div class="blocHeaderSeparator"></div>
+                {% render "KsActivityBundle:Activity:lastActivities" with { 'nbActivities' : 5 } %}
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid visible-desktop visible-tablet">
+        <div class="thumbnail rightColumnBloc span4">
+            <h3 class="friends">Top ligue Or</h3>
+            <div class="blocHeaderSeparator"></div>
+            <div>
+                <center>
+                    <img id="goldTopLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"/>
+                </center>
+                <div id="goldTopContainer"></div>
+            </div>
+        </div>
+        <div class="thumbnail rightColumnBloc span4">
+            <h3 class="friends">Top ligue Argent</h3>
+            <div class="blocHeaderSeparator"></div>
+            <div>
+                <center>
+                    <img id="silverTopLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"/>
+                </center>
+                <div id="silverTopContainer"></div>
+            </div>
+        </div>
+        <div class="thumbnail rightColumnBloc span4">
+            <h3 class="friends">Top ligue Bronze</h3>
+            <div class="blocHeaderSeparator"></div>
+            <div>
+                <center>
+                    <img id="bronzeTopLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader"/>
+                </center>
+                <div id="bronzeTopContainer"></div>
+            </div>
+        </div>
+    </div>
+
+{% endblock body %}

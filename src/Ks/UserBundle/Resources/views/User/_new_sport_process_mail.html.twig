@@ -1,0 +1,8 @@
+{% if user.userDetail.firstname is defined and user.userDetail.firstname is not null and user.userDetail.lastname is defined and user.userDetail.lastname is not null %}
+   {% set name = user.username ~ " (" ~ user.userDetail.firstname ~ " " ~ user.userDetail.lastname ~")" %}
+{% else %}
+    {% set name = user.username %}
+{% endif %}
+Ta proposition de nouveau sport ({{ newSport }}) a bien été reçue, nous allons étudier ta demande. S'il est retenu nous allons le créer et ajouter son logo dans la rubrique "mes sports". Tu seras informé par le biais du site avec un message "keepinsport".
+<br/><br/>
+Merci pour ton aide.

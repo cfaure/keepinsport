@@ -1,0 +1,33 @@
+{% set smallName = "Ks" %}
+{% set name = "Keepinsport" %}
+{% if activity.source is defined %}
+
+    {% if activity.source == "runkeeper" %}
+        {% set smallName = "Rk" %}
+        {% set name = "Runkeeper" %}
+    {% endif %}
+
+    {% if activity.source == "nikeplus" %}
+        {% set smallName = "N+" %}
+        {% set name = "Nikeplus" %}
+    {% endif %}
+
+    {% if activity.source == "gpx" %}
+        {% set smallName = "Gpx" %}
+        {% set name = "Gpx" %}
+    {% endif %}
+
+{% endif %}
+
+<a rel="tooltip" title="{{ name }}" style="font-size:2em;position:relative;top:4px">
+   <b>{{ smallName }} </b>
+</a>
+
+<style>
+   a[rel=tooltip]:hover {
+       text-decoration:none;
+   }
+</style>
+<script type="text/javascript">
+    
+</script>

@@ -1,0 +1,634 @@
+sports:
+    other-sports:     Other sports
+    my-sports:        My sports
+    football:         Football
+    tennis:           Tennis
+    judo:             Judo
+    handball:         Handball
+    basketball:       Basketball
+    running:          Running
+    rugby:            Rugby
+    canoe-kayak:      Canoe Kayak
+    petanque:         Petanque
+    windsurfing:      Wind surfing
+    swimming:         Swimming
+    scuba-diving:     Scuba diving
+    karate:           Karate
+    tennis-table:     Tennis table
+    badminton:        Badminton
+    ski:              Ski
+    cycling:          Cycling
+    waterPolo:        Water polo
+    volley:           Volley
+    hiking:           Hiking
+    mountain-biking:  Mountain biking
+    rowing:           Rowing
+    walking:          Walking
+    musculation:      Musculation
+    peloteBasque:     Pelote basque
+    golf:             Golf
+    yoga:             Yoga
+    elliptical:       Elliptical
+    squash:           Squash
+    other:            Other sport
+    crossCountrySkiing: Cross country skiing
+    snowboard:        Snowboard
+    step-counter:     Step counter
+    cross-training:   Cross training
+    climbing-stairs:  Climbing stairs
+    baby-foot:        Baby foot
+    billard:          Billard
+    skateboard:       Skateboard
+    ice_skate:        Ice skate
+    surf:             Surf
+    downhill-skiing:  Downhill skiig
+    spinning:         Spinning
+    aquabike:         Aquabike
+    zumba:            Zumba
+    rower:            Rower
+    climbing:         Climbing
+    archery:          Archery
+    boxing:           Boxing
+    tree_climbing:    Accrobranche
+    triathlon:        triathlon
+    aquagym:          Aquagym
+    boxeThai:          Boxe thaï
+    aikido:           Aïkido
+    salsa:            Salsa
+    bmx:              BMX
+    jujitsu:          Jujitsu
+    mma:              MMA
+    horse_riding:     Horse riding
+    referee:          Referee
+    video_games:      E-sport
+    touringSki:       Touring ski
+    paragliding:      Parapente
+    empty:            Repos
+    weight training:  Musculation
+ 
+login:
+    one-community:    sportsmen, clubs, one community
+    welcome:          Welcome on Keepinsport !
+    applications:     Inter-connected applications
+    free:             100% free !
+    
+    #carousel
+    plan-import-follow: Plan, import and follow all your activities
+    progress-compare: Progress and compete with your friends
+    advices: Receives advice from the community and share your experience
+    communicate-clubs: Communicate with your clubs members
+    
+menu:
+    me:                 Me
+    sportsmen:          Sportsmen
+    clubs:              Clubs
+    wikisport:          Wikisport
+    shops:              Shops
+    sync-pending:       Sync activities
+    sync-button:        Sync by hand
+    connect:            Connect
+    register:           Register
+    disconnect:         Disconnect
+    mails:              My emails
+    agenda:             My calendar
+    notifications:      My notifications
+    evolutions:         Next steps
+    gifts:              Prices
+    
+    #Sous menu sportif
+    news-feed:          News feed
+    profile:            Profile
+    equipment:          Equipment
+    ranking:            Ranking
+    statistics:         Statistics
+    comparison:         Comparisons
+    configure-services: My services
+    my-friends:         My friends
+    publish-activity:   Publish activity
+    update-activity:    Edit activity
+    
+    #Sous menu friends
+    all-sportsmen:      List
+    invite:             Invite friends
+    look-for-partners:  Look for partners
+    localisations:      Famous locations
+    
+    #Sous menu friends
+    look-for-club:      Look for a club
+    create-club:        Create club
+    
+    #Sous menu wikisport
+    contest:            Coach contest
+    create-article:     Create article
+    
+    #Sous menu Magasins
+    search-shops:       Lookg for shops
+    create-shop:        Create a new shop
+    
+    #barre de recherche
+    search-placeholder: Look for (sportsmen, clubs, articles)
+    no-matches-found: No matches found
+    searching:  Searching...
+    language:           Languages
+    
+    #nouveau menu
+    advanced-functions: Advanced functions
+    expert-mode:        Go in expert mode
+    noob-mode:          Go in noob mode
+    show:               Show
+    set-up:             Edit
+    my-profile:         My profile
+    my-equipment:       My equipment
+    my-home-page:       My home page
+    my-profile-page:    My profile page (available soon)
+    my-services:        My services
+    expert-menu:        Menu (expert mode)
+    noob-menu:          Menu (novice mode)
+    last-activities-sync : Your last activities are successfully uploaded !
+    
+    #clubs
+    club-profile:       Club profile
+    club-home-page:     Club page (soon)
+    club-profile-page:  Club public page (soon)
+    members:            Members
+    teams:              Teams
+    events:             Events
+    tournaments:        Tournaments
+    membership-in-progress: Awaiting approvals
+    send-invit:         Send request
+    club-agenda:        Club calendar
+    user-mode:          Go in user mode
+    
+    activities-fromKS:  General
+    activities-from-my-community:   Last activities
+    activities-from-wikisport: Wikisport
+    
+footer:
+    remarks-suggestion: Remarks, suggestions ?
+    stay-connected:     Stay connected
+    
+activity:
+    status:   Status
+    sport-activity: "{1} Activity|]1,Inf[ Activities"
+    photos:   Photos
+    link:     "{1} Link|]1,Inf[ Links"
+    video:    "{1} Videos|]1,Inf[ Videos"
+    all:      All
+    partners:  Partners
+    others:  Others
+    from:   from
+    a-gpx-file: a gpx file
+    near: near
+    in: in
+    
+    duration: Duration
+    distance: Distance
+    scores:   Scores
+    team-mates: Team mates
+    opponents:  Opponents
+    from-a-service: From a service
+    semi-auto: Semi-auto
+    manually: By hand (with or without GPX)
+    splits: Splits
+    resume: Main data
+    graphs: Graphs
+    message-graphs:  The map is syncronised to the graphics, try to mouseover !
+    message-graphs2: You can drag a specific zone from your activity on the graphics !
+    my-league:  My league
+    my-clubs:   My clubs
+    my-friends: Mes friends
+    me:         Me
+    ks-network: Keepinsport community
+    ks-user:    Keepinsport's team
+    garmin-account-required: GARMIN account required
+    endomondo-account-required: ENDOMONDO account required
+    runkeeper-account-required: RUNKEEPER account required
+    nike+-account-required: NIKE+ account required
+    ffa-activities: Activities from FFA
+    
+actions:
+    info:         Information
+    show:         Show details
+    comment:      Comment
+    share:        Share
+    subscribe:    Subscribe
+    unsubscribe:  Unsubscribe
+    vote:         Support
+    publish:      Publish
+    publish-activity: Commit sport session
+    save-updates: Save updates
+    save:         Enregistrer
+    edit:         Edit
+    delete:       Delete
+    add-image:    Add image
+    start:        Start
+    cancel:       Cancel
+    publish-fb:   Publish on my wall
+    select-sport: Select a sport
+    send:         Send
+    edit-profil:  Edit my profil
+    write-message: Write a new message
+    go-top:       Go top
+    create:       Create
+    SRTM:         SRTM elevation process
+    SRTM-tooltip: Process duration extended but elevations are more reliable since it comes from NASA
+    login-required : Log in required ;) (free)
+    visit:        Quick tour
+    show-newsFeed:        Visit tour ->
+    back:         Back
+    good-start:   Starting
+    
+news-feed:
+    filter:             Filter
+    perimeter:          Perimeter
+    sports:             Sports
+    order:              Order
+    modification-date:  Modification date
+    creation-date:      Creation date
+    all-people:         All
+    more-news:          More news
+    pull-up:            Pull up
+    no-more-news:       No more news to load
+    
+headline:
+    you:      You
+    someone:  Someone
+    the:      The
+    
+    participate-to: "{1} participate to|{2} participe to|{3} participes to"
+    have: "{1} have|{2} have|{3} has"
+    will-do: "{1} will do|{2} will do|{3} will do"
+    created: "{1} created|{2} created|{3} created"
+    look-for-partners-to: look for partners for a 
+    published-status: published status
+    published-photos: publish photos
+    published-photo: publish photo
+    published-video: publish video
+    published-link: publish link
+    shared-news: shared news
+    practised: practised
+    taked-part-article: taked part to article
+    created-tournament: created tournament
+    the-event: the event
+    one-activity-of: one activity of 
+    
+titles:
+    #Fil d'actualité
+    sponsors: Partnership
+    nearby-users: You maybe know ?
+    nearby-clubs: The nearby clubs
+    last-articles: Last articles
+    last-activities: Last activities
+    nearby-shops: Prices
+    next-evolutions: Evolutions du site
+    next-events: Next events
+    rss-flux: Flux rss - l'Equipe
+    facebook: Find us on Facebook
+    twitter: Follow us on Twitter
+    
+    #Classement
+    direct-ranking: Season
+    general-ranking: Details
+    working: Working
+    my-rank: My rank
+    my-ranks: My ranks by sport
+    do-sport: Do<br/>sport
+    cumul-points: Cumul <br/> points
+    reach-gold-league: Reach <br/>gold league
+    win-trophies: Win <br/>trophies
+    my-rankings: My rankings
+    
+    #Concours
+    contest: Contest
+    coach-contest: Contest "Who will be the better coach ?" 
+    rules: Rules
+    sponsor-godsons: Sponsor sportmen
+    coach-godsons:  Coach your godsons
+    win-price:  Win <br/>prices !
+    my-godfather: My godfather
+    my-godsons: My godsons
+    no-godsons: No godsons
+    rank: Rank
+    
+    #profil-public
+    all-godsons: Godsons and little godsons
+    season-evolution: Evolution by season
+    my-clubs: My clubs
+    
+    #agenda
+    agenda-of: %username% agenda
+    
+    #messages
+    subject:  Subject
+    participants: Participants
+    last-message: Last message
+    
+    #others
+    sportman: Sportman
+    points:   Points
+    firstname: Firstname
+    lastname: Lastname
+    town: Town
+    sports: Sports
+    clubs: Clubs
+    actions: Actions
+    activities-number: Activities number
+    friends-number: friends number
+    godsons-number: godsons number
+    sportsmen-number: Sportsmen number
+    sportman-points: Sportman points
+    godsons-points: Godsons points
+    littles-godsons-points: Little godsons points
+    total-points: Total points
+    title:  Title
+    resetting-password: Resetting password
+    check-email:      Check your mails
+    
+    #club
+    package: Forfait(s)
+    
+leagues:
+    gold:   Gold
+    silver: Silver
+    other:  Nutella
+    nutella: Nutella
+    stars-number: "{0,1} star|]1,Inf[ stars"
+    
+events:
+    competitions: Competitions
+    trainings:    Trainings
+    meals:        Meals
+    coaching:     Coaching
+    goals:        Objectifs
+    others:       Others
+    public:       Public
+    training:     Training
+    participations: Members
+    max-participations: Number max
+    types:        Types
+    sports:       Sports
+    filters:      Filters
+    availability: Availability
+    full:         full only
+    available:    available only
+    all:          all
+    event_coaching : Coaching trainings
+    
+months:
+    January:  January
+    February: February
+    March:    March
+    April:    April
+    May:      May
+    June:     June
+    July:     July
+    August:   August
+    September:  September
+    October:  October
+    November: November
+    December: December
+    
+words: 
+    or: or
+    
+intensity:
+    label: Intensity
+    label* -:  "- Intensity* -"
+    low:  Low
+    medium: Medium
+    high: High
+    
+equipmentsTypes:
+    tennis_racquet: Tennis
+    armband:        Armband
+    watch:          Watch
+    shirt:          Shirt
+    short:          Short
+    shoes:          Shoes
+    road_bike:      Road bike
+    mountain_bike:  Mountain bike
+    gloves:         Gloves
+    bonnet:         Bonnet
+    pants:          Pants
+    jacket:         Jacket
+    footballSocks:  Football socks
+    back_pack:      Back pack
+    earpiece:       Ecouteurs
+    ski:            Ski
+    snowboard:      Snowboard
+    
+dashboard:
+    title:                  Statistics from 
+    evolution:              Evolution by season
+    message_evolution_up:   Graphics are dynamics, you can click on a bar below to show details !
+    message_evolution_down: You can hide or show again some specific sports with a click on labels !
+    match_friends:          Comparisons
+    perimeter:              Perimeter
+    top5from:               Top 5 from 
+    my:                     my
+    his:                    his
+    community:              community
+    top5all:                Top 5 sportsmen
+    select_sportsmen:       Choose a sportsman
+    select_season:          Choose a period
+    last_year:              Last 12 months
+    all_sports:             Every sports 
+    detailed-analysis:      Detailed analysis by sport
+    select-equipment:       Choose one of your equipments
+    
+sportsmen:
+    message_click:          You can click on markers on the map to see details from activities !
+
+users:
+    import_GPX:             Import GPX file
+    send_GPX_file:          GPX integration
+    message_GPX_processed:  For massive files (>10Mo), the process can last for a while (max 10 minutes)
+    import_runkeeper:       Import my data
+    gpx_uses:               Use GPX file (not mandatory)
+    facebook-invit:         Facebook request
+    google-invit:           Google request
+    connexion:              Connexion
+    invite:                 Invite from
+    invite-friends:         Request your friends to come on board !
+    invite-by-mail:         Request by email
+    invite-keepinsport:     Add your facebook and google friends already on Keepinsport
+    email:                  Email
+    password:               Password
+    connect:                Connect
+    disconnect:             Disconnect
+    import-FFA:             Import Fédération Française d'Athlétisme
+    search-FFA:             Search on FFA
+    sync-rk-OK:             RUNKEEPER has been successfully linked to your profil !
+    sync-suunto-OK:         SUUNTO has been successfully linked to your profil !
+    sync-rk:                Sync your RUNKEEPER account
+    sync-suunto:            Sync your SUUNTO account
+    setup:                  Setup
+    
+shops:
+    search-shops:           Look for a shop
+    id:                     Id
+    name:                   Name
+    address:                Address
+    town:                   Town
+    sports:                 Sports
+    actions:                Actions
+    status:                 Status
+    reference-KS:           On board
+    waiting-for-approval:   Pending approval
+    name:                   Name
+    address:                Address
+    town:                   Town
+    url:                    Internet site (url)
+    email:                  E-mail (*)
+    telNumber:              Phone number (*)
+    details:                Contact
+    message:                To get prices from your prefered shops based on your points we have to deal with them before all. The more a shop has votes the more acceptance we will get so don't hesitate to create shops here and communicate !
+    votes:                  Votes
+    proposal:               Create a new shop !
+    new-shop:               New shop
+    create-update-shop:     Create / update shop
+    avatar-change:          Choose an image
+    search-by:              Name, town, address, email, etc.
+    my-shops:               My shops
+    shops-with-conditions:  Shops with prices
+    web-shops:              Online shops
+    web-shop:               Online shop only
+    misc:                   Misc.
+    contact:                Contact
+    more-shops:             See more shops
+    all-shops-loaded:       All shops are loaded
+    no-match:               No match !
+    missing:                missing
+    conditions:             Remise / bon d'achat
+
+article:
+    general:                General data
+    participants:           Subscribers
+    photos:                 Pictures
+    map:                    Map
+    subscribe:              Subscribe
+    unsubscribe:            Un-subscribe
+    add-images:             Pictures
+    show-mode:              Show article
+    details:                Details
+    blur-pictures:          Clic on a picture to blur, it will be deleted !
+    add-pictures:           You can add or drag & drop pictures
+    start:                  Start
+    location:               Location
+    update:                 Update
+    update-article:         Update article
+    date:                   Date
+    public-article:         Public article
+    public-article:         Public article
+    private-article:        Private article
+    create-new:             Create new article
+    new:                    New
+    my-subscriptions:       My subscriptions
+    all-articles:           All articles
+    visibilities:           My community or everbody
+    users:                  Users
+    looking-for-duplicates: Looking for duplicates...
+    
+equipment:
+    sport:                  Sport
+    type:                   Type
+    name:                   Name
+    photo:                  Photo
+    weight:                 Weight
+    colors:                 Colors
+    delete:                 Delete
+    new-equipment:          Add new equipment
+    primary-color:          Primary color
+    secondary-color:        Secondary color
+    all-equipment:          Display equipments from others
+    my-equipment:           My equipment
+    more-equipment:         See more equipments
+    search-by:              Sport, name, type
+    message_page_edition_equipement: Choose your equipment manually with the button underneath or look for your among sportsmen's equipments and click on "Got it !" to add it. You'll customise your avatar and would be able to get stats based on your equipment used through your activity !
+    missing:                remaining
+    all-equipments-loaded:  All has been loaded !
+    weight-unity:           Lbs
+    create-update-equipment: Add / edit equipment
+    avatar-change:          Choose a picture
+    no-match:               No results !
+    search-tooltip:         search for equipment
+    add:                    Got it !
+    wish:                   Wish it !
+    already-have:           .
+    add-link:               Clic to add this equipment to your list !
+    owner:                  Main article created by
+    sportsmen:              Sportsmen use it
+    activities:             Activities posted with
+    distance:               Distance with
+    distance-mesure:        Km
+    time:                   Temps with
+    add-equipment:          Add this to your list
+    remove-equipment:       Delete this equipment from your list
+    by-default:             Link this equipment to every activities posted with
+    newsFeed-access:        news feed access !
+    show-main-article:      Show main article
+    edit-my-equipment:      Update my equipment
+    delete-my-equipment:    Delete my equipment
+    
+checklist:
+    good-start:             A good start
+    message:                Below a list of primary actions you can try on Keepinsport, on the left your todo list, on the right actions already done !
+    actions-done:           Actions aready done...
+    actions-todo:           Try it ?
+    publishSportActivity:   Publish one activity
+    paramService:           Setup your service (Suunto, RunKeeper, Nike+, Endomondo...)
+    createClub:             Create a club / a group of sportsmen
+    createShop:             Create a shop (to win prices)
+    publishStatusPhotoVideo: Publish a status / a photo / a video
+    commentLikeShareActivity: Comment / like / share activity
+    inviteFriends:          Invite your friends
+    participateArticle:     Write on article
+    subscribeEvent:         Subscribe to an event
+    expertMode:             Go in expert mode      
+    visitSeen:              Tour visit
+    
+frequency:
+    title:                  Frequency
+    help:                   To spare time you can generate activities from a planning. You just have to choose which days and at the time you want to get notifications to validate activities.
+    
+wikisport:
+    slope:                  Slope
+    slow-slope:             % slow
+    regular-slope:          % regular
+    hard-slope:             % hard
+    elevation:              Elevation
+    distance:               Distance
+    show-all:               Show list
+
+maintenance:
+    message1: We are maintaining
+    message2: for a better use
+    message3: Task duration
+    message4: Work on going...
+    
+visit:
+    message1: To start this visit, use arrows from your keyboard or the buttons below :)
+    message2: In this toolbar you have shortcuts to access directly the most used functions from KS members. Here are what you can do
+    message3: <b>Publish</b> one of your activity and start to win points...
+    message4 : Check your <b>statistics</b> by month, week, sport, equipment, (total duration, distance, elevation gain, victory, defeat, etc)...
+    message5: Watch general <b>ranking</b>, rankings by sport, country...
+    message6: Here is the list of <b>prices</b> that were previously offered here, and your own chance to win...
+    message7: Study your own <b>agenda</b>, very useful to check your activity or to manage your plans, goals !
+    message8: Go on <b>\"expert\"</b> mode to have access to advanced functions (free) => </br> -Start import services <b>SUUNTO, GARMIN, POLAR, RUNKEEPER, NIKE+, ENDOMONDO</b></br>-Invite your friend on KS</br>-Create wikisport articles</br>-Look for areas covered by members</br>-Check clubs around you</br>-And so many things ! :)
+    message9: This is the <b>search bar</b>, very usefull to find people, equipment or an event, try it !
+    message10: To access your public page, and update your <b>profil</b> settings...
+    message11: This is the <b>newsfeed</b> => here are all the activities achieved by members...You can change filters, we keep it on your profil for next visits...
+    message12: <i>\"Do sport, win prices\"</i> => every month active members win <b>prices</b> !
+    message13: Now, if you want to contact us to submit remarks, bugs or evolution feel free to use our <b>\"feedback\"</b> zone here !
+    message14: To end up with this visit tour, here are a list of <b>actions</b> most used by the community. Once achieved you get more points ;)
+    message15: <i>\"Do sport, tease your friends, win prices\"</i>, welcome on <b>Keepinsport</b> !
+    
+garmin:
+    import-activity:    Import Garmin activities
+    select-device:      Choose your device<br/>
+    activity-list :     Activity list
+    upload:             Import
+    looking-for-device: Looking for a Garmin device...<br/><br/> <img src="../bundles/ksactivity/js/garmin/device/style/ajax-loader.gif"/>
+    upload-successful:  Import done successfully !
+    data-found:         #{tracks} activities found on this device
+    on-failure:         Something went wrong while importing this activity ! Please contact us through the feedback below

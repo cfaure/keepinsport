@@ -1,0 +1,344 @@
+{% extends "KsActivityBundle::layout_full.html.twig" %}
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('datatables/DT_bootstrap.css') }}" />
+    <link rel="stylesheet" href="{{asset('jQueryFileUpload/css/jquery.fileupload-ui.css')}}">
+     
+    <style>
+        div.row {
+            margin-left: 0;
+        }
+        
+        #Grid .mix{
+	display: none;
+        }
+    </style>
+{% endblock %}
+        
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('datatables/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('bundles/ksshop/js/editShop.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('datatables/DT_bootstrap.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('mixitup-1.5.3/jquery.mixitup.min.js') }}"></script>
+    <script src="{{asset('jQueryFileUpload/js/tmpl.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.iframe-transport.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/jquery.fileupload-ui.js')}}"></script>
+    <script src="{{asset('jQueryFileUpload/js/locale.js')}}"></script>
+    <script>
+        function attachVoteOnShopEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.voteLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        function attachRemoveVoteOnShopEvent(elt) {
+            elt.click(function(e) {
+                if( !elt.hasClass("disabled") ) {
+                    elt.addClass("disabled");
+                    $.get(
+                        $(this).attr('href'),
+                        function(data) {
+                            if (data.responseVote == -1) showInformation(data.errorMessage);
+                            $( elt ).parent().html(data.voteLink);
+                        }
+                    )
+                }
+                e.preventDefault();
+                return false;
+            });
+        }
+        
+        function attachDeleteShopEvent(shopId) {
+            var callback = function() {
+                $.get(
+                    Routing.generate('ksShop_delete', {'shopId' : shopId}),
+                    function(data) {
+                        if (data.responseDelete == -1) modalInfo(data.errorMessage);
+                        else {
+                            showInformation("Ton magasin a bien été supprimé !<br> Redirection en cours...", "shops");
+                            document.location.href = Routing.generate('ksShop_list', {})
+                        }
+                    }
+                )
+            };
+
+            var message = "Tu es sur le point de supprimer ce magasin (action irréversible)<br/>Es-tu sûr de vouloir continuer ?";
+
+            askConfirmation(message, 'sportif', callback, null);
+            return false;
+        }
+        
+        function attachEditShopEvent(shopId) {
+            editShop(shopId);
+        }
+        
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {         
+            $('.fileUploadForm').fileupload({
+                acceptFileTypes : /(\.|\/)(gif|jpe?g|png)$/i,
+                maxNumberOfFiles : 1
+            });
+            
+            //Bouton pour créer un nouveau magasin
+            $("#newButton").click(function() {
+                editShop();
+            }); 
+            
+            $('input[type=checkbox][name=cbMyShops]').iCheck({
+                checkboxClass: 'icheckbox_minimal-grey',
+            });
+            
+            $('input[type=checkbox][name=cbWebShops]').iCheck({
+                checkboxClass: 'icheckbox_minimal-grey',
+            });
+            
+            $('input[type=checkbox][name=cbMySports]').iCheck({
+                checkboxClass: 'icheckbox_minimal-grey',
+            });
+            
+            $('input[type=checkbox][name=cbWithConditions]').iCheck({
+                checkboxClass: 'icheckbox_minimal-grey',
+            });
+            
+            var ajax = null;
+            var nbShopsToLoadLimit = 21;
+            var timer, popover_parent;
+         
+            var searchShops = function( offset, limit ) {
+                
+                searchTerms = $("#searchInput").val();
+                console.log("ici:" + searchTerms);
+                
+                
+                myShops             = $("input[type=checkbox][name=cbMyShops]").is(":checked");
+                mySports            = $("input[type=checkbox][name=cbMySports]").is(":checked");
+                webShops            = $("input[type=checkbox][name=cbWebShops]").is(":checked");
+                shopsWithConditions = $("input[type=checkbox][name=cbWithConditions]").is(":checked");
+                
+                if( ajax != null ) ajax.abort();
+                
+                $("#searchOverBloc").hide();
+                $("#0searchOverBloc").hide();
+                //$("#searchLoader").show();
+                $("#moreResultsLoader").show();
+                $("#scrollForMoreResultsBloc").hide();
+                
+                ajax = $.post(
+                    Routing.generate('ksShop_search'), 
+                    {
+                        'terms'                 : searchTerms,
+                        'myShops'               : myShops,
+                        'mySports'              : mySports,
+                        'webShops'              : webShops,
+                        'shopsWithConditions'   : shopsWithConditions,
+                        'offset'                : offset,
+                        'limit'                 : limit
+                    },
+                    function(response) {
+                        if( response.code == 1 ) {
+                            $("#shopsBloc").append(response.html);
+                            $("#scrollForMoreResultsBloc").find('.nb').html(response.shops_number_not_loaded);
+                            $("#scrollForMoreResultsBloc").show();
+                                                      
+                            //Pour réinitialiser les bulles sur les avatars
+                            
+    
+                            $.each( $("#shopsBloc").find(".shopAvatarBloc .imageLink"), function(key, value) {
+                                $( this ).popover({
+                                    placement: 'top',
+                                    offset: 15,
+                                    trigger: 'manual',
+                                    delay: { show: 350, hide: 100 },
+                                    html: true
+                                });
+
+                                $( this ).hover(
+                                    function() {
+                                        var self = this;
+                                        clearTimeout(timer);
+                                        $('.popover').hide();
+                                        popover_parent = self
+                                        $(self).popover('show');            
+                                        $('.popover').css("max-width", "600px")
+                                    }, 
+                                    function() {
+                                        var self = this;
+                                        timer = setTimeout(function(){hidePopover(self)},300);    
+                                    }
+                                );
+                            });
+
+                            $(window).off("scroll");
+                            
+                            if (response.shops_number == 0) {
+                                $("#0searchOverBloc").show();
+                                $("#scrollForMoreResultsBloc").hide();
+                            }
+                            else if( response.shops_number < limit ) {
+                                $("#searchOverBloc").show();
+                                $("#scrollForMoreResultsBloc").hide();
+                            } else {
+                                $(window).scroll(function()
+                                {
+                                    if($(window).scrollTop() == $(document).height() - $(window).height())
+                                    {
+                                        searchShops( offset + limit, limit );
+                                    }
+                                });
+                            }
+                        }
+                        //$("#searchLoader").hide();
+                        $("#moreResultsLoader").hide();
+                    }
+                );
+            };
+            
+            $('.popover').live({
+                mouseover: function() {
+                    clearTimeout(timer);
+                },
+                mouseleave: function() {
+                    var self = this;
+                    timer = setTimeout(function(){hidePopover(popover_parent)},300); 
+                }
+            });
+         
+             $("#searchInput").keyup( function () {
+                    $("#shopsBloc").html('');
+                    searchShops( 0, nbShopsToLoadLimit );
+            });
+            
+            $("#filters").find("button").click(function() {
+                $("#shopsBloc").html('');
+                
+                //On attend 100 millisecondes car la classe active du bouton n'est pas encore setté
+                //cf. http://stackoverflow.com/questions/13237238/twitter-bootstrap-checkbox-button-value-changed-after-click-event
+                setTimeout(function() {
+                    searchShops( 0, nbShopsToLoadLimit );
+                },100);
+            });
+            
+            $('input[type=checkbox][name=cbMyShops]').on('ifChanged', function(event){
+                $("#shopsBloc").html('');
+                searchShops( 0, nbShopsToLoadLimit );
+            });
+            
+            $('input[type=checkbox][name=cbMySports]').on('ifChanged', function(event){
+                $("#shopsBloc").html('');
+                searchShops( 0, nbShopsToLoadLimit );
+            });
+            
+            $('input[type=checkbox][name=cbWebShops]').on('ifChanged', function(event){
+                $("#shopsBloc").html('');
+                searchShops( 0, nbShopsToLoadLimit );
+            });
+            
+            $('input[type=checkbox][name=cbWithConditions]').on('ifChanged', function(event){
+                $("#shopsBloc").html('');
+                searchShops( 0, nbShopsToLoadLimit );
+            });
+            
+            //On lance la recherche après le chargement
+            searchShops( 0, nbShopsToLoadLimit );
+        });
+           
+    </script>
+{% endblock %}
+    
+{% block body %}
+    {% render 'KsShopBundle:Shop:new_modal' %}
+    
+    <h1 class="friends">
+        {{'shops.search-shops'|trans}} 
+    </h1>
+    <div class="blocHeaderSeparator"></div>
+    <br clear="all"/>
+    
+    <br clear="all"/>
+    {% include 'KsLeagueBundle:League:_rankings.html.twig' with {'context' : 'contest', 'delay' : -1, 'winners' : true} %}
+    <br clear="all"/>
+    <div class="alert alert-info">{{'shops.message'|trans}} </div>
+    <br clear="all"/>
+    
+    <div class="row-fluid">
+        <div class="span7">
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <span id="newButton" class="btn btn-shops pull-left" style="margin-left:25px">
+                    + {{ 'shops.new-shop'|trans }}
+                </span>
+            {% endif %}
+        </div>
+        <div class="span5">
+            <div class="input-prepend pull-left">
+                <span class="add-on">
+                    <span class="icon-search"></span>
+                </span>
+                <input id="searchInput" type="text" rel="tooltip" title="{{ 'shops.search-by'|trans }}" style="width:250px"/>
+            </div>
+            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                <br clear="all"/>
+                <label class="pull-left" style="margin-top:2px;margin-left:30px">
+                    <span class="pull-left" style="margin-right:2px"><input type="checkbox" name="cbMyShops"></span>
+                    <span class="pull-left" >{{ 'shops.my-shops'|trans }}</span>
+                </label>
+                <br clear="all"/>
+                <label class="pull-left" style="margin-top:2px;margin-left:30px">
+                    <span class="pull-left" style="margin-right:2px"><input type="checkbox" name="cbMySports"></span>
+                    <span class="pull-left" >{{ 'sports.my-sports'|trans }}</span>
+                </label>
+                <br clear="all"/>
+                <label class="pull-left" style="margin-top:2px;margin-left:30px">
+                    <span class="pull-left" style="margin-right:2px"><input type="checkbox" name="cbWebShops"></span>
+                    <span class="pull-left" >{{ 'shops.web-shops'|trans }}</span>
+                </label>
+                <br clear="all"/>
+                <label class="pull-left" style="margin-top:2px;margin-left:30px">
+                    <span class="pull-left" style="margin-right:2px"><input type="checkbox" name="cbWithConditions"></span>
+                    <span class="pull-left" >{{ 'shops.shops-with-conditions'|trans }}</span>
+                </label>
+                <br clear="all"/>
+            {% endif %}
+        </div>
+    </div>
+    
+    <br clear="all"/>
+    
+    <div class="blocHeaderSeparator"></div>
+    
+    <img id="searchLoader" src="{{ asset('img/loader_ks_16.gif') }}" alt="loader" class="pull-left" style="margin-left:5px;margin-top:7px;display:none">
+    
+    <div id="shopsBloc">
+    </div>
+
+    <br clear="all"/>
+    <img id="moreResultsLoader" src="{{ asset('img/loader_ks_57.gif') }}" alt="loader" style="display:none">
+    <div id="scrollForMoreResultsBloc"class="alert"  style="display:none">
+        <center>{{ 'shops.more-shops'|trans }}  (<span class="nb"></span> {{ 'shops.missing'|trans }}) <img style="height:20px" src="{{ asset('img/scroll_brown.png') }}" alt="scroll"></center>
+    </div>
+    <div id="searchOverBloc" class="alert alert-info"  style="display:none">
+        <center>{{ 'shops.all-shops-loaded'|trans }}</center>
+    </div>
+    <div id="0searchOverBloc" class="alert alert-info"  style="display:none">
+        <center>{{ 'shops.no-match'|trans }}</center>
+    </div>
+    
+{% endblock %}        

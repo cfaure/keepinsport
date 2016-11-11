@@ -1,0 +1,61 @@
+<div class="navbar navbar-third navbar-clubs">
+    <div class="navbar-inner">
+        <div class="container">
+            <div class="nav-collapse collapse" >
+                <ul class="nav" >
+                    <li class="clubs">
+                        <a href="{{ path('KsClub_informations', {'clubId' : clubId}) }}">
+                            <i class="icon-list icon-white"></i> Informations
+                        </a>
+                    </li>
+                    <li class="clubs">
+                        <a href="{{ path('ksProfileClub_informations', {'clubId' : clubId, 'creationOrEdition' : 'edition'}) }}">
+                            <i class="icon-pencil icon-white"></i> Editer
+                        </a>
+                    </li>
+                    <li class="clubs">
+                        <a href="{{ path('KsClub_members', {'clubId' : clubId}) }}">
+                            <i class="icon-list icon-white"></i> Membres
+                        </a>
+                    </li>
+                    <li class="clubs">
+                        <a href="{{ path('KsClub_teams', {'clubId' : clubId}) }}">
+                            <i class="icon-list icon-white"></i> Equipes
+                        </a>
+                    </li>
+                    <li class="clubs">
+                        <a href="{{ path('ksClub_events', { 'clubId': clubId }) }}">
+                            <i class="icon-list icon-white"></i> Evénements
+                        </a>
+                    </li>
+                    <li class="clubs">
+                        <a href="{{ path('KsClub_tournaments', { 'clubId': clubId }) }}">
+                            <i class="icon-list icon-white"></i> Tournois
+                        </a>
+                    </li>
+                    <li class="clubs">
+                        <a href="{{ path('ksClubAdmin_askForMembershipInProgress', { 'clubId': clubId }) }}">
+                            <i class="icon-list icon-white"></i> Demandes d'adhésion en attente
+                        </a>
+                    </li>
+                    <li class="clubs">
+                        <a href="{{ path('ksAgendaClub_index', {'id' : clubId, 'fullscreen' : false }) }}">
+                            <i class="icon-calendar icon-white"></i> Agenda
+                        </a>
+                    </li>
+                    <li class="clubs">
+                        <a href="{{ path('ksClub_inviteFriends', {'clubId' : clubId }) }}">
+                            <i class="icon-envelope icon-white"></i> Inviter un sportif à rejoindre le club
+                        </a>
+                    </li>
+                    {#<li class="clubs">
+                        <a href="{{ path('ksClubAdmin_delete', {'id' : clubId }) }}">
+                            <i class="icon-remove icon-white"></i> Supprimer
+                        </a>
+                    </li>#}
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

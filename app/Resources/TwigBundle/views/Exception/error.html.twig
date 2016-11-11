@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
+	<head>
+        <meta charset="utf-8">
+        <title>Keepinsport - error</title>
+        
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="Page d'erreur Keepinsport" name="description">
+        <meta content="Keepinsport" name="author">
+        
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0;" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+        <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico') }}" /> 
+        <link rel="icon" type="image/png" href="{{ asset('img/keepinsport_logo_16.png') }}" />
+        <link rel="apple-touch-icon" href="{{ asset('img/keepinsport_logo_57.png') }}" />
+        <link rel="apple-touch-icon" sizes="72x72" href="{{ asset('img/keepinsport_logo_72.png') }}" />
+        <link rel="apple-touch-icon" sizes="114x114" href="{{ asset('img/keepinsport_logo_114.png') }}" />
+        
+        <!-- Le fav and touch icons -->
+        <link href="{{ asset('favicon.ico') }}" rel="shortcut icon" />
+        <link href="{{ asset('apple-touch-icon.png') }}" rel="apple-touch-icon" />
+		
+
+        {% block stylesheets %}    
+            {# bootstrap #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.css') }}"/>
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap-responsive.css') }}">
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap_custom_surcharge.css') }}" />
+            
+            {# jquery ui #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/smoothness/jquery-ui-1.8.18.custom.css') }}" /> 
+            <link rel="stylesheet" type="text/css" href="{{ asset('chosen/chosen.css') }}" />
+
+            
+            {# bootstrap datepicker et tipemicker #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-datepicker/css/datepicker.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('bootstrap-timepicker/css/bootstrap-timepicker.min.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('mobiscroll-2.2/css/mobiscroll-2.2.custom.min.css') }}"  />
+            
+            {# select custom #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('select2-3.4.5/select2.css') }}" type="text/css" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('select2-3.4.5/select2-bootstrap.css') }}" type="text/css" />
+             
+            {# custom radio/checkbox button #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/blue.css') }}" type="text/css" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/yellow.css') }}" type="text/css" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/square/red.css') }}" type="text/css" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('iCheck/skins/minimal/grey.css') }}" type="text/css" />
+            
+            {# font #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/fontawesome/css/font-awesome.min.css') }}" >
+            <!--[if IE 7]><link type="text/css" rel="stylesheet" href="{{ asset('font/fontawesome/css/font-awesome-ie7.min.css') }}"><![endif]-->
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/typicons/typicons.min.css') }}" >
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/fontello/css/fontello.css') }}" >
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/fontello/css/animation.css') }}">
+            <!--[if IE 7]><link type="text/css" rel="stylesheet" href="{{ asset('font/fontello/css/fontello-ie7.css') }}"><![endif]--> 
+            <link rel="stylesheet" type="text/css" href="{{ asset('font/handOfSean/stylesheet.css') }}">
+            
+            {# mes styles #}
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}"  />
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/buttons.css') }}"  />
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/navbar.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('css/dropdown.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('ksUserBubble/ksUserBubble.css') }}" />
+            <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksuser/css/style.css') }}"  />
+            <link rel="stylesheet" type="text/css" href="{{ asset('bundles/ksleague/css/leagues.css') }}"  />
+        {% endblock %}
+
+        {% block javascripts %}
+            {# google #}
+            <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+            
+            {# jquery #}
+            <script type="text/javascript" src="{{ asset('js/jquery-1.8.2.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('js/ui/jquery-ui-1.8.22.custom.min.js') }}"></script>
+            
+            {# bootstrap #}
+            <script type="text/javascript" src="{{ asset('js/bootstrap.js') }}"></script>
+            
+            
+            {# routing js #}
+            <script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+            <script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+            
+            {# hightchart #}
+            {#<script type="text/javascript" src="{{ asset('js/hightcharts/highcharts.js') }}"></script>#}
+            <script type="text/javascript" src="{{ asset('plugins/Highcharts-3.0.2/js/highcharts.js') }}"></script>
+                        
+            {# pour les listes déroulantes avec image #}
+            <script type="text/javascript" src="{{ asset('js/jquery.ddslick.js') }}"></script>
+            
+            <script type="text/javascript" src="{{ asset('bundles/ksuser/js/popover.js') }}"></script>
+            
+            {# bootstrap datepicker et tipemicker #}
+            <script src="{{ asset('bootstrap-datepicker/js/bootstrap-datepicker.js') }}"></script>
+            <script src="{{ asset('bootstrap-timepicker/js/bootstrap-timepicker.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('mobiscroll-2.2/js/mobiscroll-2.2.custom.min.js') }}"></script>
+            
+            {# select custom #}
+            <script type="text/javascript" src="{{ asset('select2-3.4.5/select2.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('select2-3.4.5/select2_locale_fr.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('select2-3.4.5/select2.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('select2-3.4.5/functions.js') }}"></script>
+            
+            {# custom radio/checkbox button #}
+            <script type="text/javascript" src="{{ asset('iCheck/jquery.icheck.min.js') }}"></script>
+            
+            {# divers : encore utilisés ? #}
+            <script type="text/javascript" src="{{ asset('js/jquery.meio.mask.min.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('chosen/chosen-ced.jquery.js') }}"></script>
+            
+            {# mes scripts #}
+            <script type="text/javascript" src="{{ asset('js/scripts.js') }}"></script>
+            <script type="text/javascript" src="{{ asset('bundles/ksclub/js/scripts.js') }}"></script>
+            
+            <script type="text/javascript">
+                
+                $(document).ready(function() {
+                    //attachPublishSportSessionEvent($('a[rel="publishSportSessionTrigger"]'));
+                    //attachSearchUserEvent($("a[rel=searchUsers]"));
+                    //jQuery.noConflict();
+                    $("[rel=tooltip]").tooltip();
+                    
+                    /*initializePopovers( $('body'));  
+                    
+                    $('.popover').live({
+                        mouseover: function() {
+                            clearTimeout(timer);
+                        },
+                        mouseleave: function() {
+                            var self = this;
+                            timer = setTimeout(function(){hidePopover(popover_parent)},300); 
+                        }
+                    
+                    /*$("#navbar li.sportif").mouseenter (function() {
+                        $( ".navbar-fixed-top-second" ).hide();
+                        $( "#navbar-sportif" ).show();
+                    });
+                    
+                    $("#navbar li.friends").mouseenter (function() {
+                        $( ".navbar-fixed-top-second" ).hide();
+                        $( "#navbar-friends" ).show();
+                    });
+                    
+                    $("#navbar li.clubs").mouseenter (function() {
+                        $( ".navbar-fixed-top-second" ).hide();
+                        $( "#navbar-clubs" ).show();
+                    });
+                        
+                    $("#navbar li.wikisport").mouseenter (function() {
+                        $( ".navbar-fixed-top-second" ).hide();
+                        $( "#navbar-wikisport" ).show();
+                    });
+                    
+                    $("#navbar li.other").mouseenter (function() {
+                        $( ".navbar-fixed-top-second" ).hide();
+                    });
+                    
+                    $("#navbar-sportif, #navbar-friends, #navbar-clubs, #navbar-wikisport").mouseleave(
+                        function() {
+                            $( ".navbar-fixed-top-second" ).hide();
+                        }
+                    );*/
+                    
+                    var translations = {
+                        "placeholder": "{{ "menu.search-placeholder"|trans }}",
+                        "no-matches-found" : "{{ "menu.no-matches-found"|trans }}",
+                        "searching" : "{{ "menu.searching"|trans }}",
+                    };
+        
+                    initSelect2ForResearch( $("#searchSelect"), translations );
+                });
+            </script>
+        {% endblock %}
+	</head>
+    
+	<body style="width:auto">
+
+            {% include '::_header_auth_V2.html.twig' %}
+            
+            <div class="container" style="margin-top:70px">
+                <div class="thumbnail ksBloc">
+                    <h1 class="sportif">Oops, une erreur s'est produite</h1>
+                    <div class="blocHeaderSeparator"></div>
+                    <img src="{{ asset('img/ks_broken.png') }}" alt="Erreur" title="Erreur" style="width:300px;margin:10px" class="pull-left"/>
+                    <div class="pull-left">
+                        <u>Le serveur a renvoyé l'erreur suivante : </u>
+                        <div class="well">
+                            <p>
+                                <b>Code : </b> {{ status_code }}
+                            </p>
+                            <p>
+                                <b>Description : </b>{{ status_text }}
+                            </p>
+                        </div>
+
+                        <p>Merci de nous contacter en nous indiquant avec le maximum de détail ce que vous faisiez lorsque cette erreur est apparue.</p>
+                    </div>
+                    <br clear="all"/>
+                </div>            
+            </div>
+            {% include '::_google_analytics.html.twig' with { 'google_analytics' : google_analytics } %}  
+            
+
+        {% block bottomscripts %}
+        {% endblock %}
+
+    </body>
+    {% include '::_footer_V2.html.twig' %}
+</html>

@@ -1,0 +1,172 @@
+<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+    {{ 'activities.label'|trans }}
+    <b class="caret"></b>
+</a>
+<ul class="dropdown-menu">
+    <li><a href="{{ path('ksDashboard_statistics', { "id" : app.user.id }) }}">{{ 'user.my_activities.label'|trans }}</a></li>
+    <li><a href="{{ path('ksSport_activitySessionForm', {"activityId" : "new"}) }}">{{ 'users.enter_an_activity'|trans }}</a></li>
+    {#<li><a rel="session" href="#">{{ 'users.enter_an_activity'|trans }}</a></li>
+    <li><a href="{{ path('ks_activity_session_list_in_stand_by') }}">{{ 'users.sportives_activities_in_stand_by'|trans }}</a></li>#}
+    <li><a href="{{ path('ks_user_upload_gpx_file') }}">{{ 'users.import_gpx'|trans }}</a></li>
+    <li><a href="{{ path('ksActivity_uploadFfaActivities') }}">Importer à partir du site de la FFA</a></li>
+    {% if app.user.services|length > 0 %}
+        <div id="syncServicesBloc">
+        <p>Synchroniser mes services</p>
+        {% for userHasService in app.user.services %}
+            {% if userHasService.service.name == "Runkeeper" and userHasService.isActive and userHasService.token != "" %}
+                <span class="btn btn-mini btn-info runkeeper {#% if userHasService.status == "pending" %}disabled{% endif %#}">Runkeeper</span>
+            {% endif %}
+            {% if userHasService.service.name == "NikePlus" and userHasService.isActive and userHasService.connectionId is not null and userHasService.connectionPassword is not null %}
+                <span class="btn btn-mini btn-danger nike {#% if userHasService.status == "pending" %}disabled{% endif %#}">Nike+</span>
+            {% endif %}
+        {% endfor %}
+        </div>
+    {% endif %}
+    <li><a href="{{ path('ksActivity_activitiesNotConnectedToEvent') }}">{{ notConnectedActivitiesNumber }} activité{% if notConnectedActivitiesNumber|length > 0 %}s{% endif %} non liée{% if notConnectedActivitiesNumber|length > 0 %}s{% endif %} à des événements</a></li>
+</ul>
+
+<div id="configureSyncRunkeeperManualModal" class='modal hide fade'>
+    <div class='modal-header'>
+        <a class='close' data-dismiss='modal'>&times;</a>
+        <h3>{{ 'configure_runkeeper_account'|trans }}</h3>
+    </div>
+    <div class='modal-body'>
+        <div class="formRunkeeper">
+             Synchroniser les dernières activités Runkeeper ?
+        </div>
+        <div class="loader" align="center"><img src="{{ asset('bundles/ksactivity/images/load.gif') }}" alt="Loading" /></div>
+        <div class="messages"></div>
+    </div>
+    <div class='modal-footer'>
+       <a href='#' class='configure btn btn-primary' id="syncRK">Synchroniser</a>
+       <a href='#' class='cancel btn' data-dismiss='modal'>Annuler</a>
+    </div>
+</div>   
+
+<style>
+    #syncServicesBloc {
+        padding: 10px 10px 11px;
+    }
+</style>
+
+
+<script type="text/javascript">
+    //attachPublishSportSessionEvent($("#activityMenu").find('a[rel=session]'));
+    
+   //attachConfigureRunkeeperSyncManual($("#syncRunkeeperLink"));
+   
+   var $syncServicesBloc    = $("#syncServicesBloc");
+   var $syncRkBtn           = $syncServicesBloc.find(".runkeeper");
+   var $syncNikeBtn         = $syncServicesBloc.find(".nike");
+   
+   $syncNikeBtn.click(function(){
+       //if( ! $syncNikeBtn.hasClass( "disabled" ) ) {
+           //$syncNikeBtn.addClass( "disabled" );
+           $.post( Routing.generate('ksActivity_createNikePlusJob' ), {}, function( response ) {
+                if ( response.syncResponse == 1 ) {
+                    modalInfo( response.successMessage );
+                } else {
+                    //$syncNikeBtn.removeClass( "disabled" );
+                    modalInfo( response.errorMessage );
+                }
+           })
+       //}
+   });
+   
+   $syncRkBtn.click(function(){
+       //if( ! $syncRkBtn.hasClass( "disabled" ) ) {
+           //$syncNikeBtn.addClass( "disabled" );
+           $.post( Routing.generate('ksyncRunkeeper_createJob' ), {}, function( response ) {
+                if ( response.syncResponse == 1 ) {
+                    modalInfo( response.successMessage );
+                } else {
+                    //$syncNikeBtn.removeClass( "disabled" );
+                    modalInfo( response.errorMessage );
+                }
+           });
+       //}
+   });
+
+   function attachConfigureRunkeeperSyncManual(elt) {
+    
+        var configureRunkeeperAccountModal = $("#configureSyncRunkeeperManualModal");
+        var formRegisterRunkeeper = configureRunkeeperAccountModal.find('.formRunkeeper');
+        var messagesBloc = configureRunkeeperAccountModal.find('.messages');
+        var loader = configureRunkeeperAccountModal.find('.loader');
+        var configureButton = configureRunkeeperAccountModal.find('a.configure');
+        var cancelButton = configureRunkeeperAccountModal.find('a.cancel');
+
+        loader.hide();
+        messagesBloc.hide();
+        formRegisterRunkeeper.show(); 
+
+        elt.unbind();
+        elt.click(function(e) {
+            
+                $("#activityMenu").removeClass('open');
+            
+                $("#bSyncRunkeeperAccountModal").removeAttr('disabled'); 
+                
+                cancelButton.html("Annuler");
+                configureButton.show();
+                configureButton.removeClass("disabled");
+                configureRunkeeperAccountModal.on('shown', function() {
+                    loader.hide();
+
+                });
+
+                configureRunkeeperAccountModal.on('hide', function() {
+                    configureRunkeeperAccountModal.modal('hide');
+                    messagesBloc.hide();
+                    formRegisterRunkeeper.show();
+                });
+
+                configureRunkeeperAccountModal.modal('show');
+                configureRunkeeperAccountModal.on('click.dismiss.modal', '[data-dismiss="modal"]', function(e) {
+                    e.stopPropagation();
+                });
+                return false;
+
+        });
+        
+        
+        
+         $("#syncRK").click(function() {
+    
+         $.post(Routing.generate('ksyncRunkeeper_createJob'), {
+            },
+            function(response) {
+                
+                if (response.syncResponse==1) {
+                    formRegisterRunkeeper.html("<div class='alert alert-success'>"+response.successMessage+"</div>");
+                    formRegisterRunkeeper.show();
+
+                } else {
+                    formRegisterRunkeeper.html("<div class='alert alert-warning'>"+response.errorMessage+"</div>");
+                    formRegisterRunkeeper.show();
+
+                }
+     
+                configureButton.html("Valider");
+                configureButton.show();
+                 //recharge la page quand on clique sur ok 
+                configureButton.click(function() {
+                    window.location.reload();
+                });
+               
+            }).fail(function(jqXHR, textStatus) {
+                console.log("error " + textStatus);
+            });
+        });
+    }
+    
+   
+
+        /*var syncRuns = function() {
+           
+        };*/
+        
+
+    
+</script>
+ 

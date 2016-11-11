@@ -1,0 +1,39 @@
+{% extends "KsUserBundle::layout.html.twig" %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('bundles/ksagenda/js/fullcalendar_ced.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#createClubEventButton").click(function() {
+                $("form.eventForm").submit();
+            });
+        });
+    </script>
+{% endblock %}
+
+    
+    
+
+{% block title %}
+	{{ parent() }}
+{% endblock %}
+    
+{% block content %}
+
+<h1 class="clubs">{{ 'users.club_add_event'|trans }}</h1>
+<div class="blocHeaderSeparator"></div>
+
+{% include 'KsEventBundle:Event:_eventForm.html.twig' with {'form' : form, 'clubId' : clubId, 'class' : 'clubs'} %}     
+
+<div class="pull-right">
+    <span id="createClubEventButton" class="btn btn-clubs">
+        <i class="glyphicon glyphicon-plus-sign"></i>
+        Créer
+    </span>
+</div>
+{% endblock %}

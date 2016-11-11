@@ -1,0 +1,16 @@
+<p>
+    {% if fromUser is defined %}
+        Tu as reçu un message important de {{ fromUser.username }} :
+    {% elseif fromClub is defined %}
+        Tu as reçu un message important de {{ fromClub.name }} :
+    {% else %}
+        Tu as reçu un message important
+    {% endif %}
+</p>
+
+<p style="text-align:left">
+    "{{ activityStatus.description |nl2br }}"
+    <br/>
+    <br/>
+    <a href="{{ host }}{{ path('ksActivity_showActivity', {"activityId" : activityStatus.id }) }}">Répondre
+</p>
